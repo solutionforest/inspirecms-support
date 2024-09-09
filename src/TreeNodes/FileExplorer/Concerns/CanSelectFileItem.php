@@ -37,6 +37,7 @@ trait CanSelectFileItem
                     throw new \Exception("Failed to read file: {$selectedFilePath}. File does not exist or is not accessible.");
                 }
             }
+
             return file_get_contents($selectedFilePath);
 
         } catch (\Exception $e) {
