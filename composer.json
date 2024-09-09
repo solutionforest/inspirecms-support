@@ -1,29 +1,28 @@
 {
-    "name": ":vendor_slug/:package_slug",
-    "description": ":package_description",
+    "name": "solution-forest/inspirecms-support",
+    "description": "This is my package inspirecms-support",
     "keywords": [
-        ":vendor_name",
+        "solution-forest",
         "laravel",
-        ":package_slug"
+        "inspirecms-support"
     ],
-    "homepage": "https://github.com/:vendor_slug/:package_slug",
+    "homepage": "https://github.com/solutionforest/inspirecms-support",
     "support": {
-        "issues": "https://github.com/:vendor_slug/:package_slug/issues",
-        "source": "https://github.com/:vendor_slug/:package_slug"
+        "issues": "https://github.com/solutionforest/inspirecms-support/issues",
+        "source": "https://github.com/solutionforest/inspirecms-support"
     },
     "license": "MIT",
     "authors": [
         {
-            "name": ":author_name",
-            "email": "author@domain.com",
+            "name": "carly",
+            "email": "info@solutionforest.net",
             "role": "Developer"
         }
     ],
     "require": {
         "php": "^8.1",
-        "filament/filament": "^3.0",
         "filament/forms": "^3.0",
-        "filament/tables": "^3.0",
+        "filament/infolists": "^3.0",
         "spatie/laravel-package-tools": "^1.15.0"
     },
     "require-dev": {
@@ -41,13 +40,12 @@
     },
     "autoload": {
         "psr-4": {
-            "VendorName\\Skeleton\\": "src/",
-            "VendorName\\Skeleton\\Database\\Factories\\": "database/factories/"
+            "SolutionForest\\InspireCms\\Support\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "VendorName\\Skeleton\\Tests\\": "tests/"
+            "SolutionForest\\InspireCms\\Support\\Tests\\": "tests/"
         }
     },
     "scripts": {
@@ -67,11 +65,8 @@
     "extra": {
         "laravel": {
             "providers": [
-                "VendorName\\Skeleton\\SkeletonServiceProvider"
-            ],
-            "aliases": {
-                "Skeleton": "VendorName\\Skeleton\\Facades\\Skeleton"
-            }
+                "SolutionForest\\InspireCms\\Support\\InspireCmsSupportServiceProvider"
+            ]
         }
     },
     "minimum-stability": "dev",

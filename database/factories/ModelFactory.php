@@ -1,6 +1,6 @@
 <?php
 
-namespace VendorName\Skeleton\Database\Factories;
+namespace Solutionforest\Inspirecms\Support\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 

@@ -1,12 +1,12 @@
 <?php
 
-namespace VendorName\Skeleton\Commands;
+namespace Solutionforest\Inspirecms\Support\Commands;
 
 use Illuminate\Console\Command;
 
-class SkeletonCommand extends Command
+class InspirecmsSupportCommand extends Command
 {
-    public $signature = 'skeleton';
+    public $signature = 'inspirecms-support';
 
     public $description = 'My command';
 

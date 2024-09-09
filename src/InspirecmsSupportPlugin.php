@@ -1,15 +1,15 @@
 <?php
 
-namespace VendorName\Skeleton;
+namespace Solutionforest\Inspirecms\Support;
 
 use Filament\Contracts\Plugin;
 use Filament\Panel;
 
-class SkeletonPlugin implements Plugin
+class InspirecmsSupportPlugin implements Plugin
 {
     public function getId(): string
     {
-        return 'skeleton';
+        return 'inspirecms-support';
     }
 
     public function register(Panel $panel): void

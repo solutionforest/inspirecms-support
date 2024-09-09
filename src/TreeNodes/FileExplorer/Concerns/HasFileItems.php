@@ -1,0 +1,96 @@
+<?php
+
+namespace SolutionForest\InspireCms\Support\TreeNodes\FileExplorer\Concerns;
+
+use Illuminate\Support\Str;
+use SolutionForest\InspireCms\Support\Data\FileExploreItem;
+
+trait HasFileItems
+{
+    public function getRootItems()
+    {
+        return $this->getFileDataCollection($this->getRootPath(), 0);
+    }
+
+    public function getFileDataCollection(string $path, int $level)
+    {
+        $dir = $this->getFullPath($path);
+
+        if (! is_dir($dir)) {
+            return collect();
+        }
+
+        $files = collect(scandir($dir))
+            ->where(fn ($filename) => ! in_array($filename, ['.', '..']));
+
+        return $files->map(function ($filename, $index) use ($path, $level) {
+            $filePath = Str::of($path)->append('/')->append($filename)->toString();
+
+            return $this->createFileExploreItem($filePath, $level, $index);
+        });
+    }
+
+    public function createFileExploreItem(string $path, int $level, int $index): FileExploreItem
+    {
+        $fullPath = $this->getFullPath($path);
+        $isDir = is_dir($fullPath);
+
+        return new FileExploreItem(
+            idx: $index,
+            name: basename($fullPath),
+            isDirectory: $isDir,
+            isDirectoryEmpty: $isDir && count(scandir($fullPath)) <= 2,
+            isFile: ! $isDir,
+            ext: $isDir ? null : pathinfo($fullPath, PATHINFO_EXTENSION),
+            level: $level,
+            path: $path,
+        );
+    }
+
+    public function checkPermission(string $path): bool
+    {
+        try {
+
+            $disk = $this->getDisk();
+
+            // Add a timeout to the exists check
+            $exists = rescue(function () use ($disk, $path) {
+                return $disk->exists($path);
+            }, false, 5); // 5 seconds timeout
+
+            return $exists;
+
+        } catch (\Throwable $th) {
+            return false;
+        }
+    }
+
+    public function getFullPath(string $path): string
+    {
+        if ($disk = $this->getDisk()) {
+            return $disk->path($path);
+        }
+
+        // Using directory if diskName not set
+        $directory = $this->getDirectory();
+        if (empty($directory)) {
+            throw new \InvalidArgumentException('Either diskName or directory must be set.');
+        }
+
+        $trimmedPath = (string) str($path)->trim()->rtrim('/');
+
+        if (str($trimmedPath)->startsWith($directory)) {
+            return $trimmedPath;
+        }
+
+        return str($directory)
+            ->trim()->rtrim('/')
+            ->finish('/')
+            ->finish($trimmedPath);
+    }
+
+    protected function getRootPath(): ?string
+    {
+        return (string) str($this->getDirectory() ?? '')->trim()->rtrim('/');
+    }
+}

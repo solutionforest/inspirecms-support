@@ -1,6 +1,6 @@
 <?php
 
-namespace VendorName\Skeleton;
+namespace Solutionforest\Inspirecms\Support;
 
 use Filament\Support\Assets\AlpineComponent;
 use Filament\Support\Assets\Asset;
@@ -13,14 +13,14 @@ use Livewire\Features\SupportTesting\Testable;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use VendorName\Skeleton\Commands\SkeletonCommand;
-use VendorName\Skeleton\Testing\TestsSkeleton;
+use Solutionforest\Inspirecms\Support\Commands\InspirecmsSupportCommand;
+use Solutionforest\Inspirecms\Support\Testing\TestsInspirecmsSupport;
 
-class SkeletonServiceProvider extends PackageServiceProvider
+class InspirecmsSupportServiceProvider extends PackageServiceProvider
 {
-    public static string $name = 'skeleton';
+    public static string $name = 'inspirecms-support';
 
-    public static string $viewNamespace = 'skeleton';
+    public static string $viewNamespace = 'inspirecms-support';
 
     public function configurePackage(Package $package): void
     {
@@ -36,7 +36,7 @@ class SkeletonServiceProvider extends PackageServiceProvider
                     ->publishConfigFile()
                     ->publishMigrations()
                     ->askToRunMigrations()
-                    ->askToStarRepoOnGitHub(':vendor_slug/:package_slug');
+                    ->askToStarRepoOnGitHub('solutionforest/inspirecms-support');
             });
 
         $configFileName = $package->shortName();
@@ -80,18 +80,18 @@ class SkeletonServiceProvider extends PackageServiceProvider
         if (app()->runningInConsole()) {
             foreach (app(Filesystem::class)->files(__DIR__ . '/../stubs/') as $file) {
                 $this->publishes([
-                    $file->getRealPath() => base_path("stubs/skeleton/{$file->getFilename()}"),
-                ], 'skeleton-stubs');
+                    $file->getRealPath() => base_path("stubs/inspirecms-support/{$file->getFilename()}"),
+                ], 'inspirecms-support-stubs');
             }
         }
 
         // Testing
-        Testable::mixin(new TestsSkeleton);
+        Testable::mixin(new TestsInspirecmsSupport);
     }
 
     protected function getAssetPackageName(): ?string
     {
-        return ':vendor_slug/:package_slug';
+        return 'solutionforest/inspirecms-support';
     }
 
     /**
@@ -100,9 +100,9 @@ class SkeletonServiceProvider extends PackageServiceProvider
     protected function getAssets(): array
     {
         return [
-            // AlpineComponent::make('skeleton', __DIR__ . '/../resources/dist/components/skeleton.js'),
-            Css::make('skeleton-styles', __DIR__ . '/../resources/dist/skeleton.css'),
-            Js::make('skeleton-scripts', __DIR__ . '/../resources/dist/skeleton.js'),
+            // AlpineComponent::make('inspirecms-support', __DIR__ . '/../resources/dist/components/inspirecms-support.js'),
+            Css::make('inspirecms-support-styles', __DIR__ . '/../resources/dist/inspirecms-support.css'),
+            Js::make('inspirecms-support-scripts', __DIR__ . '/../resources/dist/inspirecms-support.js'),
         ];
     }
 
@@ -112,7 +112,7 @@ class SkeletonServiceProvider extends PackageServiceProvider
     protected function getCommands(): array
     {
         return [
-            SkeletonCommand::class,
+            InspirecmsSupportCommand::class,
         ];
     }
 
@@ -146,7 +146,7 @@ class SkeletonServiceProvider extends PackageServiceProvider
     protected function getMigrations(): array
     {
         return [
-            'create_skeleton_table',
+            'create_inspirecms-support_table',
         ];
     }
 }

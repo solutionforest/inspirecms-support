@@ -45,6 +45,6 @@ const defaultOptions = {
 
 compile({
     ...defaultOptions,
-    entryPoints: ['./resources/js/index.js'],
-    outfile: './resources/dist/skeleton.js',
+    entryPoints: ['./resources/js/components/tree-node.js'],
+    outfile: './resources/dist/components/tree-node.js',
 })
