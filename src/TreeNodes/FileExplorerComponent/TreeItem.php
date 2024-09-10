@@ -84,8 +84,8 @@ class TreeItem extends Component
     protected function getLoadingChildrenFailedNotification()
     {
         return Notification::make()
-            ->title(__('inspirecms-support::tree-node.notification.loading_children_failed.title'))
-            ->body(__('inspirecms-support::tree-node.notification.loading_children_failed.body'))
+            ->title(__('inspirecms-support::notification.loading_children_failed.title'))
+            ->body(__('inspirecms-support::notification.loading_children_failed.body'))
             ->danger();
     }
 }

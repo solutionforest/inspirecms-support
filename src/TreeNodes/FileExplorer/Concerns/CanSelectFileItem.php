@@ -37,6 +37,7 @@ trait CanSelectFileItem
                     throw new \Exception("Failed to read file: {$selectedFilePath}. File does not exist or is not accessible.");
                 }
             }
+
             return file_get_contents($selectedFilePath);
 
         } catch (\Exception $e) {
@@ -62,8 +63,8 @@ trait CanSelectFileItem
     protected function getReadSelectedFileFailedNotification()
     {
         return Notification::make()
-            ->title(__('inspirecms-support::tree-node.notification.file_read_error.title'))
-            ->body(__('inspirecms-support::tree-node.notification.file_read_error.body'))
+            ->title(__('inspirecms-support::notification.file_read_error.title'))
+            ->body(__('inspirecms-support::notification.file_read_error.body'))
             ->danger();
     }
 }

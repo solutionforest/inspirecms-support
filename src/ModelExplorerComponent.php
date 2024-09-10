@@ -148,8 +148,8 @@ class ModelExplorerComponent extends Component implements HasActions, HasForms, 
     protected function getModelLoadFailedNotification()
     {
         return Notification::make()
-            ->title(__('inspirecms-support::tree-node.notification.model_load_failed.title'))
-            ->body(__('inspirecms-support::tree-node.notification.model_load_failed.body'))
+            ->title(__('inspirecms-support::notification.model_load_failed.title'))
+            ->body(__('inspirecms-support::notification.model_load_failed.body'))
             ->danger();
     }
 

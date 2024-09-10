@@ -15,25 +15,6 @@ return [
     'model_details' => 'Model Details',
     'select_model_to_view' => 'Select a model to view its details.',
 
-    'notification' => [
-        'access_restricted' => [
-            'title' => 'Access Restricted',
-            'body' => 'You lack the necessary permissions to view this file or directory.',
-        ],
-        'file_read_error' => [
-            'title' => 'Oops! File Trouble',
-            'body' => 'We couldn\'t open the file you selected. It might be damaged or locked.',
-        ],
-        'loading_children_failed' => [
-            'title' => 'Oops! Folder Trouble',
-            'body' => 'We couldn\'t open this folder for you. It might be empty, or you might not have permission to view its contents.',
-        ],
-        'model_load_failed' => [
-            'title' => 'Model Load Error',
-            'body' => 'We couldn\'t load the selected model. It might have been deleted or you might not have permission to view it.',
-        ],
-    ],
-
     // Exceptions
     'file_read_exception' => 'Failed to read file: :path. File does not exist or is not accessible.',
 
