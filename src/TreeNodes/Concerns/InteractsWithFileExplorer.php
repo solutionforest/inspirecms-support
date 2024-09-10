@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Support\TreeNodes\Concerns;
 
+use Filament\Notifications\Notification;
 use SolutionForest\InspireCms\Support\TreeNodes\FileExplorer;
 
 trait InteractsWithFileExplorer
@@ -46,5 +47,29 @@ trait InteractsWithFileExplorer
     public function getDirectory(): ?string
     {
         return null;
+    }
+
+    public function getPermissionDeniedNotification(): ?Notification
+    {
+        $title = $this->getPermissionDeniedNotificationTitle();
+
+        if (! filled($title)) {
+            return null;
+        }
+
+        return Notification::make()
+            ->title($title)
+            ->body($this->getPermissionDeniedNotificationBody())
+            ->danger();
+    }
+
+    public function getPermissionDeniedNotificationTitle(): ?string
+    {
+        return __('inspirecms-support::notification.permission_denied.title');
+    }
+
+    public function getPermissionDeniedNotificationBody(): ?string
+    {
+        return __('inspirecms-support::notification.permission_denied.body');
     }
 }
