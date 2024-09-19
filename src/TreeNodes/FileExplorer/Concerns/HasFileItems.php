@@ -51,14 +51,17 @@ trait HasFileItems
     {
         try {
 
-            $disk = $this->getDisk();
-
             // Add a timeout to the exists check
-            $exists = rescue(function () use ($disk, $path) {
-                return $disk->exists($path);
-            }, false, 5); // 5 seconds timeout
+            if ($disk = $this->getDisk()) {
 
-            return $exists;
+                return rescue(function () use ($disk, $path) {
+                    return $disk->exists($path);
+                }, false, 5); // 5 seconds timeout
+            }
+
+            return rescue(function () use ($path) {
+                return $this->getFullPath($path);
+            }, false, 5); // 5 seconds timeout
 
         } catch (\Throwable $th) {
             return false;
