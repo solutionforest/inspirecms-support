@@ -1,31 +1,25 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+.tree-node-layout {
+    @apply flex min-h-screen;
+}
 
-@layer components {
-    .tree-node-layout {
-        @apply flex min-h-screen;
-    }
+.tree-node-sidebar {
+    @apply flex-shrink-0 overflow-y-auto border-r border-gray-200;
+    min-width: 100px;
+    max-width: 50%;
+}
 
-    .tree-node-sidebar {
-        @apply flex-shrink-0 overflow-y-auto border-r border-gray-200;
-        min-width: 100px;
-        max-width: 50%;
-    }
+.tree-node-main {
+    @apply flex-grow overflow-auto p-4;
+}
 
-    .tree-node-main {
-        @apply flex-grow overflow-auto p-4;
+.tree-node-resizer {
+    &:hover {
+        cursor: col-resize;
     }
+}
 
-    .tree-node-resizer {
-        &:hover {
-            cursor: col-resize;
-        }
-    }
-
-    .model-explorer-item {
-        @apply cursor-pointer;
-    }
+.model-explorer-item {
+    @apply cursor-pointer;
 }
 
 /* Additional utility classes */
