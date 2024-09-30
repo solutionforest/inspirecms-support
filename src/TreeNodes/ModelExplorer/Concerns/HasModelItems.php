@@ -31,7 +31,7 @@ trait HasModelItems
         return $query->get();
     }
 
-    public function getChildren(string|int $parentKey)
+    public function getChildren(string | int $parentKey)
     {
         $query = $this->getModelExplorerQuery();
 
@@ -43,8 +43,9 @@ trait HasModelItems
     }
 
     /**
-     * @throws \Exception
      * @return Builder
+     *
+     * @throws \Exception
      */
     protected function getModelExplorerQuery()
     {
@@ -94,18 +95,18 @@ trait HasModelItems
         return $this;
     }
 
-    public function getRecordsFrom(string|int|null $parentKey): Collection
+    public function getRecordsFrom(string | int | null $parentKey): Collection
     {
         return $parentKey === null ? $this->getRootItems() : $this->getChildren($parentKey);
     }
 
-    public function findRecord(string|int $key): ?Model
+    public function findRecord(string | int $key): ?Model
     {
         return $this->getModelExplorerQuery()->find($key);
     }
 
     /**
-     * @param Collection<Model> $records
+     * @param  Collection<Model>  $records
      */
     public function parseAsItems($records, int $depth = 0): Collection
     {

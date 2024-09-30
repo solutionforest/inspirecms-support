@@ -44,6 +44,7 @@ trait CanSelectFileItem
         ray([empty($path), $fileExplorer])->green()->label('b');
         if (empty($path)) {
             $this->selectedFileItemForm->fill([]);
+
             return;
         }
 
