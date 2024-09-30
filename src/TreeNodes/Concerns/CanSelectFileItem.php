@@ -33,21 +33,26 @@ trait CanSelectFileItem
     {
         $fileExplorer = $this->getFileExplorer();
 
+        $fileExplorerSelectedPath = $fileExplorer->getSelectedFilePath();
+
+        ray($fileExplorerSelectedPath === $path, [$fileExplorerSelectedPath, $path])->blue()->label('a');
         // Add a guard clause to prevent re-selection of the same file
-        if ($fileExplorer->getSelectedFilePath() === $path) {
+        if ($fileExplorerSelectedPath && $fileExplorerSelectedPath === $path) {
             return;
         }
 
+        ray([empty($path), $fileExplorer])->green()->label('b');
         if (empty($path)) {
+            $this->selectedFileItemForm->fill([]);
             return;
         }
 
         $fileExplorer->selectedFilePath($path);
+        ray([empty($path), $fileExplorer, $fileExplorer->getSelectedFileContent()])->red()->label('c');
 
         $this->selectedFileItemForm->fill([
             'path' => $path,
             'full_path' => $fileExplorer->getFullPath($path),
-            'content' => $fileExplorer->getSelectedFileContent(),
         ]);
 
     }

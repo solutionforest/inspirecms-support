@@ -9,7 +9,6 @@ use SolutionForest\InspireCms\Support\TreeNodes\ModelExplorer\Concerns;
 class ModelExplorer extends ViewComponent
 {
     use Concerns\BelongsToLivewire;
-    use Concerns\CanSelectFileItem;
     use Concerns\HasModelItems;
     use Concerns\HasSelectedItemForm;
     use Concerns\ModelExplorerBase;
@@ -17,7 +16,7 @@ class ModelExplorer extends ViewComponent
     /**
      * @var view-string
      */
-    protected string $view = 'inspirecms-support::model-explorer.index2';
+    protected string $view = 'inspirecms-support::model-explorer.index';
 
     protected string $viewIdentifier = 'modelExplorer';
 

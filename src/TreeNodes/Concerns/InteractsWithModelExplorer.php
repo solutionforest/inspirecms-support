@@ -2,6 +2,9 @@
 
 namespace SolutionForest\InspireCms\Support\TreeNodes\Concerns;
 
+use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Blade;
 use SolutionForest\InspireCms\Support\TreeNodes\ModelExplorer;
 
 trait InteractsWithModelExplorer

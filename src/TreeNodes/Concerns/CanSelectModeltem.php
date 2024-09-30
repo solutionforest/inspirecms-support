@@ -5,6 +5,7 @@ namespace SolutionForest\InspireCms\Support\TreeNodes\Concerns;
 use Filament\Actions\Action;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Illuminate\Database\Eloquent\Model;
 use Livewire\Attributes\On;
 use Nette\NotImplementedException;
 
@@ -15,19 +16,65 @@ trait CanSelectModeltem
 {
     public array $modelExplorerSelectedItemData = [];
 
-    #[On('getChildren')]
-    public function getChildren($parentKey)
-    {
-        $children = $this->getModelExplorer()->getChildren($parentKey);
+    public array $cachedModelExplorerItems = [];
 
-        $this->dispatch('childrenLoaded', children: $children->toArray());
+    public string|int $selectedModelItemKey = '';
+
+    #[On('getNodes')]
+    public function getModelExplorerNodes(string|int $parentKey, int $depth = 0)
+    {
+        if (isset($this->cachedModelExplorerItems[$parentKey])) {
+            $items = $this->cachedModelExplorerItems[$parentKey];
+        } else {
+            $records = $this->getModelExplorer()->getRecordsFrom($parentKey);
+            
+            $items = $this->getModelExplorer()->parseAsItems($records, $depth)->toArray();
+
+            $this->cachedModelExplorerItems[$parentKey] = $items;
+            
+        }
     }
 
     #[On('selectItem')]
-    public function selectItem($item)
+    public function selectModelExplorerNode(string|int $nodeKey)
     {
-        //
+        $this->selectedModelItemKey = $nodeKey;
 
+        /**
+         * @var ?Model
+         */
+        $record = $this->getModelExplorer()->findRecord($nodeKey);
+
+        if ($record) {
+            $this->selectedModelItemForm->fill($record->attributesToArray());
+        } else {
+            $this->selectedModelItemForm->fill([]);
+        }
+    }
+
+    public function getGroupedNodeItems()
+    {
+        if (empty($this->cachedModelExplorerItems)) {
+            $this->getModelExplorerNodes($this->getModelExplorer()->getRootLevelKey());
+        }
+        
+        // Convert the items array as node tree items array
+        $nodes = [];
+        $groupByDepth = collect($this->cachedModelExplorerItems)->flatten(1)->groupBy('depth');
+        foreach ($groupByDepth as $depth => $flattenItems) {
+            if ($depth === 0) {
+                $nodes = collect($flattenItems)->map(fn ($item) => array_merge($item, ['children' => []]))->toArray();
+                continue;
+            }
+
+            $groupByParentKey = collect($flattenItems)->groupBy('parentKey')->toArray();
+            foreach ($groupByParentKey as $parentKey => $items) {
+                $this->attachItemsToNodes($parentKey, $items, $nodes);
+            }
+
+        }
+
+        return $nodes;
     }
 
     public function getSelectedModelItemForm(): Form
@@ -72,5 +119,24 @@ trait CanSelectModeltem
     public function saveSelectedModelItem()
     {
         throw new NotImplementedException('Please implement your ' . __FUNCTION__ . ' function.');
+    }
+    
+    private function attachItemsToNodes(string|int $parentKey, array $items, array &$nodes)
+    {
+        foreach ($nodes as &$node) {
+            if ($node['key'] === $parentKey) {
+                $node['children'] = array_merge($node['children'] ?? [], $items);
+                return ;
+            }
+        }
+
+        // search deeper
+        foreach ($nodes as &$node) {
+            if (empty($node['children'])) {
+                continue;
+            }
+
+            $this->attachItemsToNodes($parentKey, $items, $node['children']);
+        }
     }
 }
