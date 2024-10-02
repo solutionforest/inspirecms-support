@@ -42,14 +42,26 @@ trait CanSelectModeltem
     {
         $this->selectedModelItemKey = $nodeKey;
 
-        $this->selectedModelItem = $this->getModelExplorer()->findRecord($nodeKey);
-
-        $this->selectedModelItemForm->fill($this->mutateFileExplorerSelectedItemDataToFill($this->selectedModelItem));
+        $this->refreshSelectedModelItem($nodeKey);
     }
 
     protected function mutateFileExplorerSelectedItemDataToFill(?Model $record): array
     {
         return $record?->attributesToArray() ?? [];
+    }
+
+    protected function resolveSelectedModelItem(string | int $key): Model
+    {
+        return $this->getModelExplorer()->findRecord($key);
+    }
+
+    protected function refreshSelectedModelItem(string | int $key): void
+    {
+        $this->selectedModelItem = $this->resolveSelectedModelItem($key);
+
+        $this->selectedModelItemForm->model($this->selectedModelItem);
+
+        $this->selectedModelItemForm->fill($this->mutateFileExplorerSelectedItemDataToFill($this->selectedModelItem));
     }
 
     public function getSelectedModelItem(): ?Model

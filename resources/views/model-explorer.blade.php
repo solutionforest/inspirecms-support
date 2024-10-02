@@ -5,7 +5,6 @@
 <x-inspirecms-support::tree-node class="model-explorer">
     <div x-data="{
         expandedItems: [],
-        fetching: false,
         async toggleItem(key, currDepth) {
             if (this.expandedItems.includes(key)) {
                 this.expandedItems = this.expandedItems.filter(item => item !== key);
@@ -15,13 +14,14 @@
 
             await this.fetchNodes(key, currDepth + 1);
         },
+        selectItem(key) {            
+            Livewire.dispatch('selectItem', [key])
+        },
         isExpanded(key) {
             return this.expandedItems.includes(key);
         },
         async fetchNodes(key, depth) {
-            this.fetching = true;
             Livewire.dispatch('getNodes', [key, depth])
-            Livewire.dispatch('selectItem', [key])
             while (this.fetching) {
                 await new Promise(resolve => setTimeout(resolve, 100));
             }
@@ -34,6 +34,7 @@
             @foreach ($items as $item)
                 <x-inspirecms-support::model-explorer.item  
                     :item="$item" 
+                    :selectedKey="$this->selectedModelItemKey"
                 />
             @endforeach
         </ul>
