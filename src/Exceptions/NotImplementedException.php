@@ -2,6 +2,4 @@
 
 namespace SolutionForest\InspireCms\Support\Exceptions;
 
-class NotImplementedException extends \Exception
-{
-}
+class NotImplementedException extends \Exception {}

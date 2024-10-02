@@ -53,13 +53,14 @@ trait CanSelectFileItem
             ->body(__('inspirecms-support::notification.file_read_error.body'))
             ->danger();
     }
-    
+
     public function attachItemsToNodes(string $parentKey, array $items, array &$nodes)
     {
         foreach ($nodes as &$node) {
             if ($node['path'] === $parentKey) {
                 $node['children'] = array_merge($node['children'] ?? [], $items);
-                return ;
+
+                return;
             }
         }
 

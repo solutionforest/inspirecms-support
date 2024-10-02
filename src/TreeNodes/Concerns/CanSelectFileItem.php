@@ -24,6 +24,7 @@ trait CanSelectFileItem
     {
         if (! $this->getFileExplorer()->checkPermission($path)) {
             $this->getPermissionDeniedNotification()->send();
+
             return;
         }
 
@@ -89,13 +90,14 @@ trait CanSelectFileItem
             $items = $this->getFileExplorer()->getFileDataCollection($rootPath, 0)->toArray();
             $this->cachedFileExplorerItems[$rootPath] = $items;
         }
-        
+
         // Convert the items array as node tree items array
         $nodes = [];
         $groupByDepth = collect($this->cachedFileExplorerItems)->flatten(1)->groupBy('level');
         foreach ($groupByDepth as $depth => $flattenItems) {
             if ($depth === 0) {
                 $nodes = collect($flattenItems)->map(fn ($item) => array_merge($item, ['children' => []]))->toArray();
+
                 continue;
             }
 
