@@ -2,16 +2,14 @@
 
 namespace SolutionForest\InspireCms\Support\TreeNodes\FileExplorer\Concerns;
 
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
-use SolutionForest\InspireCms\Support\Data\FileExploreItem;
 
 trait HasFileItems
 {
-    public function getRootItems()
-    {
-        return $this->getFileDataCollection($this->getRootPath(), 0);
-    }
-
+    /**
+     * @return Collection
+     */
     public function getFileDataCollection(string $path, int $level)
     {
         $dir = $this->getFullPath($path);
@@ -26,25 +24,25 @@ trait HasFileItems
         return $files->map(function ($filename, $index) use ($path, $level) {
             $filePath = Str::of($path)->append('/')->append($filename)->toString();
 
-            return $this->createFileExploreItem($filePath, $level, $index);
+            return $this->parseAsItem($filePath, $level, $index);
         });
     }
 
-    public function createFileExploreItem(string $path, int $level, int $index): FileExploreItem
+    private function parseAsItem(string $path, int $level, int $index): array
     {
         $fullPath = $this->getFullPath($path);
         $isDir = is_dir($fullPath);
 
-        return new FileExploreItem(
-            idx: $index,
-            name: basename($fullPath),
-            isDirectory: $isDir,
-            isDirectoryEmpty: $isDir && count(scandir($fullPath)) <= 2,
-            isFile: ! $isDir,
-            ext: $isDir ? null : pathinfo($fullPath, PATHINFO_EXTENSION),
-            level: $level,
-            path: $path,
-        );
+        return [
+            'idx' => $index,
+            'name' => basename($fullPath),
+            'is_directory' => $isDir,
+            'is_directory_empty' => $isDir && count(scandir($fullPath)) <= 2,
+            'is_file' => ! $isDir,
+            'ext' => $isDir ? null : pathinfo($fullPath, PATHINFO_EXTENSION),
+            'level' => $level,
+            'path' => $path,
+        ];
     }
 
     public function checkPermission(string $path): bool
@@ -92,7 +90,7 @@ trait HasFileItems
             ->finish($trimmedPath);
     }
 
-    protected function getRootPath(): ?string
+    public function getRootPath(): ?string
     {
         return (string) str($this->getDirectory() ?? '')->trim()->rtrim('/');
     }

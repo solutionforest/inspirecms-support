@@ -13,5 +13,7 @@ interface HasFileExplorer
 
     public function getSelectedFileItemFormActions(): array;
 
-    public function saveSelectedItem();
+    public function saveSelectedItem(): void;
+
+    public function getSelectedFileItemPath(): ?string;
 }

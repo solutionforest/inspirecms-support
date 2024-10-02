@@ -17,7 +17,7 @@ class FileExplorer extends ViewComponent
     /**
      * @var view-string
      */
-    protected string $view = 'inspirecms-support::file-explorer.index';
+    protected string $view = 'inspirecms-support::file-explorer';
 
     protected string $viewIdentifier = 'fileExplorer';
 

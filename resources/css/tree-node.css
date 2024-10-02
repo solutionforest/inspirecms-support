@@ -18,10 +18,6 @@
     }
 }
 
-.model-explorer-item {
-    @apply cursor-pointer;
-}
-
 /* Additional utility classes */
 .non-selectable-text {
     user-select: none;

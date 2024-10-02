@@ -10,6 +10,7 @@ return [
     // File Explorer
     'file_content' => 'File Content:',
     'no_files_or_directories' => 'No files or directories found.',
+    'selected_item_is_directory' => 'The selected item is a directory.',
 
     'no_models_found' => 'No models found.',
     'model_details' => 'Model Details',

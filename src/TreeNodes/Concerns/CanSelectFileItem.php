@@ -6,7 +6,7 @@ use Filament\Actions\Action;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Livewire\Attributes\On;
-use Nette\NotImplementedException;
+use SolutionForest\InspireCms\Support\Exceptions\NotImplementedException;
 
 /**
  * @property Form $selectedFileItemForm
@@ -15,46 +15,99 @@ trait CanSelectFileItem
 {
     public array $fileExplorerSelectedItemData = [];
 
-    #[On('getChildren')]
-    public function getChildren(string $path, int $level)
+    public ?string $fileExplorerSelectedPath = null;
+
+    public array $cachedFileExplorerItems = [];
+
+    #[On('getFilesFrom')]
+    public function getFilesFromDirectory(string $path, int $level)
     {
         if (! $this->getFileExplorer()->checkPermission($path)) {
             $this->getPermissionDeniedNotification()->send();
-
-            return [];
+            return;
         }
 
-        $children = $this->getFileExplorer()->getFileDataCollection($path, $level);
-        $this->dispatch('childrenLoaded', children: $children->toArray(), path: $path);
+        if (isset($this->cachedFileExplorerItems[$path])) {
+            return;
+        }
+
+        $children = $this->getFileExplorer()->getFileDataCollection($path, $level)->toArray();
+
+        $this->cachedFileExplorerItems[$path] = $children;
     }
 
     #[On('selectFile')]
     public function selectFile($path)
     {
-        $fileExplorer = $this->getFileExplorer();
-
-        $fileExplorerSelectedPath = $fileExplorer->getSelectedFilePath();
-
-        ray($fileExplorerSelectedPath === $path, [$fileExplorerSelectedPath, $path])->blue()->label('a');
         // Add a guard clause to prevent re-selection of the same file
-        if ($fileExplorerSelectedPath && $fileExplorerSelectedPath === $path) {
+        if ($this->fileExplorerSelectedPath && $this->fileExplorerSelectedPath === $path) {
             return;
         }
 
-        ray([empty($path), $fileExplorer])->green()->label('b');
+        // A guard for avoiding selecting a directory
+        if ($this->getFileExplorer()->isSelectedItemDirectory($path)) {
+            return;
+        }
+
         if (empty($path)) {
             $this->selectedFileItemForm->fill([]);
             return;
         }
 
-        $fileExplorer->selectedFilePath($path);
-        ray([empty($path), $fileExplorer, $fileExplorer->getSelectedFileContent()])->red()->label('c');
+        $this->fileExplorerSelectedPath = $path;
 
-        $this->selectedFileItemForm->fill([
+        $this->dispatch('fileExplorerSelectedItemChanged', $path);
+    }
+
+    #[On('fileExplorerSelectedItemChanged')]
+    public function fileExplorerSelectedItemChanged(?string $path)
+    {
+        $data = [
             'path' => $path,
-            'full_path' => $fileExplorer->getFullPath($path),
-        ]);
+            'full_path' => $this->getFileExplorer()->getFullPath($path),
+            'content' => $this->getFileExplorer()->getFileContent($path),
+        ];
 
+        $data = $this->mutateFileExplorerSelectedItemDataToFill($data);
+
+        $this->selectedFileItemForm->fill($data);
+
+    }
+
+    protected function mutateFileExplorerSelectedItemDataToFill(array $data)
+    {
+        return $data;
+    }
+
+    public function getGroupedNodeItems()
+    {
+        $fileExplorer = $this->getFileExplorer();
+
+        if (empty($this->cachedFileExplorerItems)) {
+            $rootPath = $fileExplorer->getRootPath();
+            $items = $this->getFileExplorer()->getFileDataCollection($rootPath, 0)->toArray();
+            $this->cachedFileExplorerItems[$rootPath] = $items;
+        }
+        
+        // Convert the items array as node tree items array
+        $nodes = [];
+        $groupByDepth = collect($this->cachedFileExplorerItems)->flatten(1)->groupBy('level');
+        foreach ($groupByDepth as $depth => $flattenItems) {
+            if ($depth === 0) {
+                $nodes = collect($flattenItems)->map(fn ($item) => array_merge($item, ['children' => []]))->toArray();
+                continue;
+            }
+
+            $groupByParentKey = collect($flattenItems)
+                ->groupBy(fn ($item) => str($item['path'])->beforeLast('/')->toString())
+                ->toArray();
+            foreach ($groupByParentKey as $parentKey => $items) {
+                $fileExplorer->attachItemsToNodes($parentKey, $items, $nodes);
+            }
+
+        }
+
+        return $nodes;
     }
 
     public function getSelectedFileItemForm(): Form
@@ -63,14 +116,16 @@ trait CanSelectFileItem
             return $this->getForm('selectedFileItemForm');
         }
 
-        return $this->selectedFileItemForm(
-            $this
-                ->makeForm()
-                ->schema($this->getSelectedFileItemFormSchema())
-        )->statePath('fileExplorerSelectedItemData');
+        return $this
+            ->selectedFileItemForm(
+                $this
+                    ->makeForm()
+                    ->schema($this->getSelectedFileItemFormSchema())
+                    ->statePath('fileExplorerSelectedItemData')
+            );
     }
 
-    protected function getSelectedFileItemFormSchema(): array
+    public function getSelectedFileItemFormSchema(): array
     {
         if ($schema = $this->getFileExplorer()->getSelectedFileItemFormSchema()) {
             return $schema;
@@ -79,9 +134,7 @@ trait CanSelectFileItem
         return [
             Forms\Components\TextInput::make('path')->readOnly(),
             Forms\Components\TextInput::make('full_path')->readOnly(),
-            Forms\Components\Textarea::make('content')
-                ->readOnly()
-                ->autosize(),
+            Forms\Components\Textarea::make('content')->readOnly(),
         ];
     }
 

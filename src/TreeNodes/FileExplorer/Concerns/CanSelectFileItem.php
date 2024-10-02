@@ -6,50 +6,36 @@ use Filament\Notifications\Notification;
 
 trait CanSelectFileItem
 {
-    protected ?string $selectedFilePath = null;
-
-    public function selectedFilePath(string $path): static
+    public function getFileContent(string $path)
     {
-        $this->selectedFilePath = $path;
-
-        return $this;
-    }
-
-    public function getSelectedFilePath(): ?string
-    {
-        return $this->selectedFilePath;
-    }
-
-    public function getSelectedFileContent()
-    {
-        $selectedFilePath = $this->getSelectedFilePath();
-
-        if (empty($selectedFilePath)) {
+        if (empty($path)) {
             return null;
         }
 
         try {
             $disk = $this->getDisk();
             if (filled($disk)) {
-                if ($disk->exists($selectedFilePath)) {
-                    return $disk->get($selectedFilePath);
+                if ($disk->exists($path)) {
+                    return $disk->get($path);
                 } else {
-                    throw new \Exception("Failed to read file: {$selectedFilePath}. File does not exist or is not accessible.");
+                    throw new \Exception("Failed to read file: {$path}. File does not exist or is not accessible.");
                 }
             }
 
-            return file_get_contents($selectedFilePath);
+            return file_get_contents($path);
 
         } catch (\Exception $e) {
             $this->getReadSelectedFileFailedNotification()->send();
         }
+
+        return null;
     }
 
-    public function isSelectedItemDirectory(): bool
+    public function isSelectedItemDirectory(?string $path): bool
     {
-        if ($this->selectedFilePath) {
+        if ($path) {
             try {
-                $fullPath = $this->getFullPath($this->selectedFilePath);
+                $fullPath = $this->getFullPath($path);
 
                 return is_dir($fullPath);
             } catch (\Throwable $th) {
@@ -66,5 +52,24 @@ trait CanSelectFileItem
             ->title(__('inspirecms-support::notification.file_read_error.title'))
             ->body(__('inspirecms-support::notification.file_read_error.body'))
             ->danger();
+    }
+    
+    public function attachItemsToNodes(string $parentKey, array $items, array &$nodes)
+    {
+        foreach ($nodes as &$node) {
+            if ($node['path'] === $parentKey) {
+                $node['children'] = array_merge($node['children'] ?? [], $items);
+                return ;
+            }
+        }
+
+        // search deeper
+        foreach ($nodes as &$node) {
+            if (empty($node['children'])) {
+                continue;
+            }
+
+            $this->attachItemsToNodes($parentKey, $items, $node['children']);
+        }
     }
 }

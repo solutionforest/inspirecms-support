@@ -45,4 +45,23 @@ trait ModelExplorerBase
     {
         return $this->rootLevelKey;
     }
+    
+    public function attachItemsToNodes(string|int $parentKey, array $items, array &$nodes)
+    {
+        foreach ($nodes as &$node) {
+            if ($node['key'] === $parentKey) {
+                $node['children'] = array_merge($node['children'] ?? [], $items);
+                return ;
+            }
+        }
+
+        // search deeper
+        foreach ($nodes as &$node) {
+            if (empty($node['children'])) {
+                continue;
+            }
+
+            $this->attachItemsToNodes($parentKey, $items, $node['children']);
+        }
+    }
 }

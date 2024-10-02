@@ -51,10 +51,8 @@ class InspireCmsSupportServiceProvider extends PackageServiceProvider
 
     public function packageBooted(): void
     {
-        Livewire::component('file-explorer', TreeNodes\FileExplorerComponent::class);
-        Livewire::component('file-explorer-item', TreeNodes\FileExplorerComponent\TreeItem::class);
-        Livewire::component('model-explorer', ModelExplorerComponent::class);
-        Livewire::component('model-explorer-item', TreeNodes\ModelExplorerComponent\TreeItem::class);
+        Livewire::component('inspirecms-support::file-explorer', TreeNodes\FileExplorerComponent::class);
+        Livewire::component('inspirecms-support::model-explorer', TreeNodes\ModelExplorerComponent::class);
 
         // Asset Registration
         FilamentAsset::register([

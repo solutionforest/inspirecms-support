@@ -16,7 +16,7 @@ class ModelExplorer extends ViewComponent
     /**
      * @var view-string
      */
-    protected string $view = 'inspirecms-support::model-explorer.index';
+    protected string $view = 'inspirecms-support::model-explorer';
 
     protected string $viewIdentifier = 'modelExplorer';
 

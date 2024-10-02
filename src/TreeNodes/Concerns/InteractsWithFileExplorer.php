@@ -13,7 +13,6 @@ trait InteractsWithFileExplorer
 
     public function bootInteractsWithFileExplorer()
     {
-
         $this->fileExplorer = \Filament\Actions\Action::configureUsing(
             \Closure::fromCallable([$this, 'configureSelectedFileItemFormAction']),
             fn () => $this->fileExplorer($this->makeFileExplorer())
@@ -47,6 +46,11 @@ trait InteractsWithFileExplorer
     public function getDirectory(): ?string
     {
         return null;
+    }
+
+    public function getSelectedFileItemPath(): ?string
+    {
+        return $this->fileExplorerSelectedPath;
     }
 
     public function getPermissionDeniedNotification(): ?Notification

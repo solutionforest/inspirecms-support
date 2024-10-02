@@ -20,6 +20,8 @@ trait CanSelectModeltem
 
     public string|int $selectedModelItemKey = '';
 
+    public ?Model $selectedModelItem = null;
+
     #[On('getNodes')]
     public function getModelExplorerNodes(string|int $parentKey, int $depth = 0)
     {
@@ -40,22 +42,27 @@ trait CanSelectModeltem
     {
         $this->selectedModelItemKey = $nodeKey;
 
-        /**
-         * @var ?Model
-         */
-        $record = $this->getModelExplorer()->findRecord($nodeKey);
+        $this->selectedModelItem = $this->getModelExplorer()->findRecord($nodeKey);
 
-        if ($record) {
-            $this->selectedModelItemForm->fill($record->attributesToArray());
-        } else {
-            $this->selectedModelItemForm->fill([]);
-        }
+        $this->selectedModelItemForm->fill($this->mutateFileExplorerSelectedItemDataToFill($this->selectedModelItem));
+    }
+
+    protected function mutateFileExplorerSelectedItemDataToFill(?Model $record): array
+    {
+        return $record?->attributesToArray() ?? [];
+    }
+
+    public function getSelectedModelItem(): ?Model
+    {
+        return $this->selectedModelItem;
     }
 
     public function getGroupedNodeItems()
     {
+        $modelExplorer = $this->getModelExplorer();
+
         if (empty($this->cachedModelExplorerItems)) {
-            $this->getModelExplorerNodes($this->getModelExplorer()->getRootLevelKey());
+            $this->getModelExplorerNodes($modelExplorer->getRootLevelKey());
         }
         
         // Convert the items array as node tree items array
@@ -69,7 +76,7 @@ trait CanSelectModeltem
 
             $groupByParentKey = collect($flattenItems)->groupBy('parentKey')->toArray();
             foreach ($groupByParentKey as $parentKey => $items) {
-                $this->attachItemsToNodes($parentKey, $items, $nodes);
+                $modelExplorer->attachItemsToNodes($parentKey, $items, $nodes);
             }
 
         }
@@ -119,24 +126,5 @@ trait CanSelectModeltem
     public function saveSelectedModelItem()
     {
         throw new NotImplementedException('Please implement your ' . __FUNCTION__ . ' function.');
-    }
-    
-    private function attachItemsToNodes(string|int $parentKey, array $items, array &$nodes)
-    {
-        foreach ($nodes as &$node) {
-            if ($node['key'] === $parentKey) {
-                $node['children'] = array_merge($node['children'] ?? [], $items);
-                return ;
-            }
-        }
-
-        // search deeper
-        foreach ($nodes as &$node) {
-            if (empty($node['children'])) {
-                continue;
-            }
-
-            $this->attachItemsToNodes($parentKey, $items, $node['children']);
-        }
     }
 }
