@@ -10,8 +10,8 @@
     class="cursor-pointer"
 >
     <div @class([
-        'node w-full inline-flex items-center gap-1 rounded-md hover:bg-gray-100 px-1 py-1.5',
-        'bg-gray-100 dark:bg-gray-800' => $selectedKey === $nodeKey,
+        'node w-full inline-flex items-center gap-1 rounded-md hover:bg-gray-100 dark:hover:bg-white/5 px-1 py-1.5',
+        'bg-gray-100 dark:bg-white/5' => $selectedKey === $nodeKey,
     ])>
         <span class="w-4" 
             x-on:click="await toggleItem('{{ $nodeKey }}', @js($nodeDepth))"
