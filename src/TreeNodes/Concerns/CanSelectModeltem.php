@@ -18,27 +18,27 @@ trait CanSelectModeltem
 
     public array $cachedModelExplorerItems = [];
 
-    public string|int $selectedModelItemKey = '';
+    public string | int $selectedModelItemKey = '';
 
     public ?Model $selectedModelItem = null;
 
     #[On('getNodes')]
-    public function getModelExplorerNodes(string|int $parentKey, int $depth = 0)
+    public function getModelExplorerNodes(string | int $parentKey, int $depth = 0)
     {
         if (isset($this->cachedModelExplorerItems[$parentKey])) {
             $items = $this->cachedModelExplorerItems[$parentKey];
         } else {
             $records = $this->getModelExplorer()->getRecordsFrom($parentKey);
-            
+
             $items = $this->getModelExplorer()->parseAsItems($records, $depth)->toArray();
 
             $this->cachedModelExplorerItems[$parentKey] = $items;
-            
+
         }
     }
 
     #[On('selectItem')]
-    public function selectModelExplorerNode(string|int $nodeKey)
+    public function selectModelExplorerNode(string | int $nodeKey)
     {
         $this->selectedModelItemKey = $nodeKey;
 
@@ -64,13 +64,14 @@ trait CanSelectModeltem
         if (empty($this->cachedModelExplorerItems)) {
             $this->getModelExplorerNodes($modelExplorer->getRootLevelKey());
         }
-        
+
         // Convert the items array as node tree items array
         $nodes = [];
         $groupByDepth = collect($this->cachedModelExplorerItems)->flatten(1)->groupBy('depth');
         foreach ($groupByDepth as $depth => $flattenItems) {
             if ($depth === 0) {
                 $nodes = collect($flattenItems)->map(fn ($item) => array_merge($item, ['children' => []]))->toArray();
+
                 continue;
             }
 

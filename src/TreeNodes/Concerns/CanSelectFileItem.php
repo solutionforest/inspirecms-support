@@ -51,6 +51,7 @@ trait CanSelectFileItem
 
         if (empty($path)) {
             $this->selectedFileItemForm->fill([]);
+
             return;
         }
 
