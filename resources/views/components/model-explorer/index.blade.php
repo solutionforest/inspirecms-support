@@ -15,6 +15,7 @@
             await this.fetchNodes(key, currDepth + 1);
         },
         selectItem(key) {            
+            this.isExpandedSidebar = false
             Livewire.dispatch('selectItem', [key])
         },
         isExpanded(key) {
@@ -28,10 +29,9 @@
         },
         init() {
             //
-            console.log('Model Explorer Initialized', this.expandedItems);
         }
     }">
-        <ul>
+        <ul class="flex flex-col gap-y-1">
             @foreach ($items as $item)
                 <x-inspirecms-support::model-explorer.item  
                     :item="$item" 

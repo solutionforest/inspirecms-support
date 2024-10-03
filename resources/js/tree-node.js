@@ -11,7 +11,6 @@ document.addEventListener('alpine:init', () => {
             const sidebar = document.querySelector('.tree-node-sidebar');
 
             if (!resizer || !sidebar) {
-                console.error('Resizer or sidebar element not found');
                 return;
             }
 

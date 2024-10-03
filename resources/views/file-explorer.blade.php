@@ -17,6 +17,7 @@
                     this.expandedItems.push(key);
                 }
 
+                this.isExpandedSidebar = false
                 await this.fetchNodes(key, currDepth + 1);
             },
             isExpanded(key) {

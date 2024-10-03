@@ -15,6 +15,8 @@ trait HasModelItems
 
     protected ?Closure $determineRecordHasChildrenUsing = null;
 
+    protected ?Closure $resolveRecordUsing = null;
+
     public function getRootItems()
     {
         $query = $this->getModelExplorerQuery();
@@ -95,6 +97,13 @@ trait HasModelItems
         return $this;
     }
 
+    public function resolveRecordUsing(Closure $callback): static
+    {
+        $this->resolveRecordUsing = $callback;
+
+        return $this;
+    }
+
     public function getRecordsFrom(string | int | null $parentKey): Collection
     {
         return $parentKey === null ? $this->getRootItems() : $this->getChildren($parentKey);
@@ -102,7 +111,14 @@ trait HasModelItems
 
     public function findRecord(string | int $key): ?Model
     {
-        return $this->getModelExplorerQuery()->find($key);
+        $query = $this->getModelExplorerQuery();
+        if ($this->resolveRecordUsing) {
+            return $this->evaluate($this->resolveRecordUsing, [
+                'key' => $key,
+                'query' => $query,
+            ]);
+        }
+        return $query->find($key);
     }
 
     /**
