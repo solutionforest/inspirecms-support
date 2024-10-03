@@ -9,9 +9,9 @@ use SolutionForest\InspireCms\Support\TreeNodes\ModelExplorer\Concerns;
 class ModelExplorer extends ViewComponent
 {
     use Concerns\BelongsToLivewire;
+    use Concerns\HasActions;
     use Concerns\HasModelItems;
     use Concerns\ModelExplorerBase;
-    use Concerns\HasActions;
 
     /**
      * @var view-string

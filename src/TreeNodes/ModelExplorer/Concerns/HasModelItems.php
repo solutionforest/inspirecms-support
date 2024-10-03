@@ -118,6 +118,7 @@ trait HasModelItems
                 'query' => $query,
             ]);
         }
+
         return $query->find($key);
     }
 

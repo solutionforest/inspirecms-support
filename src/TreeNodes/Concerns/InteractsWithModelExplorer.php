@@ -53,7 +53,7 @@ trait InteractsWithModelExplorer
         return null;
     }
 
-    protected function configureSelectedModelItemFormAction(Action|ActionGroup $action): void
+    protected function configureSelectedModelItemFormAction(Action | ActionGroup $action): void
     {
         //
     }
