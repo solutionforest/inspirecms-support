@@ -3,11 +3,9 @@
     {{ $attributes->merge([
         'class' => 'tree-node-layout flex min-h-screen',
     ]) }}
-    x-ignore
-    ax-load
     x-load-css="[@js(\Filament\Support\Facades\FilamentAsset::getStyleHref('tree-node', 'solution-forest/inspirecms-support'))]"
-    ax-load-src="{{ \Filament\Support\Facades\FilamentAsset::getAlpineComponentSrc('tree-node', 'solution-forest/inspirecms-support') }}"
-    x-data="treeNodeComponent()"
+    x-data="{}"
+    x-load-js="[@js(\Filament\Support\Facades\FilamentAsset::getScriptSrc('tree-node', 'solution-forest/inspirecms-support'))]"
 >
     <x-inspirecms-support::tree-node.side-bar>
         {{ $slot }}

@@ -10,8 +10,8 @@ class ModelExplorer extends ViewComponent
 {
     use Concerns\BelongsToLivewire;
     use Concerns\HasModelItems;
-    use Concerns\HasSelectedItemForm;
     use Concerns\ModelExplorerBase;
+    use Concerns\HasActions;
 
     /**
      * @var view-string

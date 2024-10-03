@@ -1,11 +1,12 @@
-export default function treeNodeComponent() {
-    return {
+document.addEventListener('alpine:init', () => {
+
+    window.Alpine.store('treeNodeSidebar', {
         isResizing: false,
         startX: 0,
         startWidth: 0,
 
         init() {
-            
+
             const resizer = document.querySelector('.tree-node-resizer');
             const sidebar = document.querySelector('.tree-node-sidebar');
 
@@ -36,6 +37,6 @@ export default function treeNodeComponent() {
             resizer.addEventListener('mousedown', startResize);
             document.addEventListener('mousemove', resize);
             document.addEventListener('mouseup', stopResize);
-        }
-    }
-}
+        },
+    })
+})

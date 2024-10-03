@@ -2,20 +2,11 @@
 
 namespace SolutionForest\InspireCms\Support\TreeNodes\Concerns;
 
-use Filament\Actions\Action;
-use Filament\Forms;
-use Filament\Forms\Form;
 use Illuminate\Database\Eloquent\Model;
 use Livewire\Attributes\On;
-use Nette\NotImplementedException;
 
-/**
- * @property Form $selectedModelItemForm
- */
 trait CanSelectModeltem
 {
-    public array $modelExplorerSelectedItemData = [];
-
     public array $cachedModelExplorerItems = [];
 
     public string | int $selectedModelItemKey = '';
@@ -40,14 +31,9 @@ trait CanSelectModeltem
     #[On('selectItem')]
     public function selectModelExplorerNode(string | int $nodeKey)
     {
-        $this->selectedModelItemKey = $nodeKey;
+        $this->selectedModelItem($nodeKey);
 
         $this->refreshSelectedModelItem($nodeKey);
-    }
-
-    protected function mutateFileExplorerSelectedItemDataToFill(?Model $record): array
-    {
-        return $record?->attributesToArray() ?? [];
     }
 
     protected function resolveSelectedModelItem(string | int $key): Model
@@ -57,11 +43,20 @@ trait CanSelectModeltem
 
     protected function refreshSelectedModelItem(string | int $key): void
     {
-        $this->selectedModelItem = $this->resolveSelectedModelItem($key);
+        //
+    }
 
-        $this->selectedModelItemForm->model($this->selectedModelItem);
+    public function selectedModelItem(int | string | Model $record): static
+    {
+        if ($record instanceof Model) {
+            $this->selectedModelItem = $record;
+            $this->selectedModelItemKey = $record->getKey();
+        } else {
+            $this->selectedModelItemKey = $record;
+            $this->selectedModelItem = $this->resolveSelectedModelItem($record);
+        }
 
-        $this->selectedModelItemForm->fill($this->mutateFileExplorerSelectedItemDataToFill($this->selectedModelItem));
+        return $this;
     }
 
     public function getSelectedModelItem(): ?Model
@@ -95,49 +90,5 @@ trait CanSelectModeltem
         }
 
         return $nodes;
-    }
-
-    public function getSelectedModelItemForm(): Form
-    {
-        if ((! $this->isCachingForms) && $this->hasCachedForm('selectedModelItemForm')) {
-            return $this->getForm('selectedModelItemForm');
-        }
-
-        return $this->selectedModelItemForm(
-            $this
-                ->makeForm()
-                ->schema($this->getSelectedModelItemFormSchema())
-        )->statePath('modelExplorerSelectedItemData');
-    }
-
-    protected function getSelectedModelItemFormSchema(): array
-    {
-        if ($schema = $this->getModelExplorer()->getSelectedModelItemFormSchema()) {
-            return $schema;
-        }
-
-        return [
-            Forms\Components\TextInput::make('id')->readOnly(),
-        ];
-    }
-
-    public function selectedModelItemForm(Form $form): Form
-    {
-        return $form;
-    }
-
-    public function getSelectedModelItemFormActions(): array
-    {
-        return $this->getModelExplorer()->getSelectedModelItemFormActions();
-    }
-
-    protected function configureSelectedModelItemFormAction(Action $action): void
-    {
-        //
-    }
-
-    public function saveSelectedModelItem()
-    {
-        throw new NotImplementedException('Please implement your ' . __FUNCTION__ . ' function.');
     }
 }
