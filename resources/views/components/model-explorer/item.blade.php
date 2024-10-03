@@ -24,6 +24,10 @@
             @if ($hasChildren)
                 <x-icon x-cloak x-show="isExpanded('{{ $nodeKey }}')" name="heroicon-o-chevron-down" class="w-4 h-4 text-gray-400 dark:text-gray-500" />
                 <x-icon x-show="!isExpanded('{{ $nodeKey }}')" name="heroicon-o-chevron-right" class="w-4 h-4 text-gray-400 dark:text-gray-500" />
+            @else
+                @if (filled($item['icon'] ?? null))
+                    <x-icon :name="$item['icon']" class="w-4 h-4 text-gray-400 dark:text-gray-500" />
+                @endif
             @endif
         </span>
         <span class="flex-1 truncate text-sm font-medium text-gray-700 dark:text-gray-200"

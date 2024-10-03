@@ -138,6 +138,7 @@ trait HasModelItems
                     'record' => $record,
                 ]),
                 'depth' => $depth,
+                'icon' => null,
             ];
         });
     }

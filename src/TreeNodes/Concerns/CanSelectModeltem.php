@@ -19,9 +19,16 @@ trait CanSelectModeltem
         if (isset($this->cachedModelExplorerItems[$parentKey])) {
             $items = $this->cachedModelExplorerItems[$parentKey];
         } else {
-            $records = $this->getModelExplorer()->getRecordsFrom($parentKey);
 
-            $items = $this->getModelExplorer()->parseAsItems($records, $depth)->toArray();
+            $modelExplorer = $this->getModelExplorer();
+
+            $records = $modelExplorer->getRecordsFrom($parentKey);
+
+            $items = $modelExplorer->parseAsItems($records, $depth)->toArray();
+
+            if ($parentKey === $modelExplorer->getRootLevelKey()) {
+                $items = $this->mutuateRootNode($items);
+            }
 
             $this->cachedModelExplorerItems[$parentKey] = $items;
 
@@ -29,31 +36,37 @@ trait CanSelectModeltem
     }
 
     #[On('selectItem')]
-    public function selectModelExplorerNode(string | int $nodeKey)
+    public function selectModelExplorerNode(string | int | null $nodeKey)
     {
         $this->selectedModelItem($nodeKey);
 
         $this->refreshSelectedModelItem($nodeKey);
     }
 
-    protected function resolveSelectedModelItem(string | int $key): Model
+    protected function resolveSelectedModelItem(string | int $key): ?Model
     {
         return $this->getModelExplorer()->findRecord($key);
     }
 
-    protected function refreshSelectedModelItem(string | int $key): void
+    protected function refreshSelectedModelItem(string | int | null $key): void
     {
         //
     }
 
-    public function selectedModelItem(int | string | Model $record): static
+    public function selectedModelItem(int | string | Model | null $record): static
     {
+        if (is_null($record)) {
+            $this->selectedModelItemKey = '';
+            $this->selectedModelItem = null;
+
+            return $this;
+        }
         if ($record instanceof Model) {
             $this->selectedModelItem = $record;
             $this->selectedModelItemKey = $record->getKey();
         } else {
-            $this->selectedModelItemKey = $record;
             $this->selectedModelItem = $this->resolveSelectedModelItem($record);
+            $this->selectedModelItemKey = $this->selectedModelItem?->getKey() ?? '';
         }
 
         return $this;
@@ -89,6 +102,11 @@ trait CanSelectModeltem
 
         }
 
+        return $nodes;
+    }
+
+    protected function mutuateRootNode(array $nodes): array
+    {
         return $nodes;
     }
 }

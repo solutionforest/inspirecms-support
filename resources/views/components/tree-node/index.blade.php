@@ -7,7 +7,7 @@
 >
     <div 
         x-data="{ isExpandedSidebar: false }"
-        class="md:hidden"
+        class="lg:hidden"
     >
         <x-filament::icon-button
             color="gray"
@@ -26,12 +26,12 @@
         </div>
     </div>
 
-    <x-inspirecms-support::tree-node.side-bar class="hidden md:block">
+    <x-inspirecms-support::tree-node.side-bar class="hidden lg:block">
         {{ $slot }}
     </x-inspirecms-support::tree-node.side-bar>
 
     <div 
-        class="tree-node-resizer hidden md:block bg-gray-200 hover:bg-gray-300 active:bg-gray-400"
+        class="tree-node-resizer hidden lg:block bg-gray-200 hover:bg-gray-300 active:bg-gray-400"
     ></div>
     
     <div class="tree-node-main flex-grow overflow-auto p-4">
