@@ -27,7 +27,7 @@ trait CanSelectModeltem
             $items = $modelExplorer->parseAsItems($records, $depth)->toArray();
 
             if ($parentKey === $modelExplorer->getRootLevelKey()) {
-                $items = $this->mutuateRootNode($items);
+                $items = $modelExplorer->mutuateRootNodeItems($items);
             }
 
             $this->cachedModelExplorerItems[$parentKey] = $items;
@@ -102,11 +102,6 @@ trait CanSelectModeltem
 
         }
 
-        return $nodes;
-    }
-
-    protected function mutuateRootNode(array $nodes): array
-    {
         return $nodes;
     }
 }

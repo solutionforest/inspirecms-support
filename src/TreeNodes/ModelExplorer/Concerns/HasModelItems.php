@@ -17,6 +17,10 @@ trait HasModelItems
 
     protected ?Closure $resolveRecordUsing = null;
 
+    protected ?Closure $mutuateRootNodeItemsUsing = null;
+
+    protected ?Closure $mutuateNodeItemsUsing = null;
+
     public function getRootItems()
     {
         $query = $this->getModelExplorerQuery();
@@ -104,9 +108,34 @@ trait HasModelItems
         return $this;
     }
 
+    public function mutuateRootNodeItemsUsing(Closure $callback): static
+    {
+        $this->mutuateRootNodeItemsUsing = $callback;
+
+        return $this;
+    }
+
+    public function mutuateNodeItemsUsing(Closure $callback): static
+    {
+        $this->mutuateNodeItemsUsing = $callback;
+
+        return $this;
+    }
+
     public function getRecordsFrom(string | int | null $parentKey): Collection
     {
         return $parentKey === null ? $this->getRootItems() : $this->getChildren($parentKey);
+    }
+
+    public function mutuateRootNodeItems(array $items): array
+    {
+        if ($this->mutuateRootNodeItemsUsing) {
+            return $this->evaluate($this->mutuateRootNodeItemsUsing, [
+                'items' => $items,
+            ]);
+        }
+
+        return $items;
     }
 
     public function findRecord(string | int $key): ?Model
@@ -128,7 +157,7 @@ trait HasModelItems
     public function parseAsItems($records, int $depth = 0): Collection
     {
         return collect($records)->map(function ($record) use ($depth): array {
-            return [
+            $item = [
                 'key' => $record->getKey(),
                 'parentKey' => $record->{$this->getParentColumnName()},
                 'label' => $this->evaluate($this->determineRecordLabelUsing, [
@@ -139,7 +168,17 @@ trait HasModelItems
                 ]),
                 'depth' => $depth,
                 'icon' => null,
+                'link' => null,
             ];
+
+            if ($this->mutuateNodeItemsUsing) {
+                $item = $this->evaluate($this->mutuateNodeItemsUsing, [
+                    'item' => $item,
+                    'record' => $record,
+                ]);
+            }
+
+            return $item;
         });
     }
 }

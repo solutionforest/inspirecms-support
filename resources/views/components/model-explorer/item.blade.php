@@ -30,11 +30,20 @@
                 @endif
             @endif
         </span>
-        <span class="flex-1 truncate text-sm font-medium text-gray-700 dark:text-gray-200"
-            x-on:click="selectItem('{{ $nodeKey }}')"
-        >
-            {{ $item['label'] ?? null }}
-        </span>
+        @if (filled($item['link'] ?? null))
+            <a href="{{ $item['link'] }}" class="flex-1 truncate text-sm font-medium text-gray-700 dark:text-gray-200"
+                x-on:click="selectItem('{{ $nodeKey }}')"
+            >
+                {{ $item['label'] ?? null }}
+            </a>
+            
+        @else
+            <span class="flex-1 truncate text-sm font-medium text-gray-700 dark:text-gray-200"
+                x-on:click="selectItem('{{ $nodeKey }}')"
+            >
+                {{ $item['label'] ?? null }}
+            </span>
+        @endif
         @if (count($actions))
             <div>
                 <x-filament-actions::group
