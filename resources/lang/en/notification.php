@@ -11,7 +11,7 @@ return [
     ],
     'loading_children_failed' => [
         'title' => 'Oops! Folder Trouble',
-        'body' => 'We couldn\'t open this folder for you. It might be empty, or you might not have permission to view its contents.',
+        'body' => 'We couldn\'t open this folder for you. It might be empty, or you might not have permission to view its content.',
     ],
     'model_load_failed' => [
         'title' => 'Model Load Error',
