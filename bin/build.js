@@ -42,9 +42,3 @@ const defaultOptions = {
         }
     }],
 }
-
-compile({
-    ...defaultOptions,
-    entryPoints: ['./resources/js/tree-node.js'],
-    outfile: './resources/dist/tree-node.js',
-})

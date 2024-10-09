@@ -41,7 +41,6 @@
             @endforeach
         </ul>
     </div>
-
     <x-slot:mainViewContent>
         {{ $slot }}
     </x-slot:mainViewContent>

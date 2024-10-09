@@ -3,7 +3,6 @@
 namespace SolutionForest\InspireCms\Support;
 
 use Filament\Support\Assets\Css;
-use Filament\Support\Assets\Js;
 use Filament\Support\Facades\FilamentAsset;
 use Livewire\Features\SupportTesting\Testable;
 use Livewire\Livewire;
@@ -56,8 +55,7 @@ class InspireCmsSupportServiceProvider extends PackageServiceProvider
 
         // Asset Registration
         FilamentAsset::register([
-            Js::make('tree-node', __DIR__ . '/../resources/dist/tree-node.js'),
-            Css::make('tree-node', __DIR__ . '/../resources/dist/tree-node.css')->loadedOnRequest(),
+            Css::make('tree-node', __DIR__ . '/../resources/dist/tree-node.css'),
         ], 'solution-forest/inspirecms-support');
 
         // Testing
