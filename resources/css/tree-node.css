@@ -50,12 +50,6 @@
 
 :is(.dark *) {
     ::-webkit-scrollbar-track {
-        background: #2d3748;
+        background: #4e4e4e;
     }
-    /* ::-webkit-scrollbar-thumb {
-        background: #7a7a7a;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-        background: #8b8b8b;
-    } */
 }
