@@ -4,8 +4,8 @@ namespace SolutionForest\InspireCms\Support\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
 use SolutionForest\InspireCms\Helpers\KeyHelper;
+use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
 use SolutionForest\InspireCms\Support\Facades\MediaLibraryManifest;
 use SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset as MediaAssetContract;
 use Spatie\Image\Enums\Fit;

@@ -46,7 +46,7 @@ class InspireCmsSupportServiceProvider extends PackageServiceProvider
         }
     }
 
-    public function packageRegistered(): void 
+    public function packageRegistered(): void
     {
         $this->app->singleton(MediaLibraryManifestInterface::class, fn () => $this->app->make(MediaLibraryManifest::class));
     }

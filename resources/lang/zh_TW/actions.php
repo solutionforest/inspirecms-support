@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 return [
 
@@ -13,5 +13,5 @@ return [
         'label' => '選擇',
 
     ],
-    
+
 ];
