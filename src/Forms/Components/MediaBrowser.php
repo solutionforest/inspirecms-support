@@ -9,7 +9,7 @@ class MediaBrowser extends Field
     /**
      * @var view-string
      */
-    protected string $view = 'inspirecms::forms.components.media-picker.browser';
+    protected string $view = 'inspirecms-support::forms.components.media-picker.browser';
 
     protected array $mimeTypes = ['*'];
 

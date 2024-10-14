@@ -57,7 +57,7 @@
                         class="media-library__form__actions__button"
                         size="md" 
                         type="submit"
-                        x-bind:disabled="isProcessing"
+                        x-bind:disabled="isProcessing == true"
                         x-bind:class="{ 'opacity-70 cursor-wait': isProcessing }"
                     >
                         Upload
