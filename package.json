@@ -2,9 +2,11 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "dev:styles": "npx tailwindcss -i resources/css/tree-node.css -o resources/dist/tree-node.css --postcss --watch",
+        "dev:tree-styles": "npx tailwindcss -i resources/css/tree-node.css -o resources/dist/tree-node.css --postcss --watch",
+        "dev:media-styles": "npx tailwindcss -i resources/css/media-library.css -o resources/dist/media-library.css --postcss --watch",
         "dev:scripts": "node bin/build.js --dev",
-        "build:styles": "postcss resources/css/tree-node.css -o resources/dist/tree-node.css",
+        "build:tree-styles": "postcss resources/css/tree-node.css -o resources/dist/tree-node.css",
+        "build:media-styles": "postcss resources/css/media-library.css -o resources/dist/media-library.css",
         "build:scripts": "node bin/build.js",
         "dev": "npm-run-all --parallel dev:*",
         "build": "npm-run-all build:*"
