@@ -6,7 +6,7 @@ use Filament\Support\Assets\Css;
 use Filament\Support\Facades\FilamentAsset;
 use Livewire\Features\SupportTesting\Testable;
 use Livewire\Livewire;
-use SolutionForest\InspireCms\Support\Testing\TestsFilamentTreeNode;
+use SolutionForest\InspireCms\Support\Testing\TestsInspireCmsSupport;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
@@ -31,12 +31,6 @@ class InspireCmsSupportServiceProvider extends PackageServiceProvider
                     ->askToStarRepoOnGitHub('solutionforest/inspirecms-support');
             });
 
-        $configFileName = $package->shortName();
-
-        if (file_exists($package->basePath("/../config/{$configFileName}.php"))) {
-            $package->hasConfigFile();
-        }
-
         if (file_exists($package->basePath('/../resources/lang'))) {
             $package->hasTranslations();
         }
@@ -59,6 +53,6 @@ class InspireCmsSupportServiceProvider extends PackageServiceProvider
         ], 'solution-forest/inspirecms-support');
 
         // Testing
-        Testable::mixin(new TestsFilamentTreeNode);
+        Testable::mixin(new TestsInspireCmsSupport);
     }
 }
