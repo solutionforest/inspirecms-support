@@ -31,7 +31,7 @@ trait HasAuthor
         if (! in_array(\SolutionForest\InspireCms\Support\Resolver\UserResolverInterface::class, class_implements($resolver))) {
             throw new \Exception('User resolver must implement UserResolverInterface');
         }
-        
+
         return $resolver::resolve();
     }
 }
