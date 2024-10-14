@@ -6,8 +6,7 @@ use Filament\Support\Assets\Css;
 use Filament\Support\Facades\FilamentAsset;
 use Livewire\Features\SupportTesting\Testable;
 use Livewire\Livewire;
-use SolutionForest\InspireCms\Support\Base\Manifests\MediaLibraryManifest;
-use SolutionForest\InspireCms\Support\Base\Manifests\MediaLibraryManifestInterface;
+use SolutionForest\InspireCms\Support\Base\Manifests;
 use SolutionForest\InspireCms\Support\Testing\TestsInspireCmsSupport;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
@@ -48,7 +47,8 @@ class InspireCmsSupportServiceProvider extends PackageServiceProvider
 
     public function packageRegistered(): void
     {
-        $this->app->singleton(MediaLibraryManifestInterface::class, fn () => $this->app->make(MediaLibraryManifest::class));
+        $this->app->singleton(Manifests\MediaLibraryManifestInterface::class, fn () => $this->app->make(Manifests\MediaLibraryManifest::class));
+        $this->app->singleton(Manifests\ResolverManifestInterface::class, fn () => $this->app->make(Manifests\ResolverManifest::class));
     }
 
     public function packageBooted(): void

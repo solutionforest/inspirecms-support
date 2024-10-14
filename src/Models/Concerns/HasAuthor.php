@@ -2,6 +2,8 @@
 
 namespace SolutionForest\InspireCms\Support\Models\Concerns;
 
+use SolutionForest\InspireCms\Support\Facades\ResolverManifest;
+
 trait HasAuthor
 {
     public static function bootHasAuthor()
@@ -24,8 +26,12 @@ trait HasAuthor
 
     protected function resolveAuthor()
     {
-        $resolver = config('inspirecms.resolvers.user', \SolutionForest\InspireCms\Resolver\UserResolver::class);
+        $resolver = ResolverManifest::get('user');
 
+        if (! in_array(\SolutionForest\InspireCms\Support\Resolver\UserResolverInterface::class, class_implements($resolver))) {
+            throw new \Exception('User resolver must implement UserResolverInterface');
+        }
+        
         return $resolver::resolve();
     }
 }
