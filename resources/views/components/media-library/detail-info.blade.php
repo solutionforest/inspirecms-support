@@ -8,7 +8,7 @@
             @if ($mediaItem->isImage())
                 <img src="{{ $mediaItem->getUrl() }}" alt="{{ $mediaItem->title }}" />
             @else
-                <x-icon :name="$mediaItem->getThumbnail()" class="media-library__item_detail__content__icon" />
+                <x-inspirecms-support::media-library.thumbnail-icon :icon="$mediaItem->getThumbnail()" class="media-library__item_detail__content__icon" />
             @endif
         </div>
         <div class="media-library__item_detail__content__details">
@@ -18,43 +18,39 @@
             <div class="media-library__item_detail__content__details__meta">
                 @php
                     $selectedMediaItem = $mediaItem->getFirstMedia();
+                    $columns = [
+                        'mime_type' => [
+                            'label' => trans('inspirecms-support::media-library.detail_info.mime_type.label'),
+                            'fallback' => '',
+                        ],
+                        'size' => [
+                            'label' => trans('inspirecms-support::media-library.detail_info.size.label'),
+                            'fallback' => '',
+                        ],
+                        'disk' => [
+                            'label' => trans('inspirecms-support::media-library.detail_info.disk.label'),
+                            'fallback' => '',
+                        ],
+                        'created_at' => [
+                            'label' => trans('inspirecms-support::media-library.detail_info.created_at.label'),
+                            'fallback' => trans('inspirecms-support::media-library.detail_info.created_at.empty'),
+                        ],
+                        'updated_at' => [
+                            'label' => trans('inspirecms-support::media-library.detail_info.updated_at.label'),
+                            'fallback' => trans('inspirecms-support::media-library.detail_info.updated_at.empty'),
+                        ],
+                    ];
                 @endphp
                 @if ($selectedMediaItem)
                     <x-filament::grid default="3">
-                        <x-filament::grid.column default="1">
-                            <span>Mime type</span>
-                        </x-filament::grid.column>
-                        <x-filament::grid.column default="2">
-                            <span>{{ $selectedMediaItem->mime_type }}</span>
-                        </x-filament::grid.column>
-
-                        <x-filament::grid.column default="1">
-                            <span>Size</span>
-                        </x-filament::grid.column>
-                        <x-filament::grid.column default="2">
-                            <span>{{ $selectedMediaItem->size }}</span>
-                        </x-filament::grid.column>
-
-                        <x-filament::grid.column default="1">
-                            <span>Disk</span>
-                        </x-filament::grid.column>
-                        <x-filament::grid.column default="2">
-                            <span>{{ $selectedMediaItem->disk }}</span>
-                        </x-filament::grid.column>
-                        
-                        <x-filament::grid.column default="1">
-                            <span>Create at</span>
-                        </x-filament::grid.column>
-                        <x-filament::grid.column default="2">
-                            <span>{{ $selectedMediaItem->created_at }}</span>
-                        </x-filament::grid.column>
-                        
-                        <x-filament::grid.column default="1">
-                            <span>Update at</span>
-                        </x-filament::grid.column>
-                        <x-filament::grid.column default="2">
-                            <span>{{ $selectedMediaItem->updated_at }}</span>
-                        </x-filament::grid.column>
+                        @foreach ($columns as $key => $arr)
+                            <x-filament::grid.column default="1">
+                                <span>{{ $arr['label'] }}</span>
+                            </x-filament::grid.column>
+                            <x-filament::grid.column default="2">
+                                <span>{{ $selectedMediaItem?->{$key} ?? $arr['fallback'] }}</span>
+                            </x-filament::grid.column>
+                        @endforeach
                     </x-filament::grid>
                 @endif
             </div>
@@ -68,7 +64,7 @@
                 href="{{ $selectedMediaUrl }}"
                 color="gray"
             >
-                View
+                {{ trans('inspirecms-support::media-library.actions.view.label') }}
             </x-filament::button>
         @endif
         @if ($mediaItem->isFolder())
@@ -76,14 +72,14 @@
                 wire:click="openFolder"
                 color="gray"
             >
-                Open Folder
+                {{ trans('inspirecms-support::media-library.actions.open_folder.label') }}
             </x-filament::button>
         @endif
         <x-filament::button
             wire:click="deleteMedia"
             color="danger"
         >
-            Delete
+            {{ trans('inspirecms-support::media-library.actions.delete.label') }}
         </x-filament::button>
     </div>
 </div>

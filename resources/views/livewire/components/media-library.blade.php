@@ -35,7 +35,7 @@
             size="md" 
             wire:click="mountAction('createFolder')"
         >
-            Create Folder
+            {{ trans('inspirecms-support::media-library.actions.create_folder.label') }}
         </x-filament::button>
     </div>
 
@@ -60,7 +60,7 @@
                         x-bind:disabled="isProcessing == true"
                         x-bind:class="{ 'opacity-70 cursor-wait': isProcessing }"
                     >
-                        Upload
+                        {{ trans('inspirecms-support::media-library.actions.upload.label') }}
                     </x-filament::button>
                 </div>
             </div>
