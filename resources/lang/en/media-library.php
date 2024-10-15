@@ -1,21 +1,21 @@
-<?php 
+<?php
 
 return [
     'actions' => [
         'view' => [
-            'label' => 'View'
+            'label' => 'View',
         ],
         'delete' => [
-            'label' => 'Delete'
+            'label' => 'Delete',
         ],
         'open_folder' => [
-            'label' => 'Open Folder'
+            'label' => 'Open Folder',
         ],
         'create_folder' => [
-            'label' => 'Create Folder'
+            'label' => 'Create Folder',
         ],
         'upload' => [
-            'label' => 'Upload'
+            'label' => 'Upload',
         ],
     ],
     'detail_info' => [
@@ -30,11 +30,11 @@ return [
         ],
         'created_at' => [
             'label' => 'Created At',
-            'empty' => 'Never'
+            'empty' => 'Never',
         ],
         'updated_at' => [
             'label' => 'Updated At',
-            'empty' => 'Never'
+            'empty' => 'Never',
         ],
-    ]
+    ],
 ];

@@ -63,7 +63,7 @@ class MediaAsset extends BaseModel implements MediaAssetContract
         }
 
         $media = $this->getFirstMedia();
-        $extension = filled($media?->file_name) ? (string)str($media->file_name)->afterLast('.') : null;
+        $extension = filled($media?->file_name) ? (string) str($media->file_name)->afterLast('.') : null;
 
         // Check by mime type
         $mime = $media?->mime_type;
