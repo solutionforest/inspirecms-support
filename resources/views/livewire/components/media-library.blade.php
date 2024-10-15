@@ -68,12 +68,12 @@
     </div>
 
     <template x-if="isSelectMultiple && selectedMediaId?.length > 0">
-        <div class="my-5">
+        <div>
             <span x-text="selectedMediaId?.length"></span> files selected
         </div>
     </template>
 
-    <div class="media-library__breadcrumbs my-5 p-2">
+    <div class="media-library__breadcrumbs">
         <x-inspirecms-support::media-library.breadcrumbs :breadcrumbs="$this->getBreadcrumbs()" />
     </div>
 
@@ -90,9 +90,7 @@
                     <div class="media-library__content__items__item gap-3">
                         <div @class([
                                 'media-library__content__items__item__thumb',
-                                // 'rounded-md h-36 w-36 transition duration-300 ease-in-out',
-                                // 'hover:ring-1 hover:shadow-lg hover:ring-gray-200/100 hover:dark:ring-gray-400/100',
-                                'ring-1 ring-primary-200/50 dark:ring-primary-300/50 flex justify-center items-center' => ! $mediaItem->isImage(),
+                                'image-item' => ! $mediaItem->isImage(),
                             ])
                             @style([
                                 \Filament\Support\get_color_css_variables('primary', [200, 300, 400, 500]),

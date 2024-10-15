@@ -1,18 +1,14 @@
 @props(['mediaItem'])
-<div @class([
-    'media-library__item_detail', 
-    'flex flex-col gap-2',
-    'border border-gray-200 dark:border-gray-400 rounded-md bg-gray-100 dark:bg-gray-800',
-])>
+<div class="media-library__item_detail">
     @php
         $selectedMediaUrl = $mediaItem->getUrl();
     @endphp
-    <div class="media-library__item_detail__content flex flex-1 flex-col gap-3 p-4">
-        <div class="media-library__item_detail__thumb flex flex-col justify-center items-center">
+    <div class="media-library__item_detail__content p-4">
+        <div class="media-library__item_detail__thumb">
             @if ($mediaItem->isImage())
-                <img src="{{ $mediaItem->getUrl() }}" alt="{{ $mediaItem->title }}" class="object-cover rounded-md w-64 h-64" />
+                <img src="{{ $mediaItem->getUrl() }}" alt="{{ $mediaItem->title }}" />
             @else
-                <x-icon :name="$mediaItem->getThumbnail()" class="media-library__item_detail__content__icon w-8 h-8" />
+                <x-icon :name="$mediaItem->getThumbnail()" class="media-library__item_detail__content__icon" />
             @endif
         </div>
         <div class="media-library__item_detail__content__details">
@@ -24,7 +20,7 @@
                     $selectedMediaItem = $mediaItem->getFirstMedia();
                 @endphp
                 @if ($selectedMediaItem)
-                    <x-filament::grid default="3" class="text-sm text-thin">
+                    <x-filament::grid default="3">
                         <x-filament::grid.column default="1">
                             <span>Mime type</span>
                         </x-filament::grid.column>
@@ -64,7 +60,7 @@
             </div>
         </div>
     </div>
-    <div class="media-library__item_detail__content__actions flex gap-2 justify-center pb-4">
+    <div class="media-library__item_detail__content__actions">
         @if (filled($selectedMediaUrl))
             <x-filament::button
                 tag="a"
