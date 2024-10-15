@@ -6,6 +6,7 @@ use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
@@ -19,6 +20,7 @@ use SolutionForest\InspireCms\Support\Facades\MediaLibraryManifest;
 
 /**
  * @property Form $uploadFileForm
+ * @property Form $filterForm
  */
 class MediaLibraryComponent extends Component implements HasActions, HasForms
 {
@@ -37,6 +39,8 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
     public null | Model | array $selectedMedia = null;
 
     public ?array $uploadFileData = [];
+
+    public ?array $filterData = [];
 
     public array $modelableConfig = [];
 
@@ -134,6 +138,22 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
             ->statePath($this->getFormStatePathFor('uploadFileForm'));
     }
 
+    public function filterForm(Form $form): Form
+    {
+        return $form
+            ->schema([
+                TextInput::make('title')
+                    ->label('Title')
+                    ->placeholder('Search by title')
+                    ->live(true),
+                TagsInput::make('mime_type')
+                    ->label('Mime Type')
+                    ->placeholder('Search by mime type')
+                    ->live(true),
+            ])
+            ->statePath($this->getFormStatePathFor('filterForm'));
+    }
+
     public function saveUploadFile()
     {
         $files = $this->uploadFileData['files'] ?? [];
@@ -174,6 +194,7 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
     {
         return match ($formName) {
             'uploadFileForm' => 'uploadFileData',
+            'filterForm' => 'filter',
             default => $this->getFormStatePath(),
         };
     }
@@ -182,12 +203,14 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
     {
         return [
             'uploadFileForm',
+            'filterForm',
         ];
     }
 
     protected function fillForm(): void
     {
         $this->uploadFileForm->fill();
+        $this->filterForm->fill($this->filter ?? []);
     }
     //endregion Form
 
@@ -225,9 +248,15 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
                                     }
 
                                     break;
+                                case 'title':
+                                    if (! is_null($value)) {
+                                        $query->where('title', 'like', "%$value%");
+                                    }
+                                    break;
                                 default:
-                                    $query->where($key, $value);
-
+                                    if (!is_null($value)) {
+                                        $query->where($key, $value);
+                                    }
                                     break;
                             }
                         }

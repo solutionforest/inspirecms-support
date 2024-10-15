@@ -53,6 +53,15 @@
             {{ $this->uploadFileForm }}
         </x-inspirecms-support::media-library.upload-form>
     </div>
+    
+    <div class="filterform-container pb-2">
+        <form 
+            method="post"
+            id="filterForm"
+        >
+            {{ $this->filterForm }}
+        </form>
+    </div>
 
     <template x-if="isSelectMultiple && selectedMediaId?.length > 0">
         <div>
