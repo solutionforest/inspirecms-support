@@ -79,7 +79,7 @@
 
     <div class="media-content-container">
         <div class="media-library__content">
-            <x-filament::grid class="media-library__content__items gap-2"
+            <x-filament::grid class="media-library__content__items"
                 :default="$this->selectedMedia ? 1 : 2"
                 2xl="9"
                 :xl="$this->selectedMedia ? 4 : 6"
@@ -87,7 +87,7 @@
                 :md="$this->selectedMedia ? 2 : 3"
             >
                 @foreach ($mediaItems as $mediaItem)
-                    <div class="media-library__content__items__item gap-3">
+                    <div class="media-library__content__items__item">
                         <div @class([
                                 'media-library__content__items__item__thumb',
                                 'image-item' => ! $mediaItem->isImage(),
@@ -110,7 +110,7 @@
                                 />
                             @endif
                         </div>
-                        <span class="text-sm text-gray-600 dark:text-gray-400 w-full text-center truncate select-none">
+                        <span class="media-library__content__items__item__thumb__title">
                             {{ $mediaItem->title }}
                         </span>
                     </div>
