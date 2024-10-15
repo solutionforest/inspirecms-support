@@ -252,11 +252,13 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
                                     if (! is_null($value)) {
                                         $query->where('title', 'like', "%$value%");
                                     }
+
                                     break;
                                 default:
-                                    if (!is_null($value)) {
+                                    if (! is_null($value)) {
                                         $query->where($key, $value);
                                     }
+
                                     break;
                             }
                         }
