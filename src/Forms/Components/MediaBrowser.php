@@ -18,7 +18,7 @@ class MediaBrowser extends Field
 
     protected bool $multiple = false;
 
-    protected null|Closure|int|string $startNode = null;
+    protected null | Closure | int | string $startNode = null;
 
     protected function setUp(): void
     {
@@ -26,7 +26,7 @@ class MediaBrowser extends Field
 
         $this->afterStateHydrated(function (MediaBrowser $component, $state) {
             if ($component->isMultiple()) {
-                if (!is_array($state)) {
+                if (! is_array($state)) {
                     $state = empty($state) ? [] : array_filter([$state]);
                 }
             } else {
@@ -39,16 +39,17 @@ class MediaBrowser extends Field
         });
 
         $this->dehydrateStateUsing(function (MediaBrowser $component, $state) {
-            if ($state && !is_array($state)) {
+            if ($state && ! is_array($state)) {
                 $state = [$state];
             }
-            if (!empty($state)) {
+            if (! empty($state)) {
                 $state = array_filter($state);
                 $media = $component->getMediaModelQuery()->findMany($state);
 
                 // filter out folders
-                $state = $media->filter(fn ($m) => !$m->isFolder())->map(fn ($m) => $m->getKey())->toArray();
+                $state = $media->filter(fn ($m) => ! $m->isFolder())->map(fn ($m) => $m->getKey())->toArray();
             }
+
             return $state ?? [];
         });
 
@@ -63,7 +64,7 @@ class MediaBrowser extends Field
             }
 
             $media = $component->getMediaModelQuery()->find($key);
-            if (!$media) {
+            if (! $media) {
                 return null; // root
             }
 
@@ -90,7 +91,7 @@ class MediaBrowser extends Field
         return $this;
     }
 
-    public function startNode(Closure|string|int $startNode): static
+    public function startNode(Closure | string | int $startNode): static
     {
         $this->startNode = $startNode;
 
@@ -107,7 +108,7 @@ class MediaBrowser extends Field
         return $this->multiple;
     }
 
-    public function getStartNode(): null|int|string
+    public function getStartNode(): null | int | string
     {
         return $this->evaluate($this->startNode);
     }
