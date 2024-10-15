@@ -40,31 +40,9 @@
     </div>
 
     <div class="uploadform-container pb-2">
-        <form 
-            method="post"
-            x-data="{ isProcessing: false }"
-            x-on:submit="if (isProcessing) $event.preventDefault()"
-            x-on:form-processing-started="isProcessing = true"
-            x-on:form-processing-finished="isProcessing = false"
-            wire:key="{{$formKey}}"
-            wire:submit="saveUploadFile"
-        >
+        <x-inspirecms-support::media-library.upload-form :livewireKey="$formKey">
             {{ $this->uploadFileForm }}
-            
-            <div class="media-library__form__actions pt-2">
-                <div class="fi-ac gap-3 flex flex-wrap items-center flex-row-reverse">
-                    <x-filament::button 
-                        class="media-library__form__actions__button"
-                        size="md" 
-                        type="submit"
-                        x-bind:disabled="isProcessing == true"
-                        x-bind:class="{ 'opacity-70 cursor-wait': isProcessing }"
-                    >
-                        {{ trans('inspirecms-support::media-library.actions.upload.label') }}
-                    </x-filament::button>
-                </div>
-            </div>
-        </form>
+        </x-inspirecms-support::media-library.upload-form>
     </div>
 
     <template x-if="isSelectMultiple && selectedMediaId?.length > 0">
@@ -87,30 +65,7 @@
                 :md="$this->selectedMedia ? 2 : 3"
             >
                 @foreach ($mediaItems as $mediaItem)
-                    <div class="media-library__content__items__item">
-                        <div @class([
-                                'media-library__content__items__item__thumb',
-                                'image-item' => ! $mediaItem->isImage(),
-                            ])
-                            @style([
-                                \Filament\Support\get_color_css_variables('primary', [200, 300, 400, 500]),
-                            ])
-                            :class="{ 'selected': isMediaSelected('{{ $mediaItem->getKey() }}') }"
-                            @click="selectMedia('{{ $mediaItem->getKey() }}', @js($mediaItem->isFolder()))"
-                            @if ($mediaItem->isFolder())
-                                @dblclick="$wire.openFolder('{{ $mediaItem->getKey() }}')"
-                            @endif
-                        >
-                            @if ($mediaItem->isImage())
-                                <img src="{{ $mediaItem->getThumbnailUrl() }}" alt="{{ $mediaItem->title }}" />
-                            @else
-                                <x-inspirecms-support::media-library.thumbnail-icon :icon="$mediaItem->getThumbnail()" class="media-library__content__items__item__thumb__icon" />
-                            @endif
-                        </div>
-                        <span class="media-library__content__items__item__thumb__title">
-                            {{ $mediaItem->title }}
-                        </span>
-                    </div>
+                    <x-inspirecms-support::media-library.media-browser-item :mediaItem="$mediaItem" class="media-library__content__items__item" />
                 @endforeach
             </x-filament::grid>
         </div>
