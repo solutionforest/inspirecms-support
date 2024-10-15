@@ -61,19 +61,31 @@ class MediaAsset extends BaseModel implements MediaAssetContract
         if ($this->isFolder()) {
             return 'heroicon-o-folder';
         }
+
+        $media = $this->getFirstMedia();
+        $extension = filled($media?->file_name) ? (string)str($media->file_name)->afterLast('.') : null;
+
         // Check by mime type
-        $mime = $this->getFirstMedia()?->mime_type;
+        $mime = $media?->mime_type;
 
         if (blank($mime)) {
             return 'heroicon-s-x-mark';
         }
 
         if (str_starts_with($mime, 'audio/')) {
-            return 'heroicon-o-music-note';
+            return 'heroicon-o-musical-note';
         }
 
         if (str_starts_with($mime, 'video/')) {
             return 'heroicon-o-film';
+        }
+
+        if (str_starts_with($mime, 'application/pdf')) {
+            return 'inspirecms-support::pdf';
+        }
+
+        if ($extension === 'xlsx') {
+            return 'inspirecms-support::excel';
         }
 
         return 'heroicon-o-document';

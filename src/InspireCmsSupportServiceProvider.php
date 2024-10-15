@@ -4,6 +4,7 @@ namespace SolutionForest\InspireCms\Support;
 
 use Filament\Support\Assets\Css;
 use Filament\Support\Facades\FilamentAsset;
+use Filament\Support\Facades\FilamentIcon;
 use Livewire\Features\SupportTesting\Testable;
 use Livewire\Livewire;
 use SolutionForest\InspireCms\Support\Base\Manifests;
@@ -66,6 +67,11 @@ class InspireCmsSupportServiceProvider extends PackageServiceProvider
 
         // Testing
         Testable::mixin(new TestsInspireCmsSupport);
+        
+        FilamentIcon::register([
+            'inspirecms-support::pdf' => view('inspirecms-support::icons.pdf'),
+            'inspirecms-support::excel' => view('inspirecms-support::icons.excel'),
+        ]);
     }
 
     /**

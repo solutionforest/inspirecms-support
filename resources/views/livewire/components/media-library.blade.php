@@ -104,10 +104,7 @@
                             @if ($mediaItem->isImage())
                                 <img src="{{ $mediaItem->getThumbnailUrl() }}" alt="{{ $mediaItem->title }}" />
                             @else
-                                <x-filament::icon 
-                                    :icon="$mediaItem->getThumbnail()" 
-                                    class="media-library__content__items__item__thumb__icon"
-                                />
+                                <x-inspirecms-support::media-library.thumbnail-icon :icon="$mediaItem->getThumbnail()" class="media-library__content__items__item__thumb__icon" />
                             @endif
                         </div>
                         <span class="media-library__content__items__item__thumb__title">
