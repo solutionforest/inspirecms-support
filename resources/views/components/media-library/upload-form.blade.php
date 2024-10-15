@@ -1,10 +1,13 @@
 @props(['livewireKey'])
 <form 
     method="post"
-    x-data="{ isProcessing: false }"
+    x-data="{ 
+        isProcessing: false
+    }"
     x-on:submit="if (isProcessing) $event.preventDefault()"
     x-on:form-processing-started="isProcessing = true"
     x-on:form-processing-finished="isProcessing = false"
+    id="uploadFileForm"
     wire:key="{{$livewireKey}}"
     wire:submit="saveUploadFile"
 >
@@ -16,8 +19,7 @@
                 class="media-library__form__actions__button"
                 size="md" 
                 type="submit"
-                x-bind:disabled="isProcessing == true"
-                x-bind:class="{ 'opacity-70 cursor-wait': isProcessing }"
+                form="uploadFileForm"
             >
                 {{ trans('inspirecms-support::media-library.actions.upload.label') }}
             </x-filament::button>

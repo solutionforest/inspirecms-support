@@ -7,7 +7,7 @@
         @style([
             \Filament\Support\get_color_css_variables('primary', [200, 300, 400, 500]),
         ])
-        :class="{ 'selected': isMediaSelected('{{ $mediaItem->getKey() }}') }"
+        x-bind:class="{ 'selected': isMediaSelected('{{ $mediaItem->getKey() }}') }"
         @click="selectMedia('{{ $mediaItem->getKey() }}', @js($mediaItem->isFolder()))"
         @if ($mediaItem->isFolder())
             @dblclick="$wire.openFolder('{{ $mediaItem->getKey() }}')"

@@ -1,5 +1,6 @@
 @php
     $formKey = $this->getId() . '.forms.' . $this->getFormStatePathFor('uploadFileForm');
+    $modelableConfig = $this->modelableConfig;
 @endphp
 <div class="media-library gap-3" x-data="{
     selectedMediaId: $wire.entangle('selectedMediaId').live,
@@ -29,7 +30,15 @@
     init: function () {
         this.selectedMediaId = this.isSelectMultiple ? [] : null;
     },
-}" x-modelable="selectedMediaId" x-model="state">
+}" 
+    @if (!empty($modelableConfig))
+        @php
+            $modelable = array_key_first($modelableConfig);
+            $model = array_values($modelableConfig)[0] ?? null;
+        @endphp
+        x-modelable="{{ $modelable }}" x-model="{{ $model }}"
+    @endif
+>
     <div class="pb-2 flex gap-2 justify-end">
         <x-filament::button 
             size="md" 

@@ -26,7 +26,7 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
     use InteractsWithForms;
 
     #[Url(as: 'p')]
-    public string | int $parentKey;
+    public string | int | null $parentKey = null;
 
     public bool $isMultiple = false;
 
@@ -37,6 +37,8 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
     public null | Model | array $selectedMedia = null;
 
     public ?array $uploadFileData = [];
+
+    public array $modelableConfig = [];
 
     public function mount($parentKey = null)
     {
@@ -191,7 +193,6 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
 
     public function getMediaFromParent()
     {
-        // ray($this->parentKey)->label(__FUNCTION__);
         $query = $this->getEloquentQuery()
             ->with('media')
             ->parent($this->parentKey);
