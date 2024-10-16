@@ -47,7 +47,7 @@ return [
                 'heading' => '創建資料夾',
 
             ],
-            
+
             'notifications' => [
                 'created' => [
                     'title' => '資料夾已創建',
