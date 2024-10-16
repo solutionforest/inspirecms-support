@@ -10,6 +10,7 @@ use Filament\Forms\Contracts\HasForms;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Url;
 use Livewire\Component;
@@ -41,6 +42,8 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
     public ?array $filterData = [];
 
     public array $modelableConfig = [];
+
+    public array $filterFormConfig = [];
 
     public function mount($parentKey = null)
     {
@@ -139,17 +142,24 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
     public function filterForm(Form $form): Form
     {
         return $form
+            ->columns(4)
             ->schema([
                 Forms\Components\TextInput::make('title')
-                    ->label(__('inspirecms-support::media-library.filter.title.label'))
+                    ->hiddenLabel()
                     ->placeholder(__('inspirecms-support::media-library.filter.title.placeholder'))
-                    ->live(true),
+                    ->live(true)
+                    ->extraAttributes(fn (Forms\Components\Field $component) => [
+                        'class' => $this->isFilterColumnInvisible($component->getName()) ? 'hidden' : null,
+                    ]),
                 Forms\Components\Select::make('type')
-                    ->label(__('inspirecms-support::media-library.filter.type.label'))
+                    ->hiddenLabel()
                     ->placeholder(__('inspirecms-support::media-library.filter.type.placeholder'))
                     ->options(__('inspirecms-support::media-library.filter.type.options'))
                     ->multiple()
-                    ->live(true),
+                    ->live(true)
+                    ->extraAttributes(fn (Forms\Components\Field $component) => [
+                        'class' => $this->isFilterColumnInvisible($component->getName()) ? 'hidden' : null,
+                    ]),
             ])
             ->statePath($this->getFormStatePathFor('filterForm'));
     }
@@ -214,16 +224,20 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
     }
     //endregion Form
 
+    public function hasFilters(): bool
+    {
+        return collect($this->ensureFilter())
+            ->where(fn ($v, $k) => ! $this->isFilterColumnInvisible($k))
+            ->count() > 0;
+    }
+
     public function getMediaFromParent()
     {
         $query = $this->getEloquentQuery()
             ->with('media')
             ->parent($this->parentKey);
 
-        $filter = array_filter($this->filter, fn ($value): bool => 
-            (is_array($value) && !empty($value)) ||
-            (is_string($value) && strlen($value) > 0) 
-        );
+        $filter = $this->ensureFilter();
 
         if (isset($filter['title'])) {
             $query = $query->where('title', 'like', "%{$filter['title']}%");
@@ -308,6 +322,19 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
             'title' => $title,
             'is_folder' => true,
         ]);
+    }
+
+    protected function isFilterColumnInvisible(string $column): bool
+    {
+        return in_array($column, $this->filterFormConfig['invisible'] ?? []);
+    }
+
+    protected function ensureFilter(): array
+    {
+        return array_filter($this->filter, fn ($value): bool => 
+            (is_array($value) && !empty($value)) ||
+            (is_string($value) && strlen($value) > 0) 
+        );
     }
 
     protected function getEloquentQuery()

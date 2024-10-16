@@ -12,47 +12,56 @@
             @endif
         </div>
         <div class="media-library__item_detail__content__details">
-            <span class="media-library__item_detail__content__details__title">
-                {{ $mediaItem->title }}
-            </span>
             <div class="media-library__item_detail__content__details__meta">
                 @php
-                    $selectedMediaItem = $mediaItem->getFirstMedia();
-                    $columns = [
-                        'mime_type' => [
-                            'label' => trans('inspirecms-support::media-library.detail_info.mime_type.label'),
-                            'fallback' => '',
-                        ],
-                        'size' => [
-                            'label' => trans('inspirecms-support::media-library.detail_info.size.label'),
-                            'fallback' => '',
-                        ],
-                        'disk' => [
-                            'label' => trans('inspirecms-support::media-library.detail_info.disk.label'),
-                            'fallback' => '',
-                        ],
-                        'created_at' => [
-                            'label' => trans('inspirecms-support::media-library.detail_info.created_at.label'),
-                            'fallback' => trans('inspirecms-support::media-library.detail_info.created_at.empty'),
-                        ],
-                        'updated_at' => [
-                            'label' => trans('inspirecms-support::media-library.detail_info.updated_at.label'),
-                            'fallback' => trans('inspirecms-support::media-library.detail_info.updated_at.empty'),
-                        ],
-                    ];
+                    if ($mediaItem->isFolder()) {
+                        $media = null;
+                        $columns = [
+                            'title',
+                            'created_at',
+                            'updated_at',
+                            'created_by',
+                        ];
+                    } else {
+                        $media = $mediaItem->getFirstMedia();
+                        $columns = [
+                            'file_name',
+                            'mime_type',
+                            'size',
+                            'created_at',
+                            'updated_at',
+                            'uploaded_by',
+                        ];
+                    }
+                    $mediaData = collect($columns)
+                        ->map(function ($key) use ($media, $mediaItem) {
+                            $fallback = match ($key) {
+                                'created_at', 'updated_at' => trans("inspirecms-support::media-library.detail_info.{$key}.empty"),
+                                default => '',
+                            };
+                            $value = match ($key) {
+                                'size' => ($mediaItem->isFolder() ? '' : $media?->human_readable_size) ?? $fallback,
+                                'created_at', 'updated_at' => ($mediaItem->isFolder() ? $mediaItem?->{$key}->format('Y-m-d H:i:s') : $media?->{$key}->format('Y-m-d H:i:s')) ?? $fallback,
+                                'uploaded_by', 'created_by' => $mediaItem->author?->name ?? $fallback,
+                                default => ($mediaItem->isFolder() ? $mediaItem?->{$key} : $media?->{$key}) ?? $fallback,
+                            };
+                            return [
+                                'label' => trans("inspirecms-support::media-library.detail_info.{$key}.label"),
+                                'value'=> $value,
+                            ];
+                        })
+                        ->all();
                 @endphp
-                @if ($selectedMediaItem)
-                    <x-filament::grid default="3">
-                        @foreach ($columns as $key => $arr)
-                            <x-filament::grid.column default="1">
-                                <span>{{ $arr['label'] }}</span>
-                            </x-filament::grid.column>
-                            <x-filament::grid.column default="2">
-                                <span>{{ $selectedMediaItem?->{$key} ?? $arr['fallback'] }}</span>
-                            </x-filament::grid.column>
-                        @endforeach
-                    </x-filament::grid>
-                @endif
+                <x-filament::grid default="3">
+                    @foreach ($mediaData as $key => $arr)
+                        <x-filament::grid.column default="1">
+                            <span>{{ $arr['label'] }}</span>
+                        </x-filament::grid.column>
+                        <x-filament::grid.column default="2" class="">
+                            <strong>{{ $arr['value'] }}</strong>
+                        </x-filament::grid.column>
+                    @endforeach
+                </x-filament::grid>
             </div>
         </div>
     </div>

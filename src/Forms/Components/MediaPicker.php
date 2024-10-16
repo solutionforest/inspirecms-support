@@ -8,12 +8,12 @@ use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
 class MediaPicker extends Field
 {
+    use Concerns\HasMediaFilterTypes;
+
     /**
      * @var view-string
      */
     protected string $view = 'inspirecms-support::forms.components.media-picker.index';
-
-    protected array $mimeTypes = ['*'];
 
     protected bool $multiple = false;
 
@@ -42,28 +42,11 @@ class MediaPicker extends Field
         ]);
     }
 
-    public function image(): static
-    {
-        return $this->mimeTypes(['image/*']);
-    }
-
-    public function mimeTypes(array $mimeTypes): static
-    {
-        $this->mimeTypes = $mimeTypes;
-
-        return $this;
-    }
-
     public function multiple(bool $condition = true): static
     {
         $this->multiple = $condition;
 
         return $this;
-    }
-
-    public function getMimeTypes(): array
-    {
-        return $this->mimeTypes;
     }
 
     public function isMultiple(): bool
@@ -80,7 +63,7 @@ class MediaPicker extends Field
                 $select = MediaBrowser::make('records')
                     ->hiddenLabel()
                     ->multiple($this->isMultiple())
-                    ->mimeTypes($this->getMimeTypes());
+                    ->filterTypes($this->getFilterTypes());
 
                 return [$select];
             })

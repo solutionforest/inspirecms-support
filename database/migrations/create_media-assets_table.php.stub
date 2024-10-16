@@ -15,9 +15,10 @@ return new class extends BaseMigration
             $table->string('title');
             $table->uuid('parent_id')->default(0);
             $table->boolean('is_folder')->default(false);
+            $table->string('caption')->nullable();
+            $table->text('description')->nullable();
             $table->author(nullable: true);
             $table->timestamps();
-            $table->softDeletes();
 
             $table->index('title');
             $table->index('parent_id');

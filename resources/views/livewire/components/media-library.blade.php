@@ -48,19 +48,16 @@
         </x-filament::button>
     </div>
 
-    <div class="uploadform-container pb-2">
+    <div class="form-container">
         <x-inspirecms-support::media-library.upload-form :livewireKey="$formKey">
             {{ $this->uploadFileForm }}
         </x-inspirecms-support::media-library.upload-form>
     </div>
     
-    <div class="filterform-container pb-2">
-        <form 
-            method="post"
-            id="filterForm"
-        >
+    <div class="form-container">
+        <x-inspirecms-support::media-library.filter-form :areFiltersOpen="$this->hasFilters()">
             {{ $this->filterForm }}
-        </form>
+        </x-inspirecms-support::media-library.filter-form>
     </div>
 
     <template x-if="isSelectMultiple && selectedMediaId?.length > 0">

@@ -1,15 +1,19 @@
 @php
     $statePath = $getStatePath();
     $isMultiple = $isMultiple();
-    $mimeTypes = $getMimeTypes();
     $stateNodeKey = $getStartNode();
     $mediaLibraryFilter = [
-        'mime_type' => $mimeTypes,
+        'type' => $getFilterTypes(),
     ];
     // fill selectedMediaId with the state value
     $modelableConfig = [
         'selectedMediaId' => 'state',
     ];
+    $filterFormConfig = [
+        'invisible' => [
+            'type',
+        ],
+    ]
 @endphp
 <div x-data="{ state: $wire.{{ $applyStateBindingModifiers("\$entangle('{$statePath}')") }} }">
     <livewire:inspirecms-support::media-library
@@ -17,5 +21,6 @@
         :isMultiple="$isMultiple"
         :filter="$mediaLibraryFilter"
         :modelableConfig="$modelableConfig"
+        :filterFormConfig="$filterFormConfig"
     />
 </div>

@@ -3,7 +3,6 @@
 namespace SolutionForest\InspireCms\Support\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use SolutionForest\InspireCms\Helpers\KeyHelper;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
 use SolutionForest\InspireCms\Support\Facades\MediaLibraryManifest;
@@ -19,7 +18,6 @@ class MediaAsset extends BaseModel implements MediaAssetContract
     use Concerns\NestableTrait;
     use HasUuids;
     use InteractsWithMedia;
-    use SoftDeletes;
 
     protected $guarded = ['id'];
 
@@ -128,9 +126,6 @@ class MediaAsset extends BaseModel implements MediaAssetContract
         });
         static::deleting(function (self $model) {
             $model->children()->delete();
-        });
-        static::forceDeleting(function (self $model) {
-            $model->children()->forceDelete();
         });
     }
 

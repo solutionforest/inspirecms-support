@@ -19,11 +19,11 @@ return [
         ],
     ],
     'detail_info' => [
+        'file_name' => [
+            'label' => '檔案名稱',
+        ],
         'mime_type' => [
             'label' => 'MIME 類型',
-        ],
-        'disk' => [
-            'label' => '磁碟',
         ],
         'size' => [
             'label' => '大小',
@@ -35,6 +35,30 @@ return [
         'updated_at' => [
             'label' => '更新於',
             'empty' => '從未',
+        ],
+        'uploaded_by' => [
+            'label' => '上傳者',
+        ],
+        'created_by' => [
+            'label' => '創建者',
+        ],
+        'title' => [
+            'label' => '標題',
+        ],
+    ],
+    'filter' => [
+        'title' => [
+            'placeholder' => '按標題搜索',
+        ],
+        'type' => [
+            'placeholder' => '所有類型',
+            'options' => [
+                'image' => '圖片',
+                'video' => '視頻',
+                'audio' => '音頻',
+                'document' => '文件',
+                'archive' => '壓縮檔案',
+            ],
         ],
     ],
 ];

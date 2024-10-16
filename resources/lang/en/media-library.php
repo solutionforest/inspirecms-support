@@ -19,11 +19,11 @@ return [
         ],
     ],
     'detail_info' => [
+        'file_name' => [
+            'label' => 'File Name',
+        ],
         'mime_type' => [
             'label' => 'Mime Type',
-        ],
-        'disk' => [
-            'label' => 'Disk',
         ],
         'size' => [
             'label' => 'Size',
@@ -36,14 +36,21 @@ return [
             'label' => 'Updated At',
             'empty' => 'Never',
         ],
+        'uploaded_by' => [
+            'label' => 'Uploaded By',
+        ],
+        'created_by' => [
+            'label' => 'Created By',
+        ],
+        'title' => [
+            'label' => 'Title',
+        ],
     ],
     'filter' => [
         'title' => [
-            'label' => 'Title',
             'placeholder' => 'Search by title',
         ],
         'type' => [
-            'label' => 'Type',
             'placeholder' => 'All types',
             'options' => [
                 'image' => 'Image',

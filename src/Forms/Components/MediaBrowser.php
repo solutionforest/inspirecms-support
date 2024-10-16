@@ -9,12 +9,14 @@ use SolutionForest\InspireCms\Support\Facades\MediaLibraryManifest;
 
 class MediaBrowser extends Field
 {
+    use Concerns\HasMediaFilterTypes;
+    
     /**
      * @var view-string
      */
     protected string $view = 'inspirecms-support::forms.components.media-picker.browser';
 
-    protected array $mimeTypes = ['*'];
+    protected array $filterTypes = [];
 
     protected bool $multiple = false;
 
@@ -72,18 +74,6 @@ class MediaBrowser extends Field
         });
     }
 
-    public function image(): static
-    {
-        return $this->mimeTypes(['image/*']);
-    }
-
-    public function mimeTypes(array $mimeTypes): static
-    {
-        $this->mimeTypes = $mimeTypes;
-
-        return $this;
-    }
-
     public function multiple(bool $condition = true): static
     {
         $this->multiple = $condition;
@@ -96,11 +86,6 @@ class MediaBrowser extends Field
         $this->startNode = $startNode;
 
         return $this;
-    }
-
-    public function getMimeTypes(): array
-    {
-        return $this->mimeTypes;
     }
 
     public function isMultiple(): bool
