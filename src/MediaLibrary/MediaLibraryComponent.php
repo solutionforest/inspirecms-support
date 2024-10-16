@@ -23,9 +23,9 @@ use SolutionForest\InspireCms\Support\Facades\MediaLibraryManifest;
  */
 class MediaLibraryComponent extends Component implements HasActions, HasForms
 {
+    use Concerns\HasFilters;
     use InteractsWithActions;
     use InteractsWithForms;
-    use Concerns\HasFilters;
 
     #[Url(as: 'p')]
     public string | int | null $parentKey = null;
