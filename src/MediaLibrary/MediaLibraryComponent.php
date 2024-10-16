@@ -25,21 +25,18 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
 {
     use InteractsWithActions;
     use InteractsWithForms;
+    use Concerns\HasFilters;
 
     #[Url(as: 'p')]
     public string | int | null $parentKey = null;
 
     public bool $isMultiple = false;
 
-    public array $filter = [];
-
     public array | string | int | null $selectedMediaId = null;
 
     public null | Model | array $selectedMedia = null;
 
     public ?array $uploadFileData = [];
-
-    public ?array $filterData = [];
 
     public array $modelableConfig = [];
 
@@ -131,65 +128,7 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
         }
     }
 
-    //region Form
-    public function uploadFileForm(Form $form): Form
-    {
-        return $form
-            ->schema([
-                Forms\Components\FileUpload::make('files')
-                    ->label(__('inspirecms-support::media-library.forms.files.label'))
-                    ->disk(MediaLibraryManifest::getDisk())
-                    ->directory(MediaLibraryManifest::getDirectory())
-                    ->multiple(),
-            ])
-            ->statePath($this->getFormStatePathFor('uploadFileForm'));
-    }
-
-    public function filterForm(Form $form): Form
-    {
-        return $form
-            ->columns(4)
-            ->schema([
-                Forms\Components\TextInput::make('title')
-                    ->hiddenLabel()
-                    ->placeholder(__('inspirecms-support::media-library.filter.title.placeholder'))
-                    ->live(true)
-                    ->extraAttributes(fn (Forms\Components\Field $component) => [
-                        'class' => $this->isFilterColumnInvisible($component->getName()) ? 'hidden' : null,
-                    ]),
-                Forms\Components\Select::make('type')
-                    ->hiddenLabel()
-                    ->placeholder(__('inspirecms-support::media-library.filter.type.placeholder'))
-                    ->options(__('inspirecms-support::media-library.filter.type.options'))
-                    ->multiple()
-                    ->live(true)
-                    ->extraAttributes(fn (Forms\Components\Field $component) => [
-                        'class' => $this->isFilterColumnInvisible($component->getName()) ? 'hidden' : null,
-                    ]),
-            ])
-            ->statePath($this->getFormStatePathFor('filterForm'));
-    }
-
-    public function saveUploadFile()
-    {
-        $files = $this->uploadFileData['files'] ?? [];
-        if (empty($files)) {
-            return;
-        }
-
-        foreach ($files as $file) {
-            if (! $file instanceof TemporaryUploadedFile) {
-                continue;
-            }
-
-            $this->createMediaFromUploadedFile($file);
-        }
-
-        $this->dispatch('form-processing-finished');
-
-        $this->fillForm();
-    }
-
+    //region Actions
     public function createFolderAction(): Action
     {
         return Action::make('createFolder')
@@ -283,12 +222,47 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
             ->modalSubmitAction(false)
             ->modalCancelAction(false);
     }
+    //endregion Actions
+
+    //region Form
+    public function uploadFileForm(Form $form): Form
+    {
+        return $form
+            ->schema([
+                Forms\Components\FileUpload::make('files')
+                    ->label(__('inspirecms-support::media-library.forms.files.label'))
+                    ->disk(MediaLibraryManifest::getDisk())
+                    ->directory(MediaLibraryManifest::getDirectory())
+                    ->multiple(),
+            ])
+            ->statePath($this->getFormStatePathFor('uploadFileForm'));
+    }
+
+    public function saveUploadFile()
+    {
+        $files = $this->uploadFileData['files'] ?? [];
+        if (empty($files)) {
+            return;
+        }
+
+        foreach ($files as $file) {
+            if (! $file instanceof TemporaryUploadedFile) {
+                continue;
+            }
+
+            $this->createMediaFromUploadedFile($file);
+        }
+
+        $this->dispatch('form-processing-finished');
+
+        $this->fillForm();
+    }
 
     public function getFormStatePathFor(string $formName): ?string
     {
         return match ($formName) {
             'uploadFileForm' => 'uploadFileData',
-            'filterForm' => 'filter',
+            'filterForm' => $this->getFilterFormStatePath(),
             default => $this->getFormStatePath(),
         };
     }
@@ -304,7 +278,7 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
     protected function fillForm(): void
     {
         $this->uploadFileForm->fill();
-        $this->filterForm->fill($this->filter ?? []);
+        $this->fillFilterForm();
     }
     //endregion Form
 
@@ -420,15 +394,6 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
     protected function isFilterColumnInvisible(string $column): bool
     {
         return in_array($column, $this->formConfig['filter']['invisible_columns'] ?? []);
-    }
-
-    protected function ensureFilter(): array
-    {
-        return array_filter(
-            $this->filter,
-            fn ($value): bool => (is_array($value) && ! empty($value)) ||
-            (is_string($value) && strlen($value) > 0)
-        );
     }
 
     protected function getEloquentQuery()
