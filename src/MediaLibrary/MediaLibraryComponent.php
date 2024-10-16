@@ -5,9 +5,9 @@ namespace SolutionForest\InspireCms\Support\MediaLibrary;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
+use Filament\Forms;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms;
 use Filament\Forms\Form;
 use Illuminate\Database\Eloquent\Model;
 use Livewire\Attributes\On;
@@ -220,9 +220,10 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
             ->with('media')
             ->parent($this->parentKey);
 
-        $filter = array_filter($this->filter, fn ($value): bool => 
-            (is_array($value) && !empty($value)) ||
-            (is_string($value) && strlen($value) > 0) 
+        $filter = array_filter(
+            $this->filter,
+            fn ($value): bool => (is_array($value) && ! empty($value)) ||
+            (is_string($value) && strlen($value) > 0)
         );
 
         if (isset($filter['title'])) {
