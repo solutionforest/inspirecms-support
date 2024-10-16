@@ -5,11 +5,9 @@ namespace SolutionForest\InspireCms\Support\MediaLibrary;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
-use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\TagsInput;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Forms;
 use Filament\Forms\Form;
 use Illuminate\Database\Eloquent\Model;
 use Livewire\Attributes\On;
@@ -130,7 +128,7 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
     {
         return $form
             ->schema([
-                FileUpload::make('files')
+                Forms\Components\FileUpload::make('files')
                     ->disk(MediaLibraryManifest::getDisk())
                     ->directory(MediaLibraryManifest::getDirectory())
                     ->multiple(),
@@ -142,13 +140,15 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
     {
         return $form
             ->schema([
-                TextInput::make('title')
-                    ->label('Title')
-                    ->placeholder('Search by title')
+                Forms\Components\TextInput::make('title')
+                    ->label(__('inspirecms-support::media-library.filter.title.label'))
+                    ->placeholder(__('inspirecms-support::media-library.filter.title.placeholder'))
                     ->live(true),
-                TagsInput::make('mime_type')
-                    ->label('Mime Type')
-                    ->placeholder('Search by mime type')
+                Forms\Components\Select::make('type')
+                    ->label(__('inspirecms-support::media-library.filter.type.label'))
+                    ->placeholder(__('inspirecms-support::media-library.filter.type.placeholder'))
+                    ->options(__('inspirecms-support::media-library.filter.type.options'))
+                    ->multiple()
                     ->live(true),
             ])
             ->statePath($this->getFormStatePathFor('filterForm'));
@@ -178,7 +178,7 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
     {
         return Action::make('createFolder')
             ->form([
-                TextInput::make('title')->required(),
+                Forms\Components\TextInput::make('title')->required(),
             ])
             ->successNotificationTitle('Folder created')
             ->action(function (array $data, Action $action) {
@@ -220,50 +220,57 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
             ->with('media')
             ->parent($this->parentKey);
 
-        if (! empty($this->filter)) {
-            $filter = $this->filter;
-            $query = $query->where(
-                fn ($q) => $q
-                    ->orWhere('is_folder', true)
-                    ->orWhereHas('media', function ($query) use ($filter) {
+        $filter = array_filter($this->filter, fn ($value): bool => 
+            (is_array($value) && !empty($value)) ||
+            (is_string($value) && strlen($value) > 0) 
+        );
 
-                        foreach ($filter as $key => $value) {
-                            switch ($key) {
-                                case 'mime_type':
-                                    if (is_array($value)) {
-                                        $query = $query->where(function ($q) use ($value) {
-                                            foreach ($value as $mimeType) {
+        if (isset($filter['title'])) {
+            $query = $query->where('title', 'like', "%{$filter['title']}%");
+            unset($filter['title']);
+        }
 
-                                                $mimeType = str_replace(['*'], ['%'], $mimeType);
-                                                if ($mimeType == '%') {
-                                                    continue;
-                                                }
-                                                if (str_contains($mimeType, '%')) {
-                                                    $q->orWhere('mime_type', 'like', $mimeType);
-                                                } else {
-                                                    $q->orWhere('mime_type', $mimeType);
-                                                }
+        if (count($filter) > 0) {
+            $query = $query
+                ->whereHas('media', function ($query) use ($filter) {
+
+                    foreach ($filter as $key => $value) {
+                        switch ($key) {
+                            case 'type':
+                                if (is_array($value)) {
+                                    $query = $query->where(function ($q) use ($value) {
+                                        foreach ($value as $mediaType) {
+
+                                            $mimeType = match ($mediaType) {
+                                                'image' => 'image/%',
+                                                'video' => 'video/%',
+                                                'audio' => 'audio/%',
+                                                'document' => 'application/%',
+                                                'archive' => 'application/zip',
+                                                default => null,
+                                            };
+                                            if ($mimeType == '%' || is_null($mimeType)) {
+                                                continue;
                                             }
-                                        });
-                                    }
+                                            if (str_contains($mimeType, '%')) {
+                                                $q->orWhere('mime_type', 'like', $mimeType);
+                                            } else {
+                                                $q->orWhere('mime_type', $mimeType);
+                                            }
+                                        }
+                                    });
+                                }
 
-                                    break;
-                                case 'title':
-                                    if (! is_null($value)) {
-                                        $query->where('title', 'like', "%$value%");
-                                    }
+                                break;
+                            default:
+                                if (! is_null($value)) {
+                                    $query->where($key, $value);
+                                }
 
-                                    break;
-                                default:
-                                    if (! is_null($value)) {
-                                        $query->where($key, $value);
-                                    }
-
-                                    break;
-                            }
+                                break;
                         }
-                    })
-            );
+                    }
+                });
         }
 
         return $query->get();

@@ -37,4 +37,21 @@ return [
             'empty' => 'Never',
         ],
     ],
+    'filter' => [
+        'title' => [
+            'label' => 'Title',
+            'placeholder' => 'Search by title',
+        ],
+        'type' => [
+            'label' => 'Type',
+            'placeholder' => 'All types',
+            'options' => [
+                'image' => 'Image',
+                'video' => 'Video',
+                'audio' => 'Audio',
+                'document' => 'Document',
+                'archive' => 'Archive',
+            ],
+        ],
+    ],
 ];
