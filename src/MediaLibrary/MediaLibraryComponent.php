@@ -330,9 +330,10 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
 
     protected function ensureFilter(): array
     {
-        return array_filter($this->filter, fn ($value): bool => 
-            (is_array($value) && !empty($value)) ||
-            (is_string($value) && strlen($value) > 0) 
+        return array_filter(
+            $this->filter,
+            fn ($value): bool => (is_array($value) && ! empty($value)) ||
+            (is_string($value) && strlen($value) > 0)
         );
     }
 

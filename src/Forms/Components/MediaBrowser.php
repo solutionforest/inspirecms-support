@@ -10,7 +10,7 @@ use SolutionForest\InspireCms\Support\Facades\MediaLibraryManifest;
 class MediaBrowser extends Field
 {
     use Concerns\HasMediaFilterTypes;
-    
+
     /**
      * @var view-string
      */
