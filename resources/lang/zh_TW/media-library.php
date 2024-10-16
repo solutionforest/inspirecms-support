@@ -5,7 +5,7 @@ return [
     'actions' => [
         'view' => [
             'label' => '查看',
-            
+
             'modal' => [
 
                 'heading' => '查看:name',
@@ -14,7 +14,7 @@ return [
         ],
         'delete' => [
             'label' => '刪除',
-            
+
             'notifications' => [
                 'deleted' => [
                     'title' => '檔案已刪除',
@@ -23,7 +23,7 @@ return [
         ],
         'edit' => [
             'label' => '編輯',
-            
+
             'modal' => [
 
                 'heading' => '編輯:name',
@@ -41,7 +41,7 @@ return [
         ],
         'create_folder' => [
             'label' => '創建資料夾',
-            
+
             'modal' => [
 
                 'heading' => '創建資料夾',

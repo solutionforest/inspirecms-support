@@ -5,7 +5,7 @@ return [
     'actions' => [
         'view' => [
             'label' => 'View',
-            
+
             'modal' => [
 
                 'heading' => 'View :name',
@@ -23,13 +23,13 @@ return [
         ],
         'edit' => [
             'label' => 'Edit',
-            
+
             'modal' => [
 
                 'heading' => 'Edit :name',
 
             ],
-            
+
             'notifications' => [
                 'saved' => [
                     'title' => 'Saved',
@@ -41,7 +41,7 @@ return [
         ],
         'create_folder' => [
             'label' => 'Create Folder',
-            
+
             'modal' => [
 
                 'heading' => 'Create Folder',
@@ -101,7 +101,7 @@ return [
             ],
         ],
     ],
-    'forms'=> [
+    'forms' => [
         'title' => [
             'label' => 'Title',
         ],

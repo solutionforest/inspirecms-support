@@ -217,18 +217,20 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
             ->record(fn () => $this->selectedMedia)
             ->fillForm(function (?Model $record) {
                 $data = $record?->attributesToArray();
+
                 return $data;
             })
-            ->form(fn (Form $form) => $form
-                ->schema([
-                    Forms\Components\TextInput::make('title')
-                        ->label(__('inspirecms-support::media-library.forms.title.label'))
-                        ->required(),
-                    Forms\Components\TextInput::make('caption')
-                        ->label(__('inspirecms-support::media-library.forms.caption.label')),
-                    Forms\Components\Textarea::make('description')
-                        ->label(__('inspirecms-support::media-library.forms.description.label')),
-                ])
+            ->form(
+                fn (Form $form) => $form
+                    ->schema([
+                        Forms\Components\TextInput::make('title')
+                            ->label(__('inspirecms-support::media-library.forms.title.label'))
+                            ->required(),
+                        Forms\Components\TextInput::make('caption')
+                            ->label(__('inspirecms-support::media-library.forms.caption.label')),
+                        Forms\Components\Textarea::make('description')
+                            ->label(__('inspirecms-support::media-library.forms.description.label')),
+                    ])
             )
             ->successNotificationTitle(__('inspirecms-support::media-library.actions.edit.notifications.saved.title'))
             ->action(function (array $data, ?Model $record, Action $action) {
@@ -254,26 +256,28 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
                         $data['media'] = $media->attributesToArray();
                     }
                 }
+
                 return $data;
             })
-            ->form(fn (Form $form) => $form
-                ->schema([
-                    Forms\Components\TextInput::make('title')
-                        ->label(__('inspirecms-support::media-library.forms.title.label'))
-                        ->required(),
-                    Forms\Components\Grid::make(2)
-                        ->statePath('media')
-                        ->schema([
-                            Forms\Components\TextInput::make('file_name')
-                                ->label(__('inspirecms-support::media-library.forms.file_name.label')),
-                            Forms\Components\TextInput::make('mime_type')
-                                ->label(__('inspirecms-support::media-library.forms.mime_type.label')),
-                        ]),
-                    Forms\Components\TextInput::make('caption')
-                        ->label(__('inspirecms-support::media-library.forms.caption.label')),
-                    Forms\Components\Textarea::make('description')
-                        ->label(__('inspirecms-support::media-library.forms.description.label')),
-                ])
+            ->form(
+                fn (Form $form) => $form
+                    ->schema([
+                        Forms\Components\TextInput::make('title')
+                            ->label(__('inspirecms-support::media-library.forms.title.label'))
+                            ->required(),
+                        Forms\Components\Grid::make(2)
+                            ->statePath('media')
+                            ->schema([
+                                Forms\Components\TextInput::make('file_name')
+                                    ->label(__('inspirecms-support::media-library.forms.file_name.label')),
+                                Forms\Components\TextInput::make('mime_type')
+                                    ->label(__('inspirecms-support::media-library.forms.mime_type.label')),
+                            ]),
+                        Forms\Components\TextInput::make('caption')
+                            ->label(__('inspirecms-support::media-library.forms.caption.label')),
+                        Forms\Components\Textarea::make('description')
+                            ->label(__('inspirecms-support::media-library.forms.description.label')),
+                    ])
             )
             ->disabledForm()
             ->modalSubmitAction(false)
@@ -308,7 +312,7 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
     {
         switch ($name) {
             case 'filterForm':
-                return 
+                return
                     collect($this->ensureFilter())
                         ->where(fn ($v, $k) => ! $this->isFilterColumnInvisible($k))
                         ->count() <= 0 &&
