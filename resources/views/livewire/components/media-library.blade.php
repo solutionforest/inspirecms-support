@@ -49,13 +49,13 @@
     </div>
 
     <div class="form-container">
-        <x-inspirecms-support::media-library.upload-form :livewireKey="$formKey">
+        <x-inspirecms-support::media-library.upload-form :livewireKey="$formKey" :isCollapsed="$this->isFormCollapsed('uploadFileForm')">
             {{ $this->uploadFileForm }}
         </x-inspirecms-support::media-library.upload-form>
     </div>
     
     <div class="form-container">
-        <x-inspirecms-support::media-library.filter-form :areFiltersOpen="$this->hasFilters()">
+        <x-inspirecms-support::media-library.filter-form :isCollapsed="$this->isFormCollapsed('filterForm')">
             {{ $this->filterForm }}
         </x-inspirecms-support::media-library.filter-form>
     </div>
@@ -85,7 +85,24 @@
             </x-filament::grid>
         </div>
         @if ($this->selectedMedia)
-            <x-inspirecms-support::media-library.detail-info :mediaItem="$this->selectedMedia" />
+            <x-inspirecms-support::media-library.detail-info :mediaItem="$this->selectedMedia">
+                <x-slot name="mediaActions">
+                    <x-filament::button 
+                        size="md" 
+                        wire:click="mountAction('editMedia')"
+                    >
+                        {{ trans('inspirecms-support::media-library.actions.edit.label') }}
+                    </x-filament::button>
+                    
+                    <x-filament::button
+                        size="md" 
+                        wire:click="mountAction('viewMedia')"
+                        color="gray"
+                    >
+                        {{ trans('inspirecms-support::media-library.actions.view.label') }}
+                    </x-filament::button>
+                </x-slot>
+            </x-inspirecms-support::media-library.detail-info>
         @endif
         <x-filament-actions::modals />
     </div>

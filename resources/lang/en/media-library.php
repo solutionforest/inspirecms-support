@@ -1,18 +1,58 @@
 <?php
 
 return [
+    'media' => 'Media',
     'actions' => [
         'view' => [
             'label' => 'View',
+            
+            'modal' => [
+
+                'heading' => 'View :name',
+
+            ],
         ],
         'delete' => [
             'label' => 'Delete',
+
+            'notifications' => [
+                'deleted' => [
+                    'title' => 'File Deleted',
+                ],
+            ],
+        ],
+        'edit' => [
+            'label' => 'Edit',
+            
+            'modal' => [
+
+                'heading' => 'Edit :name',
+
+            ],
+            
+            'notifications' => [
+                'saved' => [
+                    'title' => 'Saved',
+                ],
+            ],
         ],
         'open_folder' => [
             'label' => 'Open Folder',
         ],
         'create_folder' => [
             'label' => 'Create Folder',
+            
+            'modal' => [
+
+                'heading' => 'Create Folder',
+
+            ],
+
+            'notifications' => [
+                'created' => [
+                    'title' => 'Folder Created',
+                ],
+            ],
         ],
         'upload' => [
             'label' => 'Upload',
@@ -59,6 +99,29 @@ return [
                 'document' => 'Document',
                 'archive' => 'Archive',
             ],
+        ],
+    ],
+    'forms'=> [
+        'title' => [
+            'label' => 'Title',
+        ],
+        'description' => [
+            'label' => 'Description',
+        ],
+        'file' => [
+            'label' => 'File',
+        ],
+        'caption' => [
+            'label' => 'Caption',
+        ],
+        'file_name' => [
+            'label' => 'File Name',
+        ],
+        'files' => [
+            'label' => 'Files',
+        ],
+        'mime_type' => [
+            'label' => 'Mime Type',
         ],
     ],
 ];

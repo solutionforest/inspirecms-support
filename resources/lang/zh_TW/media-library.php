@@ -1,18 +1,58 @@
 <?php
 
 return [
+    'media' => '媒體',
     'actions' => [
         'view' => [
             'label' => '查看',
+            
+            'modal' => [
+
+                'heading' => '查看:name',
+
+            ],
         ],
         'delete' => [
             'label' => '刪除',
+            
+            'notifications' => [
+                'deleted' => [
+                    'title' => '檔案已刪除',
+                ],
+            ],
+        ],
+        'edit' => [
+            'label' => '編輯',
+            
+            'modal' => [
+
+                'heading' => '編輯:name',
+
+            ],
+
+            'notifications' => [
+                'saved' => [
+                    'title' => '已保存',
+                ],
+            ],
         ],
         'open_folder' => [
             'label' => '打開資料夾',
         ],
         'create_folder' => [
             'label' => '創建資料夾',
+            
+            'modal' => [
+
+                'heading' => '創建資料夾',
+
+            ],
+            
+            'notifications' => [
+                'created' => [
+                    'title' => '資料夾已創建',
+                ],
+            ],
         ],
         'upload' => [
             'label' => '上傳',
@@ -59,6 +99,29 @@ return [
                 'document' => '文件',
                 'archive' => '壓縮檔案',
             ],
+        ],
+    ],
+    'forms' => [
+        'title' => [
+            'label' => '標題',
+        ],
+        'description' => [
+            'label' => '描述',
+        ],
+        'file' => [
+            'label' => '檔案',
+        ],
+        'caption' => [
+            'label' => '標題',
+        ],
+        'file_name' => [
+            'label' => '檔案名稱',
+        ],
+        'files' => [
+            'label' => '檔案',
+        ],
+        'mime_type' => [
+            'label' => 'MIME 類型',
         ],
     ],
 ];

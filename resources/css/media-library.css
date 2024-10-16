@@ -13,10 +13,14 @@
             padding-top: 1rem;
         }
 
-        .filter-form-container {
+        .form-container-content {
             display:flex; 
-            flex-direction: column; 
             gap: 0.75rem;
+            flex-direction: row; 
+
+            &.filter-form-container-content {
+                align-items: center;
+            }
         }
     }
 

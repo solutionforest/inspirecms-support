@@ -1,17 +1,17 @@
 
-<div x-data="{
-    areFiltersOpen: @js($areFiltersOpen),
-}" x-cloak class="filter-form-container">
+<div class="form-container-content filter-form-container-content" x-data="{
+    isCollapsed: @js($isCollapsed),
+}" x-cloak>
     <x-filament::icon-button
-        x-on:click="areFiltersOpen = ! areFiltersOpen"
-        class="ms-auto"
+        x-on:click="isCollapsed = ! isCollapsed"
         icon="heroicon-m-funnel"
         color="gray"
+        label="Toggle filter form"
     />
     <form 
         method="post"
         id="filterForm"
-        x-show="areFiltersOpen"
+        x-show="!isCollapsed"
     >
         {{ $slot}}
     </form>

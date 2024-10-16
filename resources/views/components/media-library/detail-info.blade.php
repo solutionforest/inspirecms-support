@@ -1,16 +1,22 @@
-@props(['mediaItem'])
+@props(['mediaItem', 'mediaActions' => null])
 <div class="media-library__item_detail">
     @php
         $selectedMediaUrl = $mediaItem->getUrl();
     @endphp
     <div class="media-library__item_detail__content p-4">
-        <div class="media-library__item_detail__thumb">
-            @if ($mediaItem->isImage())
-                <img src="{{ $mediaItem->getUrl() }}" alt="{{ $mediaItem->title }}" />
-            @else
+        @if (!$mediaItem->isFolder())
+            <a class="media-library__item_detail__thumb" href="{{ $selectedMediaUrl }}" target="_blank">
+                @if ($mediaItem->isImage())
+                    <img src="{{ $mediaItem->getUrl() }}" alt="{{ $mediaItem->title }}" />
+                @else
+                    <x-inspirecms-support::media-library.thumbnail-icon :icon="$mediaItem->getThumbnail()" class="media-library__item_detail__content__icon" />
+                @endif
+            </a>
+        @else
+            <div class="media-library__item_detail__thumb">
                 <x-inspirecms-support::media-library.thumbnail-icon :icon="$mediaItem->getThumbnail()" class="media-library__item_detail__content__icon" />
-            @endif
-        </div>
+            </div>
+        @endif
         <div class="media-library__item_detail__content__details">
             <div class="media-library__item_detail__content__details__meta">
                 @php
@@ -66,16 +72,11 @@
         </div>
     </div>
     <div class="media-library__item_detail__content__actions">
-        @if (filled($selectedMediaUrl))
-            <x-filament::button
-                tag="a"
-                target="_blank"
-                href="{{ $selectedMediaUrl }}"
-                color="gray"
-            >
-                {{ trans('inspirecms-support::media-library.actions.view.label') }}
-            </x-filament::button>
+        
+        @if (!$mediaItem->isFolder() && $mediaActions)
+            {{ $mediaActions }}
         @endif
+
         @if ($mediaItem->isFolder())
             <x-filament::button
                 wire:click="openFolder"
@@ -84,6 +85,7 @@
                 {{ trans('inspirecms-support::media-library.actions.open_folder.label') }}
             </x-filament::button>
         @endif
+
         <x-filament::button
             wire:click="deleteMedia"
             color="danger"
