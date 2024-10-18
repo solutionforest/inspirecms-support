@@ -9,7 +9,7 @@ use SolutionForest\InspireCms\Models\Contracts\Content;
 
 class ContentUrlGenerator implements ContentUrlGeneratorInterface
 {
-    /** @inheritDoc */
+    /** {@inheritDoc} */
     public function getUrl(Content $content, ?string $locale = null, bool $useFallbackLocale = false): string
     {
         $pathGenerator = ContentPathGeneratorFactory::create();
@@ -20,11 +20,11 @@ class ContentUrlGenerator implements ContentUrlGeneratorInterface
 
         $relatedLanguage = collect(InspireCms::getAllAvailableLanguages())->firstWhere(fn (LanguageDto $language) => $language->locale === $locale);
         if (is_null($relatedLanguage)) {
-            $locale  = '';
+            $locale = '';
         }
 
         if (! blank($locale)) {
-            return $this->getLocalizedUrl($pathGenerator->getFullPath($content), $locale);   
+            return $this->getLocalizedUrl($pathGenerator->getFullPath($content), $locale);
         }
 
         $path = $pathGenerator->getPath($content, $locale);
@@ -32,7 +32,7 @@ class ContentUrlGenerator implements ContentUrlGeneratorInterface
         return url($path);
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
     public function getLocalizedUrl(string $path, string $locale): string
     {
         $pathGenerator = ContentPathGeneratorFactory::create();
@@ -61,13 +61,13 @@ class ContentUrlGenerator implements ContentUrlGeneratorInterface
         }
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
     public function getUrlPattern(): string
     {
         return '{scheme}://{domain_name}/{locale}/{slug?}';
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
     public function getLocaleFromRequest($request): ?string
     {
         $path = $request->path();

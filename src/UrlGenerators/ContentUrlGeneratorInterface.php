@@ -13,7 +13,7 @@ interface ContentUrlGeneratorInterface
     /**
      * Retrieve the locale from the given request.
      *
-     * @param \Illuminate\Http\Request $request The request object from which to extract the locale.
+     * @param  \Illuminate\Http\Request  $request  The request object from which to extract the locale.
      * @return string|null The locale extracted from the request.
      */
     public function getLocaleFromRequest($request): ?string;

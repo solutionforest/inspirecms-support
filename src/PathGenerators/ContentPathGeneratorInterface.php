@@ -9,8 +9,8 @@ interface ContentPathGeneratorInterface
     /**
      * Generates the path for the given content.
      *
-     * @param Content $content The content for which the path is being generated.
-     * @param string|null $locale Optional locale for the path generation. Defaults to null.
+     * @param  Content  $content  The content for which the path is being generated.
+     * @param  string|null  $locale  Optional locale for the path generation. Defaults to null.
      * @return string The generated path for the content.
      */
     public function getPath(Content $content, ?string $locale = null): string;
@@ -39,8 +39,8 @@ interface ContentPathGeneratorInterface
     /**
      * Interface method to retrieve a slug from the given request.
      *
-     * @param \Illuminate\Http\Request $request The request object from which the slug is to be extracted.
-     * @param string $locale The locale to be used for the slug extraction.
+     * @param  \Illuminate\Http\Request  $request  The request object from which the slug is to be extracted.
+     * @param  string  $locale  The locale to be used for the slug extraction.
      * @return string|null The slug extracted from the request, or null if not found.
      */
     public function getSlugFromRequest($request, $locale): ?string;

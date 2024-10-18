@@ -6,13 +6,13 @@ use SolutionForest\InspireCms\Models\Contracts\Content;
 
 class ContentPathGenerator implements ContentPathGeneratorInterface
 {
-    /** @inheritDoc */
+    /** {@inheritDoc} */
     public function getPath(Content $content, ?string $locale = null): string
     {
         $path = $this->getFullPath($content);
 
         $locale ??= '';
-        
+
         return str_replace(['{locale}', '{slug?}'], [$locale, $path], $this->getPathPattern());
     }
 
@@ -28,19 +28,19 @@ class ContentPathGenerator implements ContentPathGeneratorInterface
         return implode('/', $slugs);
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
     public function getPathPattern(): string
     {
         return '{locale}/{slug?}';
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
     public function getRouteName(): string
     {
         return 'inspirecms.content.show';
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
     public function getSlugFromRequest($request, $locale): ?string
     {
         $path = $request->path();
