@@ -115,20 +115,6 @@ class MediaAsset extends BaseModel implements MediaAssetContract
     }
     //endregion Scopes
 
-    public static function boot()
-    {
-        parent::boot();
-
-        static::creating(function (self $model) {
-            if (blank($model->{$model->getNestableParentIdColumn()})) {
-                $model->{$model->getNestableParentIdColumn()} = $model->fallbackParentId();
-            }
-        });
-        static::deleting(function (self $model) {
-            $model->children()->delete();
-        });
-    }
-
     //region Nestable
     protected function getParentId()
     {

@@ -22,6 +22,27 @@ trait NestableTrait
         //         ->groupBy('ancestors.id')
         //     ]);
         // });
+
+        static::deleting(function (self $model) {
+            //region Set the parent ID to the fallback parent ID if it is blank
+            if (blank($model->{$model->getNestableParentIdColumn()}) && !is_null($model->getNestableRootValue())) {
+                $model->{$model->getNestableParentIdColumn()} = $model->getNestableRootValue();
+            }
+            //endregion
+        });
+        static::deleting(function (self $model) {
+            $model->children()->delete();
+        });
+        if (method_exists(static::class, 'forceDeleting')) {
+            static::forceDeleting(function (self $model) {
+                $model->children()->forceDelete();
+            });
+        }
+        if (method_exists(static::class, 'restoring')) {
+            static::restoring(function (self $model) {
+                $model->parent()->restore();
+            });
+        }
     }
 
     public function parent(): BelongsTo
