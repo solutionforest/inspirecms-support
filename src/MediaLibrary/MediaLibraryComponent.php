@@ -93,7 +93,7 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
 
         Notification::make()
             ->title(__('inspirecms-support::media-library.actions.delete.notifications.deleted.title'))
-            ->danger()
+            ->success()
             ->send();
 
         $this->selectedMediaId = [];
