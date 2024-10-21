@@ -25,7 +25,7 @@ trait NestableTrait
 
         static::deleting(function (self $model) {
             //region Set the parent ID to the fallback parent ID if it is blank
-            if (blank($model->{$model->getNestableParentIdColumn()}) && !is_null($model->getNestableRootValue())) {
+            if (blank($model->{$model->getNestableParentIdColumn()}) && ! is_null($model->getNestableRootValue())) {
                 $model->{$model->getNestableParentIdColumn()} = $model->getNestableRootValue();
             }
             //endregion
