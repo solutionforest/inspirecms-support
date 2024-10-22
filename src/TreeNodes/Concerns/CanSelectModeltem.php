@@ -20,17 +20,7 @@ trait CanSelectModeltem
             $items = $this->cachedModelExplorerItems[$parentKey];
         } else {
 
-            $modelExplorer = $this->getModelExplorer();
-
-            $records = $modelExplorer->getRecordsFrom($parentKey);
-
-            $items = $modelExplorer->parseAsItems($records, $depth)->toArray();
-
-            if ($parentKey === $modelExplorer->getRootLevelKey()) {
-                $items = $modelExplorer->mutuateRootNodeItems($items);
-            }
-
-            $this->cachedModelExplorerItems[$parentKey] = $items;
+            $this->cachedModelExplorerItems[$parentKey] = $this->getModelExplorerItemsFrom($parentKey, $depth);
 
         }
     }
@@ -55,19 +45,7 @@ trait CanSelectModeltem
 
     public function selectedModelItem(int | string | Model | null $record): static
     {
-        if (is_null($record)) {
-            $this->selectedModelItemKey = '';
-            $this->selectedModelItem = null;
-
-            return $this;
-        }
-        if ($record instanceof Model) {
-            $this->selectedModelItem = $record;
-            $this->selectedModelItemKey = $record->getKey();
-        } else {
-            $this->selectedModelItem = $this->resolveSelectedModelItem($record);
-            $this->selectedModelItemKey = $this->selectedModelItem?->getKey() ?? '';
-        }
+        $this->setSelectedModelItem($record);
 
         return $this;
     }
@@ -103,5 +81,39 @@ trait CanSelectModeltem
         }
 
         return $nodes;
+    }
+
+    protected function getModelExplorerItemsFrom(string | int $parentKey, int $depth): array
+    {
+        if (isset($this->cachedModelExplorerItems[$parentKey])) {
+            return $this->cachedModelExplorerItems[$parentKey];
+        }
+
+        $modelExplorer = $this->getModelExplorer();
+
+        $records = $modelExplorer->getRecordsFrom($parentKey);
+
+        $items = $modelExplorer->parseAsItems($records, $depth)->toArray();
+
+        if ($parentKey === $modelExplorer->getRootLevelKey()) {
+            $items = $modelExplorer->mutuateRootNodeItems($items);
+        }
+
+        return $items;
+    }
+
+    protected function setSelectedModelItem(string | int | Model | null $record): void
+    {
+        if (is_null($record)) {
+            $this->selectedModelItemKey = '';
+            $this->selectedModelItem = null;
+        }
+        if ($record instanceof Model) {
+            $this->selectedModelItem = $record;
+            $this->selectedModelItemKey = $record->getKey();
+        } else {
+            $this->selectedModelItem = $this->resolveSelectedModelItem($record);
+            $this->selectedModelItemKey = $this->selectedModelItem?->getKey() ?? '';
+        }
     }
 }
