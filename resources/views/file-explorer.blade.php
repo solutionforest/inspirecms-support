@@ -48,14 +48,6 @@
     <x-slot:mainViewContent>
         @if (filled($selectedItemPath) && !$isSelectedItemDirectory($selectedItemPath))
             
-            {{-- @livewire('inspirecms-support::file-preview', [
-                'schema' => $this->getSelectedFileItemFormSchema(),
-                'actions' => $this->getSelectedFileItemFormActions(),
-                'data' => $this->mutateSelectedItemFormDataToFill($selectedItemPath),
-                'redirectUrl' => $this->getUrl(),
-                'pathStatePath' => $this->getPathStatePath(),
-                'contentStatePath' => $this->getContentStatePath(),
-            ], key($this->filePreviewComponentKey)) --}}
             <form wire:submit="saveSelectedItem">
                 <div class="pb-4">
                     {{ $this->selectedFileItemForm }}
