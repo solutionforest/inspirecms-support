@@ -8,7 +8,7 @@ class SortedScope implements Scope
 {
     public function apply($builder, $model)
     {
-        $column = method_exists($model, 'determineOrderColumnName') ? $model->determineOrderColumnName() : 'order'; 
+        $column = method_exists($model, 'determineOrderColumnName') ? $model->determineOrderColumnName() : 'order';
         $builder->orderBy($column);
     }
 }
