@@ -4,6 +4,7 @@ namespace SolutionForest\InspireCms\Support\Models\Concerns;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
 
 trait NestableTrait
@@ -18,14 +19,17 @@ trait NestableTrait
             //endregion
         });
         static::deleting(function (self $model) {
-            $model->children()->delete();
-        });
-        if (method_exists(static::class, 'forceDeleting')) {
-            static::forceDeleting(function (self $model) {
-                $model->children()->forceDelete();
+            $model->children()->each(function ($child) {
+                $child->delete();
             });
-        }
-        if (method_exists(static::class, 'restoring')) {
+        });
+        
+        if (in_array(SoftDeletes::class, class_uses_recursive(static::class))) {
+            static::forceDeleting(function (self $model) {
+                $model->children()->withTrashed()->each(function ($child) {
+                    $child->forceDelete();
+                });
+            });
             static::restoring(function (self $model) {
                 $model->parent()->restore();
             });

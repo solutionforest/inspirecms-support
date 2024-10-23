@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms\Support\Models\Concerns;
 
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use SolutionForest\InspireCms\Support\Facades\InspireCmsSupport;
 
 /**
@@ -25,6 +26,16 @@ trait BelongToNestableTree
         static::saved(function ($model) {
             $model->createOrUpdateNode();
         });
+
+        if (in_array(SoftDeletes::class, class_uses_recursive(static::class))) {
+            static::forceDeleting(function ($model) {
+                $model->nestableTree()?->delete();
+            });
+        } else {
+            static::deleting(function ($model) {
+                $model->nestableTree()?->delete();
+            });
+        }
     }
 
     public function nestableTree(): MorphOne
