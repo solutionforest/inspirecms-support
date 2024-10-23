@@ -112,7 +112,7 @@ return [
             'label' => '檔案',
         ],
         'caption' => [
-            'label' => '標題',
+            'label' => '說明文字',
         ],
         'file_name' => [
             'label' => '檔案名稱',

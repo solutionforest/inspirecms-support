@@ -11,6 +11,7 @@ use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Model;
+use League\Flysystem\UnableToCheckFileExistence;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Url;
 use Livewire\Component;
@@ -156,12 +157,40 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
             ->record(fn () => $this->selectedMedia)
             ->fillForm(function (?Model $record) {
                 $data = $record?->attributesToArray();
+                if ($record && $record instanceof \SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset) {
+                    $media = $record->getFirstMedia();
+                    if ($media) {
+                        $data['file'] = $media->getPathRelativeToRoot();
+                    }
+                }
+
 
                 return $data;
             })
             ->form(
                 fn (Form $form) => $form
                     ->schema([
+                        Forms\Components\FileUpload::make('file')
+                        ->label(__('inspirecms-support::media-library.forms.files.label'))
+                        ->disk(MediaLibraryManifest::getDisk())
+                        ->directory(MediaLibraryManifest::getDirectory())
+                        ->deletable(false)
+                        ->openable()
+                        ->downloadable()
+                        ->imageEditor()
+                        ->saveUploadedFileUsing(function ($component, TemporaryUploadedFile $file, Model $record): ?string {
+                            try {
+                                if (! $file->exists()) {
+                                    return null;
+                                }
+                            } catch (UnableToCheckFileExistence $exception) {
+                                return null;
+                            }
+
+                            $record->media()->delete();
+                            $record->addMedia($file)->toMediaCollection();
+                            return $record->getFirstMedia()->getPathRelativeToRoot();
+                        }),
                         Forms\Components\TextInput::make('title')
                             ->label(__('inspirecms-support::media-library.forms.title.label'))
                             ->required(),
@@ -193,6 +222,7 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
                     $media = $record->getFirstMedia();
                     if ($media) {
                         $data['media'] = $media->attributesToArray();
+                        $data['file'] = $media->getPathRelativeToRoot();
                     }
                 }
 
@@ -201,6 +231,13 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
             ->form(
                 fn (Form $form) => $form
                     ->schema([
+                        Forms\Components\FileUpload::make('file')
+                        ->label(__('inspirecms-support::media-library.forms.files.label'))
+                        ->disk(MediaLibraryManifest::getDisk())
+                        ->directory(MediaLibraryManifest::getDirectory())
+                        ->deletable(false)
+                        ->openable()
+                        ->downloadable(),
                         Forms\Components\TextInput::make('title')
                             ->label(__('inspirecms-support::media-library.forms.title.label'))
                             ->required(),
@@ -233,6 +270,7 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
                     ->label(__('inspirecms-support::media-library.forms.files.label'))
                     ->disk(MediaLibraryManifest::getDisk())
                     ->directory(MediaLibraryManifest::getDirectory())
+                    ->imageEditor()
                     ->multiple(),
             ])
             ->statePath($this->getFormStatePathFor('uploadFileForm'));
