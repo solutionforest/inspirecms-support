@@ -6,6 +6,7 @@
     $actions = collect($actions)->map(function ($action) use ($item) {
         return $action->arguments([
             'key' => $item['key'],
+            'parent' => $item['parentKey'],
         ]);
     })->all();
 @endphp
