@@ -13,7 +13,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class MediaAsset extends BaseModel implements MediaAssetContract
 {
-    use Concerns\BelongToCmsNestableTree;
+    use Concerns\BelongToNestableTree;
     use Concerns\HasAuthor;
     use Concerns\NestableTrait;
     use HasUuids;
@@ -116,16 +116,6 @@ class MediaAsset extends BaseModel implements MediaAssetContract
     //endregion Scopes
 
     //region Nestable
-    protected function getParentId()
-    {
-        return $this->{$this->getNestableParentIdColumn()} ?? $this->fallbackParentId();
-    }
-
-    public function getNestableParentIdColumn(): string
-    {
-        return 'parent_id';
-    }
-
     protected function fallbackParentId()
     {
         return $this->getNestableRootValue();

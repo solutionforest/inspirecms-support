@@ -10,19 +10,6 @@ trait NestableTrait
 {
     public static function bootNestableTrait()
     {
-        // static::addGlobalScope('appendLevel', function ($builder) {
-        //     $builder->addSelect(['level' => static::selectRaw('COUNT(*) - 1')
-        //         ->from('model_nestables as ancestors')
-        //         ->whereRaw('ancestors.id = model_nestables.id OR ancestors.id = model_nestables.parent_id')
-        //         ->whereRaw('ancestors.id = model_nestables.id OR EXISTS (
-        //             SELECT 1 FROM model_nestables as descendants
-        //             WHERE descendants.id = model_nestables.id
-        //             AND ancestors.id = descendants.parent_id
-        //         )')
-        //         ->groupBy('ancestors.id')
-        //     ]);
-        // });
-
         static::creating(function (self $model) {
             //region Set the parent ID to the fallback parent ID if it is blank
             if (blank($model->{$model->getNestableParentIdColumn()}) && ! is_null($model->getNestableRootValue())) {
@@ -48,11 +35,6 @@ trait NestableTrait
     public function parent(): BelongsTo
     {
         return $this->belongsTo(static::class, $this->getNestableParentIdColumn());
-    }
-
-    public function withTrashedParent(): BelongsTo
-    {
-        return $this->parent()->withTrashed();
     }
 
     public function children(): HasMany
@@ -130,12 +112,7 @@ trait NestableTrait
         return $this->children()->count() === 0;
     }
 
-    /**
-     * Get the name of 'parent id' column.
-     *
-     * @return ?string
-     */
-    protected function getNestableParentIdColumn()
+    public function getNestableParentIdColumn(): string
     {
         return 'parent_id';
     }

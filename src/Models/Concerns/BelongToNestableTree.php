@@ -3,7 +3,7 @@
 namespace SolutionForest\InspireCms\Support\Models\Concerns;
 
 use Illuminate\Database\Eloquent\Relations\MorphOne;
-use SolutionForest\InspireCms\Support\InspireCmsConfig;
+use SolutionForest\InspireCms\Support\Facades\InspireCmsSupport;
 
 /**
  * This trait provides functionality for models to belong to a NestableTree,
@@ -12,11 +12,11 @@ use SolutionForest\InspireCms\Support\InspireCmsConfig;
  * It manages the relationship with the NestableTree model and provides methods
  * for creating, updating, and managing the hierarchical structure.
  */
-trait BelongToCmsNestableTree
+trait BelongToNestableTree
 {
     protected bool $updateTreeOrder = false;
 
-    public static function bootBelongToCmsNestableTree()
+    public static function bootBelongToNestableTree()
     {
         static::created(function ($model) {
             $model->createOrUpdateNode();
@@ -29,7 +29,7 @@ trait BelongToCmsNestableTree
 
     public function nestableTree(): MorphOne
     {
-        return $this->morphOne(InspireCmsConfig::getNestableTreeModelClass(), 'nestable');
+        return $this->morphOne(InspireCmsSupport::getNestableTreeModel(), 'nestable');
     }
 
     protected function createOrUpdateNode()
@@ -47,10 +47,12 @@ trait BelongToCmsNestableTree
         $this->updateSiblingsSort();
     }
 
-    protected function getTreeData(): array
+    public function getTreeData(): array
     {
+        $column = method_exists($this, 'getNestableParentIdColumn') ? $this->getNestableParentIdColumn() : 'parent_id';
+
         $data = [
-            'parent_id' => $this->getParentId() ?? $this->fallbackParentId(),
+            $column => $this->getParentId() ?? $this->fallbackParentId(),
             // Add any other fields that should be stored in the Node model
         ];
 
@@ -61,23 +63,23 @@ trait BelongToCmsNestableTree
         return $data;
     }
 
-    protected function getParentId()
+    public function getParentId(): string|int|null
     {
-        // Override this method in your model to determine the parent_id
-        // For example, you might have a `getParentId()` method in your model
-        return method_exists($this, 'getParentId') ? ($this->getParentId() ?? $this->fallbackParentId()) : $this->fallbackParentId();
+        $column = method_exists($this, 'getNestableParentIdColumn') ? $this->getNestableParentIdColumn() : 'parent_id';
+
+        return $this->{$column} ?? $this->fallbackParentId();
     }
 
     protected function calculateOrder(): int
     {
         try {
 
-            $nestableTreeClass = InspireCmsConfig::getNestableTreeModelClass();
+            $nestableTreeClass = InspireCmsSupport::getNestableTreeModel();
 
             $parentId = $this->getParentId() ?? $this->fallbackParentId();
 
             $maxOrder = $nestableTreeClass::query()
-                ->where('parent_id', $parentId)
+                ->parent($parentId)
                 ->when($this->nestableTree, fn ($q) => $q->where('id', '!=', $this->nestableTree->id))
                 ->max('order');
 
@@ -101,12 +103,12 @@ trait BelongToCmsNestableTree
 
         try {
 
-            $nestableTreeClass = InspireCmsConfig::getNestableTreeModelClass();
+            $nestableTreeClass = InspireCmsSupport::getNestableTreeModel();
 
             $parentId = $this->getParentId() ?? $this->fallbackParentId();
 
             $siblings = $nestableTreeClass::query()
-                ->where('parent_id', $parentId)
+                ->parent($parentId)
                 ->when($this->nestableTree, fn ($q) => $q->where('id', '!=', $this->nestableTree->id ?? null))
                 ->orderBy('order')
                 ->get();
