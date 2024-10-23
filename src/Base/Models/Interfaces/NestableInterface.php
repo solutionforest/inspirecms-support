@@ -10,8 +10,6 @@ interface NestableInterface
 {
     /**
      * Get the parent relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function parent(): BelongsTo;
 

@@ -11,16 +11,16 @@ interface BelongToNestableTree
      *
      * This method should be implemented to establish a MorphOne relationship
      * that represents the nestable tree structure for the implementing model.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphOne
      */
     public function nestableTree(): MorphOne;
+
     /**
      * Interface method to retrieve tree data.
      *
      * @return array An array representing the tree data.
      */
     public function getTreeData(): array;
+
     /**
      * Get the ID of the parent node.
      *
@@ -28,5 +28,5 @@ interface BelongToNestableTree
      *
      * @return string|int|null The ID of the parent node, or null if there is no parent.
      */
-    public function getParentId(): string|int|null;
+    public function getParentId(): string | int | null;
 }

@@ -2,8 +2,6 @@
 
 namespace SolutionForest\InspireCms\Support;
 
-use SolutionForest\InspireCms\Support\Models;
-
 class InspireCmsSupportManager
 {
     protected string $tablePrefix;

@@ -74,7 +74,7 @@ trait BelongToNestableTree
         return $data;
     }
 
-    public function getParentId(): string|int|null
+    public function getParentId(): string | int | null
     {
         $column = method_exists($this, 'getNestableParentIdColumn') ? $this->getNestableParentIdColumn() : 'parent_id';
 

@@ -23,7 +23,7 @@ trait NestableTrait
                 $child->delete();
             });
         });
-        
+
         if (in_array(SoftDeletes::class, class_uses_recursive(static::class))) {
             static::forceDeleting(function (self $model) {
                 $model->children()->withTrashed()->each(function ($child) {

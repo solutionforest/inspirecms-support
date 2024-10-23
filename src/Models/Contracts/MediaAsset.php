@@ -6,7 +6,7 @@ use SolutionForest\InspireCms\Support\Base\Models\Interfaces\BelongToNestableTre
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-interface MediaAsset extends HasMedia, BelongToNestableTree
+interface MediaAsset extends BelongToNestableTree, HasMedia
 {
     public function registerMediaConversions(?Media $media = null): void;
 
