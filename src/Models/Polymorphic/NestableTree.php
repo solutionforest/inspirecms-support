@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
 use SolutionForest\InspireCms\Support\Models\Concerns\NestableTrait;
 use SolutionForest\InspireCms\Support\Models\Contracts\NestableTree as NestableTreeContract;
+use SolutionForest\InspireCms\Support\Models\Scopes\SortedScope;
 use Spatie\EloquentSortable\SortableTrait;
 
 class NestableTree extends BaseModel implements NestableTreeContract
@@ -15,11 +16,6 @@ class NestableTree extends BaseModel implements NestableTreeContract
     use SortableTrait;
 
     protected $guarded = ['id'];
-
-    public $sortable = [
-        'order_column_name' => 'order',
-        'sort_when_creating' => true,
-    ];
 
     public function nestable(): MorphTo
     {
@@ -36,5 +32,40 @@ class NestableTree extends BaseModel implements NestableTreeContract
     public function scopeParent($query, $parentId)
     {
         return $query->where($this->getNestableParentIdColumn(), $parentId);
+    }
+
+    public function scopeRoot($query)
+    {
+        return $query->whereNull($this->getNestableParentIdColumn());
+    }
+
+    public function determineOrderColumnName(): string
+    {
+        return 'order';
+    }
+
+    public function shouldSortWhenCreating(): bool
+    {
+        return true;
+    }
+
+    public static function setNewOrderForNestable(
+        $ids,
+        string $morphableType,
+        int $startOrder = 1,
+    ): void {
+        $modifyQuery = function ($query) use ($morphableType) {
+            $query
+                ->where('nestable_type', $morphableType);
+        };
+        static::setNewOrder($ids, $startOrder, 'nestable_id', $modifyQuery);
+    }
+
+    /**
+     * The "booted" method of the model.
+     */
+    protected static function booted(): void
+    {
+        static::addGlobalScope(new SortedScope);
     }
 }

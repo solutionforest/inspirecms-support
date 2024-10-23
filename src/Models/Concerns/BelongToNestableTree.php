@@ -148,4 +148,11 @@ trait BelongToNestableTree
     {
         return 1;
     }
+
+    public function scopeSorted($query, string $direction = 'asc')
+    {
+        $query
+            ->joinRelationship('nestableTree')
+            ->orderByPowerJoins('nestableTree.order', $direction);
+    }
 }

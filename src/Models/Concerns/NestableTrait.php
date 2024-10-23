@@ -49,7 +49,7 @@ trait NestableTrait
     //region Scopes
     public function scopeRoot($query)
     {
-        return $query->where($this->getNestableParentIdColumn(), $this->getNestableRootValue());
+        return $query->where($this->getQualifiedNestableParentIdColumn(), $this->getNestableRootValue());
     }
 
     public function scopeLeaf($query)
@@ -59,7 +59,7 @@ trait NestableTrait
 
     public function scopeParent($query, $parentId)
     {
-        return $query->where($this->getNestableParentIdColumn(), $parentId);
+        return $query->where($this->getQualifiedNestableParentIdColumn(), $parentId);
     }
     //endregion Scopes
 
@@ -119,6 +119,11 @@ trait NestableTrait
     public function getNestableParentIdColumn(): string
     {
         return 'parent_id';
+    }
+
+    public function getQualifiedNestableParentIdColumn(): string
+    {
+        return $this->qualifyColumn($this->getNestableParentIdColumn());
     }
 
     public function getNestableRootValue(): int | string

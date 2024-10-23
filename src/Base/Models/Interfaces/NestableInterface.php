@@ -72,5 +72,12 @@ interface NestableInterface
      */
     public function getNestableParentIdColumn(): string;
 
+    /**
+     * Get the fully qualified column name for the nestable parent ID.
+     *
+     * @return string The fully qualified column name for the nestable parent ID.
+     */
+    public function getQualifiedNestableParentIdColumn(): string;
+
     public function getNestableRootValue(): int | string;
 }
