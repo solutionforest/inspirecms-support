@@ -164,33 +164,33 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
                     }
                 }
 
-
                 return $data;
             })
             ->form(
                 fn (Form $form) => $form
                     ->schema([
                         Forms\Components\FileUpload::make('file')
-                        ->label(__('inspirecms-support::media-library.forms.files.label'))
-                        ->disk(MediaLibraryManifest::getDisk())
-                        ->directory(MediaLibraryManifest::getDirectory())
-                        ->deletable(false)
-                        ->openable()
-                        ->downloadable()
-                        ->imageEditor()
-                        ->saveUploadedFileUsing(function ($component, TemporaryUploadedFile $file, Model $record): ?string {
-                            try {
-                                if (! $file->exists()) {
+                            ->label(__('inspirecms-support::media-library.forms.files.label'))
+                            ->disk(MediaLibraryManifest::getDisk())
+                            ->directory(MediaLibraryManifest::getDirectory())
+                            ->deletable(false)
+                            ->openable()
+                            ->downloadable()
+                            ->imageEditor()
+                            ->saveUploadedFileUsing(function ($component, TemporaryUploadedFile $file, Model $record): ?string {
+                                try {
+                                    if (! $file->exists()) {
+                                        return null;
+                                    }
+                                } catch (UnableToCheckFileExistence $exception) {
                                     return null;
                                 }
-                            } catch (UnableToCheckFileExistence $exception) {
-                                return null;
-                            }
 
-                            $record->media()->delete();
-                            $record->addMedia($file)->toMediaCollection();
-                            return $record->getFirstMedia()->getPathRelativeToRoot();
-                        }),
+                                $record->media()->delete();
+                                $record->addMedia($file)->toMediaCollection();
+
+                                return $record->getFirstMedia()->getPathRelativeToRoot();
+                            }),
                         Forms\Components\TextInput::make('title')
                             ->label(__('inspirecms-support::media-library.forms.title.label'))
                             ->required(),
@@ -232,12 +232,12 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
                 fn (Form $form) => $form
                     ->schema([
                         Forms\Components\FileUpload::make('file')
-                        ->label(__('inspirecms-support::media-library.forms.files.label'))
-                        ->disk(MediaLibraryManifest::getDisk())
-                        ->directory(MediaLibraryManifest::getDirectory())
-                        ->deletable(false)
-                        ->openable()
-                        ->downloadable(),
+                            ->label(__('inspirecms-support::media-library.forms.files.label'))
+                            ->disk(MediaLibraryManifest::getDisk())
+                            ->directory(MediaLibraryManifest::getDirectory())
+                            ->deletable(false)
+                            ->openable()
+                            ->downloadable(),
                         Forms\Components\TextInput::make('title')
                             ->label(__('inspirecms-support::media-library.forms.title.label'))
                             ->required(),
