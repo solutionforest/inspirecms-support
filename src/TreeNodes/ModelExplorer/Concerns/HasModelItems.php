@@ -159,7 +159,7 @@ trait HasModelItems
         return collect($records)->map(function ($record) use ($depth): array {
             $item = [
                 'key' => $record->getKey(),
-                'parentKey' => $record->{$this->getParentColumnName()},
+                'parentKey' => $record->getParentId(),
                 'label' => $this->evaluate($this->determineRecordLabelUsing, [
                     'record' => $record,
                 ]),
