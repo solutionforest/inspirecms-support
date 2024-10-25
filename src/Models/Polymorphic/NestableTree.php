@@ -31,12 +31,12 @@ class NestableTree extends BaseModel implements NestableTreeContract
 
     public function scopeParent($query, $parentId)
     {
-        return $query->where($this->getNestableParentIdColumn(), $parentId);
+        $query->where($this->getNestableParentIdColumn(), $parentId);
     }
 
     public function scopeRoot($query)
     {
-        return $query->whereNull($this->getNestableParentIdColumn());
+        $query->where($this->getNestableParentIdColumn(), $this->getNestableRootValue());
     }
 
     public function determineOrderColumnName(): string
