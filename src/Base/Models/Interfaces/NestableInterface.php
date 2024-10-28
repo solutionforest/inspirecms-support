@@ -94,13 +94,13 @@ interface NestableInterface
      * @return int|string|null The ID of the parent, which can be an integer, a string, or null if there is no parent.
      */
     public function getParentId(): int | string | null;
-    
+
     public function getFallbackParentId(): int | string | null;
 
     /**
      * Set the current instance as the root node.
      *
-     * @param bool $save Indicates whether to save the instance after setting it as root. Default is true.
+     * @param  bool  $save  Indicates whether to save the instance after setting it as root. Default is true.
      * @return void
      */
     public function asRoot($save = true);
@@ -108,8 +108,8 @@ interface NestableInterface
     /**
      * Sets the parent node for the current node.
      *
-     * @param Model|string|int|null $parent The parent node to set.
-     * @param bool $save Whether to save the changes immediately. Default is true.
+     * @param  Model|string|int|null  $parent  The parent node to set.
+     * @param  bool  $save  Whether to save the changes immediately. Default is true.
      * @return void
      */
     public function setParentNode($parent, $save = true);

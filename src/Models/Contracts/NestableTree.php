@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use SolutionForest\InspireCms\Support\Base\Models\Interfaces\NestableInterface;
 use Spatie\EloquentSortable\Sortable;
 
-interface NestableTree extends Sortable, NestableInterface
+interface NestableTree extends NestableInterface, Sortable
 {
     /**
      * Get the nestable relationship for the nestable tree.

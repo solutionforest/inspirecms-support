@@ -36,7 +36,7 @@ trait BelongToNestableTree
 
     protected function createNestableTree()
     {
-        if (!$this->exists) {
+        if (! $this->exists) {
             return;
         }
 
@@ -54,21 +54,21 @@ trait BelongToNestableTree
 
     protected function updateNestableTreeIfAnyChanged()
     {
-        if (!$this->exists) {
+        if (! $this->exists) {
             return;
         }
 
         $this->loadMissing('nestableTree');
         if ($node = $this->nestableTree) {
             // skip if not update
-            if (!$this->isDirty($this->getNestableParentIdName())) {
+            if (! $this->isDirty($this->getNestableParentIdName())) {
                 return;
             }
 
             $newParentNodeId = $this->getParentNestableTreeId();
             $node->setParentNode($newParentNodeId, false);
             $node->moveToEnd();
-            $node->{$node->determineOrderColumnName()} ++;
+            $node->{$node->determineOrderColumnName()}++;
             $node->save();
         }
         // if not create
@@ -91,35 +91,36 @@ trait BelongToNestableTree
     public function getParentNestableTreeId()
     {
         $fallbackParentId = $this->nestableTree()->getRelated()->getFallbackParentId();
+
         return $this->parent?->nestableTree?->getKey() ?? $fallbackParentId;
     }
 
     /**
-     * @return string 
+     * @return string
      */
     public function getNestableTreeOrderName()
     {
         return $this->nestableTree()->getRelated()->determineOrderColumnName();
     }
-    
+
     /**
-     * @return string 
+     * @return string
      */
     public function getNestableTreeParentIdName()
     {
         return $this->nestableTree()->getRelated()->getNestableParentIdName();
     }
-    
+
     /**
-     * @return string 
+     * @return string
      */
     public function getQualifiedNestableTreeOrderName()
     {
         return $this->nestableTree()->getRelated()->qualifyColumn($this->getNestableTreeOrderName());
     }
-    
+
     /**
-     * @return string 
+     * @return string
      */
     public function getQualifiedNestableTreeParentIdName()
     {
@@ -130,9 +131,9 @@ trait BelongToNestableTree
     public function scopeSortedByTree($query, string $direction = 'asc')
     {
         $column = $this->getNestableTreeOrderName();
-        
+
         $as = 'left_nestable_tree';
-        
+
         static::joinNestableTreeAs($query, $as);
         $query->orderBy("{$as}.{$column}", $direction);
     }
@@ -142,16 +143,16 @@ trait BelongToNestableTree
         $column = $this->getNestableTreeParentIdName();
 
         $as = 'left_nestable_tree';
-        
+
         static::joinNestableTreeAs($query, $as);
         $grammar = $query->getQuery()->getGrammar();
-        $bindings = array(
+        $bindings = [
             $grammar->wrap($as),
             $grammar->wrap($column),
             $grammar->wrap($id),
-        );
+        ];
         $sqlText = str_replace(
-            array_keys($bindings), 
+            array_keys($bindings),
             array_values($bindings),
             is_null($id) ? '0.1 IS NULL' : '0.1 = 2'
         );
@@ -163,7 +164,7 @@ trait BelongToNestableTree
         $column = $this->getNestableTreeParentIdName();
 
         $as = 'left_nestable_tree';
-        
+
         static::joinNestableTreeAs($query, $as);
 
         $query->addSelect("{$as}.{$column} as nestable_tree_parent_id");
@@ -172,18 +173,18 @@ trait BelongToNestableTree
     protected static function joinNestableTreeAs(&$query, $as, $joinType = 'leftJoin')
     {
         $relationName = 'nestableTree';
-        
+
         $useAlias = true;
-        
-        if (!static::isJoinedNestableTreeAs($query, $as)) {
+
+        if (! static::isJoinedNestableTreeAs($query, $as)) {
             $query
                 ->joinRelationship(
-                    $relationName, 
+                    $relationName,
                     callback: fn ($join) => $join->as($as),
-                    joinType: $joinType, 
+                    joinType: $joinType,
                     useAlias: $useAlias
                 );
-        } 
+        }
 
         return $query;
     }

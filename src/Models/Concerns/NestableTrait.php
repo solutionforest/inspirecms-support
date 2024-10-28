@@ -150,7 +150,7 @@ trait NestableTrait
     /**
      * Set the current instance as the root node.
      *
-     * @param bool $save Indicates whether to save the instance after setting it as root. Default is true.
+     * @param  bool  $save  Indicates whether to save the instance after setting it as root. Default is true.
      */
     public function asRoot($save = true)
     {
@@ -160,8 +160,8 @@ trait NestableTrait
     /**
      * Sets the parent node for the current node.
      *
-     * @param Model|string|int|null $parent The parent node to set.
-     * @param bool $save Whether to save the changes immediately. Default is true.
+     * @param  Model|string|int|null  $parent  The parent node to set.
+     * @param  bool  $save  Whether to save the changes immediately. Default is true.
      */
     public function setParentNode($parent, $save = true)
     {

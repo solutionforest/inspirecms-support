@@ -39,18 +39,22 @@ class NestableTree extends BaseModel implements NestableTreeContract
     }
     //endregion Sortable
 
-    /** @inheritDoc */
-    public static function setNewOrderForNestable($parentId, array $morphableIds, string $morphableType): void 
+    /** {@inheritDoc} */
+    public static function setNewOrderForNestable($parentId, array $morphableIds, string $morphableType): void
     {
         // Get morph type from the model class string
         if (class_exists($morphableType)) {
             $morphableType = app($morphableType)->getMorphClass();
-        } 
+        }
 
-        static::setNewOrder($morphableIds, 1, 'nestable_id', fn ($q) => $q
-            ->where('nestable_type', $morphableType)
-            ->whereParent($parentId)
+        static::setNewOrder(
+            $morphableIds,
+            1,
+            'nestable_id',
+            fn ($q) => $q
+                ->where('nestable_type', $morphableType)
+                ->whereParent($parentId)
         );
-       
+
     }
 }
