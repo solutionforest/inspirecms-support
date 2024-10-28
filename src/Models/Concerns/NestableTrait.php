@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Support\Models\Concerns;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -13,8 +14,8 @@ trait NestableTrait
     {
         static::creating(function (self $model) {
             //region Set the parent ID to the fallback parent ID if it is blank
-            if (blank($model->{$model->getNestableParentIdColumn()}) && ! is_null($model->getNestableRootValue())) {
-                $model->{$model->getNestableParentIdColumn()} = $model->getNestableRootValue();
+            if (blank($model->{$model->getNestableParentIdName()}) && ! is_null($model->getNestableRootValue())) {
+                $model->{$model->getNestableParentIdName()} = $model->getNestableRootValue();
             }
             //endregion
         });
@@ -38,26 +39,26 @@ trait NestableTrait
 
     public function parent(): BelongsTo
     {
-        return $this->belongsTo(static::class, $this->getNestableParentIdColumn());
+        return $this->belongsTo(static::class, $this->getNestableParentIdName());
     }
 
     public function children(): HasMany
     {
-        return $this->hasMany(static::class, $this->getNestableParentIdColumn());
+        return $this->hasMany(static::class, $this->getNestableParentIdName());
     }
 
     //region Scopes
-    public function scopeRoot($query)
+    public function scopeWhereIsRoot($query, $condition)
     {
-        return $query->where($this->getQualifiedNestableParentIdColumn(), $this->getNestableRootValue());
+        return $query->where($this->getQualifiedNestableParentIdColumn(), ($condition ? '=' : '!='), $this->getNestableRootValue());
     }
 
-    public function scopeLeaf($query)
+    public function scopeWhereIsLeaf($query)
     {
         return $query->whereDoesntHave('children');
     }
 
-    public function scopeParent($query, $parentId)
+    public function scopeWhereParent($query, $parentId)
     {
         return $query->where($this->getQualifiedNestableParentIdColumn(), $parentId);
     }
@@ -108,7 +109,7 @@ trait NestableTrait
 
     public function isRoot(): bool
     {
-        return $this->{$this->getNestableParentIdColumn()} === $this->getNestableRootValue();
+        return $this->{$this->getNestableParentIdName()} === $this->getNestableRootValue();
     }
 
     public function isLeaf(): bool
@@ -116,18 +117,61 @@ trait NestableTrait
         return $this->children()->count() === 0;
     }
 
-    public function getNestableParentIdColumn(): string
+    public function getNestableParentIdName(): string
     {
         return 'parent_id';
     }
 
     public function getQualifiedNestableParentIdColumn(): string
     {
-        return $this->qualifyColumn($this->getNestableParentIdColumn());
+        return $this->qualifyColumn($this->getNestableParentIdName());
     }
 
-    public function getNestableRootValue(): int | string
+    public function getNestableRootValue(): int | string | null
     {
         return 0;
+    }
+
+    /**
+     * Get the ID of the parent.
+     *
+     * @return int|string|null The ID of the parent, which can be an integer, a string, or null if there is no parent.
+     */
+    public function getParentId(): int | string | null
+    {
+        return $this->{$this->getNestableParentIdName()};
+    }
+
+    public function getFallbackParentId(): int | string | null
+    {
+        return $this->getNestableRootValue();
+    }
+
+    /**
+     * Set the current instance as the root node.
+     *
+     * @param bool $save Indicates whether to save the instance after setting it as root. Default is true.
+     */
+    public function asRoot($save = true)
+    {
+        return $this->setParentNode($this->getNestableRootValue(), $save);
+    }
+
+    /**
+     * Sets the parent node for the current node.
+     *
+     * @param Model|string|int|null $parent The parent node to set.
+     * @param bool $save Whether to save the changes immediately. Default is true.
+     */
+    public function setParentNode($parent, $save = true)
+    {
+        $parentKey = $parent instanceof Model ? $parent?->getKey() : $parent;
+        $this->{$this->getNestableParentIdName()} = $parentKey ?? $this->getFallbackParentId();
+
+        if ($save) {
+            $this->save();
+        }
+
+        return $this;
     }
 }

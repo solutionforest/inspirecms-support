@@ -3,7 +3,6 @@
 namespace SolutionForest\InspireCms\Support\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use SolutionForest\InspireCms\Helpers\KeyHelper;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
 use SolutionForest\InspireCms\Support\Facades\MediaLibraryManifest;
 use SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset as MediaAssetContract;
@@ -114,16 +113,4 @@ class MediaAsset extends BaseModel implements MediaAssetContract
         return $query->where('is_folder', $condition);
     }
     //endregion Scopes
-
-    //region Nestable
-    protected function fallbackParentId()
-    {
-        return $this->getNestableRootValue();
-    }
-
-    public function getNestableRootValue(): int | string
-    {
-        return KeyHelper::generateMinUuid();
-    }
-    //endregion Nestable
 }

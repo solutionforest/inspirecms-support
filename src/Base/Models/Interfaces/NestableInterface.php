@@ -70,7 +70,7 @@ interface NestableInterface
     /**
      * Get the name of 'parent id' column.
      */
-    public function getNestableParentIdColumn(): string;
+    public function getNestableParentIdName(): string;
 
     /**
      * Get the fully qualified column name for the nestable parent ID.
@@ -79,5 +79,38 @@ interface NestableInterface
      */
     public function getQualifiedNestableParentIdColumn(): string;
 
-    public function getNestableRootValue(): int | string;
+    /**
+     * Get the root level parent_id for the nestable structure.
+     *
+     * This method returns the root value which can be either an integer or a string.
+     *
+     * @return int|string The root value for the nestable structure.
+     */
+    public function getNestableRootValue(): int | string | null;
+
+    /**
+     * Get the ID of the parent.
+     *
+     * @return int|string|null The ID of the parent, which can be an integer, a string, or null if there is no parent.
+     */
+    public function getParentId(): int | string | null;
+    
+    public function getFallbackParentId(): int | string | null;
+
+    /**
+     * Set the current instance as the root node.
+     *
+     * @param bool $save Indicates whether to save the instance after setting it as root. Default is true.
+     * @return void
+     */
+    public function asRoot($save = true);
+
+    /**
+     * Sets the parent node for the current node.
+     *
+     * @param Model|string|int|null $parent The parent node to set.
+     * @param bool $save Whether to save the changes immediately. Default is true.
+     * @return void
+     */
+    public function setParentNode($parent, $save = true);
 }

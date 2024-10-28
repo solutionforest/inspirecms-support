@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Support\Base\Models\Interfaces;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 interface BelongToNestableTree
@@ -15,18 +16,12 @@ interface BelongToNestableTree
     public function nestableTree(): MorphOne;
 
     /**
-     * Interface method to retrieve tree data.
-     *
-     * @return array An array representing the tree data.
+     * @return ?Model
      */
-    public function getTreeData(): array;
+    public function getParentNestableTree();
 
     /**
-     * Get the ID of the parent node.
-     *
-     * This method returns the ID of the parent node in the nestable tree structure.
-     *
-     * @return string|int|null The ID of the parent node, or null if there is no parent.
+     * @return string|int|null
      */
-    public function getParentId(): string | int | null;
+    public function getParentNestableTreeId();
 }
