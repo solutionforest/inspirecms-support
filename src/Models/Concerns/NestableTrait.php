@@ -32,7 +32,9 @@ trait NestableTrait
                 });
             });
             static::restoring(function (self $model) {
-                $model->parent()->restore();
+                // To ensure that the parent fires the restoring event
+                $parent = $model->parent()->withTrashed()->first();
+                $parent?->restore();
             });
         }
     }
