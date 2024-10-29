@@ -3,7 +3,6 @@
 namespace SolutionForest\InspireCms\Support\TreeNodes\ModelExplorer\Concerns;
 
 use Filament\Actions\Action;
-use Filament\Actions\ActionGroup;
 use Filament\Support\Enums\ActionSize;
 use Illuminate\Support\Arr;
 
@@ -36,7 +35,7 @@ trait HasActions
     public function pushActions(array $actions): static
     {
         foreach (Arr::wrap($actions) as $action) {
-        if ($action instanceof Action) {
+            if ($action instanceof Action) {
                 $action->defaultSize(ActionSize::Small);
                 $action->defaultView($action::LINK_VIEW);
 
