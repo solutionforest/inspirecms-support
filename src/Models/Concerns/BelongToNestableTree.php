@@ -20,11 +20,11 @@ trait BelongToNestableTree
 
         if (in_array(SoftDeletes::class, class_uses_recursive(static::class))) {
             static::forceDeleting(function ($model) {
-                $model->nestableTree()?->delete();
+                $model->nestableTree?->delete();
             });
         } else {
             static::deleting(function ($model) {
-                $model->nestableTree()?->delete();
+                $model->nestableTree?->delete();
             });
         }
     }
