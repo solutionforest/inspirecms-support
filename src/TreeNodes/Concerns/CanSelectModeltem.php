@@ -107,8 +107,7 @@ trait CanSelectModeltem
         if (is_null($record)) {
             $this->selectedModelItemKey = '';
             $this->selectedModelItem = null;
-        }
-        if ($record instanceof Model) {
+        } else if ($record instanceof Model) {
             $this->selectedModelItem = $record;
             $this->selectedModelItemKey = $record->getKey();
         } else {
