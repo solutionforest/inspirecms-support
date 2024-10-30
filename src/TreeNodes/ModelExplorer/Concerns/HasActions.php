@@ -53,9 +53,9 @@ trait HasActions
     /**
      * @return array<Action>
      */
-    public function getActions(): array
+    public function getActions(array $arguments = []): array
     {
-        return $this->actions;
+        return Arr::map($this->actions, fn (Action $action) => $action->arguments($arguments));
     }
 
     /**

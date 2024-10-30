@@ -1,14 +1,10 @@
-@props(['item', 'actions' => [], 'selectedKey' => null])
+@props(['item', 'modelExplorer', 'selectedKey' => null])
 @php
     $nodeDepth = $item['depth'];
     $nodeKey = $item['key'];
     $hasChildren = $item['hasChildren'];
-    $actions = collect($actions)->map(function ($action) use ($item) {
-        return $action->arguments([
-            'key' => $item['key'],
-            'parent' => $item['parentKey'],
-        ]);
-    })->all();
+
+    $actions = $modelExplorer->getActions($item);
 @endphp
 <li tabindex="@js($nodeDepth)" 
     data-unique-key="{{ $nodeKey }}" 
@@ -67,7 +63,7 @@
             <x-inspirecms-support::model-explorer.item  
                 :item="$child" 
                 :selectedKey="$selectedKey"
-                :actions="$actions"
+                :model-explorer="$modelExplorer"
             />
         @endforeach
     </ul>
