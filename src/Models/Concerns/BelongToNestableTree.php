@@ -170,6 +170,17 @@ trait BelongToNestableTree
         $query->addSelect("{$as}.{$column} as nestable_tree_parent_id");
     }
 
+    public function scopeWithNestableTreeId($query)
+    {
+        $column = $this->getKeyName();
+
+        $as = 'left_nestable_tree';
+
+        static::joinNestableTreeAs($query, $as);
+
+        $query->addSelect("{$as}.{$column} as nestable_tree_id");
+    }
+
     protected static function joinNestableTreeAs(&$query, $as, $joinType = 'leftJoin')
     {
         $relationName = 'nestableTree';
