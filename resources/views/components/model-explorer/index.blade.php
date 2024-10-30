@@ -1,4 +1,4 @@
-@props(['items' => [], 'expandedItemsStateKey' => null, 'modelExplorer'])
+@props(['modelExplorer', 'items' => [], 'expandedItemsStateKey' => null, 'translatable' => false, 'translatableLocale' => null])
 @php
     $selectedKey = $this->selectedModelItemKey;
 @endphp
@@ -37,6 +37,8 @@
                     :item="$item" 
                     :selectedKey="$selectedKey"
                     :model-explorer="$modelExplorer"
+                    :translatable="$translatable"
+                    :translatable-locale="$translatableLocale"
                 />
             @endforeach
         </ul>
