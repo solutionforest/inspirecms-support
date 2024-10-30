@@ -55,7 +55,7 @@ trait HasActions
      */
     public function getActions(array $arguments = []): array
     {
-        return Arr::map($this->actions, fn (Action $action) => $action->arguments($arguments));
+        return $this->getVisibleActions($arguments);
     }
 
     /**
@@ -78,5 +78,12 @@ trait HasActions
         } else {
             $this->flatActions[$action->getName()] ??= $action;
         }
+    }
+
+    protected function getVisibleActions(array $arguments = []): array
+    {
+        $actions = Arr::map($this->actions, fn (Action $action) => $action->arguments($arguments));
+
+        return Arr::where($actions, fn (Action $action) => $action->isVisible($arguments));
     }
 }
