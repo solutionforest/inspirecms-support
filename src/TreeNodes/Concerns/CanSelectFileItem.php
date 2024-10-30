@@ -33,6 +33,9 @@ trait CanSelectFileItem
     {
         // Add a guard clause to prevent re-selection of the same file
         if ($this->fileExplorerSelectedPath && $this->fileExplorerSelectedPath === $path) {
+
+            $this->dispatch('selectFileExplorerItem', $path);
+
             return;
         }
 
@@ -43,7 +46,7 @@ trait CanSelectFileItem
 
         $this->fileExplorerSelectedPath = $path;
 
-        $this->dispatch('fileExplorerSelectedItemChanged', $path);
+        $this->dispatch('selectFileExplorerItem', $path);
     }
 
     public function getFileContent($path)
