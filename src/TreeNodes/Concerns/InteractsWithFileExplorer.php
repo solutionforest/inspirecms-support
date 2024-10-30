@@ -13,12 +13,7 @@ trait InteractsWithFileExplorer
 
     public function bootInteractsWithFileExplorer()
     {
-        $this->fileExplorer = \Filament\Actions\Action::configureUsing(
-            \Closure::fromCallable([$this, 'configureSelectedFileItemFormAction']),
-            fn () => $this->fileExplorer($this->makeFileExplorer())
-        );
-
-        $this->cacheForm('selectedFileItemForm', $this->getSelectedFileItemForm());
+        $this->fileExplorer = $this->fileExplorer($this->makeFileExplorer());
     }
 
     public function fileExplorer(FileExplorer $fileExplorer): FileExplorer
