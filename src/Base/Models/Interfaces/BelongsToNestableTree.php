@@ -5,7 +5,7 @@ namespace SolutionForest\InspireCms\Support\Base\Models\Interfaces;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 
-interface BelongToNestableTree
+interface BelongsToNestableTree
 {
     /**
      * Defines a relationship method for a nestable tree structure.
@@ -15,6 +15,8 @@ interface BelongToNestableTree
      */
     public function nestableTree(): MorphOne;
 
+    public function ensureNestableTree(): void;
+    
     /**
      * @return ?Model
      */

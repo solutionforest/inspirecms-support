@@ -5,38 +5,14 @@ namespace SolutionForest\InspireCms\Support\Models\Concerns;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
+use SolutionForest\InspireCms\Support\Observers\NestableModelObserver;
 
 trait NestableTrait
 {
     public static function bootNestableTrait()
     {
-        static::creating(function (self $model) {
-            //region Set the parent ID to the fallback parent ID if it is blank
-            if (blank($model->{$model->getNestableParentIdName()}) && ! is_null($model->getNestableRootValue())) {
-                $model->{$model->getNestableParentIdName()} = $model->getNestableRootValue();
-            }
-            //endregion
-        });
-        static::deleting(function (self $model) {
-            $model->children()->each(function ($child) {
-                $child->delete();
-            });
-        });
-
-        if (in_array(SoftDeletes::class, class_uses_recursive(static::class))) {
-            static::forceDeleting(function (self $model) {
-                $model->children()->withTrashed()->each(function ($child) {
-                    $child->forceDelete();
-                });
-            });
-            static::restoring(function (self $model) {
-                // To ensure that the parent fires the restoring event
-                $parent = $model->parent()->withTrashed()->first();
-                $parent?->restore();
-            });
-        }
+        static::observe(new NestableModelObserver);
     }
 
     public function parent(): BelongsTo

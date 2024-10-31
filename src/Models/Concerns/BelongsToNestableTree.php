@@ -4,34 +4,28 @@ namespace SolutionForest\InspireCms\Support\Models\Concerns;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use SolutionForest\InspireCms\Support\Facades\InspireCmsSupport;
+use SolutionForest\InspireCms\Support\Observers\BelongsToNestableTreeObserver;
 
-trait BelongToNestableTree
+trait BelongsToNestableTree
 {
     public static function bootBelongToNestableTree()
     {
-        static::created(function ($model) {
-            $model->createNestableTree();
-        });
-        static::updated(function ($model) {
-            $model->updateNestableTreeIfAnyChanged();
-        });
-
-        if (in_array(SoftDeletes::class, class_uses_recursive(static::class))) {
-            static::forceDeleting(function ($model) {
-                $model->nestableTree?->delete();
-            });
-        } else {
-            static::deleting(function ($model) {
-                $model->nestableTree?->delete();
-            });
-        }
+        static::observe(new BelongsToNestableTreeObserver);
     }
 
     public function nestableTree(): MorphOne
     {
         return $this->morphOne(InspireCmsSupport::getNestableTreeModel(), 'nestable');
+    }
+
+    public function ensureNestableTree(): void
+    {
+        if ($this->exists) {
+            $this->updateNestableTreeIfAnyChanged();
+        } else {
+            $this->createNestableTree();
+        }
     }
 
     protected function createNestableTree()

@@ -12,7 +12,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class MediaAsset extends BaseModel implements MediaAssetContract
 {
-    use Concerns\BelongToNestableTree;
+    use Concerns\BelongsToNestableTree;
     use Concerns\HasAuthor;
     use Concerns\NestableTrait;
     use HasUuids;
