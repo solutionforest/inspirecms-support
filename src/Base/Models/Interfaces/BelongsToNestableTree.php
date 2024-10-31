@@ -16,7 +16,7 @@ interface BelongsToNestableTree
     public function nestableTree(): MorphOne;
 
     public function ensureNestableTree(): void;
-    
+
     /**
      * @return ?Model
      */
