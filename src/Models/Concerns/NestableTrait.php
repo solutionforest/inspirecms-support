@@ -44,8 +44,10 @@ trait NestableTrait
 
     public function descendants(): Collection
     {
+        $this->loadMissing('children');
+
         return $this->children->flatMap(function ($child) {
-            return $child->descendants()->prepend($child);
+            return $child->descendants();
         })->prepend($this);
     }
 
