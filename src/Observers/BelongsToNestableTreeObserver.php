@@ -9,7 +9,7 @@ use SolutionForest\InspireCms\Support\Base\Models\Interfaces\BelongsToNestableTr
 class BelongsToNestableTreeObserver
 {
     /**
-     * Handle the creating event.
+     * Handle the created event.
      *
      * @param  \SolutionForest\InspireCms\Support\Base\Models\Interfaces\BelongsToNestableTree  $model
      * @return void

@@ -9,7 +9,7 @@ use SolutionForest\InspireCms\Support\Observers\BelongsToNestableTreeObserver;
 
 trait BelongsToNestableTree
 {
-    public static function bootBelongToNestableTree()
+    public static function bootBelongsToNestableTree()
     {
         static::observe(new BelongsToNestableTreeObserver);
     }
