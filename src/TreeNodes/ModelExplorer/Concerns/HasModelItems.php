@@ -191,7 +191,7 @@ trait HasModelItems
             return $item;
         });
     }
-    
+
     public function getNodeItemKey(array $item): mixed
     {
         $result = data_get($item, 'key');

@@ -155,17 +155,16 @@ trait HasTreeNodeItemActions
         }
 
         // Unmount the action if the item key is not set.
-        if (filled($itemKey) && 
+        if (filled($itemKey) &&
             (
                 ($action instanceof TreeNodeAction && blank($action->getItemKey())) ||
-                ($action instanceof Action && !($action instanceof TreeNodeAction) && $action->getRecord() === null)
+                ($action instanceof Action && ! ($action instanceof TreeNodeAction) && $action->getRecord() === null)
             )
         ) {
             $this->unmountTreeNodeItemAction();
 
             return null;
         }
-
 
         // Unmount the action if it is disabled.
         if ($action->isDisabled()) {
@@ -341,8 +340,6 @@ trait HasTreeNodeItemActions
      * This method is used to clear or reset any properties that are associated
      * with the currently mounted tree node item action, ensuring that the state
      * is clean and ready for the next action.
-     *
-     * @return void
      */
     protected function resetMountedTreeNodeItemActionProperties(): void
     {
@@ -354,9 +351,7 @@ trait HasTreeNodeItemActions
     /**
      * Caches the mounted tree node item action form.
      *
-     * @param null|Action|TreeNodeAction $mountedAction The mounted action to be cached, or null if no action is provided.
-     *
-     * @return void
+     * @param  null|Action|TreeNodeAction  $mountedAction  The mounted action to be cached, or null if no action is provided.
      */
     protected function closeTreeNodeItemActionModal(): void
     {
@@ -368,8 +363,6 @@ trait HasTreeNodeItemActions
      *
      * This method is responsible for displaying the modal that allows users
      * to perform actions on a tree node item within the application.
-     *
-     * @return void
      */
     protected function openTreeNodeItemActionModal(): void
     {

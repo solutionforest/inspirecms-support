@@ -7,8 +7,8 @@ use SolutionForest\InspireCms\Support\TreeNodes\Contracts\TreeNode;
 
 class ActionGroup extends BaseAction
 {
-    use Concerns\BelongsToTreeNodeItem;
     use Concerns\BelongsToTreeNode;
+    use Concerns\BelongsToTreeNodeItem;
 
     /**
      * @return array<mixed>

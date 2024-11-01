@@ -24,9 +24,9 @@ trait BelongsToTreeNode
 
         $group = $this->getGroup();
 
-        
         if ($group && ! ($group instanceof ActionGroup)) {
             dd($group, $this);
+
             throw new \Exception('This action does not belong to a tree node.');
         }
 

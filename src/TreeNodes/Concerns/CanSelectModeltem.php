@@ -14,10 +14,9 @@ trait CanSelectModeltem
 
     public ?Model $selectedModelItem = null;
 
-    
     public function cacheModelItemNode(string | int $parentKey, array $node): void
     {
-        if (!isset($this->cachedModelExplorerItems[$parentKey])) {
+        if (! isset($this->cachedModelExplorerItems[$parentKey])) {
             $this->cachedModelExplorerItems[$parentKey] = $node;
         }
     }

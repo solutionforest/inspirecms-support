@@ -8,8 +8,8 @@ use SolutionForest\InspireCms\Support\TreeNodes\Contracts\TreeNode;
 
 class Action extends BaseAction
 {
-    use Concerns\BelongsToTreeNodeItem;
     use Concerns\BelongsToTreeNode;
+    use Concerns\BelongsToTreeNodeItem;
 
     public function getLivewireCallMountedActionName(): string
     {

@@ -41,6 +41,7 @@ trait NestableTrait
         if (is_null($parentId)) {
             return $query->whereNull($this->getNestableParentIdName());
         }
+
         return $query->where($this->getQualifiedNestableParentIdColumn(), $parentId);
     }
     //endregion Scopes

@@ -94,7 +94,7 @@ trait HasFileItems
     {
         return (string) str($this->getDirectory() ?? '')->trim()->rtrim('/');
     }
-    
+
     public function getNodeItemKey(array $item): mixed
     {
         $path = data_get($item, 'path') ?? '';

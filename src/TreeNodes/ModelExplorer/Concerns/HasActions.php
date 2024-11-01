@@ -53,7 +53,7 @@ trait HasActions
 
                 $this->mergeCachedFlatActions($flatActions);
 
-            } else if ($action instanceof Action) {
+            } elseif ($action instanceof Action) {
                 $action->defaultSize(ActionSize::Small);
                 $action->defaultView($action::LINK_VIEW);
 
@@ -79,7 +79,7 @@ trait HasActions
 
             if ($action instanceof ActionGroup || $action instanceof TreeNodeAction) {
                 $action->itemKey($this->getNodeItemKey($item));
-            } 
+            }
 
             if ($action instanceof Action) {
                 $action->arguments($this->getNodeItemArguments($item));
@@ -139,7 +139,7 @@ trait HasActions
         return array_key_exists($name, $this->getFlatActions());
     }
 
-    protected function cacheAction(Action|TreeNodeAction $action, bool $shouldOverwriteExistingAction = true): void
+    protected function cacheAction(Action | TreeNodeAction $action, bool $shouldOverwriteExistingAction = true): void
     {
         if ($shouldOverwriteExistingAction) {
             $this->flatActions[$action->getName()] = $action;
@@ -169,7 +169,7 @@ trait HasActions
     /**
      * @param  array<string>  $modalActionNames
      */
-    protected function getMountableModalActionFromAction(Action|TreeNodeAction $action, array $modalActionNames, null|string|int $mountedItemKey = null): null | Action | TreeNodeAction
+    protected function getMountableModalActionFromAction(Action | TreeNodeAction $action, array $modalActionNames, null | string | int $mountedItemKey = null): null | Action | TreeNodeAction
     {
         $arguments = $this->getLivewire()->mountedTreeNodeItemActionsArguments ?? [];
 
@@ -183,7 +183,6 @@ trait HasActions
         foreach ($modalActionNames as $modalActionName) {
 
             $action = $action->getMountableModalAction($modalActionName);
-
 
             if (! $action) {
                 return null;

@@ -20,7 +20,7 @@ trait BelongsToTreeNodeItem
         if ($this->itemKey) {
             return $this->itemKey;
         }
-        
+
         if (($group = $this->getGroup()) instanceof ActionGroup) {
             return $group->getItemKey();
         }
