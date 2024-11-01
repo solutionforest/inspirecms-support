@@ -12,7 +12,7 @@
         $itemLabel = reset($itemLabel);
     }
 
-    $actions = $modelExplorer->getActions($item);
+    $actions = $modelExplorer->getVisibleActionsForItem($item);
     
 @endphp
 <li tabindex="@js($nodeDepth)" 

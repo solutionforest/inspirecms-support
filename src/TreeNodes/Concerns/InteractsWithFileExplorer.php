@@ -2,12 +2,17 @@
 
 namespace SolutionForest\InspireCms\Support\TreeNodes\Concerns;
 
+use Filament\Forms;
 use Filament\Notifications\Notification;
 use SolutionForest\InspireCms\Support\TreeNodes\FileExplorer;
 
+/**
+ * @property Forms\Form $mountedTreeNodeItemActionForm
+ */
 trait InteractsWithFileExplorer
 {
     use CanSelectFileItem;
+    use HasTreeNodeItemActions;
 
     protected FileExplorer $fileExplorer;
 
@@ -26,6 +31,11 @@ trait InteractsWithFileExplorer
     public function getFileExplorer(): FileExplorer
     {
         return $this->fileExplorer;
+    }
+
+    public function getTreeNode()
+    {
+        return $this->getFileExplorer();
     }
 
     protected function makeFileExplorer(): FileExplorer
@@ -71,4 +81,16 @@ trait InteractsWithFileExplorer
     {
         return __('inspirecms-support::notification.permission_denied.body');
     }
+
+    //region Forms
+    /**
+     * @return array<string, Forms\Form>
+     */
+    protected function getInteractsWithFileExplorerForms(): array
+    {
+        return [
+            'mountedTreeNodeItemActionForm' => $this->getMountedTreeNodeItemActionForm(),
+        ];
+    }
+    //endregion Forms
 }

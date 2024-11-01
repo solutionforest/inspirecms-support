@@ -4,15 +4,15 @@ namespace SolutionForest\InspireCms\Support\TreeNodes;
 
 use Filament\Support\Components\ViewComponent;
 use SolutionForest\InspireCms\Support\TreeNodes\Contracts\HasFileExplorer;
+use SolutionForest\InspireCms\Support\TreeNodes\Contracts\TreeNode;
 use SolutionForest\InspireCms\Support\TreeNodes\FileExplorer\Concerns;
 
-class FileExplorer extends ViewComponent
+class FileExplorer extends ViewComponent implements TreeNode
 {
     use Concerns\BelongsToLivewire;
     use Concerns\CanSelectFileItem;
     use Concerns\FileExplorerBase;
     use Concerns\HasFileItems;
-    use Concerns\HasSelectedItemForm;
 
     /**
      * @var view-string

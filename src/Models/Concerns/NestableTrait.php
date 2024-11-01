@@ -26,7 +26,7 @@ trait NestableTrait
     }
 
     //region Scopes
-    public function scopeWhereIsRoot($query, $condition)
+    public function scopeWhereIsRoot($query, bool $condition = true)
     {
         return $query->where($this->getQualifiedNestableParentIdColumn(), ($condition ? '=' : '!='), $this->getNestableRootValue());
     }
@@ -38,6 +38,9 @@ trait NestableTrait
 
     public function scopeWhereParent($query, $parentId)
     {
+        if (is_null($parentId)) {
+            return $query->whereNull($this->getNestableParentIdName());
+        }
         return $query->where($this->getQualifiedNestableParentIdColumn(), $parentId);
     }
     //endregion Scopes

@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms\Support\TreeNodes\Concerns;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 use Livewire\Attributes\On;
 
 trait CanSelectModeltem
@@ -13,16 +14,34 @@ trait CanSelectModeltem
 
     public ?Model $selectedModelItem = null;
 
-    #[On('getNodes')]
-    public function getModelExplorerNodes(string | int $parentKey, int $depth = 0)
+    
+    public function cacheModelItemNode(string | int $parentKey, array $node): void
     {
-        if (isset($this->cachedModelExplorerItems[$parentKey])) {
-            $items = $this->cachedModelExplorerItems[$parentKey];
-        } else {
-
-            $this->cachedModelExplorerItems[$parentKey] = $this->getModelExplorerItemsFrom($parentKey, $depth);
-
+        if (!isset($this->cachedModelExplorerItems[$parentKey])) {
+            $this->cachedModelExplorerItems[$parentKey] = $node;
         }
+    }
+
+    public function getCacheModelItemNode(string | int $key): ?array
+    {
+        $items = Arr::flatten($this->cachedModelExplorerItems, 1);
+
+        foreach ($items as $item) {
+
+            $checkKey = $this->getModelExplorer()->getNodeItemKey($item);
+
+            if ($checkKey === $key) {
+                return $item;
+            }
+        }
+
+        return null;
+    }
+
+    #[On('getNodes')]
+    public function cacheModelExplorerNodesOn(string | int $parentKey, int $depth = 0)
+    {
+        $this->cacheModelItemNode($parentKey, $this->getModelExplorerItemsFrom($parentKey, $depth));
     }
 
     #[On('selectItem')]
@@ -60,7 +79,7 @@ trait CanSelectModeltem
         $modelExplorer = $this->getModelExplorer();
 
         if (empty($this->cachedModelExplorerItems)) {
-            $this->getModelExplorerNodes($modelExplorer->getRootLevelKey());
+            $this->cacheModelExplorerNodesOn($modelExplorer->getRootLevelKey());
         }
 
         // Convert the items array as node tree items array

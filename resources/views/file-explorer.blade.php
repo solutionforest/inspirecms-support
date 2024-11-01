@@ -20,4 +20,7 @@
             @lang('inspirecms-support::tree-node.select_file_to_view')
         </p>
     @endif
+
+    <x-inspirecms-support::tree-node.actions.modals />
+
 </x-inspirecms-support::tree-node>
