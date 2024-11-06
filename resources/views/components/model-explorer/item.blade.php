@@ -73,6 +73,8 @@
                 :item="$child" 
                 :selectedKey="$selectedKey"
                 :model-explorer="$modelExplorer"
+                :translatable="$translatable"
+                :translatable-locale="$translatableLocale"
             />
         @endforeach
     </ul>
