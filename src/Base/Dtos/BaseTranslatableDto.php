@@ -19,15 +19,14 @@ class BaseTranslatableDto extends BaseDto
     }
 
     /**
-     * @param  TModle  $model
-     * @param string
      * @return self
      */
-    public static function fromTranslatableArray(array $parameters, $locale, $fallbackLocale)
+    public static function fromTranslatableArray(array $parameters, $locale, $fallbackLocale, $availableLocales = [])
     {
         return static::fromArray($parameters)
             ->setLocale($locale)
-            ->setFallbackLocale($fallbackLocale);
+            ->setFallbackLocale($fallbackLocale)
+            ->setAvilableLocales($availableLocales);
     }
 
     protected function getTranslation(string $name, ?string $locale = null, bool $usingFallback = true)
