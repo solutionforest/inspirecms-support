@@ -113,4 +113,29 @@ class MediaAsset extends BaseModel implements MediaAssetContract
         return $query->where('is_folder', $condition);
     }
     //endregion Scopes
+
+    //region Dto
+    public static function getDtoClass(): string
+    {
+        return \SolutionForest\InspireCms\Dtos\Assets\MediaAssetDetailDto::class;
+    }
+
+    public function toDto(...$args)
+    {
+        $this->loadMissing('media');
+
+        $dtoClass = static::getDtoClass();
+
+        $media = $this->getFirstMedia();
+
+        return $dtoClass::fromArray([
+            'uid' => $this->getKey(),
+            'caption' => $this->caption,
+            'description' => $this->description,
+            'meta' => $media?->manipulations,
+            'responsive' => array_keys($media?->responsive_images ?? []),
+            'disk' => $media?->disk,
+        ]);
+    }
+    //endregion Dto
 }
