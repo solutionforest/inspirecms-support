@@ -10,6 +10,7 @@ class InspireCmsSupportManager
 
     public function __construct()
     {
+        $this->tablePrefix = '';
         $this->nestableTreeModel = Models\Polymorphic\NestableTree::class;
     }
 
