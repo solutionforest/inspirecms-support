@@ -5,6 +5,7 @@ namespace SolutionForest\InspireCms\Support;
 use Filament\Support\Assets\Css;
 use Filament\Support\Facades\FilamentAsset;
 use Filament\Support\Facades\FilamentIcon;
+use Illuminate\Database\Schema\Blueprint;
 use Livewire\Features\SupportTesting\Testable;
 use Livewire\Livewire;
 use SolutionForest\InspireCms\Support\Base\Manifests;
@@ -50,6 +51,8 @@ class InspireCmsSupportServiceProvider extends PackageServiceProvider
     {
         $this->app->singleton(Manifests\MediaLibraryManifestInterface::class, fn () => $this->app->make(Manifests\MediaLibraryManifest::class));
         $this->app->singleton(Manifests\ResolverManifestInterface::class, fn () => $this->app->make(Manifests\ResolverManifest::class));
+
+        Blueprint::mixin(new \SolutionForest\InspireCms\Support\Macros\BlueprintMarcos);
     }
 
     public function packageBooted(): void
