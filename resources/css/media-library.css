@@ -168,6 +168,7 @@
             width: 25rem;
             border-width: 1px;
             border-radius: .375rem;
+            max-height: max-content;
 
             box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 

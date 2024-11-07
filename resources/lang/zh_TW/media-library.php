@@ -85,6 +85,26 @@ return [
         'title' => [
             'label' => '標題',
         ],
+        'custom-property' => [
+            'dimensions' => [
+                'label' => '尺寸',
+            ],
+            'duration' => [
+                'label' => '時長',
+            ],
+            'resolution' => [
+                'label' => '解析度',
+            ],
+            'channels' => [
+                'label' => '聲道',
+            ],
+            'bit_rate' => [
+                'label' => '比特率',
+            ],
+            'frame_rate' => [
+                'label' => '幀率',
+            ],
+        ],
     ],
     'filter' => [
         'title' => [
@@ -112,7 +132,7 @@ return [
             'label' => '檔案',
         ],
         'caption' => [
-            'label' => '標題',
+            'label' => '說明文字',
         ],
         'file_name' => [
             'label' => '檔案名稱',

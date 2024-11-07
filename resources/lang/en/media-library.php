@@ -85,6 +85,26 @@ return [
         'title' => [
             'label' => 'Title',
         ],
+        'custom-property' => [
+            'dimensions' => [
+                'label' => 'Dimensions',
+            ],
+            'duration' => [
+                'label' => 'Duration',
+            ],
+            'resolution' => [
+                'label' => 'Resolution',
+            ],
+            'channels' => [
+                'label' => 'Channels',
+            ],
+            'bit_rate' => [
+                'label' => 'Bitrate',
+            ],
+            'frame_rate' => [
+                'label' => 'Frame Rate',
+            ],
+        ],
     ],
     'filter' => [
         'title' => [

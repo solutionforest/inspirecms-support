@@ -89,7 +89,8 @@
                 <x-slot name="mediaActions">
                     <x-filament::button 
                         size="md" 
-                        wire:click="mountAction('editMedia')"
+                        wire:click="mountAction('editMedia')" 
+                        icon="heroicon-o-pencil"
                     >
                         {{ trans('inspirecms-support::media-library.actions.edit.label') }}
                     </x-filament::button>
@@ -98,6 +99,7 @@
                         size="md" 
                         wire:click="mountAction('viewMedia')"
                         color="gray"
+                        icon="heroicon-o-eye"
                     >
                         {{ trans('inspirecms-support::media-library.actions.view.label') }}
                     </x-filament::button>
