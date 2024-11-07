@@ -2,8 +2,6 @@
 
 namespace SolutionForest\InspireCms\Support\Macros;
 
-use Illuminate\Database\Schema\Blueprint;
-
 /**
  * @see \Illuminate\Database\Schema\Blueprint
  */
