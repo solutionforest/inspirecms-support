@@ -4,9 +4,10 @@ namespace SolutionForest\InspireCms\Support\TreeNodes;
 
 use Filament\Support\Components\ViewComponent;
 use SolutionForest\InspireCms\Support\TreeNodes\Contracts\HasModelExplorer;
+use SolutionForest\InspireCms\Support\TreeNodes\Contracts\TreeNode;
 use SolutionForest\InspireCms\Support\TreeNodes\ModelExplorer\Concerns;
 
-class ModelExplorer extends ViewComponent
+class ModelExplorer extends ViewComponent implements TreeNode
 {
     use Concerns\BelongsToLivewire;
     use Concerns\HasActions;

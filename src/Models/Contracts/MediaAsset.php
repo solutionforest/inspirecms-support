@@ -2,10 +2,12 @@
 
 namespace SolutionForest\InspireCms\Support\Models\Contracts;
 
+use SolutionForest\InspireCms\Support\Base\Models\Interfaces\BelongsToNestableTree;
+use SolutionForest\InspireCms\Support\Base\Models\Interfaces\HasDtoModel;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-interface MediaAsset extends HasMedia
+interface MediaAsset extends BelongsToNestableTree, HasDtoModel, HasMedia
 {
     public function registerMediaConversions(?Media $media = null): void;
 

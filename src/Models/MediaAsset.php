@@ -3,7 +3,6 @@
 namespace SolutionForest\InspireCms\Support\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use SolutionForest\InspireCms\Helpers\KeyHelper;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
 use SolutionForest\InspireCms\Support\Facades\MediaLibraryManifest;
 use SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset as MediaAssetContract;
@@ -13,7 +12,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class MediaAsset extends BaseModel implements MediaAssetContract
 {
-    use Concerns\BelongToCmsNestableTree;
+    use Concerns\BelongsToNestableTree;
     use Concerns\HasAuthor;
     use Concerns\NestableTrait;
     use HasUuids;
@@ -115,25 +114,28 @@ class MediaAsset extends BaseModel implements MediaAssetContract
     }
     //endregion Scopes
 
-    //region Nestable
-    protected function getParentId()
+    //region Dto
+    public static function getDtoClass(): string
     {
-        return $this->{$this->getNestableParentIdColumn()} ?? $this->fallbackParentId();
+        return \SolutionForest\InspireCms\Dtos\Assets\MediaAssetDetailDto::class;
     }
 
-    public function getNestableParentIdColumn(): string
+    public function toDto(...$args)
     {
-        return 'parent_id';
-    }
+        $this->loadMissing('media');
 
-    protected function fallbackParentId()
-    {
-        return $this->getNestableRootValue();
-    }
+        $dtoClass = static::getDtoClass();
 
-    public function getNestableRootValue(): int | string
-    {
-        return KeyHelper::generateMinUuid();
+        $media = $this->getFirstMedia();
+
+        return $dtoClass::fromArray([
+            'uid' => $this->getKey(),
+            'caption' => $this->caption,
+            'description' => $this->description,
+            'meta' => $media?->manipulations,
+            'responsive' => array_keys($media?->responsive_images ?? []),
+            'disk' => $media?->disk,
+        ]);
     }
-    //endregion Nestable
+    //endregion Dto
 }

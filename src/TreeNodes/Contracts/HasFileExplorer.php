@@ -2,18 +2,13 @@
 
 namespace SolutionForest\InspireCms\Support\TreeNodes\Contracts;
 
-use Filament\Forms\Form;
 use SolutionForest\InspireCms\Support\TreeNodes\FileExplorer;
 
-interface HasFileExplorer
+interface HasFileExplorer extends HasTreeNode
 {
     public function fileExplorer(FileExplorer $fileExplorer): FileExplorer;
 
-    public function selectedFileItemForm(Form $form): Form;
-
-    public function getSelectedFileItemFormActions(): array;
-
-    public function saveSelectedItem(): void;
+    public function getFileExplorer(): FileExplorer;
 
     public function getSelectedFileItemPath(): ?string;
 }

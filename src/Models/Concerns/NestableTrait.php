@@ -2,85 +2,56 @@
 
 namespace SolutionForest\InspireCms\Support\Models\Concerns;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
+use SolutionForest\InspireCms\Support\Observers\NestableModelObserver;
 
 trait NestableTrait
 {
     public static function bootNestableTrait()
     {
-        // static::addGlobalScope('appendLevel', function ($builder) {
-        //     $builder->addSelect(['level' => static::selectRaw('COUNT(*) - 1')
-        //         ->from('model_nestables as ancestors')
-        //         ->whereRaw('ancestors.id = model_nestables.id OR ancestors.id = model_nestables.parent_id')
-        //         ->whereRaw('ancestors.id = model_nestables.id OR EXISTS (
-        //             SELECT 1 FROM model_nestables as descendants
-        //             WHERE descendants.id = model_nestables.id
-        //             AND ancestors.id = descendants.parent_id
-        //         )')
-        //         ->groupBy('ancestors.id')
-        //     ]);
-        // });
-
-        static::creating(function (self $model) {
-            //region Set the parent ID to the fallback parent ID if it is blank
-            if (blank($model->{$model->getNestableParentIdColumn()}) && ! is_null($model->getNestableRootValue())) {
-                $model->{$model->getNestableParentIdColumn()} = $model->getNestableRootValue();
-            }
-            //endregion
-        });
-        static::deleting(function (self $model) {
-            $model->children()->delete();
-        });
-        if (method_exists(static::class, 'forceDeleting')) {
-            static::forceDeleting(function (self $model) {
-                $model->children()->forceDelete();
-            });
-        }
-        if (method_exists(static::class, 'restoring')) {
-            static::restoring(function (self $model) {
-                $model->parent()->restore();
-            });
-        }
+        static::observe(new NestableModelObserver);
     }
 
     public function parent(): BelongsTo
     {
-        return $this->belongsTo(static::class, $this->getNestableParentIdColumn());
-    }
-
-    public function withTrashedParent(): BelongsTo
-    {
-        return $this->parent()->withTrashed();
+        return $this->belongsTo(static::class, $this->getNestableParentIdName());
     }
 
     public function children(): HasMany
     {
-        return $this->hasMany(static::class, $this->getNestableParentIdColumn());
+        return $this->hasMany(static::class, $this->getNestableParentIdName());
     }
 
     //region Scopes
-    public function scopeRoot($query)
+    public function scopeWhereIsRoot($query, bool $condition = true)
     {
-        return $query->where($this->getNestableParentIdColumn(), $this->getNestableRootValue());
+        return $query->where($this->getQualifiedNestableParentIdColumn(), ($condition ? '=' : '!='), $this->getNestableRootValue());
     }
 
-    public function scopeLeaf($query)
+    public function scopeWhereIsLeaf($query)
     {
         return $query->whereDoesntHave('children');
     }
 
-    public function scopeParent($query, $parentId)
+    public function scopeWhereParent($query, $parentId)
     {
-        return $query->where($this->getNestableParentIdColumn(), $parentId);
+        if (is_null($parentId)) {
+            return $query->whereNull($this->getNestableParentIdName());
+        }
+
+        return $query->where($this->getQualifiedNestableParentIdColumn(), $parentId);
     }
     //endregion Scopes
 
     public function descendants(): Collection
     {
+        $this->loadMissing('children');
+
         return $this->children->flatMap(function ($child) {
-            return $child->descendants()->prepend($child);
+            return $child->descendants();
         })->prepend($this);
     }
 
@@ -122,7 +93,7 @@ trait NestableTrait
 
     public function isRoot(): bool
     {
-        return $this->{$this->getNestableParentIdColumn()} === $this->getNestableRootValue();
+        return $this->{$this->getNestableParentIdName()} === $this->getNestableRootValue();
     }
 
     public function isLeaf(): bool
@@ -130,18 +101,61 @@ trait NestableTrait
         return $this->children()->count() === 0;
     }
 
-    /**
-     * Get the name of 'parent id' column.
-     *
-     * @return ?string
-     */
-    protected function getNestableParentIdColumn()
+    public function getNestableParentIdName(): string
     {
         return 'parent_id';
     }
 
-    public function getNestableRootValue(): int | string
+    public function getQualifiedNestableParentIdColumn(): string
+    {
+        return $this->qualifyColumn($this->getNestableParentIdName());
+    }
+
+    public function getNestableRootValue(): int | string | null
     {
         return 0;
+    }
+
+    /**
+     * Get the ID of the parent.
+     *
+     * @return int|string|null The ID of the parent, which can be an integer, a string, or null if there is no parent.
+     */
+    public function getParentId(): int | string | null
+    {
+        return $this->{$this->getNestableParentIdName()};
+    }
+
+    public function getFallbackParentId(): int | string | null
+    {
+        return $this->getNestableRootValue();
+    }
+
+    /**
+     * Set the current instance as the root node.
+     *
+     * @param  bool  $save  Indicates whether to save the instance after setting it as root. Default is true.
+     */
+    public function asRoot($save = true)
+    {
+        return $this->setParentNode($this->getNestableRootValue(), $save);
+    }
+
+    /**
+     * Sets the parent node for the current node.
+     *
+     * @param  Model|string|int|null  $parent  The parent node to set.
+     * @param  bool  $save  Whether to save the changes immediately. Default is true.
+     */
+    public function setParentNode($parent, $save = true)
+    {
+        $parentKey = $parent instanceof Model ? $parent?->getKey() : $parent;
+        $this->{$this->getNestableParentIdName()} = $parentKey ?? $this->getFallbackParentId();
+
+        if ($save) {
+            $this->save();
+        }
+
+        return $this;
     }
 }

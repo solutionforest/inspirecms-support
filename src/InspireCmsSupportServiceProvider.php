@@ -80,6 +80,7 @@ class InspireCmsSupportServiceProvider extends PackageServiceProvider
     protected function getMigrations(): array
     {
         return [
+            'create_nestable-trees_table',
             'create_media-assets_table',
         ];
     }

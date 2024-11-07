@@ -5,6 +5,7 @@ namespace SolutionForest\InspireCms\Support\TreeNodes\ModelExplorer\Concerns;
 use Closure;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 
 trait HasModelItems
@@ -16,6 +17,8 @@ trait HasModelItems
     protected ?Closure $determineRecordHasChildrenUsing = null;
 
     protected ?Closure $resolveRecordUsing = null;
+
+    protected ?Closure $resolveItemKeyUsing = null;
 
     protected ?Closure $mutuateRootNodeItemsUsing = null;
 
@@ -108,6 +111,13 @@ trait HasModelItems
         return $this;
     }
 
+    public function resolveItemKeyUsing(Closure $callback): static
+    {
+        $this->resolveItemKeyUsing = $callback;
+
+        return $this;
+    }
+
     public function mutuateRootNodeItemsUsing(Closure $callback): static
     {
         $this->mutuateRootNodeItemsUsing = $callback;
@@ -159,7 +169,7 @@ trait HasModelItems
         return collect($records)->map(function ($record) use ($depth): array {
             $item = [
                 'key' => $record->getKey(),
-                'parentKey' => $record->{$this->getParentColumnName()},
+                'parentKey' => $record->getParentId(),
                 'label' => $this->evaluate($this->determineRecordLabelUsing, [
                     'record' => $record,
                 ]),
@@ -180,5 +190,24 @@ trait HasModelItems
 
             return $item;
         });
+    }
+
+    public function getNodeItemKey(array $item): mixed
+    {
+        $result = data_get($item, 'key');
+
+        if ($this->resolveItemKeyUsing) {
+            $result = $this->evaluate($this->resolveItemKeyUsing, [
+                'item' => $item,
+                'key' => $result,
+            ]);
+        }
+
+        return $result;
+    }
+
+    public function getNodeItemArguments(array $item): array
+    {
+        return Arr::only($item, ['key', 'parentKey', 'hasChildren', 'depth']);
     }
 }

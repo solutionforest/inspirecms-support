@@ -10,7 +10,9 @@
     data-treenode
     class="cursor-pointer"
 >
-    <div x-on:click="await toggleItem('{{ $nodePath }}', @js($nodeLevel))" class="node w-full inline-flex items-center gap-1 rounded-md hover:bg-gray-100 px-1 py-1.5">
+    <div x-on:click="await toggleItem('{{ $nodePath }}', @js($nodeLevel))" 
+        class="node w-full inline-flex items-center gap-1 rounded-md hover:bg-gray-100 dark:hover:bg-white/5 px-1 py-1.5"
+    >
         <span class="w-4">
             @if ($hasChildren)
                 <x-icon x-show="isExpanded('{{ $nodePath }}')" name="heroicon-o-chevron-down" class="w-4 h-4 text-gray-400 dark:text-gray-500" />

@@ -340,7 +340,7 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
     {
         $query = $this->getEloquentQuery()
             ->with('media')
-            ->parent($this->parentKey);
+            ->whereParent($this->parentKey);
 
         $filter = $this->ensureFilter();
 

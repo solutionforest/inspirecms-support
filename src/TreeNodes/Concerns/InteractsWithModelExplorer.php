@@ -3,12 +3,16 @@
 namespace SolutionForest\InspireCms\Support\TreeNodes\Concerns;
 
 use Filament\Actions\Action;
-use Filament\Actions\ActionGroup;
+use Filament\Forms;
 use SolutionForest\InspireCms\Support\TreeNodes\ModelExplorer;
 
+/**
+ * @property Forms\Form $mountedTreeNodeItemActionForm
+ */
 trait InteractsWithModelExplorer
 {
     use CanSelectModeltem;
+    use HasTreeNodeItemActions;
 
     protected ModelExplorer $modelExplorer;
 
@@ -33,6 +37,11 @@ trait InteractsWithModelExplorer
         return $this->modelExplorer;
     }
 
+    public function getTreeNode()
+    {
+        return $this->getModelExplorer();
+    }
+
     protected function makeModelExplorer(): ModelExplorer
     {
         return ModelExplorer::make($this);
@@ -53,8 +62,15 @@ trait InteractsWithModelExplorer
         return null;
     }
 
-    protected function configureSelectedModelItemFormAction(Action | ActionGroup $action): void
+    //region Forms
+    /**
+     * @return array<string, Forms\Form>
+     */
+    protected function getInteractsWithModelExplorerForms(): array
     {
-        //
+        return [
+            'mountedTreeNodeItemActionForm' => $this->getMountedTreeNodeItemActionForm(),
+        ];
     }
+    //endregion Forms
 }

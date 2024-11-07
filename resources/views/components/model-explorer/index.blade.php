@@ -1,4 +1,4 @@
-@props(['items' => [], 'expandedItemsStateKey' => null, 'actions' => []])
+@props(['modelExplorer', 'items' => [], 'expandedItemsStateKey' => null, 'translatable' => false, 'translatableLocale' => null])
 @php
     $selectedKey = $this->selectedModelItemKey;
 @endphp
@@ -36,7 +36,9 @@
                 <x-inspirecms-support::model-explorer.item  
                     :item="$item" 
                     :selectedKey="$selectedKey"
-                    :actions="$actions"
+                    :model-explorer="$modelExplorer"
+                    :translatable="$translatable"
+                    :translatable-locale="$translatableLocale"
                 />
             @endforeach
         </ul>

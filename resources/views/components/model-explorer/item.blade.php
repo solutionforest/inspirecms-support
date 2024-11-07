@@ -1,13 +1,19 @@
-@props(['item', 'actions' => [], 'selectedKey' => null])
+@props(['item', 'modelExplorer', 'selectedKey' => null, 'translatable' => false, 'translatableLocale' => null])
 @php
     $nodeDepth = $item['depth'];
     $nodeKey = $item['key'];
     $hasChildren = $item['hasChildren'];
-    $actions = collect($actions)->map(function ($action) use ($item) {
-        return $action->arguments([
-            'key' => $item['key'],
-        ]);
-    })->all();
+
+    $itemLabel = $item['label'] ?? null;
+
+    if ($translatable == true && !blank($translatableLocale) && $itemLabel && is_array($itemLabel)) {
+        $itemLabel = $itemLabel[$translatableLocale] ?? $item['fallbackLabel'] ?? null;
+    } else if (is_array($itemLabel)) {
+        $itemLabel = reset($itemLabel);
+    }
+
+    $actions = $modelExplorer->getVisibleActionsForItem($item);
+    
 @endphp
 <li tabindex="@js($nodeDepth)" 
     data-unique-key="{{ $nodeKey }}" 
@@ -34,14 +40,14 @@
             <a href="{{ $item['link'] }}" class="flex-1 truncate text-sm font-medium text-gray-700 dark:text-gray-200"
                 x-on:click="selectItem('{{ $nodeKey }}')"
             >
-                {{ $item['label'] ?? null }}
+                {{ $itemLabel }}
             </a>
             
         @else
             <span class="flex-1 truncate text-sm font-medium text-gray-700 dark:text-gray-200"
                 x-on:click="selectItem('{{ $nodeKey }}')"
             >
-                {{ $item['label'] ?? null }}
+                {{ $itemLabel }}
             </span>
         @endif
         @if (count($actions))
@@ -66,7 +72,9 @@
             <x-inspirecms-support::model-explorer.item  
                 :item="$child" 
                 :selectedKey="$selectedKey"
-                :actions="$actions"
+                :model-explorer="$modelExplorer"
+                :translatable="$translatable"
+                :translatable-locale="$translatableLocale"
             />
         @endforeach
     </ul>

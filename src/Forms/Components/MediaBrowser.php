@@ -70,7 +70,7 @@ class MediaBrowser extends Field
                 return null; // root
             }
 
-            return $media->{$media->getNestableParentIdColumn()};
+            return $media->{$media->getNestableParentIdName()};
         });
     }
 

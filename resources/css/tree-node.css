@@ -4,19 +4,11 @@
     max-height: 100%;
     gap: .5rem;
 
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+
     ::-webkit-scrollbar {
-        width: 7px;
-        height: 7px;
-    }
-    ::-webkit-scrollbar-track {
-        background: #f1f1f1;
-    }
-    ::-webkit-scrollbar-thumb {
-        background: #7a7a7a;
-        border-radius: 5px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-        background: #8b8b8b;
+        display: none;
     }
 }
 @media (min-width:1024px) {
@@ -46,10 +38,4 @@
     flex-grow: 1;
     overflow: auto;
     padding: 0.25rem;
-}
-
-:is(.dark *) {
-    ::-webkit-scrollbar-track {
-        background: #4e4e4e;
-    }
 }
