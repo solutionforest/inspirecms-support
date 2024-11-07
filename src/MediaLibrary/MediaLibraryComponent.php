@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Support\MediaLibrary;
 
+use FFMpeg\FFMpeg;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
@@ -17,6 +18,9 @@ use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use SolutionForest\InspireCms\Support\Facades\MediaLibraryManifest;
+use SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
+
 
 /**
  * @property Form $uploadFileForm
@@ -157,7 +161,7 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
             ->record(fn () => $this->selectedMedia)
             ->fillForm(function (?Model $record) {
                 $data = $record?->attributesToArray();
-                if ($record && $record instanceof \SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset) {
+                if ($record && $record instanceof MediaAsset) {
                     $media = $record->getFirstMedia();
                     if ($media) {
                         $data['file'] = $media->getPathRelativeToRoot();
@@ -177,7 +181,7 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
                             ->openable()
                             ->downloadable()
                             ->imageEditor()
-                            ->saveUploadedFileUsing(function ($component, TemporaryUploadedFile $file, Model $record): ?string {
+                            ->saveUploadedFileUsing(function ($component, TemporaryUploadedFile $file, MediaAsset $record): ?string {
                                 try {
                                     if (! $file->exists()) {
                                         return null;
@@ -218,7 +222,7 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
             ->record(fn () => $this->selectedMedia)
             ->fillForm(function (?Model $record) {
                 $data = $record?->attributesToArray();
-                if ($record && $record instanceof \SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset) {
+                if ($record && $record instanceof MediaAsset) {
                     $media = $record->getFirstMedia();
                     if ($media) {
                         $data['media'] = $media->attributesToArray();
@@ -408,14 +412,62 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
         return $this->isMultiple;
     }
 
+    protected function addMediaWithMappedProperties(MediaAsset $media, TemporaryUploadedFile $file): Model
+    {
+        $customProperties = [];
+        $mediaItem = $media->addMedia($file)->toMediaCollection();
+
+        try {
+
+            if ($media->isVideo()) {
+                $ffmpeg = FFMpeg::create([
+                    'ffmpeg.binaries' => config('media-library.ffmpeg_path'),
+                    'ffprobe.binaries' => config('media-library.ffprobe_path'),
+                ]);
+                $ffprobe = $ffmpeg->getFFProbe()
+                    ->streams($mediaItem->getPath()) // extracts streams informations
+                    ->videos()                      // filters video streams
+                    ->first();
+
+                $customProperties['duration'] = $ffprobe->get('duration');
+                $customProperties['width'] = $ffprobe->get('width');
+                $customProperties['height'] = $ffprobe->get('height');
+                $customProperties['resolution'] = "{$customProperties['width']}x{$customProperties['height']}";
+                $customProperties['channels'] = $ffprobe->get('channels');
+                $customProperties['bit_rate'] =   $ffprobe->get('bit_rate') ??  $ffprobe->get('avg_frame_rate');
+                $customProperties['frame_rate'] = $ffprobe->get('r_frame_rate');
+                $customProperties['frame_rate_avg'] = $ffprobe->get('avg_frame_rate');
+                $customProperties['codec_name'] = $ffprobe->get('codec_name');
+                $customProperties['codec_long_name'] = $ffprobe->get('codec_long_name');
+            } elseif ($media->isImage()) {
+                $dimensions = @getimagesize($mediaItem->getPath());
+                if (!empty($dimensions)) {
+                    $customProperties['width'] = $dimensions[0] ?? null;
+                    $customProperties['height'] = $dimensions[1] ?? null;
+                    $customProperties['dimensions'] = "{$customProperties['width']}x{$customProperties['height']}";
+                }
+            }
+        } catch (\Exception $e) {
+        }
+
+        foreach ($customProperties as $key => $value) {
+            $mediaItem->setCustomProperty($key, $value);
+        }
+        $mediaItem->save();
+
+
+        return $media;
+    }
+
+
     protected function createMediaFromUploadedFile(TemporaryUploadedFile $file): Model
     {
         $media = $this->getEloquentQuery()->create([
             'parent_id' => $this->parentKey,
             'title' => $file->getClientOriginalName(),
         ]);
-
-        $media->addMedia($file)->toMediaCollection();
+        
+        $this->addMediaWithMappedProperties($media, $file);
 
         return $media;
     }

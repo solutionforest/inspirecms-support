@@ -24,13 +24,9 @@
         <div class="media-library__item_detail__content__details">
             <div class="media-library__item_detail__content__details__meta">
                 @php
-                    if ($mediaItem->isFolder()) {
-                        $media = null;
-                        $columns = ['title', 'created_at', 'updated_at', 'created_by'];
-                    } else {
-                        $media = $mediaItem->getFirstMedia();
-                        $columns = ['file_name', 'mime_type', 'size', 'created_at', 'updated_at', 'uploaded_by'];
-                    }
+                    $media = $mediaItem->isFolder() ? null : $mediaItem->getFirstMedia();
+                    $columns = $mediaItem->getDisplayedColumns();
+
                     $mediaData = collect($columns)
                         ->map(function ($key) use ($media, $mediaItem) {
                             $fallback = match ($key) {
@@ -39,14 +35,19 @@
                                 ),
                                 default => '',
                             };
+                            $customPropertyKey = str_replace('custom-property.', '', $key);
                             $value = match ($key) {
                                 'size' => ($mediaItem->isFolder() ? '' : $media?->human_readable_size) ?? $fallback,
                                 'created_at', 'updated_at' => ($mediaItem->isFolder()
                                     ? $mediaItem?->{$key}->format('Y-m-d H:i:s')
                                     : $media?->{$key}->format('Y-m-d H:i:s')) ?? $fallback,
                                 'uploaded_by', 'created_by' => $mediaItem->author?->name ?? $fallback,
-                                default => ($mediaItem->isFolder() ? $mediaItem?->{$key} : $media?->{$key}) ??
-                                    $fallback,
+                                // Default for not custom properties
+                                $customPropertyKey => ($mediaItem->isFolder()
+                                    ? $mediaItem?->{$key}
+                                    : $media?->{$key}) ?? $fallback,
+                                // Default for custom properties
+                                default => $media->getCustomProperty($customPropertyKey) ?? $fallback,
                             };
                             return [
                                 'label' => trans("inspirecms-support::media-library.detail_info.{$key}.label"),

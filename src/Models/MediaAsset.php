@@ -88,7 +88,7 @@ class MediaAsset extends BaseModel implements MediaAssetContract
         return 'heroicon-o-document';
     }
 
-    public function isImage(): bool
+    public function checkIfMimeType(string $mimeType): bool
     {
         if ($this->isFolder()) {
             return false;
@@ -99,13 +99,79 @@ class MediaAsset extends BaseModel implements MediaAssetContract
             return false;
         }
 
-        return str_starts_with($mime, 'image/');
+        return str_starts_with($mime, $mimeType);
+    }
+
+    public function isImage(): bool
+    {
+        return $this->checkIfMimeType('image/');
+    }
+
+    public function isVideo(): bool
+    {
+        return $this->checkIfMimeType('video/');
+    }
+
+    public function isAudio(): bool
+    {
+        return $this->checkIfMimeType('audio/');
     }
 
     public function isFolder(): bool
     {
-        return $this->is_folder;
+        return $this->is_folder ?? false;
     }
+
+    public function getDisplayedColumns(): array
+    {
+        $columns = [
+            'file_name',
+            'mime_type',
+            'size',
+        ];
+        $timestamps = [
+            'created_at',
+            'updated_at',
+            'uploaded_by',
+        ];
+
+        $imageColumns = [
+            'custom-property.dimensions',
+        ];
+
+        $videoColumns = [
+            'custom-property.duration',
+            'custom-property.resolution',
+            'custom-property.channels',
+            'custom-property.bit_rate',
+            'custom-property.frame_rate',
+        ];
+
+        $audioColumns = [
+            'custom-property.duration',
+            'custom-property.channels',
+            'custom-property.bit_rate',
+        ];
+
+        if ($this->isFolder()) {
+            return [
+                'title',
+                'created_at',
+                'updated_at',
+                'created_by',
+            ];
+        } elseif ($this->isImage()) {
+            $columns = array_merge($columns, $imageColumns, $timestamps);
+        } elseif ($this->isVideo()) {
+            $columns = array_merge($columns, $videoColumns, $timestamps);
+        } elseif ($this->isAudio()) {
+            $columns = array_merge($columns, $audioColumns, $timestamps);
+        }
+
+        return $columns;
+    }
+
+
 
     //region Scopes
     public function scopeFolders($query, bool $condition = true)

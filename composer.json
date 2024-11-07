@@ -24,7 +24,8 @@
         "filament/forms": "^3.0",
         "filament/infolists": "^3.0",
         "spatie/laravel-medialibrary": "^11.0",
-        "spatie/laravel-package-tools": "^1.15.0"
+        "spatie/laravel-package-tools": "^1.15.0",
+        "php-ffmpeg/php-ffmpeg": "^1.2"
     },
     "require-dev": {
         "laravel/pint": "^1.0",
