@@ -171,8 +171,6 @@ class MediaAsset extends BaseModel implements MediaAssetContract
         return $columns;
     }
 
-
-
     //region Scopes
     public function scopeFolders($query, bool $condition = true)
     {
