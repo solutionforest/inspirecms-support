@@ -23,6 +23,7 @@
         "php": "^8.1",
         "filament/forms": "^3.0",
         "filament/infolists": "^3.0",
+        "spatie/eloquent-sortable": "^4.4",
         "spatie/laravel-medialibrary": "^11.0",
         "spatie/laravel-package-tools": "^1.15.0"
     },
@@ -41,7 +42,8 @@
     },
     "autoload": {
         "psr-4": {
-            "SolutionForest\\InspireCms\\Support\\": "src/"
+            "SolutionForest\\InspireCms\\Support\\": "src/",
+            "SolutionForest\\InspireCms\\Support\\Database\\Factories\\": "database/factories/"
         }
     },
     "autoload-dev": {

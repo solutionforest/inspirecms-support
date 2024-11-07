@@ -1,22 +1,19 @@
 <?php
 
-namespace Solutionforest\Inspirecms\Support\Tests;
+namespace SolutionForest\InspireCms\Support\Tests;
 
 use BladeUI\Heroicons\BladeHeroiconsServiceProvider;
 use BladeUI\Icons\BladeIconsServiceProvider;
 use Filament\Actions\ActionsServiceProvider;
-use Filament\FilamentServiceProvider;
 use Filament\Forms\FormsServiceProvider;
 use Filament\Infolists\InfolistsServiceProvider;
 use Filament\Notifications\NotificationsServiceProvider;
 use Filament\Support\SupportServiceProvider;
-use Filament\Tables\TablesServiceProvider;
-use Filament\Widgets\WidgetsServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Livewire\LivewireServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
 use RyanChandler\BladeCaptureDirective\BladeCaptureDirectiveServiceProvider;
-use Solutionforest\Inspirecms\Support\InspirecmsSupportServiceProvider;
+use SolutionForest\InspireCms\Support\InspireCmsSupportServiceProvider;
 
 class TestCase extends Orchestra
 {
@@ -25,7 +22,7 @@ class TestCase extends Orchestra
         parent::setUp();
 
         Factory::guessFactoryNamesUsing(
-            fn (string $modelName) => 'Solutionforest\\InspirecmsSupport\\Database\\Factories\\' . class_basename($modelName) . 'Factory'
+            fn (string $modelName) => 'SolutionForest\\InspireCms\\Support\\Database\\Factories\\' . class_basename($modelName) . 'Factory'
         );
     }
 
@@ -36,15 +33,12 @@ class TestCase extends Orchestra
             BladeCaptureDirectiveServiceProvider::class,
             BladeHeroiconsServiceProvider::class,
             BladeIconsServiceProvider::class,
-            FilamentServiceProvider::class,
             FormsServiceProvider::class,
             InfolistsServiceProvider::class,
             LivewireServiceProvider::class,
             NotificationsServiceProvider::class,
             SupportServiceProvider::class,
-            TablesServiceProvider::class,
-            WidgetsServiceProvider::class,
-            InspirecmsSupportServiceProvider::class,
+            InspireCmsSupportServiceProvider::class,
         ];
     }
 
