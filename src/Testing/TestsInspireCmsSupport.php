@@ -1,6 +1,6 @@
 <?php
 
-namespace Solutionforest\InspireCms\Support\Testing;
+namespace SolutionForest\InspireCms\Support\Testing;
 
 use Livewire\Features\SupportTesting\Testable;
 
