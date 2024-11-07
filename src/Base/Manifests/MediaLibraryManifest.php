@@ -2,7 +2,7 @@
 
 namespace SolutionForest\InspireCms\Support\Base\Manifests;
 
-use SolutionForest\InspireCms\Models\MediaAsset;
+use SolutionForest\InspireCms\Support\Models\MediaAsset;
 
 class MediaLibraryManifest implements MediaLibraryManifestInterface
 {
