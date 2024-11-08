@@ -4,7 +4,7 @@ namespace SolutionForest\InspireCms\Support\Forms\Components;
 
 use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Field;
-use SolutionForest\InspireCms\Support\InspireCmsConfig;
+use SolutionForest\InspireCms\InspireCmsConfig;
 
 class MediaPicker extends Field
 {

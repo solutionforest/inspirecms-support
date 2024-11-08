@@ -3,7 +3,7 @@
 namespace SolutionForest\InspireCms\Support\Resolver;
 
 use Illuminate\Support\Facades\Auth;
-use SolutionForest\InspireCms\Support\InspireCmsConfig;
+use SolutionForest\InspireCms\InspireCmsConfig;
 
 class UserResolver implements UserResolverInterface
 {

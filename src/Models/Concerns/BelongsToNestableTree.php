@@ -5,6 +5,7 @@ namespace SolutionForest\InspireCms\Support\Models\Concerns;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use SolutionForest\InspireCms\Support\Facades\InspireCmsSupport;
+use SolutionForest\InspireCms\Support\Helpers\RelationshipHelper;
 use SolutionForest\InspireCms\Support\Observers\BelongsToNestableTreeObserver;
 
 trait BelongsToNestableTree
@@ -179,39 +180,7 @@ trait BelongsToNestableTree
     {
         $relationName = 'nestableTree';
 
-        $useAlias = true;
-
-        if (! static::isJoinedNestableTreeAs($query, $as)) {
-            $query
-                ->joinRelationship(
-                    $relationName,
-                    callback: fn ($join) => $join->as($as),
-                    joinType: $joinType,
-                    useAlias: $useAlias
-                );
-        }
-
-        return $query;
-    }
-
-    protected static function isJoinedNestableTreeAs($query, $aliasOrTable)
-    {
-        $joins = $query->getQuery()->joins;
-
-        if ($joins == null) {
-            return false;
-        }
-
-        foreach ($joins as $join) {
-            if ($join->alias != null && $join->alias == $aliasOrTable) {
-                return true;
-            }
-            if ($join->table == $aliasOrTable) {
-                return true;
-            }
-        }
-
-        return false;
+        return RelationshipHelper::joinRelationshipAs($query, $relationName, $as, $joinType);
     }
     //endregion Scopes
 }
