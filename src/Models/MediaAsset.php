@@ -181,7 +181,7 @@ class MediaAsset extends BaseModel implements MediaAssetContract
     //region Dto
     public static function getDtoClass(): string
     {
-        return \SolutionForest\InspireCms\Dtos\Assets\MediaAssetDetailDto::class;
+        return \SolutionForest\InspireCms\Support\Dtos\MediaAssetDto::class;
     }
 
     public function toDto(...$args)
