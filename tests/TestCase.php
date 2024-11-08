@@ -49,7 +49,6 @@ class TestCase extends Orchestra
     {
         config()->set('database.default', 'testing');
 
-
         //region inspirecms support
         \SolutionForest\InspireCms\Support\Facades\MediaLibraryManifest::setDisk('public');
         \SolutionForest\InspireCms\Support\Facades\MediaLibraryManifest::setDirectory('');

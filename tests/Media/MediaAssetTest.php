@@ -7,7 +7,6 @@ use SolutionForest\InspireCms\Support\Tests\TestCase;
 
 class MediaAssetTest extends TestCase
 {
-    
     /** @test */
     public function it_can_convert_to_dto()
     {

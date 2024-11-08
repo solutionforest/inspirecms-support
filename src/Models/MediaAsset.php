@@ -16,9 +16,9 @@ class MediaAsset extends BaseModel implements MediaAssetContract
     use Concerns\BelongsToNestableTree;
     use Concerns\HasAuthor;
     use Concerns\NestableTrait;
+    use HasFactory;
     use HasUuids;
     use InteractsWithMedia;
-    use HasFactory;
 
     protected $guarded = ['id'];
 
