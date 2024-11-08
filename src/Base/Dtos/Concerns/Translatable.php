@@ -2,6 +2,8 @@
 
 namespace SolutionForest\InspireCms\Support\Base\Dtos\Concerns;
 
+use SolutionForest\InspireCms\Support\Helpers\TranslatableHelper;
+
 trait Translatable
 {
     /**
@@ -71,19 +73,9 @@ trait Translatable
 
     protected function getTranslations($translations, ?string $locale = null, bool $usingFallback = true)
     {
-        if (! $translations || ! is_array($translations)) {
-            return $translations;
-        }
-
         $locale = $locale ?? $this->getLocale();
         $fallbackLocale = $this->getFallbackLocale();
 
-        $value = data_get($translations, $locale);
-
-        if (! $value && $usingFallback && $locale !== $fallbackLocale && $fallbackLocale) {
-            $value = $this->getTranslations($translations, $fallbackLocale, false);
-        }
-
-        return $value;
+        return TranslatableHelper::getTranslations($translations, $locale, $fallbackLocale, $usingFallback);
     }
 }
