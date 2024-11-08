@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms\Support\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
 use SolutionForest\InspireCms\Support\Facades\MediaLibraryManifest;
 use SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset as MediaAssetContract;
@@ -17,6 +18,7 @@ class MediaAsset extends BaseModel implements MediaAssetContract
     use Concerns\NestableTrait;
     use HasUuids;
     use InteractsWithMedia;
+    use HasFactory;
 
     protected $guarded = ['id'];
 
@@ -202,4 +204,11 @@ class MediaAsset extends BaseModel implements MediaAssetContract
         ]);
     }
     //endregion Dto
+
+    //region Factory
+    public static function newFactory()
+    {
+        return \SolutionForest\InspireCms\Support\Database\Factories\MediaAssetFactory::new();
+    }
+    //endregion Factory
 }
