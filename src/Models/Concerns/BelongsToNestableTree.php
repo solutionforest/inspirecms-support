@@ -13,6 +13,13 @@ trait BelongsToNestableTree
     public static function bootBelongsToNestableTree()
     {
         static::observe(new BelongsToNestableTreeObserver);
+
+        static::addGlobalScope('nestableTreeDetail', function ($query) {
+            $query
+                ->withNestableTreeOrder()
+                ->withNestableTreeId()
+                ->withNestableTreeId();
+        });
     }
 
     public function nestableTree(): MorphOne
@@ -123,15 +130,6 @@ trait BelongsToNestableTree
     }
 
     //region Scopes
-    public function scopeSortedByTree($query, string $direction = 'asc')
-    {
-        $column = $this->getNestableTreeOrderName();
-
-        $as = 'left_nestable_tree';
-
-        static::joinNestableTreeAs($query, $as);
-        $query->orderBy("{$as}.{$column}", $direction);
-    }
 
     public function scopeWhereAncesterOfTree($query, $id)
     {
@@ -176,6 +174,22 @@ trait BelongsToNestableTree
         $query->addSelect("{$as}.{$column} as nestable_tree_id");
     }
 
+    public function scopeWithNestableTreeOrder($query)
+    {
+        $column = $this->getNestableTreeOrderName();
+
+        $as = 'left_nestable_tree';
+
+        static::joinNestableTreeAs($query, $as);
+
+        $query->addSelect("{$as}.{$column} as nestable_order");
+    }
+
+    public function scopeSortedByTree($query, string $direction = 'asc')
+    {
+        $query->withNestableTreeOrder()->orderBy("nestable_order", $direction);
+    }
+
     protected static function joinNestableTreeAs(&$query, $as, $joinType = 'leftJoin')
     {
         $relationName = 'nestableTree';
@@ -183,4 +197,5 @@ trait BelongsToNestableTree
         return RelationshipHelper::joinRelationshipAs($query, $relationName, $as, $joinType);
     }
     //endregion Scopes
+
 }

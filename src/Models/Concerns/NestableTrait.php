@@ -17,12 +17,24 @@ trait NestableTrait
 
     public function parent(): BelongsTo
     {
-        return $this->belongsTo(static::class, $this->getNestableParentIdName());
+        $relationship = $this->belongsTo(static::class, $this->getNestableParentIdName());
+
+        if (in_array(BelongsToNestableTree::class, class_uses(static::class))) {
+            return $relationship->withoutGlobalScope('nestableTreeDetail');
+        }
+
+        return $relationship;
     }
 
     public function children(): HasMany
     {
-        return $this->hasMany(static::class, $this->getNestableParentIdName());
+        $relationship = $this->hasMany(static::class, $this->getNestableParentIdName());
+
+        if (in_array(BelongsToNestableTree::class, class_uses(static::class))) {
+            return $relationship->withoutGlobalScope('nestableTreeDetail');
+        }
+
+        return $relationship;
     }
 
     //region Scopes
