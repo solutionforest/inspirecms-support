@@ -93,7 +93,7 @@ class MediaPicker extends Field
     {
         $state = $this->getState();
 
-        if (is_null($state)) {
+        if (is_null($state) || empty($state)) {
             return [];
         }
 
