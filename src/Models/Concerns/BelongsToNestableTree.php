@@ -187,7 +187,7 @@ trait BelongsToNestableTree
 
     public function scopeSortedByTree($query, string $direction = 'asc')
     {
-        $query->withNestableTreeOrder()->orderBy("nestable_order", $direction);
+        $query->withNestableTreeOrder()->orderBy('nestable_order', $direction);
     }
 
     protected static function joinNestableTreeAs(&$query, $as, $joinType = 'leftJoin')
