@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Support\Models\Polymorphic;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
 use SolutionForest\InspireCms\Support\Models\Concerns\NestableTrait;
@@ -12,6 +13,7 @@ class NestableTree extends BaseModel implements NestableTreeContract
 {
     use NestableTrait;
     use SortableTrait;
+    use HasFactory;
 
     protected $guarded = ['id'];
 
@@ -57,4 +59,11 @@ class NestableTree extends BaseModel implements NestableTreeContract
         );
 
     }
+
+    //region Factory
+    public static function newFactory()
+    {
+        return \SolutionForest\InspireCms\Support\Database\Factories\NestableTreeFactory::new();
+    }
+    //endregion Factory
 }
