@@ -37,6 +37,9 @@ class MediaAsset extends BaseModel implements MediaAssetContract
 
     public function getFirstMedia(): ?Media
     {
+        if ($this->relationLoaded('media')) {
+            return $this->media->first();
+        }
         return $this->media()->first();
     }
 
