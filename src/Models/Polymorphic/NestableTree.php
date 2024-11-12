@@ -2,7 +2,6 @@
 
 namespace SolutionForest\InspireCms\Support\Models\Polymorphic;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
 use SolutionForest\InspireCms\Support\Models\Concerns\NestableTrait;

@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 
 class NestableTreeFactory extends Factory
 {
-
     public function definition()
     {
         return [
