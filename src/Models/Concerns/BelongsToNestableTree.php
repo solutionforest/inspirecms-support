@@ -2,10 +2,11 @@
 
 namespace SolutionForest\InspireCms\Support\Models\Concerns;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use SolutionForest\InspireCms\Support\Facades\InspireCmsSupport;
-use SolutionForest\InspireCms\Support\Helpers\RelationshipHelper;
+use SolutionForest\InspireCms\Support\Models\Scopes\NestableTreeDetailScope;
 use SolutionForest\InspireCms\Support\Observers\BelongsToNestableTreeObserver;
 
 trait BelongsToNestableTree
@@ -14,12 +15,7 @@ trait BelongsToNestableTree
     {
         static::observe(new BelongsToNestableTreeObserver);
 
-        static::addGlobalScope('nestableTreeDetail', function ($query) {
-            $query
-                ->withNestableTreeOrder()
-                ->withNestableTreeId()
-                ->withNestableTreeId();
-        });
+        static::addGlobalScope(new NestableTreeDetailScope);
     }
 
     public function nestableTree(): MorphOne
@@ -131,70 +127,20 @@ trait BelongsToNestableTree
 
     //region Scopes
 
-    public function scopeWhereAncesterOfTree($query, $id)
+    public function scopeWhereAncesterOfTree(Builder $query, $id)
     {
-        $column = $this->getNestableTreeParentIdName();
+        // Ensure the nestable tree is loaded
+        $query->withGlobalScope(NestableTreeDetailScope::class, new NestableTreeDetailScope);
 
-        $as = 'left_nestable_tree';
-
-        static::joinNestableTreeAs($query, $as);
-        $grammar = $query->getQuery()->getGrammar();
-        $bindings = [
-            $grammar->wrap($as),
-            $grammar->wrap($column),
-            $grammar->wrap($id),
-        ];
-        $sqlText = str_replace(
-            array_keys($bindings),
-            array_values($bindings),
-            is_null($id) ? '0.1 IS NULL' : '0.1 = 2'
-        );
-        $query->whereRaw($sqlText);
+        $query->whereColumn('nestable_tree_parent_id', $id);
     }
 
-    public function scopeWithNestableTreeParentId($query)
+    public function scopeSortedByTree(Builder $query, string $direction = 'asc')
     {
-        $column = $this->getNestableTreeParentIdName();
-
-        $as = 'left_nestable_tree';
-
-        static::joinNestableTreeAs($query, $as);
-
-        $query->addSelect("{$as}.{$column} as nestable_tree_parent_id");
-    }
-
-    public function scopeWithNestableTreeId($query)
-    {
-        $column = $this->getKeyName();
-
-        $as = 'left_nestable_tree';
-
-        static::joinNestableTreeAs($query, $as);
-
-        $query->addSelect("{$as}.{$column} as nestable_tree_id");
-    }
-
-    public function scopeWithNestableTreeOrder($query)
-    {
-        $column = $this->getNestableTreeOrderName();
-
-        $as = 'left_nestable_tree';
-
-        static::joinNestableTreeAs($query, $as);
-
-        $query->addSelect("{$as}.{$column} as nestable_order");
-    }
-
-    public function scopeSortedByTree($query, string $direction = 'asc')
-    {
-        $query->withNestableTreeOrder()->orderBy('nestable_order', $direction);
-    }
-
-    protected static function joinNestableTreeAs(&$query, $as, $joinType = 'leftJoin')
-    {
-        $relationName = 'nestableTree';
-
-        return RelationshipHelper::joinRelationshipAs($query, $relationName, $as, $joinType);
+        // Ensure the nestable tree is loaded
+        $query->withGlobalScope(NestableTreeDetailScope::class, new NestableTreeDetailScope);
+        
+        $query->orderBy('nestable_order', $direction);
     }
     //endregion Scopes
 

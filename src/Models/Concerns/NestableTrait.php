@@ -20,7 +20,7 @@ trait NestableTrait
         $relationship = $this->belongsTo(static::class, $this->getNestableParentIdName());
 
         if (in_array(BelongsToNestableTree::class, class_uses(static::class))) {
-            return $relationship->withoutGlobalScope('nestableTreeDetail');
+            return $relationship->withoutGlobalScope(\SolutionForest\InspireCms\Support\Models\Scopes\NestableTreeDetailScope::class);
         }
 
         return $relationship;
@@ -31,7 +31,7 @@ trait NestableTrait
         $relationship = $this->hasMany(static::class, $this->getNestableParentIdName());
 
         if (in_array(BelongsToNestableTree::class, class_uses(static::class))) {
-            return $relationship->withoutGlobalScope('nestableTreeDetail');
+            return $relationship->withoutGlobalScope(\SolutionForest\InspireCms\Support\Models\Scopes\NestableTreeDetailScope::class);
         }
 
         return $relationship;
