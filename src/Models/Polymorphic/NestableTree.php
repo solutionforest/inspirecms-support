@@ -11,9 +11,9 @@ use Spatie\EloquentSortable\SortableTrait;
 
 class NestableTree extends BaseModel implements NestableTreeContract
 {
+    use HasFactory;
     use NestableTrait;
     use SortableTrait;
-    use HasFactory;
 
     protected $guarded = ['id'];
 

@@ -16,7 +16,7 @@ class NestableTreeDetailScope implements Scope
         $q = $builder->getQuery();
 
         $q->leftJoinSub($subQ, 'nestable_tree', $model->getQualifiedKeyName(), '=', 'nestable_tree.nestable_id');
-        
+
         if (is_null($q->columns) || empty($q->columns)) {
             $q->addSelect($model->qualifyColumn('*'));
         }

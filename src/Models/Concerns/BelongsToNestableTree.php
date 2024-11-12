@@ -139,7 +139,7 @@ trait BelongsToNestableTree
     {
         // Ensure the nestable tree is loaded
         $query->withGlobalScope(NestableTreeDetailScope::class, new NestableTreeDetailScope);
-        
+
         $query->orderBy('nestable_order', $direction);
     }
     //endregion Scopes
