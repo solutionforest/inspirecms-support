@@ -24,6 +24,9 @@ class TestCase extends Orchestra
         Factory::guessFactoryNamesUsing(
             fn (string $modelName) => 'SolutionForest\\InspireCms\\Support\\Database\\Factories\\' . class_basename($modelName) . 'Factory'
         );
+        Factory::guessModelNamesUsing(
+            fn ($factory) => 'SolutionForest\\InspireCms\\Support\\Tests\\TestModels\\' . str_replace('Factory', '', class_basename($factory))
+        );
     }
 
     protected function getPackageProviders($app)

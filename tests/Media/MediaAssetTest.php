@@ -1,16 +1,16 @@
 <?php
 
-namespace SolutionForest\InspireCms\Support\Media;
+namespace SolutionForest\InspireCms\Support\Tests\Media;
 
-use SolutionForest\InspireCms\Support\Facades\MediaLibraryManifest;
 use SolutionForest\InspireCms\Support\Tests\TestCase;
+use SolutionForest\InspireCms\Support\Tests\TestModels\MediaAsset;
 
 class MediaAssetTest extends TestCase
 {
     /** @test */
     public function it_can_convert_to_dto()
     {
-        $mediaAsset = MediaLibraryManifest::getModel()::factory()->isFolder()->create();
+        $mediaAsset = MediaAsset::factory()->isFolder()->create();
 
         $dto = $mediaAsset->toDto();
 

@@ -4,12 +4,9 @@ namespace SolutionForest\InspireCms\Support\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use SolutionForest\InspireCms\Support\Helpers\KeyHelper;
-use SolutionForest\InspireCms\Support\Models\MediaAsset;
 
 class MediaAssetFactory extends Factory
 {
-    protected $model = MediaAsset::class;
-
     public function definition()
     {
         return [

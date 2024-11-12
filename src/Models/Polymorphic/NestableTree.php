@@ -11,7 +11,6 @@ use Spatie\EloquentSortable\SortableTrait;
 
 class NestableTree extends BaseModel implements NestableTreeContract
 {
-    use HasFactory;
     use NestableTrait;
     use SortableTrait;
 
@@ -59,11 +58,4 @@ class NestableTree extends BaseModel implements NestableTreeContract
         );
 
     }
-
-    //region Factory
-    public static function newFactory()
-    {
-        return \SolutionForest\InspireCms\Support\Database\Factories\NestableTreeFactory::new();
-    }
-    //endregion Factory
 }
