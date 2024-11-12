@@ -26,7 +26,7 @@ class BaseTranslatableDto extends BaseDto
         return static::fromArray($parameters)
             ->setLocale($locale)
             ->setFallbackLocale($fallbackLocale)
-            ->setAvilableLocales($availableLocales);
+            ->setAvailableLocales($availableLocales);
     }
 
     protected function getTranslation(string $name, ?string $locale = null, bool $usingFallback = true)

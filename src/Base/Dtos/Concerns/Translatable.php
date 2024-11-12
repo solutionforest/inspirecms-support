@@ -16,7 +16,7 @@ trait Translatable
      */
     protected $fallbackLocale;
 
-    protected array $avilableLocales = [];
+    protected array $availableLocales = [];
 
     /**
      * @param string
@@ -56,9 +56,9 @@ trait Translatable
         return $this->fallbackLocale;
     }
 
-    public function setAvilableLocales(array $locales)
+    public function setAvailableLocales(array $locales)
     {
-        $this->avilableLocales = $locales;
+        $this->availableLocales = $locales;
 
         return $this;
     }
@@ -66,9 +66,9 @@ trait Translatable
     /**
      * @return array
      */
-    public function getAvilableLocales()
+    public function getAvailableLocales()
     {
-        return $this->avilableLocales;
+        return $this->availableLocales;
     }
 
     protected function getTranslations($translations, ?string $locale = null, bool $usingFallback = true)

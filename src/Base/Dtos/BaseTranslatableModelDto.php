@@ -37,9 +37,9 @@ abstract class BaseTranslatableModelDto extends BaseModelDto
      * @param string
      * @return self
      */
-    public static function fromTranslatableModel($model, $locale)
+    public static function fromTranslatableModel($model, $locale, $availableLocales = [])
     {
-        $dto = static::fromModel($model)->setLocale($locale);
+        $dto = static::fromModel($model)->setLocale($locale)->setAvailableLocales($availableLocales);
 
         if (in_array(\SolutionForest\InspireCms\Models\Concerns\HasTranslations::class, class_uses_recursive($model))) {
             $dto = $dto->setFallbackLocale($model->getFallbackLocale());
