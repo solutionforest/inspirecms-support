@@ -65,6 +65,7 @@ class TestCase extends Orchestra
         \SolutionForest\InspireCms\Support\Facades\ResolverManifest::set('user', \SolutionForest\InspireCms\Support\Resolver\UserResolver::class);
         //endregion inspirecms support
     }
+
     /**
      * @param  \Illuminate\Foundation\Application  $app
      */

@@ -2,6 +2,4 @@
 
 namespace SolutionForest\InspireCms\Support\Tests\TestModels\HasRecursiveRelationships;
 
-class TestNormal extends TestRecursiveRelationModel
-{
-}
+class TestNormal extends TestRecursiveRelationModel {}

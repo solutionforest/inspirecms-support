@@ -11,7 +11,7 @@ class TestRecursiveRelationModel extends Model implements HasRecursiveRelationsh
     use HasRecursiveRelationships;
 
     protected $guarded = [];
-    
+
     protected $table = 'test_recursive_relation_models';
 
     public function getRootLevelParentId()

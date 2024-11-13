@@ -67,7 +67,7 @@ class RecursiveRelationshipsTest extends TestCase
         $tableName = $parent->getTable();
         $parentId = $parent->id;
         $childId = $child->id;
-        
+
         $parent->delete();
 
         $this->assertSoftDeleted($tableName, ['id' => $parentId]);
