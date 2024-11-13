@@ -10,6 +10,7 @@ use Filament\Infolists\InfolistsServiceProvider;
 use Filament\Notifications\NotificationsServiceProvider;
 use Filament\Support\SupportServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Database\Schema\Blueprint;
 use Livewire\LivewireServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
 use RyanChandler\BladeCaptureDirective\BladeCaptureDirectiveServiceProvider;
@@ -20,6 +21,8 @@ class TestCase extends Orchestra
     protected function setUp(): void
     {
         parent::setUp();
+
+        $this->setUpDatabase($this->app);
 
         Factory::guessFactoryNamesUsing(
             fn (string $modelName) => 'SolutionForest\\InspireCms\\Support\\Database\\Factories\\' . class_basename($modelName) . 'Factory'
@@ -61,6 +64,19 @@ class TestCase extends Orchestra
 
         \SolutionForest\InspireCms\Support\Facades\ResolverManifest::set('user', \SolutionForest\InspireCms\Support\Resolver\UserResolver::class);
         //endregion inspirecms support
+    }
+    /**
+     * @param  \Illuminate\Foundation\Application  $app
+     */
+    protected function setUpDatabase($app)
+    {
+        $app['db']->connection()->getSchemaBuilder()->create('test_recursive_relation_models', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name');
+            $table->bigInteger('parent_id')->unsigned()->nullable();
+            $table->timestamps();
+            $table->softDeletes();
+        });
 
         $migrations = [
             __DIR__ . '/../database/migrations/create_nestable-trees_table.php.stub',
