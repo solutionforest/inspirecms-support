@@ -59,7 +59,7 @@ trait BelongsToNestableTree
         $this->loadMissing('nestableTree');
         if ($node = $this->nestableTree) {
             // skip if not update
-            if (! $this->isDirty($this->getNestableParentIdName())) {
+            if (! $this->isDirty($this->getParentKeyName())) {
                 return;
             }
 
@@ -140,7 +140,7 @@ trait BelongsToNestableTree
         // Ensure the nestable tree is loaded
         $query->withGlobalScope(NestableTreeDetailScope::class, new NestableTreeDetailScope);
 
-        $query->orderBy('nestable_order', $direction);
+        $query->orderBy('nestable_tree_order', $direction);
     }
     //endregion Scopes
 

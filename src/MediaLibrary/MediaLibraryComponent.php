@@ -47,7 +47,12 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
 
     public function mount($parentKey = null)
     {
-        $this->parentKey = $parentKey ?? static::getRootLevelParentId();
+        if ($parentKey) {
+            $this->parentKey = $parentKey;
+        }
+
+        $this->parentKey ??= static::getRootLevelParentId();
+
         if ($this->isMultiple()) {
             $this->selectedMediaId = [];
         }
@@ -57,22 +62,22 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
     public function getBreadcrumbs(): array
     {
         $breadcrumbs = [
+            //todo: add translations
             static::getRootLevelParentId() => 'Root',
         ];
+
         if ($this->parentKey == static::getRootLevelParentId()) {
             return $breadcrumbs;
         }
 
-        $media = $this->getEloquentQuery()->find($this->parentKey);
-        if ($media) {
-            $breadcrumbs = array_merge($breadcrumbs, $media->ancestorsAndSelf()->mapWithKeys(fn ($item) => [
-                $item->getKey() => $item->title,
-            ])->all());
-
-            return $breadcrumbs;
+        $ancestorsAndSelf = $this->getEloquentQuery()
+            ->find($this->parentKey)
+            ?->ancestorsAndSelf()->get()->reverse()->values() ?? collect();
+        foreach ($ancestorsAndSelf as $item) {
+            $breadcrumbs[$item->getKey()] = $item->title;
         }
 
-        return [];
+        return $breadcrumbs;
     }
 
     #[On('updatedSelectedMediaId')]
@@ -494,7 +499,7 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
 
     protected static function getRootLevelParentId(): string | int
     {
-        return (new (static::getMediaAssetModel()))->getNestableRootValue();
+        return app(static::getMediaAssetModel())->getRootLevelParentId();
     }
     //endregion Helpers
 }

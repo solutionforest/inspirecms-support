@@ -5,6 +5,9 @@ namespace SolutionForest\InspireCms\Support\Base\Models\Interfaces;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 
+/**
+ * @see \SolutionForest\InspireCms\Support\Models\Concerns\BelongsToNestableTree
+ */
 interface BelongsToNestableTree
 {
     /**

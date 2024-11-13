@@ -4,13 +4,13 @@ namespace SolutionForest\InspireCms\Support\Models\Polymorphic;
 
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
-use SolutionForest\InspireCms\Support\Models\Concerns\NestableTrait;
+use SolutionForest\InspireCms\Support\Models\Concerns\HasRecursiveRelationships;
 use SolutionForest\InspireCms\Support\Models\Contracts\NestableTree as NestableTreeContract;
 use Spatie\EloquentSortable\SortableTrait;
 
 class NestableTree extends BaseModel implements NestableTreeContract
 {
-    use NestableTrait;
+    use HasRecursiveRelationships;
     use SortableTrait;
 
     protected $guarded = ['id'];
@@ -24,7 +24,7 @@ class NestableTree extends BaseModel implements NestableTreeContract
     public function buildSortQuery()
     {
         return static::query()
-            ->where($this->getNestableParentIdName(), $this->getParentId())
+            ->where($this->getParentKeyName(), $this->getParentId())
             ->where('nestable_type', $this->nestable_type);
     }
 

@@ -14,7 +14,7 @@ class MediaAsset extends BaseModel implements MediaAssetContract
 {
     use Concerns\BelongsToNestableTree;
     use Concerns\HasAuthor;
-    use Concerns\NestableTrait;
+    use Concerns\HasRecursiveRelationships;
     use HasUuids;
     use InteractsWithMedia;
 

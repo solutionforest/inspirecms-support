@@ -21,8 +21,8 @@ class NestableTreeDetailScope implements Scope
             $q->addSelect($model->qualifyColumn('*'));
         }
         $q->addSelect([
-            'nestable_tree.' . ($nestableTree->determineOrderColumnName() ?? 'order') . ' as nestable_order',
-            'nestable_tree.' . ($nestableTree->getNestableParentIdName() ?? 'parent_id') . ' as nestable_tree_parent_id',
+            'nestable_tree.' . ($nestableTree->determineOrderColumnName() ?? 'order') . ' as nestable_tree_order',
+            'nestable_tree.' . ($nestableTree->getParentKeyName() ?? 'parent_id') . ' as nestable_tree_parent_id',
             'nestable_tree.' . ($nestableTree->getKeyName() ?? 'id') . ' as nestable_tree_id',
         ]);
     }

@@ -3,10 +3,10 @@
 namespace SolutionForest\InspireCms\Support\Models\Contracts;
 
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use SolutionForest\InspireCms\Support\Base\Models\Interfaces\NestableInterface;
+use SolutionForest\InspireCms\Support\Base\Models\Interfaces\HasRecursiveRelationshipsInterface;
 use Spatie\EloquentSortable\Sortable;
 
-interface NestableTree extends NestableInterface, Sortable
+interface NestableTree extends HasRecursiveRelationshipsInterface, Sortable
 {
     /**
      * Get the nestable relationship for the nestable tree.
