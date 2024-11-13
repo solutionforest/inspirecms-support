@@ -70,11 +70,13 @@ trait NestableTrait
     public function ancestors(): Collection
     {
         $ancestors = collect();
+        $this->loadMissing('parent');
         $current = $this->parent;
 
         while ($current !== null) {
             $ancestors->prepend($current);
-            $current = $current->parent;
+            $current->loadMissing('parent');
+            $current = $current->parent; // Move up to parent
         }
 
         return $ancestors;
@@ -93,11 +95,13 @@ trait NestableTrait
     public function getLevel(): int
     {
         $level = 0;
-        $parent = $this->parent;
+        $this->loadMissing('parent');
+        $current = $this->parent;
 
-        while ($parent) {
+        while ($current) {
             $level++;
-            $parent = $parent->parent;
+            $current->loadMissing('parent');
+            $current = $current->parent; // Move up to parent
         }
 
         return $level;
