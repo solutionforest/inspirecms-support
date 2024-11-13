@@ -6,12 +6,12 @@ use Illuminate\Database\Eloquent\Builder;
 use SolutionForest\InspireCms\Support\Observers\HasRecursiveRelationshipsObserver;
 use Staudenmeir\LaravelAdjacencyList\Eloquent\HasRecursiveRelationships as BaseHasRecursiveRelationships;
 
-trait HasRecursiveRelationships 
+trait HasRecursiveRelationships
 {
     use BaseHasRecursiveRelationships {
         scopeIsRoot as private traitScopeIsRoot;
     }
-    
+
     public static function bootHasRecursiveRelationships()
     {
         static::observe(new HasRecursiveRelationshipsObserver);
@@ -57,12 +57,11 @@ trait HasRecursiveRelationships
         return $this;
     }
 
-    
     //region Scopes
     /**
      * Limit the query to root models.
      *
-     * @param \Staudenmeir\LaravelAdjacencyList\Eloquent\Builder<static> $query
+     * @param  \Staudenmeir\LaravelAdjacencyList\Eloquent\Builder<static>  $query
      * @return \Staudenmeir\LaravelAdjacencyList\Eloquent\Builder<static>
      */
     public function scopeIsRoot(Builder $query)
@@ -81,6 +80,7 @@ trait HasRecursiveRelationships
         if (! $condition) {
             return $query->whereNot(fn ($q) => $this->scopeIsRoot($q));
         }
+
         return $this->scopeIsRoot($query);
     }
 

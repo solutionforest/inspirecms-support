@@ -20,7 +20,6 @@ interface HasRecursiveRelationshipsInterface
      * @return \Staudenmeir\LaravelAdjacencyList\Eloquent\Relations\Ancestors<static>
      */
     public function ancestorsAndSelf();
-    
 
     /**
      * Get the model's bloodline.
@@ -70,7 +69,7 @@ interface HasRecursiveRelationshipsInterface
      * @return \Staudenmeir\LaravelAdjacencyList\Eloquent\Relations\Ancestors<static>
      */
     public function parentAndSelf();
-    
+
     /**
      * Get the ID of the parent entity.
      *
