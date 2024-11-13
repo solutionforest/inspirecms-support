@@ -194,16 +194,7 @@ class MediaAsset extends BaseModel implements MediaAssetContract
 
         $dtoClass = static::getDtoClass();
 
-        $media = $this->getFirstMedia();
-
-        return $dtoClass::fromArray([
-            'uid' => $this->getKey(),
-            'caption' => $this->caption,
-            'description' => $this->description,
-            'meta' => $media?->manipulations,
-            'responsive' => array_keys($media?->responsive_images ?? []),
-            'disk' => $media?->disk,
-        ]);
+        return $dtoClass::fromModel($this);
     }
     //endregion Dto
 }

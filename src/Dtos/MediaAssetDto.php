@@ -2,9 +2,12 @@
 
 namespace SolutionForest\InspireCms\Support\Dtos;
 
-use SolutionForest\InspireCms\Support\Base\Dtos\BaseDto;
+use SolutionForest\InspireCms\Support\Base\Dtos\BaseModelDto;
 
-class MediaAssetDto extends BaseDto
+/**
+ * @extends BaseModelDto<\SolutionForest\InspireCms\Support\Models\MediaAsset>
+ */
+class MediaAssetDto extends BaseModelDto
 {
     /**
      * @var string
@@ -35,4 +38,23 @@ class MediaAssetDto extends BaseDto
      * @var string
      */
     public $disk;
+
+    public static function fromModel($model)
+    {
+        $media = $model->getFirstMedia();
+
+        return parent::fromArray([
+            'uid' => $model->getKey(),
+            'caption' => $model->caption,
+            'description' => $model->description,
+            'meta' => $media?->manipulations,
+            'responsive' => array_keys($media?->responsive_images ?? []),
+            'disk' => $media?->disk,
+        ])->setModel($model);
+    }
+
+    public function getUrl(string $conversionName = ''): ?string
+    {
+        return $this->model?->getUrl($conversionName);
+    }
 }
