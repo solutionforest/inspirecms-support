@@ -54,10 +54,17 @@
         </x-inspirecms-support::media-library.upload-form>
     </div>
     
-    <div class="form-container">
-        <x-inspirecms-support::media-library.filter-form :isCollapsed="$this->isFormCollapsed('filterForm')">
-            {{ $this->filterForm }}
-        </x-inspirecms-support::media-library.filter-form>
+    <div class="form-container ensure-select-width">
+        <div class="flex flex-col md:flex-row gap-8 md:items-center" style="min-height: 36px;">
+            <x-inspirecms-support::media-library.filter-form :isCollapsed="$this->isFormCollapsed('filterForm')">
+                {{ $this->filterForm }}
+            </x-inspirecms-support::media-library.filter-form>
+
+
+            <x-inspirecms-support::media-library.sort-form :isCollapsed="$this->isFormCollapsed('sortForm')">
+                {{ $this->sortForm }}
+            </x-inspirecms-support::media-library.sort-form>
+        </div>
     </div>
 
     <template x-if="isSelectMultiple && selectedMediaId?.length > 0">

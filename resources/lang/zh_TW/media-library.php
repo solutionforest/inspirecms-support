@@ -121,6 +121,25 @@ return [
             ],
         ],
     ],
+    'sort' => [
+        'type' => [
+            'placeholder' => '排序類型',
+            'options' => [
+                'default' => '默認',
+                'name' => '名稱',
+                'size' => '大小',
+                'created_at' => '創建於',
+                'updated_at' => '更新於',
+            ],
+        ],
+        'direction' => [
+            'placeholder' => '排序方向',
+            'options' => [
+                'asc' => '升序',
+                'desc' => '降序',
+            ],
+        ],
+    ],
     'forms' => [
         'title' => [
             'label' => '標題',

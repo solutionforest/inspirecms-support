@@ -18,6 +18,9 @@
         'filter' => [
             'collap_open' => true,
         ],
+        'sort' => [
+            'collap_open' => true,
+        ],
     ];
     if (count($filterTypes) === 1) {
         $formConfig['filter']['invisible_columns'] = ['type'];

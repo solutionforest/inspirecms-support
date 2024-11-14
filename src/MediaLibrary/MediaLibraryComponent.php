@@ -27,6 +27,7 @@ use SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset;
 class MediaLibraryComponent extends Component implements HasActions, HasForms
 {
     use Concerns\HasFilters;
+    use Concerns\HasSorts;
     use InteractsWithActions;
     use InteractsWithForms;
 
@@ -159,9 +160,9 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
     public function editMediaAction(): Action
     {
         return Action::make('editMedia')
-            ->modalHeading(fn (Action $action) => __('inspirecms-support::media-library.actions.edit.modal.heading', ['name' => $action->getModelLabel()]))
+            ->modalHeading(fn(Action $action) => __('inspirecms-support::media-library.actions.edit.modal.heading', ['name' => $action->getModelLabel()]))
             ->modelLabel(__('inspirecms-support::media-library.media'))
-            ->record(fn () => $this->selectedMedia)
+            ->record(fn() => $this->selectedMedia)
             ->fillForm(function (?Model $record) {
                 $data = $record?->attributesToArray();
                 if ($record && $record instanceof MediaAsset) {
@@ -174,7 +175,7 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
                 return $data;
             })
             ->form(
-                fn (Form $form) => $form
+                fn(Form $form) => $form
                     ->schema([
                         Forms\Components\FileUpload::make('file')
                             ->label(__('inspirecms-support::media-library.forms.files.label'))
@@ -220,9 +221,9 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
     public function viewMediaAction(): Action
     {
         return Action::make('viewMedia')
-            ->modalHeading(fn (Action $action) => __('inspirecms-support::media-library.actions.view.modal.heading', ['name' => $action->getModelLabel()]))
+            ->modalHeading(fn(Action $action) => __('inspirecms-support::media-library.actions.view.modal.heading', ['name' => $action->getModelLabel()]))
             ->modelLabel(__('inspirecms-support::media-library.media'))
-            ->record(fn () => $this->selectedMedia)
+            ->record(fn() => $this->selectedMedia)
             ->fillForm(function (?Model $record) {
                 $data = $record?->attributesToArray();
                 if ($record && $record instanceof MediaAsset) {
@@ -236,7 +237,7 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
                 return $data;
             })
             ->form(
-                fn (Form $form) => $form
+                fn(Form $form) => $form
                     ->schema([
                         Forms\Components\FileUpload::make('file')
                             ->label(__('inspirecms-support::media-library.forms.files.label'))
@@ -308,6 +309,7 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
         return match ($formName) {
             'uploadFileForm' => 'uploadFileData',
             'filterForm' => $this->getFilterFormStatePath(),
+            'sortForm' => $this->getSortFormStatePath(),
             default => $this->getFormStatePath(),
         };
     }
@@ -317,6 +319,7 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
         return [
             'uploadFileForm',
             'filterForm',
+            'sortForm',
         ];
     }
 
@@ -324,17 +327,24 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
     {
         $this->uploadFileForm->fill();
         $this->fillFilterForm();
+        $this->fillSortForm();
     }
     //endregion Form
 
     public function isFormCollapsed(string $name): bool
     {
         switch ($name) {
+            case 'sortForm':
+                return
+                    collect($this->ensureSort())
+                    ->where(fn($v, $k) => ! $this->isSortColumnInvisible($k))
+                    ->count() <= 0 &&
+                    data_get($this->formConfig, 'sort.collap_open', false) == false;
             case 'filterForm':
                 return
                     collect($this->ensureFilter())
-                        ->where(fn ($v, $k) => ! $this->isFilterColumnInvisible($k))
-                        ->count() <= 0 &&
+                    ->where(fn($v, $k) => ! $this->isFilterColumnInvisible($k))
+                    ->count() <= 0 &&
                     data_get($this->formConfig, 'filter.collap_open', false) == false;
             case 'uploadFileForm':
                 return data_get($this->formConfig, 'upload.collap_open', false) == false;
@@ -350,6 +360,26 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
             ->whereParent($this->parentKey);
 
         $filter = $this->ensureFilter();
+        $sort = $this->ensureSort();
+
+        switch ($sort['type'] ?? null) {
+            case 'name':
+                $query = $query->withAggregate('media', 'name')->orderBy('media_name', $sort['direction'] ?? 'asc');
+                break;
+            case 'created_at':
+                $query = $query->withAggregate('media', 'created_at')->orderBy('media_created_at', $sort['direction'] ?? 'asc');
+                break;
+            case 'updated_at':
+                $query = $query->withAggregate('media', 'updated_at')->orderBy('media_updated_at', $sort['direction'] ?? 'asc');
+                break;
+            case 'size':
+                $query = $query->withSum('media', 'size')->orderBy('media_sum_size', $sort['direction'] ?? 'asc');
+            default:
+                $query = $query->orderBy('id', $sort['direction'] ?? 'asc');
+                break;
+        }
+
+        // dd($sort, $query->get());
 
         if (isset($filter['title'])) {
             $query = $query->where('title', 'like', "%{$filter['title']}%");
@@ -485,6 +515,11 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
     protected function isFilterColumnInvisible(string $column): bool
     {
         return in_array($column, $this->formConfig['filter']['invisible_columns'] ?? []);
+    }
+
+    protected function isSortColumnInvisible(string $column): bool
+    {
+        return in_array($column, $this->formConfig['sort']['invisible_columns'] ?? []);
     }
 
     protected function getEloquentQuery()

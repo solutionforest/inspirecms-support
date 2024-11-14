@@ -22,7 +22,7 @@ trait HasFilters
     public function filterForm(Form $form): Form
     {
         return $form
-            ->columns(4)
+            ->columns(2)
             ->schema([
                 Forms\Components\TextInput::make('title')
                     ->hiddenLabel()
