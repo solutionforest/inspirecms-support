@@ -2,6 +2,10 @@
 
 namespace SolutionForest\InspireCms\Support\Models;
 
+use FFMpeg\FFMpeg;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
+use Spatie\MediaLibrary\MediaCollections\FileAdder;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
 use SolutionForest\InspireCms\Support\Facades\MediaLibraryManifest;
@@ -197,4 +201,55 @@ class MediaAsset extends BaseModel implements MediaAssetContract
         return $dtoClass::fromModel($this);
     }
     //endregion Dto
+
+
+    public function addMediaWithMappedProperties(string|UploadedFile|TemporaryUploadedFile $file): FileAdder
+    {
+        $customProperties = [];
+
+        $fileAdder = $this->addMedia($file);
+        $mediaItem = $fileAdder->toMediaCollection();
+        
+        try {
+
+            if ($this->isVideo()) {
+                $ffmpeg = FFMpeg::create([
+                    'ffmpeg.binaries' => config('media-library.ffmpeg_path'),
+                    'ffprobe.binaries' => config('media-library.ffprobe_path'),
+                ]);
+                $ffprobe = $ffmpeg->getFFProbe()
+                    ->streams($mediaItem->getPath()) // extracts streams informations
+                    ->videos()                      // filters video streams
+                    ->first();
+
+                $customProperties['duration'] = $ffprobe->get('duration');
+                $customProperties['width'] = $ffprobe->get('width');
+                $customProperties['height'] = $ffprobe->get('height');
+                $customProperties['resolution'] = "{$customProperties['width']}x{$customProperties['height']}";
+                $customProperties['channels'] = $ffprobe->get('channels');
+                $customProperties['bit_rate'] = $ffprobe->get('bit_rate') ?? $ffprobe->get('avg_frame_rate');
+                $customProperties['frame_rate'] = $ffprobe->get('r_frame_rate');
+                $customProperties['frame_rate_avg'] = $ffprobe->get('avg_frame_rate');
+                $customProperties['codec_name'] = $ffprobe->get('codec_name');
+                $customProperties['codec_long_name'] = $ffprobe->get('codec_long_name');
+            } elseif ($this->isImage()) {
+                $dimensions = @getimagesize($mediaItem->getPath());
+                if (! empty($dimensions)) {
+                    $customProperties['width'] = $dimensions[0] ?? null;
+                    $customProperties['height'] = $dimensions[1] ?? null;
+                    $customProperties['dimensions'] = "{$customProperties['width']}x{$customProperties['height']}";
+                }
+            }
+        } catch (\Exception $e) {
+            throw $e;
+        }
+
+        foreach ($customProperties as $key => $value) {
+            $mediaItem->setCustomProperty($key, $value);
+        }
+        $mediaItem->save();
+
+        return $fileAdder;
+    }
+
 }
