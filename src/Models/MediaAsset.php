@@ -3,16 +3,16 @@
 namespace SolutionForest\InspireCms\Support\Models;
 
 use FFMpeg\FFMpeg;
-use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
-use Spatie\MediaLibrary\MediaCollections\FileAdder;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
 use SolutionForest\InspireCms\Support\Facades\MediaLibraryManifest;
 use SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset as MediaAssetContract;
 use Spatie\Image\Enums\Fit;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\FileAdder;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class MediaAsset extends BaseModel implements MediaAssetContract
 {
@@ -202,14 +202,13 @@ class MediaAsset extends BaseModel implements MediaAssetContract
     }
     //endregion Dto
 
-
-    public function addMediaWithMappedProperties(string|UploadedFile|TemporaryUploadedFile $file): FileAdder
+    public function addMediaWithMappedProperties(string | UploadedFile | TemporaryUploadedFile $file): FileAdder
     {
         $customProperties = [];
 
         $fileAdder = $this->addMedia($file);
         $mediaItem = $fileAdder->toMediaCollection();
-        
+
         try {
 
             if ($this->isVideo()) {
@@ -251,5 +250,4 @@ class MediaAsset extends BaseModel implements MediaAssetContract
 
         return $fileAdder;
     }
-
 }

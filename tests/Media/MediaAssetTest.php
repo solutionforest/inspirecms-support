@@ -2,14 +2,10 @@
 
 namespace SolutionForest\InspireCms\Support\Tests\Media;
 
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use SolutionForest\InspireCms\Support\Tests\TestCase;
 use SolutionForest\InspireCms\Support\Tests\TestModels\MediaAsset;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Http\UploadedFile;
-use SolutionForest\InspireCms\Support\MediaLibrary\MediaLibraryComponent;
-use SolutionForest\InspireCms\Support\Facades\MediaLibraryManifest;
-use function Pest\Livewire\livewire;
-
 
 class MediaAssetTest extends TestCase
 {
@@ -58,6 +54,7 @@ class MediaAssetTest extends TestCase
         $this->assertEquals($media->custom_properties['width'], 120);
         $this->assertEquals($media->custom_properties['height'], 130);
     }
+
     /** @test */
     public function it_can_get_url()
     {
@@ -73,7 +70,6 @@ class MediaAssetTest extends TestCase
 
         $this->assertEquals($media->getUrl(), $mediaAsset->getUrl());
     }
-
 
     /** @test */
     public function it_can_get_thumbnail_url()
@@ -91,7 +87,6 @@ class MediaAssetTest extends TestCase
         $this->assertNotNull($mediaAsset->getThumbnailUrl());
     }
 
-
     /** @test */
     public function it_can_get_thumbnail()
     {
@@ -102,7 +97,6 @@ class MediaAssetTest extends TestCase
 
         $this->assertEquals('heroicon-o-document', $mediaAsset->getThumbnail());
     }
-
 
     /** @test */
     public function it_can_get_displayed_columns()
@@ -134,5 +128,4 @@ class MediaAssetTest extends TestCase
 
         $this->assertEquals($folderColumns, $mediaAsset->getDisplayedColumns());
     }
-
 }
