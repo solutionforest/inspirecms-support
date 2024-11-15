@@ -31,7 +31,7 @@ trait HasSorts
                     ->selectablePlaceholder(false)
                     ->live(true)
                     ->default('default')
-                    ->extraAttributes(fn(Forms\Components\Field $component) => [
+                    ->extraAttributes(fn (Forms\Components\Field $component) => [
                         'class' => $this->isSortColumnInvisible($component->getName()) ? 'hidden' : null,
                     ]),
 
@@ -42,7 +42,7 @@ trait HasSorts
                     ->selectablePlaceholder(false)
                     ->live(true)
                     ->default('asc')
-                    ->extraAttributes(fn(Forms\Components\Field $component) => [
+                    ->extraAttributes(fn (Forms\Components\Field $component) => [
                         'class' => $this->isSortColumnInvisible($component->getName()) ? 'hidden' : null,
                     ]),
             ])
@@ -53,7 +53,7 @@ trait HasSorts
     {
         return array_filter(
             $this->sort,
-            fn($value): bool => (is_array($value) && ! empty($value)) ||
+            fn ($value): bool => (is_array($value) && ! empty($value)) ||
                 (is_string($value) && strlen($value) > 0)
         );
     }
