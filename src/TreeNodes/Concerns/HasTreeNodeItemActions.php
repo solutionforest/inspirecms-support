@@ -240,7 +240,7 @@ trait HasTreeNodeItemActions
             if ($action instanceof TreeNodeAction) {
                 $action->itemKey(null);
             } else {
-                $action->record(null);
+                $action?->record(null);
             }
             // Reset the action record if the action is being unmounted.
             $this->mountedTreeNodeItemActionRecord(null);
