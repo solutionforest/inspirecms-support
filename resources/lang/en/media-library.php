@@ -121,6 +121,25 @@ return [
             ],
         ],
     ],
+    'sort' => [
+        'type' => [
+            'placeholder' => 'Sort Type',
+            'options' => [
+                'default' => 'Default',
+                'name' => 'Name',
+                'size' => 'Size',
+                'created_at' => 'Created At',
+                'updated_at' => 'Updated At',
+            ],
+        ],
+        'direction' => [
+            'placeholder' => 'Sort Direction',
+            'options' => [
+                'asc' => 'Ascending',
+                'desc' => 'Descending',
+            ],
+        ],
+    ],
     'forms' => [
         'title' => [
             'label' => 'Title',

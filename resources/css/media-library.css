@@ -24,6 +24,10 @@
         }
     }
 
+    .ensure-select-width input.choices__input {
+        width: auto !important;
+    }
+
     .media-content-container {
         display: flex;
         flex-direction: row;

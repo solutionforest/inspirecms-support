@@ -2,7 +2,6 @@
 
 namespace SolutionForest\InspireCms\Support\MediaLibrary;
 
-use FFMpeg\FFMpeg;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
@@ -27,6 +26,7 @@ use SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset;
 class MediaLibraryComponent extends Component implements HasActions, HasForms
 {
     use Concerns\HasFilters;
+    use Concerns\HasSorts;
     use InteractsWithActions;
     use InteractsWithForms;
 
@@ -308,6 +308,7 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
         return match ($formName) {
             'uploadFileForm' => 'uploadFileData',
             'filterForm' => $this->getFilterFormStatePath(),
+            'sortForm' => $this->getSortFormStatePath(),
             default => $this->getFormStatePath(),
         };
     }
@@ -317,6 +318,7 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
         return [
             'uploadFileForm',
             'filterForm',
+            'sortForm',
         ];
     }
 
@@ -324,12 +326,19 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
     {
         $this->uploadFileForm->fill();
         $this->fillFilterForm();
+        $this->fillSortForm();
     }
     //endregion Form
 
     public function isFormCollapsed(string $name): bool
     {
         switch ($name) {
+            case 'sortForm':
+                return
+                    collect($this->ensureSort())
+                        ->where(fn ($v, $k) => ! $this->isSortColumnInvisible($k))
+                        ->count() <= 0 &&
+                    data_get($this->formConfig, 'sort.collap_open', false) == false;
             case 'filterForm':
                 return
                     collect($this->ensureFilter())
@@ -350,6 +359,28 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
             ->whereParent($this->parentKey);
 
         $filter = $this->ensureFilter();
+        $sort = $this->ensureSort();
+
+        switch ($sort['type'] ?? null) {
+            case 'name':
+                $query = $query->withAggregate('media', 'name')->orderBy('media_name', $sort['direction'] ?? 'asc');
+
+                break;
+            case 'created_at':
+                $query = $query->withAggregate('media', 'created_at')->orderBy('media_created_at', $sort['direction'] ?? 'asc');
+
+                break;
+            case 'updated_at':
+                $query = $query->withAggregate('media', 'updated_at')->orderBy('media_updated_at', $sort['direction'] ?? 'asc');
+
+                break;
+            case 'size':
+                $query = $query->withSum('media', 'size')->orderBy('media_sum_size', $sort['direction'] ?? 'asc');
+            default:
+                $query = $query->orderBy('id', $sort['direction'] ?? 'asc');
+
+                break;
+        }
 
         if (isset($filter['title'])) {
             $query = $query->where('title', 'like', "%{$filter['title']}%");
@@ -415,52 +446,6 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
         return $this->isMultiple;
     }
 
-    protected function addMediaWithMappedProperties(MediaAsset $media, TemporaryUploadedFile $file): Model
-    {
-        $customProperties = [];
-        $mediaItem = $media->addMedia($file)->toMediaCollection();
-
-        try {
-
-            if ($media->isVideo()) {
-                $ffmpeg = FFMpeg::create([
-                    'ffmpeg.binaries' => config('media-library.ffmpeg_path'),
-                    'ffprobe.binaries' => config('media-library.ffprobe_path'),
-                ]);
-                $ffprobe = $ffmpeg->getFFProbe()
-                    ->streams($mediaItem->getPath()) // extracts streams informations
-                    ->videos()                      // filters video streams
-                    ->first();
-
-                $customProperties['duration'] = $ffprobe->get('duration');
-                $customProperties['width'] = $ffprobe->get('width');
-                $customProperties['height'] = $ffprobe->get('height');
-                $customProperties['resolution'] = "{$customProperties['width']}x{$customProperties['height']}";
-                $customProperties['channels'] = $ffprobe->get('channels');
-                $customProperties['bit_rate'] = $ffprobe->get('bit_rate') ?? $ffprobe->get('avg_frame_rate');
-                $customProperties['frame_rate'] = $ffprobe->get('r_frame_rate');
-                $customProperties['frame_rate_avg'] = $ffprobe->get('avg_frame_rate');
-                $customProperties['codec_name'] = $ffprobe->get('codec_name');
-                $customProperties['codec_long_name'] = $ffprobe->get('codec_long_name');
-            } elseif ($media->isImage()) {
-                $dimensions = @getimagesize($mediaItem->getPath());
-                if (! empty($dimensions)) {
-                    $customProperties['width'] = $dimensions[0] ?? null;
-                    $customProperties['height'] = $dimensions[1] ?? null;
-                    $customProperties['dimensions'] = "{$customProperties['width']}x{$customProperties['height']}";
-                }
-            }
-        } catch (\Exception $e) {
-        }
-
-        foreach ($customProperties as $key => $value) {
-            $mediaItem->setCustomProperty($key, $value);
-        }
-        $mediaItem->save();
-
-        return $media;
-    }
-
     protected function createMediaFromUploadedFile(TemporaryUploadedFile $file): Model
     {
         $media = $this->getEloquentQuery()->create([
@@ -468,7 +453,7 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
             'title' => $file->getClientOriginalName(),
         ]);
 
-        $this->addMediaWithMappedProperties($media, $file);
+        $this->addMediaWithMappedProperties($file);
 
         return $media;
     }
@@ -485,6 +470,11 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
     protected function isFilterColumnInvisible(string $column): bool
     {
         return in_array($column, $this->formConfig['filter']['invisible_columns'] ?? []);
+    }
+
+    protected function isSortColumnInvisible(string $column): bool
+    {
+        return in_array($column, $this->formConfig['sort']['invisible_columns'] ?? []);
     }
 
     protected function getEloquentQuery()
