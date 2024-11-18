@@ -63,6 +63,34 @@ class BelongsToNestableTreeObserver
 
     protected function deleteNestableTree(BelongsToNestableTree | Model $model)
     {
+        $this->reorderNestableTreeIfRoot($model);
+
         $model->nestableTree?->delete();
+    }
+
+    protected function reorderNestableTreeIfRoot(BelongsToNestableTree | Model $model)
+    {
+        /**
+         * @var \SolutionForest\InspireCms\Support\Models\Contracts\NestableTree | Model
+         */
+        $nestableTreeModel = app(\SolutionForest\InspireCms\Support\Models\Contracts\NestableTree::class);
+        
+        $parentId = $model->nestableTree?->getParentId();
+        $morphableType = $model->getMorphClass();
+
+        $nestableTreeRootLevelParentId = $nestableTreeModel->getRootLevelParentId();
+
+        if ($parentId !== $nestableTreeRootLevelParentId || is_null($parentId)) {
+            return;
+        }
+
+        $idsToReorder = $nestableTreeModel->newQuery()
+            ->where($nestableTreeModel->getParentKeyName(), $parentId)
+            ->where('nestable_type', $morphableType)
+            ->whereNot('nestable_id', $model->getKey())
+            ->pluck('nestable_id');
+
+        $nestableTreeModel
+            ->setNewOrderForNestable($parentId, $idsToReorder->toArray(), $model->getMorphClass());
     }
 }
