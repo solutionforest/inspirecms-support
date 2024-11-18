@@ -208,6 +208,7 @@ class MediaAsset extends BaseModel implements MediaAssetContract
 
         $fileAdder = $this->addMedia($file);
         $mediaItem = $fileAdder->toMediaCollection();
+
         try {
 
             if ($this->isVideo()) {

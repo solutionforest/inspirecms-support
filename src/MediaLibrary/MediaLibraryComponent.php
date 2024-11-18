@@ -159,9 +159,9 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
     public function editMediaAction(): Action
     {
         return Action::make('editMedia')
-            ->modalHeading(fn(Action $action) => __('inspirecms-support::media-library.actions.edit.modal.heading', ['name' => $action->getModelLabel()]))
+            ->modalHeading(fn (Action $action) => __('inspirecms-support::media-library.actions.edit.modal.heading', ['name' => $action->getModelLabel()]))
             ->modelLabel(__('inspirecms-support::media-library.media'))
-            ->record(fn() => $this->selectedMedia)
+            ->record(fn () => $this->selectedMedia)
             ->fillForm(function (?Model $record) {
                 $data = $record?->attributesToArray();
                 if ($record && $record instanceof MediaAsset) {
@@ -174,7 +174,7 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
                 return $data;
             })
             ->form(
-                fn(Form $form) => $form
+                fn (Form $form) => $form
                     ->schema([
                         Forms\Components\FileUpload::make('file')
                             ->label(__('inspirecms-support::media-library.forms.files.label'))
@@ -220,9 +220,9 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
     public function viewMediaAction(): Action
     {
         return Action::make('viewMedia')
-            ->modalHeading(fn(Action $action) => __('inspirecms-support::media-library.actions.view.modal.heading', ['name' => $action->getModelLabel()]))
+            ->modalHeading(fn (Action $action) => __('inspirecms-support::media-library.actions.view.modal.heading', ['name' => $action->getModelLabel()]))
             ->modelLabel(__('inspirecms-support::media-library.media'))
-            ->record(fn() => $this->selectedMedia)
+            ->record(fn () => $this->selectedMedia)
             ->fillForm(function (?Model $record) {
                 $data = $record?->attributesToArray();
                 if ($record && $record instanceof MediaAsset) {
@@ -236,7 +236,7 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
                 return $data;
             })
             ->form(
-                fn(Form $form) => $form
+                fn (Form $form) => $form
                     ->schema([
                         Forms\Components\FileUpload::make('file')
                             ->label(__('inspirecms-support::media-library.forms.files.label'))
@@ -342,8 +342,8 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
             case 'filterForm':
                 return
                     collect($this->ensureFilter())
-                    ->where(fn($v, $k) => ! $this->isFilterColumnInvisible($k))
-                    ->count() <= 0 &&
+                        ->where(fn ($v, $k) => ! $this->isFilterColumnInvisible($k))
+                        ->count() <= 0 &&
                     data_get($this->formConfig, 'filter.collap_open', false) == false;
             case 'uploadFileForm':
                 return data_get($this->formConfig, 'upload.collap_open', false) == false;
@@ -378,6 +378,7 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
                 $query = $query->withSum('media', 'size')->orderBy('media_sum_size', $sort['direction'] ?? 'asc');
             default:
                 $query = $query->orderBy('id', $sort['direction'] ?? 'asc');
+
                 break;
         }
 
