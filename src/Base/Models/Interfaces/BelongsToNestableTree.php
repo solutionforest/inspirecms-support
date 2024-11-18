@@ -29,4 +29,24 @@ interface BelongsToNestableTree
      * @return string|int|null
      */
     public function getParentNestableTreeId();
+
+    /**
+     * @return string
+     */
+    public function getNestableTreeOrderName();
+
+    /**
+     * @return string
+     */
+    public function getNestableTreeParentIdName();
+
+    /**
+     * @return string
+     */
+    public function getQualifiedNestableTreeOrderName();
+
+    /**
+     * @return string
+     */
+    public function getQualifiedNestableTreeParentIdName();
 }

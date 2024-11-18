@@ -88,7 +88,7 @@ trait BelongsToNestableTree
      */
     public function getParentNestableTreeId()
     {
-        $fallbackParentId = $this->nestableTree()->getRelated()->getFallbackParentId();
+        $fallbackParentId = $this->nestableTree()->getRelated()->getRootLevelParentId();
 
         return $this->parent?->nestableTree?->getKey() ?? $fallbackParentId;
     }
@@ -106,7 +106,7 @@ trait BelongsToNestableTree
      */
     public function getNestableTreeParentIdName()
     {
-        return $this->nestableTree()->getRelated()->getNestableParentIdName();
+        return $this->nestableTree()->getRelated()->getParentKeyName();
     }
 
     /**
@@ -122,7 +122,7 @@ trait BelongsToNestableTree
      */
     public function getQualifiedNestableTreeParentIdName()
     {
-        return $this->nestableTree()->getRelated()->qualifyColumn($this->getNestableTreeParentIdName());
+        return $this->nestableTree()->getRelated()->qualifyColumn($this->getParentId());
     }
 
     //region Scopes
