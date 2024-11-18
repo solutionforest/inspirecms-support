@@ -13,7 +13,7 @@ interface IndexableModel
      * @return array
      */
     public function toSearchableArray();
-    
+
     /**
      * Make the given model instance searchable.
      *
