@@ -6,6 +6,8 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use SolutionForest\InspireCms\Support\Tests\TestCase;
 use SolutionForest\InspireCms\Support\Tests\TestModels\MediaAsset;
+use SolutionForest\InspireCms\Support\Facades\MediaLibraryManifest;
+use function Pest\Livewire\livewire;
 
 class MediaAssetTest extends TestCase
 {
@@ -54,7 +56,6 @@ class MediaAssetTest extends TestCase
         $this->assertEquals($media->custom_properties['width'], 120);
         $this->assertEquals($media->custom_properties['height'], 130);
     }
-
     /** @test */
     public function it_can_get_url()
     {
