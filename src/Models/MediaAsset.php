@@ -234,7 +234,7 @@ class MediaAsset extends BaseModel implements MediaAssetContract
                 $customProperties['codec_long_name'] = $ffprobe->get('codec_long_name');
             } elseif ($this->isImage()) {
                 $contents = Storage::disk(config('inspirecms.media_library.disk'))->get($mediaItem->getPathRelativeToRoot());
-               
+
                 if (! empty($contents)) {
                     $im = imagecreatefromstring($contents);
                     $customProperties['width'] = imagesx($im) ?? null;
