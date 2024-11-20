@@ -72,7 +72,7 @@ trait HasRecursiveRelationships
             return $this->traitScopeIsRoot($query);
         }
 
-        return $query->where($this->getParentKeyName(), $rootValue);
+        return $query->where($this->qualifyColumn($this->getParentKeyName()), $rootValue);
     }
 
     public function scopeWhereIsRoot($query, bool $condition = true)
