@@ -35,7 +35,7 @@ class MediaAssetTest extends TestCase
 
         $this->assertNotNull($media);
 
-        Storage::disk('public')->assertExists($media->id . '/' . $testFileName);
+        Storage::disk('public')->assertExists($media->getPathRelativeToRoot());
     }
 
     /** @test */

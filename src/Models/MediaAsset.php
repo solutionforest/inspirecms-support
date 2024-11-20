@@ -4,6 +4,7 @@ namespace SolutionForest\InspireCms\Support\Models;
 
 use FFMpeg\FFMpeg;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
 use SolutionForest\InspireCms\Support\Facades\MediaLibraryManifest;
@@ -232,10 +233,12 @@ class MediaAsset extends BaseModel implements MediaAssetContract
                 $customProperties['codec_name'] = $ffprobe->get('codec_name');
                 $customProperties['codec_long_name'] = $ffprobe->get('codec_long_name');
             } elseif ($this->isImage()) {
-                $dimensions = @getimagesize($mediaItem->getPath());
-                if (! empty($dimensions)) {
-                    $customProperties['width'] = $dimensions[0] ?? null;
-                    $customProperties['height'] = $dimensions[1] ?? null;
+                $contents = Storage::disk(config('inspirecms.media_library.disk'))->get($mediaItem->getPathRelativeToRoot());
+               
+                if (! empty($contents)) {
+                    $im = imagecreatefromstring($contents);
+                    $customProperties['width'] = imagesx($im) ?? null;
+                    $customProperties['height'] = imagesy($im) ?? null;
                     $customProperties['dimensions'] = "{$customProperties['width']}x{$customProperties['height']}";
                 }
             }
