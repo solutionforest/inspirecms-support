@@ -453,7 +453,7 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
             'title' => $file->getClientOriginalName(),
         ]);
 
-        $this->addMediaWithMappedProperties($file);
+        $media->addMediaWithMappedProperties($file);
 
         return $media;
     }
