@@ -244,7 +244,6 @@ class MediaAsset extends BaseModel implements MediaAssetContract
         $fileExtension = pathinfo($mediaItem->file_name, PATHINFO_EXTENSION);
 
         try {
-            throw new \Exception('Test');
             if ($this->shouldMapVideoPropertiesWithFfmpeg()) {
                 $videoPath = $mediaItem->getPath();
                 $customProperties = static::getPropertiesForVideo($videoPath, $customProperties);
