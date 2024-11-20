@@ -203,44 +203,70 @@ class MediaAsset extends BaseModel implements MediaAssetContract
     }
     //endregion Dto
 
+    protected function shouldMapVideoPropertiesWithFfmpeg(): bool
+    {
+        return $this->isVideo() && config('inspirecms.media_library.should_map_video_properties_with_ffmpeg');
+    }
+
+    protected static function getPropertiesForVideo(string $videoPath, ?array $customProperties = null): array
+    {
+        $ffmpeg = FFMpeg::create([
+            'ffmpeg.binaries' => config('media-library.ffmpeg_path'),
+            'ffprobe.binaries' => config('media-library.ffprobe_path'),
+        ]);
+        $ffprobe = $ffmpeg->getFFProbe()
+            ->streams($videoPath) // extracts streams informations
+            ->videos()                      // filters video streams
+            ->first();
+
+        $customProperties['duration'] = $ffprobe->get('duration');
+        $customProperties['width'] = $ffprobe->get('width');
+        $customProperties['height'] = $ffprobe->get('height');
+        $customProperties['resolution'] = "{$customProperties['width']}x{$customProperties['height']}";
+        $customProperties['channels'] = $ffprobe->get('channels');
+        $customProperties['bit_rate'] = $ffprobe->get('bit_rate') ?? $ffprobe->get('avg_frame_rate');
+        $customProperties['frame_rate'] = $ffprobe->get('r_frame_rate');
+        $customProperties['frame_rate_avg'] = $ffprobe->get('avg_frame_rate');
+        $customProperties['codec_name'] = $ffprobe->get('codec_name');
+        $customProperties['codec_long_name'] = $ffprobe->get('codec_long_name');
+
+        return $customProperties;
+    }
+
     public function addMediaWithMappedProperties(string | UploadedFile | TemporaryUploadedFile $file): FileAdder
     {
         $customProperties = [];
+        $shouldRetry = false;
 
         $fileAdder = $this->addMedia($file);
         $mediaItem = $fileAdder->toMediaCollection();
+        $contents = Storage::disk(config('inspirecms.media_library.disk'))->get($mediaItem->getPathRelativeToRoot());
+        $fileExtension = pathinfo($mediaItem->file_name, PATHINFO_EXTENSION);
 
         try {
+            throw new \Exception('Test');
+            if ($this->shouldMapVideoPropertiesWithFfmpeg()) {
+                $videoPath = $mediaItem->getPath();
+                $customProperties = static::getPropertiesForVideo($videoPath, $customProperties);
+            }
+        } catch (\Exception $e) {
+            $shouldRetry = true;
+        }
 
-            if ($this->isVideo()) {
-                $ffmpeg = FFMpeg::create([
-                    'ffmpeg.binaries' => config('media-library.ffmpeg_path'),
-                    'ffprobe.binaries' => config('media-library.ffprobe_path'),
-                ]);
-                $ffprobe = $ffmpeg->getFFProbe()
-                    ->streams($mediaItem->getPath()) // extracts streams informations
-                    ->videos()                      // filters video streams
-                    ->first();
+        try {
+            if ($shouldRetry && $this->shouldMapVideoPropertiesWithFfmpeg()) {
+                $tempFilePath = 'temp/' . time() . '.' . $fileExtension;
+                Storage::disk('local')->put($tempFilePath, $contents);
+                $tempFullPath  = Storage::disk('local')->path($tempFilePath);
+                $customProperties = static::getPropertiesForVideo($tempFullPath, $customProperties);
+                Storage::disk('local')->delete($tempFilePath);
+            }
 
-                $customProperties['duration'] = $ffprobe->get('duration');
-                $customProperties['width'] = $ffprobe->get('width');
-                $customProperties['height'] = $ffprobe->get('height');
-                $customProperties['resolution'] = "{$customProperties['width']}x{$customProperties['height']}";
-                $customProperties['channels'] = $ffprobe->get('channels');
-                $customProperties['bit_rate'] = $ffprobe->get('bit_rate') ?? $ffprobe->get('avg_frame_rate');
-                $customProperties['frame_rate'] = $ffprobe->get('r_frame_rate');
-                $customProperties['frame_rate_avg'] = $ffprobe->get('avg_frame_rate');
-                $customProperties['codec_name'] = $ffprobe->get('codec_name');
-                $customProperties['codec_long_name'] = $ffprobe->get('codec_long_name');
-            } elseif ($this->isImage()) {
-                $contents = Storage::disk(config('inspirecms.media_library.disk'))->get($mediaItem->getPathRelativeToRoot());
-
-                if (! empty($contents)) {
-                    $im = imagecreatefromstring($contents);
-                    $customProperties['width'] = imagesx($im) ?? null;
-                    $customProperties['height'] = imagesy($im) ?? null;
-                    $customProperties['dimensions'] = "{$customProperties['width']}x{$customProperties['height']}";
-                }
+            if ($this->isImage() && ! empty($contents)) {
+                $im = imagecreatefromstring($contents);
+                $customProperties['width'] = imagesx($im) ?? null;
+                $customProperties['height'] = imagesy($im) ?? null;
+                $customProperties['dimensions'] = "{$customProperties['width']}x{$customProperties['height']}";
             }
         } catch (\Exception $e) {
             throw $e;
