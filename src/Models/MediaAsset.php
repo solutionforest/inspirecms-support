@@ -257,7 +257,7 @@ class MediaAsset extends BaseModel implements MediaAssetContract
             if ($shouldRetry && $this->shouldMapVideoPropertiesWithFfmpeg()) {
                 $tempFilePath = 'temp/' . time() . '.' . $fileExtension;
                 Storage::disk('local')->put($tempFilePath, $contents);
-                $tempFullPath  = Storage::disk('local')->path($tempFilePath);
+                $tempFullPath = Storage::disk('local')->path($tempFilePath);
                 $customProperties = static::getPropertiesForVideo($tempFullPath, $customProperties);
                 Storage::disk('local')->delete($tempFilePath);
             }
