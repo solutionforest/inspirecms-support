@@ -2,12 +2,17 @@
 
 namespace SolutionForest\InspireCms\Support\Base\Dtos;
 
+/**
+ * Class BaseDto
+ * 
+ * @template TDto of BaseDto
+ */
 abstract class BaseDto
 {
     public function __construct() {}
 
     /**
-     * @return self
+     * @return TDto
      */
     public static function fromArray(array $parameters)
     {

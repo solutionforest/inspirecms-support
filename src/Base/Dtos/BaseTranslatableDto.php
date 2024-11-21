@@ -4,6 +4,13 @@ namespace SolutionForest\InspireCms\Support\Base\Dtos;
 
 use SolutionForest\InspireCms\Support\Base\Dtos\Concerns\Translatable;
 
+/**
+ * Class BaseTranslatableDto
+ * 
+ * @template TDto of BaseTranslatableDto
+ * 
+ * @extends BaseDto<TDto>
+ */
 class BaseTranslatableDto extends BaseDto
 {
     use Translatable;
@@ -11,15 +18,7 @@ class BaseTranslatableDto extends BaseDto
     protected array $translatableAttributes = [];
 
     /**
-     * @return self
-     */
-    public static function fromArray(array $parameters)
-    {
-        return parent::fromArray($parameters);
-    }
-
-    /**
-     * @return self
+     * @return TDto
      */
     public static function fromTranslatableArray(array $parameters, $locale, $fallbackLocale, $availableLocales = [])
     {

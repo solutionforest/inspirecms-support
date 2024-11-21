@@ -5,7 +5,12 @@ namespace SolutionForest\InspireCms\Support\Base\Dtos;
 use Illuminate\Database\Eloquent\Model;
 
 /**
+ * Class BaseModelDto
+ * 
  * @template TModle of Model
+ * @template TDto of BaseModelDto
+ * 
+ * @extends BaseDto<TDto>
  */
 abstract class BaseModelDto extends BaseDto
 {
@@ -16,7 +21,7 @@ abstract class BaseModelDto extends BaseDto
 
     /**
      * @param  TModle  $model
-     * @return self
+     * @return TDto
      */
     public function setModel($model)
     {
@@ -34,16 +39,8 @@ abstract class BaseModelDto extends BaseDto
     }
 
     /**
-     * @return self
-     */
-    public static function fromArray(array $parameters)
-    {
-        return parent::fromArray($parameters);
-    }
-
-    /**
      * @param  TModle  $model
-     * @return self
+     * @return TDto
      */
     public static function fromModel($model)
     {

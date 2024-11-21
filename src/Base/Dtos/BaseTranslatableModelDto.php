@@ -6,7 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Support\Base\Dtos\Concerns\Translatable;
 
 /**
+ * Class BaseTranslatableModelDto
+ * 
  * @template TModle of Model
+ * @template TDto of BaseTranslatableModelDto
+ * 
+ * @extends BaseModelDto<TModle,TDto>
  */
 abstract class BaseTranslatableModelDto extends BaseModelDto
 {
@@ -15,27 +20,9 @@ abstract class BaseTranslatableModelDto extends BaseModelDto
     protected array $translatableAttributes = [];
 
     /**
-     * @return self
-     */
-    public static function fromArray(array $parameters)
-    {
-        return parent::fromArray($parameters);
-    }
-
-    /**
      * @param  TModle  $model
      * @param string
-     * @return self
-     */
-    public static function fromModel($model)
-    {
-        return parent::fromModel($model);
-    }
-
-    /**
-     * @param  TModle  $model
-     * @param string
-     * @return self
+     * @return TDto
      */
     public static function fromTranslatableModel($model, $locale, $availableLocales = [])
     {
