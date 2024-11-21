@@ -6,10 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class BaseModelDto
- * 
+ *
  * @template TModle of Model
  * @template TDto of BaseModelDto
- * 
+ *
  * @extends BaseDto<TDto>
  */
 abstract class BaseModelDto extends BaseDto

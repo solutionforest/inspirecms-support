@@ -4,7 +4,7 @@ namespace SolutionForest\InspireCms\Support\Base\Dtos;
 
 /**
  * Class BaseDto
- * 
+ *
  * @template TDto of BaseDto
  */
 abstract class BaseDto

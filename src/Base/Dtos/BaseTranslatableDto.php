@@ -6,9 +6,9 @@ use SolutionForest\InspireCms\Support\Base\Dtos\Concerns\Translatable;
 
 /**
  * Class BaseTranslatableDto
- * 
+ *
  * @template TDto of BaseTranslatableDto
- * 
+ *
  * @extends BaseDto<TDto>
  */
 class BaseTranslatableDto extends BaseDto

@@ -7,10 +7,10 @@ use SolutionForest\InspireCms\Support\Base\Dtos\Concerns\Translatable;
 
 /**
  * Class BaseTranslatableModelDto
- * 
+ *
  * @template TModle of Model
  * @template TDto of BaseTranslatableModelDto
- * 
+ *
  * @extends BaseModelDto<TModle,TDto>
  */
 abstract class BaseTranslatableModelDto extends BaseModelDto
