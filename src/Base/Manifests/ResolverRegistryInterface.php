@@ -2,7 +2,7 @@
 
 namespace SolutionForest\InspireCms\Support\Base\Manifests;
 
-interface ResolverManifestInterface
+interface ResolverRegistryInterface
 {
     public function set(string $name, string $resolver): void;
 

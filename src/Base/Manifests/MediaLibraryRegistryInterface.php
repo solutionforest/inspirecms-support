@@ -2,7 +2,7 @@
 
 namespace SolutionForest\InspireCms\Support\Base\Manifests;
 
-interface MediaLibraryManifestInterface
+interface MediaLibraryRegistryInterface
 {
     public function setDisk(string $disk): void;
 

@@ -4,7 +4,7 @@ namespace SolutionForest\InspireCms\Support\Base\Manifests;
 
 use SolutionForest\InspireCms\Support\Models\MediaAsset;
 
-class MediaLibraryManifest implements MediaLibraryManifestInterface
+class MediaLibraryRegistry implements MediaLibraryRegistryInterface
 {
     protected string $disk = 'public';
 

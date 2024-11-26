@@ -56,13 +56,13 @@ class TestCase extends Orchestra
         config()->set('database.default', 'testing');
 
         //region inspirecms support
-        \SolutionForest\InspireCms\Support\Facades\MediaLibraryManifest::setDisk('public');
-        \SolutionForest\InspireCms\Support\Facades\MediaLibraryManifest::setDirectory('');
-        \SolutionForest\InspireCms\Support\Facades\MediaLibraryManifest::setThumbnailCrop(300, 300);
+        \SolutionForest\InspireCms\Support\Facades\MediaLibraryRegistry::setDisk('public');
+        \SolutionForest\InspireCms\Support\Facades\MediaLibraryRegistry::setDirectory('');
+        \SolutionForest\InspireCms\Support\Facades\MediaLibraryRegistry::setThumbnailCrop(300, 300);
 
         \SolutionForest\InspireCms\Support\Facades\InspireCmsSupport::setTablePrefix('cms_');
 
-        \SolutionForest\InspireCms\Support\Facades\ResolverManifest::set('user', \SolutionForest\InspireCms\Support\Resolver\UserResolver::class);
+        \SolutionForest\InspireCms\Support\Facades\ResolverRegistry::set('user', \SolutionForest\InspireCms\Support\Resolver\UserResolver::class);
         //endregion inspirecms support
     }
 

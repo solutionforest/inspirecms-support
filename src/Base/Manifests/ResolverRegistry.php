@@ -2,7 +2,7 @@
 
 namespace SolutionForest\InspireCms\Support\Base\Manifests;
 
-class ResolverManifest implements ResolverManifestInterface
+class ResolverRegistry implements ResolverRegistryInterface
 {
     protected array $resolvers = [];
 

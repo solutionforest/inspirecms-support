@@ -3,21 +3,21 @@
 namespace SolutionForest\InspireCms\Support\Facades;
 
 use Illuminate\Support\Facades\Facade;
-use SolutionForest\InspireCms\Support\Base\Manifests\ResolverManifestInterface;
+use SolutionForest\InspireCms\Support\Base\Manifests\ResolverRegistryInterface;
 
 /**
  * @method static void set(string $name, string $resolver)
  * @method static ?string get(string $name)
  *
- * @see \SolutionForest\InspireCms\Support\Base\Manifests\ResolverManifest
+ * @see \SolutionForest\InspireCms\Support\Base\Manifests\ResolverRegistry
  */
-class ResolverManifest extends Facade
+class ResolverRegistry extends Facade
 {
     /**
      * {@inheritdoc}
      */
     protected static function getFacadeAccessor()
     {
-        return ResolverManifestInterface::class;
+        return ResolverRegistryInterface::class;
     }
 }

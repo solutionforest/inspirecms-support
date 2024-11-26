@@ -10,7 +10,6 @@ use Livewire\Features\SupportTesting\Testable;
 use Livewire\Livewire;
 use SolutionForest\InspireCms\Support\Base\Manifests;
 use SolutionForest\InspireCms\Support\Testing\TestsInspireCmsSupport;
-use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -44,8 +43,8 @@ class InspireCmsSupportServiceProvider extends PackageServiceProvider
 
     public function packageRegistered(): void
     {
-        $this->app->singleton(Manifests\MediaLibraryManifestInterface::class, fn () => $this->app->make(Manifests\MediaLibraryManifest::class));
-        $this->app->singleton(Manifests\ResolverManifestInterface::class, fn () => $this->app->make(Manifests\ResolverManifest::class));
+        $this->app->singleton(Manifests\MediaLibraryRegistryInterface::class, fn () => $this->app->make(Manifests\MediaLibraryRegistry::class));
+        $this->app->singleton(Manifests\ResolverRegistryInterface::class, fn () => $this->app->make(Manifests\ResolverRegistry::class));
 
         Blueprint::mixin(new \SolutionForest\InspireCms\Support\Macros\BlueprintMarcos);
     }

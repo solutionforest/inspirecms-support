@@ -3,7 +3,7 @@
 namespace SolutionForest\InspireCms\Support\Facades;
 
 use Illuminate\Support\Facades\Facade;
-use SolutionForest\InspireCms\Support\Base\Manifests\MediaLibraryManifestInterface;
+use SolutionForest\InspireCms\Support\Base\Manifests\MediaLibraryRegistryInterface;
 
 /**
  * @method static void setDisk(string $disk)
@@ -15,15 +15,15 @@ use SolutionForest\InspireCms\Support\Base\Manifests\MediaLibraryManifestInterfa
  * @method static string getModel()
  * @method static array getThumbnailCrop
  *
- * @see \SolutionForest\InspireCms\Support\Base\Manifests\MediaLibraryManifest
+ * @see \SolutionForest\InspireCms\Support\Base\Manifests\MediaLibraryRegistry
  */
-class MediaLibraryManifest extends Facade
+class MediaLibraryRegistry extends Facade
 {
     /**
      * {@inheritdoc}
      */
     protected static function getFacadeAccessor()
     {
-        return MediaLibraryManifestInterface::class;
+        return MediaLibraryRegistryInterface::class;
     }
 }
