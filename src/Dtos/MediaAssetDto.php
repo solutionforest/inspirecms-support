@@ -5,7 +5,7 @@ namespace SolutionForest\InspireCms\Support\Dtos;
 use SolutionForest\InspireCms\Support\Base\Dtos\BaseModelDto;
 
 /**
- * @extends BaseModelDto<\SolutionForest\InspireCms\Support\Models\MediaAsset>
+ * @extends BaseModelDto<\SolutionForest\InspireCms\Support\Models\MediaAsset,MediaAssetDto>
  */
 class MediaAssetDto extends BaseModelDto
 {

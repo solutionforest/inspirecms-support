@@ -5,7 +5,7 @@ namespace SolutionForest\InspireCms\Support\Forms\Components;
 use Closure;
 use Filament\Forms\Components\Field;
 use Illuminate\Database\Eloquent\Builder;
-use SolutionForest\InspireCms\Support\Facades\MediaLibraryManifest;
+use SolutionForest\InspireCms\Support\Facades\ModelRegistry;
 
 class MediaBrowser extends Field
 {
@@ -105,6 +105,6 @@ class MediaBrowser extends Field
 
     protected static function getMediaModel(): string
     {
-        return MediaLibraryManifest::getModel();
+        return ModelRegistry::get(\SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset::class);
     }
 }

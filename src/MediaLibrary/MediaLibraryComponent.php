@@ -16,7 +16,8 @@ use Livewire\Attributes\On;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
-use SolutionForest\InspireCms\Support\Facades\MediaLibraryManifest;
+use SolutionForest\InspireCms\Support\Facades\MediaLibraryRegistry;
+use SolutionForest\InspireCms\Support\Facades\ModelRegistry;
 use SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset;
 
 /**
@@ -178,8 +179,8 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
                     ->schema([
                         Forms\Components\FileUpload::make('file')
                             ->label(__('inspirecms-support::media-library.forms.files.label'))
-                            ->disk(MediaLibraryManifest::getDisk())
-                            ->directory(MediaLibraryManifest::getDirectory())
+                            ->disk(MediaLibraryRegistry::getDisk())
+                            ->directory(MediaLibraryRegistry::getDirectory())
                             ->deletable(false)
                             ->openable()
                             ->downloadable()
@@ -240,8 +241,8 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
                     ->schema([
                         Forms\Components\FileUpload::make('file')
                             ->label(__('inspirecms-support::media-library.forms.files.label'))
-                            ->disk(MediaLibraryManifest::getDisk())
-                            ->directory(MediaLibraryManifest::getDirectory())
+                            ->disk(MediaLibraryRegistry::getDisk())
+                            ->directory(MediaLibraryRegistry::getDirectory())
                             ->deletable(false)
                             ->openable()
                             ->downloadable(),
@@ -275,8 +276,8 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
             ->schema([
                 Forms\Components\FileUpload::make('files')
                     ->label(__('inspirecms-support::media-library.forms.files.label'))
-                    ->disk(MediaLibraryManifest::getDisk())
-                    ->directory(MediaLibraryManifest::getDirectory())
+                    ->disk(MediaLibraryRegistry::getDisk())
+                    ->directory(MediaLibraryRegistry::getDirectory())
                     ->imageEditor()
                     ->multiple(),
             ])
@@ -484,7 +485,7 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
 
     protected static function getMediaAssetModel(): string
     {
-        return MediaLibraryManifest::getModel();
+        return ModelRegistry::get(\SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset::class);
     }
 
     protected static function getRootLevelParentId(): string | int

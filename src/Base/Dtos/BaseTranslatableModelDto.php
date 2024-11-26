@@ -28,7 +28,7 @@ abstract class BaseTranslatableModelDto extends BaseModelDto
     {
         $dto = static::fromModel($model)->setLocale($locale)->setAvailableLocales($availableLocales);
 
-        if (in_array(\SolutionForest\InspireCms\Models\Concerns\HasTranslations::class, class_uses_recursive($model))) {
+        if (in_array('Spatie\Translatable\HasTranslations', class_uses_recursive($model))) {
             $dto = $dto->setFallbackLocale($model->getFallbackLocale());
         }
 
