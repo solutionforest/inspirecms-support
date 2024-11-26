@@ -78,8 +78,7 @@
             <x-filament::grid class="media-library__content__items" :default="$this->selectedMedia ? 1 : 2" 2xl="9" :xl="$this->selectedMedia ? 4 : 6"
                 :lg="$this->selectedMedia ? 2 : 4" :md="$this->selectedMedia ? 2 : 3">
                 @foreach ($mediaItems as $mediaItem)
-                    <x-inspirecms-support::media-library.media-browser-item :mediaItem="$mediaItem"
-                        class="media-library__content__items__item" />
+                    <x-inspirecms-support::media-library.media-browser-item :mediaItem="$mediaItem" />
                 @endforeach
             </x-filament::grid>
         </div>

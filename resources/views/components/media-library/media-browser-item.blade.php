@@ -1,13 +1,15 @@
 @props(['mediaItem'])
-<div {{ $attributes }}>
-    <div @class([
-            'media-library__content__items__item__thumb',
-            'image-item' => ! $mediaItem->isImage(),
-        ])
-        @style([
-            \Filament\Support\get_color_css_variables('primary', [200, 300, 400, 500]),
-        ])
-        x-bind:class="{ 'selected': isMediaSelected('{{ $mediaItem->getKey() }}') }"
+<div 
+    {{ $attributes->class([
+        'media-library__content__items__item',
+        'non-image-item' => ! $mediaItem->isImage(),
+    ]) }}
+    x-bind:class="{ 'selected': isMediaSelected('{{ $mediaItem->getKey() }}') }"
+    @style([
+        \Filament\Support\get_color_css_variables('primary', [200, 300, 400, 500]),
+    ])
+>
+    <div class="media-library__content__items__item__thumb"
         @click="selectMedia('{{ $mediaItem->getKey() }}', @js($mediaItem->isFolder()))"
         @if ($mediaItem->isFolder())
             @dblclick="$wire.openFolder('{{ $mediaItem->getKey() }}')"
