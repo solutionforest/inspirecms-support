@@ -2,7 +2,6 @@
 
 namespace SolutionForest\InspireCms\Support\Models\Polymorphic;
 
-use Illuminate\Database\Eloquent\Relations\MorphTo;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
 use SolutionForest\InspireCms\Support\Models\Concerns\HasRecursiveRelationships;
 use SolutionForest\InspireCms\Support\Models\Contracts\NestableTree as NestableTreeContract;
@@ -16,7 +15,7 @@ use Spatie\EloquentSortable\SortableTrait;
  * @property string|int $parent_id
  * @property-read ?\Illuminate\Support\Carbon $created_at
  * @property-read ?\Illuminate\Support\Carbon $updated_at
- * 
+ *
  * @implements NestableTreeContract<NestableTree>
  */
 class NestableTree extends BaseModel implements NestableTreeContract

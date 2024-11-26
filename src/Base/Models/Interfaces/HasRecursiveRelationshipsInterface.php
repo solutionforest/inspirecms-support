@@ -4,7 +4,7 @@ namespace SolutionForest\InspireCms\Support\Base\Models\Interfaces;
 
 /**
  * @template TModel of \Illuminate\Database\Eloquent\Model
- * 
+ *
  * @see \SolutionForest\InspireCms\Support\Models\Concerns\HasRecursiveRelationships
  */
 interface HasRecursiveRelationshipsInterface

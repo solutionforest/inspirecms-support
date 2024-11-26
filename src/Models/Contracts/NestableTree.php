@@ -8,7 +8,7 @@ use Spatie\EloquentSortable\Sortable;
 
 /**
  * @template TModel of \Illuminate\Database\Eloquent\Model
- * 
+ *
  * @extends HasRecursiveRelationshipsInterface<TModel>
  */
 interface NestableTree extends HasRecursiveRelationshipsInterface, Sortable
