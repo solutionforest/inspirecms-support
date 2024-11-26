@@ -68,7 +68,7 @@ class MediaBrowser extends Field
             }
 
             /**
-             * @var null | MediaAsset | Model 
+             * @var null | MediaAsset | Model
              */
             $media = $component->getMediaModelQuery()->find($key);
             if (! $media) {
