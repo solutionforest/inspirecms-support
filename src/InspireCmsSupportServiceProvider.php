@@ -27,12 +27,7 @@ class InspireCmsSupportServiceProvider extends PackageServiceProvider
          *
          * More info: https://github.com/spatie/laravel-package-tools
          */
-        $package->name(static::$name)
-            ->hasInstallCommand(function (InstallCommand $command) {
-                $command
-                    ->publishConfigFile()
-                    ->askToStarRepoOnGitHub('solutionforest/inspirecms-support');
-            });
+        $package->name(static::$name);
 
         if (file_exists($package->basePath('/../database/migrations'))) {
             $package->hasMigrations($this->getMigrations());
