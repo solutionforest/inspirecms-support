@@ -42,7 +42,7 @@ class MediaAsset extends BaseModel implements MediaAssetContract
         'is_folder' => 'boolean',
     ];
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
     public function registerMediaConversions($media = null): void
     {
         [$width, $height] = MediaLibraryRegistry::getThumbnailCrop();
@@ -52,7 +52,7 @@ class MediaAsset extends BaseModel implements MediaAssetContract
             ->nonQueued();
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
     public function getFirstMedia(): ?Media
     {
         if ($this->relationLoaded('media')) {
