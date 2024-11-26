@@ -34,6 +34,14 @@ trait HasRecursiveRelationships
     }
 
     /**
+     * @return bool
+     */
+    public function isRootLevel()
+    {
+        return $this->getParentId() === $this->getRootLevelParentId();
+    }
+
+    /**
      * @param  bool  $save  Indicates whether to save the instance after setting it as root. Default is true.
      */
     public function asRoot($save = true)

@@ -85,6 +85,11 @@ interface HasRecursiveRelationshipsInterface
      * @return int|string|null The ID of the root level parent.
      */
     public function getRootLevelParentId();
+    
+    /**
+     * @return bool
+     */
+    public function isRootLevel();
 
     /**
      * Get the name of the parent key column.
