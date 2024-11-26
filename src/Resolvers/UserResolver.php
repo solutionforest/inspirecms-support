@@ -7,7 +7,7 @@ use SolutionForest\InspireCms\Support\Facades\InspireCmsSupport;
 
 class UserResolver implements UserResolverInterface
 {
-    /** @inheritDoc */
+    /** {@inheritDoc} */
     public static function resolve()
     {
         $guard = InspireCmsSupport::getAuthGuard();

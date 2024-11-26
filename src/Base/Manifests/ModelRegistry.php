@@ -14,13 +14,13 @@ class ModelRegistry implements ModelRegistryInterface
         ];
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
     public function get(string $intefaceClass)
     {
         return $this->models[$intefaceClass] ?? null;
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
     public function replace(string $intefaceClass, string $modelClass)
     {
         $this->models[$intefaceClass] = $modelClass;

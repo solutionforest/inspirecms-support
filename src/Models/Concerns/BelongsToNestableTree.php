@@ -21,7 +21,7 @@ trait BelongsToNestableTree
     public function nestableTree(): MorphOne
     {
         $model = ModelRegistry::get(\SolutionForest\InspireCms\Support\Models\Contracts\NestableTree::class);
-        
+
         return $this->morphOne($model, 'nestable');
     }
 

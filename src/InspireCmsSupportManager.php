@@ -12,11 +12,11 @@ class InspireCmsSupportManager
     {
         $this->tablePrefix = $tablePrefix;
     }
-    
+
     public function setAuthGuard(string $guard): void
     {
         $this->authGuard = $guard;
-    }   
+    }
 
     public function getTablePrefix(): string
     {
