@@ -247,9 +247,9 @@ trait HasTreeNodeItemActions
 
             // Setting these to `null` creates a bug where the properties are
             // actually set to `'null'` strings and remain in the URL.
-            $this->defaultTreeNodeItemAction = [];
-            $this->defaultTreeNodeItemActionArguments = [];
-            $this->defaultTreeNodeItemActionRecord = [];
+            $this->mountedTreeNodeItemActionsAction = [];
+            $this->mountedTreeNodeItemActionsArguments = [];
+            $this->mountedTreeNodeItemActionsActionRecord = [];
 
             return;
         }
@@ -267,7 +267,11 @@ trait HasTreeNodeItemActions
             return null;
         }
 
-        return $this->getTreeNode()->getAction($this->mountedTreeNodeItemActions);
+        if (($treeNode = $this->getTreeNode()) instanceof \SolutionForest\InspireCms\Support\TreeNodes\ModelExplorer) {
+            return $treeNode->getAction($this->mountedTreeNodeItemActions);
+        }
+
+        return null;
     }
 
     public function mountedTreeNodeItemActionShouldOpenModal(null | Action | TreeNodeAction $mountedAction = null): bool
@@ -348,11 +352,6 @@ trait HasTreeNodeItemActions
         $this->mountedTreeNodeItemActionsData = [];
     }
 
-    /**
-     * Caches the mounted tree node item action form.
-     *
-     * @param  null|Action|TreeNodeAction  $mountedAction  The mounted action to be cached, or null if no action is provided.
-     */
     protected function closeTreeNodeItemActionModal(): void
     {
         $this->dispatch('close-modal', id: $this->getTreeNodeItemModalId());

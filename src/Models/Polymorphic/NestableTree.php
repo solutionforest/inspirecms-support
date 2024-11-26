@@ -8,6 +8,15 @@ use SolutionForest\InspireCms\Support\Models\Concerns\HasRecursiveRelationships;
 use SolutionForest\InspireCms\Support\Models\Contracts\NestableTree as NestableTreeContract;
 use Spatie\EloquentSortable\SortableTrait;
 
+/**
+ * @property string|int $id
+ * @property string $nestable_type
+ * @property string|int $nestable_id
+ * @property int $order
+ * @property string|int $parent_id
+ * @property-read ?\Illuminate\Support\Carbon $created_at
+ * @property-read ?\Illuminate\Support\Carbon $updated_at
+ */
 class NestableTree extends BaseModel implements NestableTreeContract
 {
     use HasRecursiveRelationships;

@@ -15,6 +15,19 @@ use Spatie\MediaLibrary\MediaCollections\FileAdder;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
+/**
+ * @property string $id
+ * @property string $title
+ * @property string|int $nestable_id
+ * @property string $parent_id
+ * @property bool $is_folder
+ * @property ?string $caption
+ * @property ?string $description
+ * @property ?string $author_type
+ * @property ?string $author_id
+ * @property-read ?\Illuminate\Support\Carbon $created_at
+ * @property-read ?\Illuminate\Support\Carbon $updated_at
+ */
 class MediaAsset extends BaseModel implements MediaAssetContract
 {
     use Concerns\BelongsToNestableTree;
@@ -29,7 +42,8 @@ class MediaAsset extends BaseModel implements MediaAssetContract
         'is_folder' => 'boolean',
     ];
 
-    public function registerMediaConversions(?Media $media = null): void
+    /** @inheritDoc */
+    public function registerMediaConversions($media = null): void
     {
         [$width, $height] = MediaLibraryRegistry::getThumbnailCrop();
         $this
@@ -38,6 +52,7 @@ class MediaAsset extends BaseModel implements MediaAssetContract
             ->nonQueued();
     }
 
+    /** @inheritDoc */
     public function getFirstMedia(): ?Media
     {
         if ($this->relationLoaded('media')) {

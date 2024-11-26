@@ -4,7 +4,7 @@ namespace SolutionForest\InspireCms\Support\Forms\Components;
 
 use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Field;
-use SolutionForest\InspireCms\InspireCmsConfig;
+use SolutionForest\InspireCms\Support\Facades\ModelRegistry;
 
 class MediaPicker extends Field
 {
@@ -114,6 +114,6 @@ class MediaPicker extends Field
 
     protected static function getMediaAssetModel(): string
     {
-        return InspireCmsConfig::getMediaAssetModelClass();
+        return ModelRegistry::get(\SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset::class);
     }
 }
