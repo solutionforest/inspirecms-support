@@ -10,7 +10,7 @@ interface ModelRegistryInterface
      * @param  string  $interfaceClass  The fully qualified name of the interface class to retrieve.
      * @return ?string The instance of the specified interface class.
      */
-    public function get(string $intefaceClass);
+    public function get(string $interfaceClass);
 
     /**
      * Replaces the existing model class associated with the given interface class.
@@ -19,5 +19,5 @@ interface ModelRegistryInterface
      * @param  string  $modelClass  The fully qualified name of the new model class to associate with the interface.
      * @return void
      */
-    public function replace(string $intefaceClass, string $modelClass);
+    public function replace(string $interfaceClass, string $modelClass);
 }

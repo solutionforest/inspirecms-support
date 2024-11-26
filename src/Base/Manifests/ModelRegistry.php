@@ -15,14 +15,14 @@ class ModelRegistry implements ModelRegistryInterface
     }
 
     /** {@inheritDoc} */
-    public function get(string $intefaceClass)
+    public function get(string $interfaceClass)
     {
-        return $this->models[$intefaceClass] ?? null;
+        return $this->models[$interfaceClass] ?? null;
     }
 
     /** {@inheritDoc} */
-    public function replace(string $intefaceClass, string $modelClass)
+    public function replace(string $interfaceClass, string $modelClass)
     {
-        $this->models[$intefaceClass] = $modelClass;
+        $this->models[$interfaceClass] = $modelClass;
     }
 }

@@ -5,7 +5,9 @@ namespace SolutionForest\InspireCms\Support\Forms\Components;
 use Closure;
 use Filament\Forms\Components\Field;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Support\Facades\ModelRegistry;
+use SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset;
 
 class MediaBrowser extends Field
 {
@@ -49,7 +51,7 @@ class MediaBrowser extends Field
                 $media = $component->getMediaModelQuery()->findMany($state);
 
                 // filter out folders
-                $state = $media->filter(fn ($m) => ! $m->isFolder())->map(fn ($m) => $m->getKey())->toArray();
+                $state = $media->filter(fn (MediaAsset | Model $m) => ! $m->isFolder())->map(fn (MediaAsset | Model $m) => $m->getKey())->toArray();
             }
 
             return $state ?? [];
@@ -65,6 +67,9 @@ class MediaBrowser extends Field
                 return null; // root
             }
 
+            /**
+             * @var null | MediaAsset | Model 
+             */
             $media = $component->getMediaModelQuery()->find($key);
             if (! $media) {
                 return null; // root
@@ -105,6 +110,6 @@ class MediaBrowser extends Field
 
     protected static function getMediaModel(): string
     {
-        return ModelRegistry::get(\SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset::class);
+        return ModelRegistry::get(MediaAsset::class);
     }
 }

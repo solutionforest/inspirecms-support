@@ -21,7 +21,8 @@ abstract class BaseTranslatableModelDto extends BaseModelDto
 
     /**
      * @param  TModle  $model
-     * @param string
+     * @param string $locale
+     * @param array $availableLocales
      * @return TDto
      */
     public static function fromTranslatableModel($model, $locale, $availableLocales = [])
