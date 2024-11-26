@@ -10,6 +10,8 @@ class MediaLibraryRegistry implements MediaLibraryRegistryInterface
 
     protected array $thumbnailCrop = [300, 300];
 
+    protected bool $shouldMapVideoPropertiesWithFfmpeg = false;
+
     public function setDisk(string $disk): void
     {
         $this->disk = $disk;
@@ -25,6 +27,11 @@ class MediaLibraryRegistry implements MediaLibraryRegistryInterface
         $this->thumbnailCrop = [$width, $height];
     }
 
+    public function setShouldMapVideoPropertiesWithFfmpeg(bool $condition): void
+    {
+        $this->shouldMapVideoPropertiesWithFfmpeg = $condition;
+    }
+
     public function getDisk(): string
     {
         return $this->disk;
@@ -38,5 +45,10 @@ class MediaLibraryRegistry implements MediaLibraryRegistryInterface
     public function getThumbnailCrop(): array
     {
         return $this->thumbnailCrop;
+    }
+
+    public function shouldMapVideoPropertiesWithFfmpeg(): bool
+    {
+        return $this->shouldMapVideoPropertiesWithFfmpeg;
     }
 }

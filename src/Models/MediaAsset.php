@@ -205,7 +205,7 @@ class MediaAsset extends BaseModel implements MediaAssetContract
 
     protected function shouldMapVideoPropertiesWithFfmpeg(): bool
     {
-        return $this->isVideo() && config('inspirecms.media_library.should_map_video_properties_with_ffmpeg');
+        return $this->isVideo() && MediaLibraryRegistry::shouldMapVideoPropertiesWithFfmpeg();
     }
 
     protected static function getPropertiesForVideo(string $videoPath, ?array $customProperties = null): array
@@ -240,7 +240,7 @@ class MediaAsset extends BaseModel implements MediaAssetContract
 
         $fileAdder = $this->addMedia($file);
         $mediaItem = $fileAdder->toMediaCollection();
-        $contents = Storage::disk(config('inspirecms.media_library.disk'))->get($mediaItem->getPathRelativeToRoot());
+        $contents = Storage::disk(MediaLibraryRegistry::getDisk())->get($mediaItem->getPathRelativeToRoot());
         $fileExtension = pathinfo($mediaItem->file_name, PATHINFO_EXTENSION);
 
         try {
