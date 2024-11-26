@@ -11,8 +11,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 interface MediaAsset extends BelongsToNestableTree, HasDtoModel, HasMedia
 {
     /**
-     * @param null | Model | Media $media
-     * @return void
+     * @param  null | Model | Media  $media
      */
     public function registerMediaConversions($media = null): void;
 
