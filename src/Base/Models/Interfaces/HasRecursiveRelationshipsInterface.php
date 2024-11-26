@@ -85,7 +85,7 @@ interface HasRecursiveRelationshipsInterface
      * @return int|string|null The ID of the root level parent.
      */
     public function getRootLevelParentId();
-    
+
     /**
      * @return bool
      */
