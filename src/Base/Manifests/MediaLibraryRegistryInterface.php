@@ -11,7 +11,7 @@ interface MediaLibraryRegistryInterface
     public function setThumbnailCrop(int $width, int $height): void;
 
     public function setShouldMapVideoPropertiesWithFfmpeg(bool $condition): void;
-    
+
     public function getDisk(): string;
 
     public function getDirectory(): string;
