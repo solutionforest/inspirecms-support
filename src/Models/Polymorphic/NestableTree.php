@@ -16,6 +16,8 @@ use Spatie\EloquentSortable\SortableTrait;
  * @property string|int $parent_id
  * @property-read ?\Illuminate\Support\Carbon $created_at
  * @property-read ?\Illuminate\Support\Carbon $updated_at
+ * 
+ * @implements NestableTreeContract<NestableTree>
  */
 class NestableTree extends BaseModel implements NestableTreeContract
 {
@@ -24,7 +26,7 @@ class NestableTree extends BaseModel implements NestableTreeContract
 
     protected $guarded = ['id'];
 
-    public function nestable(): MorphTo
+    public function nestable()
     {
         return $this->morphTo();
     }

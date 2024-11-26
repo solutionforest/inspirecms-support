@@ -6,6 +6,11 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use SolutionForest\InspireCms\Support\Base\Models\Interfaces\HasRecursiveRelationshipsInterface;
 use Spatie\EloquentSortable\Sortable;
 
+/**
+ * @template TModel of \Illuminate\Database\Eloquent\Model
+ * 
+ * @extends HasRecursiveRelationshipsInterface<TModel>
+ */
 interface NestableTree extends HasRecursiveRelationshipsInterface, Sortable
 {
     /**
@@ -13,7 +18,7 @@ interface NestableTree extends HasRecursiveRelationshipsInterface, Sortable
      *
      * @return MorphTo The nestable relationship.
      */
-    public function nestable(): MorphTo;
+    public function nestable();
 
     /**
      * Sets a new order for nestable items.

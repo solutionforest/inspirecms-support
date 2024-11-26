@@ -3,6 +3,8 @@
 namespace SolutionForest\InspireCms\Support\Base\Models\Interfaces;
 
 /**
+ * @template TModel of \Illuminate\Database\Eloquent\Model
+ * 
  * @see \SolutionForest\InspireCms\Support\Models\Concerns\HasRecursiveRelationships
  */
 interface HasRecursiveRelationshipsInterface
@@ -10,63 +12,63 @@ interface HasRecursiveRelationshipsInterface
     /**
      * Get the model's ancestors.
      *
-     * @return \Staudenmeir\LaravelAdjacencyList\Eloquent\Relations\Ancestors<static>
+     * @return \Staudenmeir\LaravelAdjacencyList\Eloquent\Relations\Ancestors<TModel>
      */
     public function ancestors();
 
     /**
      * Get the model's ancestors and itself.
      *
-     * @return \Staudenmeir\LaravelAdjacencyList\Eloquent\Relations\Ancestors<static>
+     * @return \Staudenmeir\LaravelAdjacencyList\Eloquent\Relations\Ancestors<TModel>
      */
     public function ancestorsAndSelf();
 
     /**
      * Get the model's bloodline.
      *
-     * @return \Staudenmeir\LaravelAdjacencyList\Eloquent\Relations\Bloodline<static>
+     * @return \Staudenmeir\LaravelAdjacencyList\Eloquent\Relations\Bloodline<TModel>
      */
     public function bloodline();
 
     /**
      * Get the model's children.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany<static>
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<TModel>
      */
     public function children();
 
     /**
      * Get the model's children and itself.
      *
-     * @return \Staudenmeir\LaravelAdjacencyList\Eloquent\Relations\Descendants<static>
+     * @return \Staudenmeir\LaravelAdjacencyList\Eloquent\Relations\Descendants<TModel>
      */
     public function childrenAndSelf();
 
     /**
      * Get the model's descendants.
      *
-     * @return \Staudenmeir\LaravelAdjacencyList\Eloquent\Relations\Descendants<static>
+     * @return \Staudenmeir\LaravelAdjacencyList\Eloquent\Relations\Descendants<TModel>
      */
     public function descendants();
 
     /**
      * Get the model's descendants and itself.
      *
-     * @return \Staudenmeir\LaravelAdjacencyList\Eloquent\Relations\Descendants<static>
+     * @return \Staudenmeir\LaravelAdjacencyList\Eloquent\Relations\Descendants<TModel>
      */
     public function descendantsAndSelf();
 
     /**
      * Get the model's parent.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<static, static>
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<TModel, TModel>
      */
     public function parent();
 
     /**
      * Get the model's parent and itself.
      *
-     * @return \Staudenmeir\LaravelAdjacencyList\Eloquent\Relations\Ancestors<static>
+     * @return \Staudenmeir\LaravelAdjacencyList\Eloquent\Relations\Ancestors<TModel>
      */
     public function parentAndSelf();
 

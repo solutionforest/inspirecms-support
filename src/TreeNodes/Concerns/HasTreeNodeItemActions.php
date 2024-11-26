@@ -7,6 +7,7 @@ use Filament\Forms\Form;
 use Filament\Support\Exceptions\Cancel;
 use Filament\Support\Exceptions\Halt;
 use Illuminate\Validation\ValidationException;
+use Livewire\Attributes\Url;
 use SolutionForest\InspireCms\Support\TreeNodes\Actions\Action as TreeNodeAction;
 use Throwable;
 
@@ -33,6 +34,24 @@ trait HasTreeNodeItemActions
     public ?array $mountedTreeNodeItemActionsData = [];
 
     public int | string | null $mountedTreeNodeItemActionRecord = null;
+
+    /**
+     * @var mixed
+     */
+    #[Url(as: 'treeNodeItemAction')]
+    public $defaultTreeNodeItemAction = null;
+
+    /**
+     * @var mixed
+     */
+    #[Url(as: 'treeNodeItemActionArguments')]
+    public $defaultTreeNodeItemActionArguments = null;
+
+    /**
+     * @var mixed
+     */
+    #[Url(as: 'treeNodeItemActionRecord')]
+    public $defaultTreeNodeItemActionRecord = null;
 
     protected function configureSelectedModelItemFormAction(Action | TreeNodeAction $action): void {}
 
@@ -247,9 +266,9 @@ trait HasTreeNodeItemActions
 
             // Setting these to `null` creates a bug where the properties are
             // actually set to `'null'` strings and remain in the URL.
-            $this->mountedTreeNodeItemActionsAction = [];
-            $this->mountedTreeNodeItemActionsArguments = [];
-            $this->mountedTreeNodeItemActionsActionRecord = [];
+            $this->defaultTreeNodeItemAction = [];
+            $this->defaultTreeNodeItemActionArguments = [];
+            $this->defaultTreeNodeItemActionRecord = [];
 
             return;
         }
