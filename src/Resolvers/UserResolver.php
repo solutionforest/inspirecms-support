@@ -1,18 +1,16 @@
 <?php
 
-namespace SolutionForest\InspireCms\Support\Resolver;
+namespace SolutionForest\InspireCms\Support\Resolvers;
 
 use Illuminate\Support\Facades\Auth;
-use SolutionForest\InspireCms\InspireCmsConfig;
+use SolutionForest\InspireCms\Support\Facades\InspireCmsSupport;
 
 class UserResolver implements UserResolverInterface
 {
-    /**
-     * @return \Illuminate\Contracts\Auth\Authenticatable|null
-     */
+    /** @inheritDoc */
     public static function resolve()
     {
-        $guard = InspireCmsConfig::getGuardName();
+        $guard = InspireCmsSupport::getAuthGuard();
 
         try {
             $authenticated = Auth::guard($guard)->check();

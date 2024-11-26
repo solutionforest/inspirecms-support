@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
-use SolutionForest\InspireCms\Support\Facades\MediaLibraryManifest;
+use SolutionForest\InspireCms\Support\Facades\MediaLibraryRegistry;
 use SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset as MediaAssetContract;
 use Spatie\Image\Enums\Fit;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -31,7 +31,7 @@ class MediaAsset extends BaseModel implements MediaAssetContract
 
     public function registerMediaConversions(?Media $media = null): void
     {
-        [$width, $height] = MediaLibraryManifest::getThumbnailCrop();
+        [$width, $height] = MediaLibraryRegistry::getThumbnailCrop();
         $this
             ->addMediaConversion('preview')
             ->fit(Fit::Crop, $width, $height)

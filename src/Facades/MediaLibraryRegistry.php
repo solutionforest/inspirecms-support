@@ -8,11 +8,9 @@ use SolutionForest\InspireCms\Support\Base\Manifests\MediaLibraryRegistryInterfa
 /**
  * @method static void setDisk(string $disk)
  * @method static void setDirectory(string $directory)
- * @method static void setModel(string $model)
  * @method static void setThumbnailCrop(int $width, int $height)
  * @method static string getDisk()
  * @method static string getDirectory()
- * @method static string getModel()
  * @method static array getThumbnailCrop
  *
  * @see \SolutionForest\InspireCms\Support\Base\Manifests\MediaLibraryRegistry

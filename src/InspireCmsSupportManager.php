@@ -4,33 +4,27 @@ namespace SolutionForest\InspireCms\Support;
 
 class InspireCmsSupportManager
 {
-    protected string $tablePrefix;
+    protected string $tablePrefix = '';
 
-    protected string $nestableTreeModel;
-
-    public function __construct()
-    {
-        $this->tablePrefix = '';
-        $this->nestableTreeModel = Models\Polymorphic\NestableTree::class;
-    }
+    protected string $authGuard = 'web';
 
     public function setTablePrefix(string $tablePrefix): void
     {
         $this->tablePrefix = $tablePrefix;
     }
-
-    public function setNestableTreeModel(string $model): void
+    
+    public function setAuthGuard(string $guard): void
     {
-        $this->nestableTreeModel = $model;
-    }
+        $this->authGuard = $guard;
+    }   
 
     public function getTablePrefix(): string
     {
         return $this->tablePrefix;
     }
 
-    public function getNestableTreeModel(): string
+    public function getAuthGuard(): string
     {
-        return $this->nestableTreeModel;
+        return $this->authGuard;
     }
 }

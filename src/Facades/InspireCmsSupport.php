@@ -6,9 +6,9 @@ use Illuminate\Support\Facades\Facade;
 
 /**
  * @method static void setTablePrefix(string $tablePrefix)
- * @method static void setNestableTreeModel(string $model)
+ * @method static void setAuthGuard(string $guard)
  * @method static string getTablePrefix()
- * @method static string getNestableTreeModel()
+ * @method static string getAuthGuard()
  *
  * @see \SolutionForest\InspireCms\Support\InspireCmsSupportManager
  */

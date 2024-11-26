@@ -9,7 +9,7 @@ class ResolverRegistry implements ResolverRegistryInterface
     public function __construct()
     {
         $this->resolvers = [
-            'user' => \SolutionForest\InspireCms\Support\Resolver\UserResolver::class,
+            'user' => \SolutionForest\InspireCms\Support\Resolvers\UserResolver::class,
         ];
     }
 

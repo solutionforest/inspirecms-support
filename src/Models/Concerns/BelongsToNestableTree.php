@@ -5,7 +5,7 @@ namespace SolutionForest\InspireCms\Support\Models\Concerns;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
-use SolutionForest\InspireCms\Support\Facades\InspireCmsSupport;
+use SolutionForest\InspireCms\Support\Facades\ModelRegistry;
 use SolutionForest\InspireCms\Support\Models\Scopes\NestableTreeDetailScope;
 use SolutionForest\InspireCms\Support\Observers\BelongsToNestableTreeObserver;
 
@@ -20,7 +20,9 @@ trait BelongsToNestableTree
 
     public function nestableTree(): MorphOne
     {
-        return $this->morphOne(InspireCmsSupport::getNestableTreeModel(), 'nestable');
+        $model = ModelRegistry::get(\SolutionForest\InspireCms\Support\Models\Contracts\NestableTree::class);
+        
+        return $this->morphOne($model, 'nestable');
     }
 
     public function ensureNestableTree(): void
