@@ -39,6 +39,7 @@
         @if (filled($item['link'] ?? null))
             <a href="{{ $item['link'] }}" class="flex-1 truncate text-sm font-medium text-gray-700 dark:text-gray-200"
                 x-on:click="selectItem('{{ $nodeKey }}')"
+                wire:navigate
             >
                 {{ $itemLabel }}
             </a>
