@@ -18,7 +18,7 @@ interface MediaAsset extends BelongsToNestableTree, HasDtoModel, HasMedia
     /**
      * Get the URL for the media asset.
      *
-     * @param string $conversionName The name of the conversion (optional).
+     * @param  string  $conversionName  The name of the conversion (optional).
      * @return ?string The URL of the media asset.
      */
     public function getUrl(string $conversionName = '');
