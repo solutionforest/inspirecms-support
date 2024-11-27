@@ -11,22 +11,64 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 interface MediaAsset extends BelongsToNestableTree, HasDtoModel, HasMedia
 {
     /**
-     * @param  null | Model | Media  $media
-     */
-    public function registerMediaConversions($media = null): void;
-
-    /**
-     * @return null | Model | Media
+     * @return null | Model&Media
      */
     public function getFirstMedia();
 
-    public function getUrl(string $conversionName = ''): ?string;
+    /**
+     * Get the URL for the media asset.
+     *
+     * @param string $conversionName The name of the conversion (optional).
+     * @return ?string The URL of the media asset.
+     */
+    public function getUrl(string $conversionName = '');
 
-    public function getThumbnailUrl(): ?string;
+    /**
+     * Get the URL of the thumbnail for the media asset.
+     *
+     * @return ?string The URL of the thumbnail.
+     */
+    public function getThumbnailUrl();
 
-    public function getThumbnail(): string;
+    /**
+     * Get the thumbnail URL or path for the media asset.
+     *
+     * @return ?string The thumbnail URL or icon.
+     */
+    public function getThumbnail();
 
-    public function isImage(): bool;
+    /**
+     * Determine if the media asset is an image.
+     *
+     * @return bool True if the media asset is an image, false otherwise.
+     */
+    public function isImage();
 
-    public function isFolder(): bool;
+    /**
+     * Determine if the media asset is a video.
+     *
+     * @return bool True if the media asset is a video, false otherwise.
+     */
+    public function isVideo();
+
+    /**
+     * Determine if the media asset is an audio file.
+     *
+     * @return bool True if the media asset is an audio file, false otherwise.
+     */
+    public function isAudio();
+
+    /**
+     * Determine if the media asset is a folder.
+     *
+     * @return bool True if the media asset is a folder, false otherwise.
+     */
+    public function isFolder();
+
+    /**
+     * Get the columns to be displayed.
+     *
+     * @return string[] The array of displayed columns.
+     */
+    public function getDisplayedColumns();
 }

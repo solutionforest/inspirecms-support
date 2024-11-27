@@ -13,5 +13,10 @@ interface HasDtoModel
      */
     public function toDto(...$args);
 
-    public static function getDtoClass(): string;
+    /**
+     * Get the fully qualified class name of the Data Transfer Object (DTO) associated with the model.
+     *
+     * @return string The fully qualified class name of the DTO.
+     */
+    public static function getDtoClass();
 }

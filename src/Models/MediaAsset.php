@@ -12,7 +12,6 @@ use SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset as MediaAssetC
 use Spatie\Image\Enums\Fit;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\FileAdder;
-use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
@@ -53,7 +52,7 @@ class MediaAsset extends BaseModel implements MediaAssetContract
     }
 
     /** {@inheritDoc} */
-    public function getFirstMedia(): ?Media
+    public function getFirstMedia()
     {
         if ($this->relationLoaded('media')) {
             return $this->media->first();
@@ -62,19 +61,19 @@ class MediaAsset extends BaseModel implements MediaAssetContract
         return $this->media()->first();
     }
 
-    public function getUrl(string $conversionName = ''): ?string
+    public function getUrl(string $conversionName = '')
     {
         $media = $this->getFirstMedia();
 
         return $media?->getUrl($conversionName);
     }
 
-    public function getThumbnailUrl(): ?string
+    public function getThumbnailUrl()
     {
         return $this->getUrl('preview');
     }
 
-    public function getThumbnail(): string
+    public function getThumbnail()
     {
         if ($this->isImage()) {
             return $this->getThumbnailUrl();
@@ -126,22 +125,22 @@ class MediaAsset extends BaseModel implements MediaAssetContract
         return str_starts_with($mime, $mimeType);
     }
 
-    public function isImage(): bool
+    public function isImage()
     {
         return $this->checkIfMimeType('image/');
     }
 
-    public function isVideo(): bool
+    public function isVideo()
     {
         return $this->checkIfMimeType('video/');
     }
 
-    public function isAudio(): bool
+    public function isAudio()
     {
         return $this->checkIfMimeType('audio/');
     }
 
-    public function isFolder(): bool
+    public function isFolder()
     {
         return $this->is_folder ?? false;
     }
@@ -203,7 +202,7 @@ class MediaAsset extends BaseModel implements MediaAssetContract
     //endregion Scopes
 
     //region Dto
-    public static function getDtoClass(): string
+    public static function getDtoClass()
     {
         return \SolutionForest\InspireCms\Support\Dtos\MediaAssetDto::class;
     }

@@ -15,10 +15,15 @@ interface BelongsToNestableTree
      *
      * This method should be implemented to establish a MorphOne relationship
      * that represents the nestable tree structure for the implementing model.
+     * 
+     * @return MorphOne
      */
-    public function nestableTree(): MorphOne;
+    public function nestableTree();
 
-    public function ensureNestableTree(): void;
+    /**
+     * @return void
+     */
+    public function ensureNestableTree();
 
     /**
      * @return ?Model

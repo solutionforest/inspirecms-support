@@ -61,7 +61,7 @@ interface HasRecursiveRelationshipsInterface
     /**
      * Get the model's parent.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<TModel, TModel>
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<TModel,TModel>
      */
     public function parent();
 
