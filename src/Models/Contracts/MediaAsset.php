@@ -8,7 +8,7 @@ use SolutionForest\InspireCms\Support\Base\Models\Interfaces\HasDtoModel;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-interface MediaAsset extends BelongsToNestableTree, HasDtoModel, HasMedia, HasAuthor
+interface MediaAsset extends BelongsToNestableTree, HasAuthor, HasDtoModel, HasMedia
 {
     /**
      * @return null | Model&Media
