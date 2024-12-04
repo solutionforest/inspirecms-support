@@ -94,6 +94,11 @@ trait BelongsToNestableTree
         return $this->parent?->nestableTree?->getKey() ?? $fallbackParentId;
     }
 
+    public function getNestableTreeRootLevelParentId()
+    {
+        return $this->nestableTree()->getRelated()->getRootLevelParentId();
+    }
+
     /**
      * @return string
      */

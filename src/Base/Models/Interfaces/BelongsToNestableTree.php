@@ -6,6 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 /**
+ * @property ?int nestable_tree_order
+ * @property ?int nestable_tree_parent_id
+ * @property ?int nestable_tree_id
+ * 
  * @see \SolutionForest\InspireCms\Support\Models\Concerns\BelongsToNestableTree
  */
 interface BelongsToNestableTree
@@ -34,6 +38,11 @@ interface BelongsToNestableTree
      * @return string|int|null
      */
     public function getParentNestableTreeId();
+
+    /**
+     * @return int|null
+     */
+    public function getNestableTreeRootLevelParentId();
 
     /**
      * @return string
