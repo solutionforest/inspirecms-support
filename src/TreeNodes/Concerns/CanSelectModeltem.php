@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Support\TreeNodes\Concerns;
 
+use Egulias\EmailValidator\Result\Reason\EmptyReason;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Livewire\Attributes\On;
@@ -83,13 +84,28 @@ trait CanSelectModeltem
 
         // Convert the items array as node tree items array
         $nodes = [];
-        $groupByDepth = collect($this->cachedModelExplorerItems)->flatten(1)->groupBy('depth');
+        $groupByDepth = collect($this->cachedModelExplorerItems)->flatten(1)->groupBy('depth')->sortKeys();
         foreach ($groupByDepth as $depth => $flattenItems) {
-            if ($depth === 0) {
+            if ($depth === -1) {
+
                 $nodes = collect($flattenItems)->map(fn ($item) => array_merge($item, ['children' => []]))->toArray();
 
                 continue;
-            }
+            } else if ($depth === 0) {
+
+                $nodesForRoot = collect($flattenItems)->map(fn ($item) => array_merge($item, ['children' => []]))->toArray();
+
+                if (empty($nodes)) {
+
+                    $nodes = $nodesForRoot;
+
+                } else {
+                        
+                    $nodes = array_merge($nodes, $nodesForRoot);
+                }
+
+                continue;
+            }  
 
             $groupByParentKey = collect($flattenItems)->groupBy('parentKey')->toArray();
             foreach ($groupByParentKey as $parentKey => $items) {

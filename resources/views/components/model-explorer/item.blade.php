@@ -1,5 +1,7 @@
 @props(['item', 'modelExplorer', 'selectedKey' => null, 'translatable' => false, 'translatableLocale' => null])
 @php
+    use Illuminate\Support\Arr;
+
     $nodeDepth = $item['depth'];
     $nodeKey = $item['key'];
     $hasChildren = $item['hasChildren'];
@@ -13,6 +15,14 @@
     }
 
     $actions = $modelExplorer->getVisibleActionsForItem($item);
+
+    $hasIcon = filled($item['icon'] ?? null);
+
+    $labelClasses = Arr::toCssClasses([
+        'text-gray-700 dark:text-gray-200',
+        'text-md font-bold' => $nodeDepth < 0,
+        'text-sm font-medium' => $nodeDepth >= 0,
+    ]);
     
 @endphp
 <li tabindex="@js($nodeDepth)" 
@@ -21,7 +31,9 @@
     class="cursor-pointer select-none"
 >
     <div @class([
-        'node w-full inline-flex items-center gap-1 rounded-md hover:bg-gray-100 dark:hover:bg-white/5 px-1 py-1.5',
+        'node w-full inline-flex items-center gap-1 px-1 py-1.5 hover:bg-gray-100 dark:hover:bg-white/5',
+        'h-11 shadow' => $nodeDepth < 0,
+        'rounded-md' => $nodeDepth >= 0,
         'bg-gray-100 dark:bg-white/5' => $selectedKey === $nodeKey,
     ])>
         <span class="w-4" 
@@ -31,21 +43,34 @@
                 <x-icon x-cloak x-show="isExpanded('{{ $nodeKey }}')" name="heroicon-o-chevron-down" class="w-4 h-4 text-gray-400 dark:text-gray-500" />
                 <x-icon x-show="!isExpanded('{{ $nodeKey }}')" name="heroicon-o-chevron-right" class="w-4 h-4 text-gray-400 dark:text-gray-500" />
             @else
-                @if (filled($item['icon'] ?? null))
+                @if ($hasIcon)
                     <x-icon :name="$item['icon']" class="w-4 h-4 text-gray-400 dark:text-gray-500" />
                 @endif
             @endif
         </span>
         @if (filled($item['link'] ?? null))
-            <a href="{{ $item['link'] }}" class="flex-1 truncate text-sm font-medium text-gray-700 dark:text-gray-200"
+            <a href="{{ $item['link'] }}" 
+                @class([
+                    $labelClasses,
+                    'flex-1 flex gap-x-2 truncate',
+                ])
                 x-on:click="selectItem('{{ $nodeKey }}')"
                 wire:navigate
             >
-                {{ $itemLabel }}
+                @if ($hasIcon && $hasChildren)
+                    <x-icon :name="$item['icon']" class="w-4 h-4 text-gray-400 dark:text-gray-500" />
+                @endif
+                <span>
+                    {{ $itemLabel }}
+                </span>
             </a>
             
         @else
             <span class="flex-1 truncate text-sm font-medium text-gray-700 dark:text-gray-200"
+                @class([
+                    $labelClasses,
+                    'flex-1 truncate',
+                ])
                 x-on:click="selectItem('{{ $nodeKey }}')"
             >
                 {{ $itemLabel }}
