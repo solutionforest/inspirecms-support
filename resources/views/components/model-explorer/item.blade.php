@@ -1,4 +1,4 @@
-@props(['item', 'modelExplorer', 'selectedKey' => null, 'translatable' => false, 'translatableLocale' => null])
+@props(['item', 'modelExplorer', 'selectedKey' => null, 'translatable' => false, 'translatableLocale' => null, 'spaMode' => false])
 @php
     use Illuminate\Support\Arr;
 
@@ -22,6 +22,8 @@
         'text-gray-700 dark:text-gray-200',
         'text-md font-bold' => $nodeDepth < 0,
         'text-sm font-medium' => $nodeDepth >= 0,
+        'ms-2' => !$hasChildren,
+        ... collect($item['extraAttributes']['class'] ?? [])->filter()->all(),
     ]);
     
 @endphp
@@ -40,12 +42,8 @@
             x-on:click="await toggleItem('{{ $nodeKey }}', @js($nodeDepth))"
         >
             @if ($hasChildren)
-                <x-icon x-cloak x-show="isExpanded('{{ $nodeKey }}')" name="heroicon-o-chevron-down" class="w-4 h-4 text-gray-400 dark:text-gray-500" />
-                <x-icon x-show="!isExpanded('{{ $nodeKey }}')" name="heroicon-o-chevron-right" class="w-4 h-4 text-gray-400 dark:text-gray-500" />
-            @else
-                @if ($hasIcon)
-                    <x-icon :name="$item['icon']" class="w-4 h-4 text-gray-400 dark:text-gray-500" />
-                @endif
+                <x-icon x-cloak x-show="isExpanded('{{ $nodeKey }}')" name="heroicon-o-chevron-down" class="w-4 h-4 text-gray-800 dark:text-gray-100" />
+                <x-icon x-show="!isExpanded('{{ $nodeKey }}')" name="heroicon-o-chevron-right" class="w-4 h-4 text-gray-800 dark:text-gray-100" />
             @endif
         </span>
         @if (filled($item['link'] ?? null))
@@ -55,10 +53,12 @@
                     'flex-1 flex gap-x-2 truncate',
                 ])
                 x-on:click="selectItem('{{ $nodeKey }}')"
-                wire:navigate
+                @if ($spaMode)
+                    wire:navigate
+                @endif
             >
-                @if ($hasIcon && $hasChildren)
-                    <x-icon :name="$item['icon']" class="w-4 h-4 text-gray-400 dark:text-gray-500" />
+                @if ($hasIcon)
+                    <x-icon :name="$item['icon']" class="w-4 h-4 text-gray-400 dark:text-gray-200" />
                 @endif
                 <span>
                     {{ $itemLabel }}
@@ -91,9 +91,11 @@
             </div>
         @endif
     </div>
-    <ul x-show="isExpanded('{{ $nodeKey }}')" x-transition {{ $hasChildren ? 'data-subtree' : ''}} @style([
-        'padding-left:' . (18 + $nodeDepth) . 'px',
-    ])>
+    <ul x-show="isExpanded('{{ $nodeKey }}')" x-transition {{ $hasChildren ? 'data-subtree' : ''}} 
+        @style([
+            'padding-left:' . (15 + $nodeDepth) . 'px',
+        ])
+    >
         @foreach ($item['children'] ?? [] as $child)
             <x-inspirecms-support::model-explorer.item  
                 :item="$child" 
