@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * @property ?Model $author
+ * @property string $author_type
+ * @property string $author_id
  */
 interface HasAuthor
 {
