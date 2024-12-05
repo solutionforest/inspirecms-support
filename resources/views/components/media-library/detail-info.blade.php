@@ -4,8 +4,8 @@
         $selectedMediaUrl = $mediaItem->getUrl();
     @endphp
     <div class="media-library__item_detail__content p-4">
-        @if (!$mediaItem->isFolder())
-            <div class="w-full flex justify-center">
+        <div class="media-library__item_detail__thumb-container">
+            @if (!$mediaItem->isFolder())
                 <a class="media-library__item_detail__thumb" href="{{ $selectedMediaUrl }}" target="_blank">
                     @if ($mediaItem->isImage())
                         <img src="{{ $mediaItem->getUrl() }}" alt="{{ $mediaItem->title }}" />
@@ -14,13 +14,13 @@
                             class="media-library__item_detail__content__icon" />
                     @endif
                 </a>
-            </div>
-        @else
-            <div class="media-library__item_detail__thumb">
-                <x-inspirecms-support::media-library.thumbnail-icon :icon="$mediaItem->getThumbnail()"
-                    class="media-library__item_detail__content__icon" />
-            </div>
-        @endif
+            @else
+                <div class="media-library__item_detail__thumb">
+                    <x-inspirecms-support::media-library.thumbnail-icon :icon="$mediaItem->getThumbnail()"
+                        class="media-library__item_detail__content__icon" />
+                </div>
+            @endif
+        </div>
         <div class="media-library__item_detail__content__details">
             <div class="media-library__item_detail__content__details__meta">
                 @php
