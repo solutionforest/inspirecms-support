@@ -2,7 +2,6 @@
 
 namespace SolutionForest\InspireCms\Support\TreeNodes\Concerns;
 
-use Egulias\EmailValidator\Result\Reason\EmptyReason;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Livewire\Attributes\On;
@@ -91,7 +90,7 @@ trait CanSelectModeltem
                 $nodes = collect($flattenItems)->map(fn ($item) => array_merge($item, ['children' => []]))->toArray();
 
                 continue;
-            } else if ($depth === 0) {
+            } elseif ($depth === 0) {
 
                 $nodesForRoot = collect($flattenItems)->map(fn ($item) => array_merge($item, ['children' => []]))->toArray();
 
@@ -100,12 +99,12 @@ trait CanSelectModeltem
                     $nodes = $nodesForRoot;
 
                 } else {
-                        
+
                     $nodes = array_merge($nodes, $nodesForRoot);
                 }
 
                 continue;
-            }  
+            }
 
             $groupByParentKey = collect($flattenItems)->groupBy('parentKey')->toArray();
             foreach ($groupByParentKey as $parentKey => $items) {
