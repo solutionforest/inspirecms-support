@@ -2,39 +2,19 @@
     $formKey = $this->getId() . '.forms.' . $this->getFormStatePathFor('uploadFileForm');
     $modelableConfig = $this->modelableConfig;
 @endphp
-<div class="media-library gap-3" x-data="{
-    selectedMediaId: $wire.entangle('selectedMediaId').live,
-    isSelectMultiple: $wire.entangle('isMultiple').live,
-    isMediaSelected: function(mediaId) {
-        if (this.isSelectMultiple) {
-            return this.selectedMediaId.includes(mediaId);
-        } else {
-            return this.selectedMediaId === mediaId;
-        }
-    },
-    selectMedia: function(mediaId, isFolder) {
-        if (this.isSelectMultiple && !isFolder) {
-            if (this.selectedMediaId) {
-                if (this.selectedMediaId.includes(mediaId)) {
-                    this.selectedMediaId = this.selectedMediaId.filter(id => id !== mediaId);
-                } else {
-                    this.selectedMediaId = [...this.selectedMediaId, mediaId];
-                }
-            } else {
-                this.selectedMediaId = [mediaId];
-            }
-        } else if (!this.isSelectMultiple) {
-            this.selectedMediaId = mediaId;
-        }
-    },
-    init: function() {
-        this.selectedMediaId = this.isSelectMultiple ? [] : null;
-    },
-}" @if (!empty($modelableConfig))
-    @php
-        $modelable = array_key_first($modelableConfig);
-        $model = array_values($modelableConfig)[0] ?? null;
-    @endphp
+<div class="media-library gap-3"
+    x-ignore
+    ax-load
+    ax-load-src="{{ \Filament\Support\Facades\FilamentAsset::getAlpineComponentSrc('media-library-component', 'solution-forest/inspirecms-support') }}"
+    x-data="mediaLibraryComponent({
+        selectedMediaId: $wire.entangle('selectedMediaId').live,
+        isMultiple: $wire.entangle('isMultiple').live,
+    })"
+    @if (!empty($modelableConfig))
+        @php
+            $modelable = array_key_first($modelableConfig);
+            $model = array_values($modelableConfig)[0] ?? null;
+        @endphp
     x-modelable="{{ $modelable }}" x-model="{{ $model }}"
     @endif
     >

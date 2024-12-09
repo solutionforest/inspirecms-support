@@ -42,3 +42,9 @@ const defaultOptions = {
         }
     }],
 }
+
+compile({
+    ...defaultOptions,
+    entryPoints: ['./resources/js/components/media-library.js'],
+    outfile: './resources/dist/components/media-library.js',
+})
