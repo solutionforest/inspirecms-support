@@ -45,19 +45,17 @@
     </div>
 
     <div class="form-container">
-        <x-inspirecms-support::media-library.upload-form :livewireKey="$formKey" :isCollapsed="$this->isFormCollapsed('uploadFileForm')">
+        <x-inspirecms-support::media-library.upload-form :livewireKey="$formKey" :is-collapsed="$this->isFormCollapsed('uploadFileForm')">
             {{ $this->uploadFileForm }}
         </x-inspirecms-support::media-library.upload-form>
     </div>
     
     <div class="form-container ensure-select-width">
-        <div class="flex flex-col md:flex-row gap-8 md:items-center" style="min-height: 36px;">
-            <x-inspirecms-support::media-library.filter-form :isCollapsed="$this->isFormCollapsed('filterForm')">
+        <div class="flex flex-col gap-y-4 lg:flex-row lg:gap-x-4">
+            <x-inspirecms-support::media-library.filter-form :is-collapsed="$this->isFormCollapsed('filterForm')" class="flex-1">
                 {{ $this->filterForm }}
             </x-inspirecms-support::media-library.filter-form>
-
-
-            <x-inspirecms-support::media-library.sort-form :isCollapsed="$this->isFormCollapsed('sortForm')">
+            <x-inspirecms-support::media-library.sort-form :is-collapsed="$this->isFormCollapsed('sortForm')" class="flex-1">
                 {{ $this->sortForm }}
             </x-inspirecms-support::media-library.sort-form>
         </div>

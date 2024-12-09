@@ -23,23 +23,30 @@ trait HasFilters
     {
         return $form
             ->columns(2)
+            ->extraAttributes(['class' => 'gap-y-2 lg:gap-x-2'])
             ->schema([
                 Forms\Components\TextInput::make('title')
                     ->hiddenLabel()
                     ->placeholder(__('inspirecms-support::media-library.filter.title.placeholder'))
-                    ->live(true)
-                    ->extraAttributes(fn (Forms\Components\Field $component) => [
-                        'class' => $this->isFilterColumnInvisible($component->getName()) ? 'hidden' : null,
-                    ]),
+                    ->live(false)
+                    ->hidden(fn ($component) => $this->isFilterColumnInvisible($component->getName()))
+                    ->dehydratedWhenHidden()
+                    ->extraAttributes(['class' => 'w-full'])
+                    ->suffixAction(
+                        Forms\Components\Actions\Action::make('clear')
+                            ->label(__('inspirecms-support::media-library.actions.clear.label'))
+                            ->color('gray')
+                            ->icon('heroicon-o-x-mark')
+                            ->action(fn ($component) => $component->state(''))
+                    ),
                 Forms\Components\Select::make('type')
                     ->hiddenLabel()
                     ->placeholder(__('inspirecms-support::media-library.filter.type.placeholder'))
                     ->options(__('inspirecms-support::media-library.filter.type.options'))
                     ->multiple()
                     ->live(true)
-                    ->extraAttributes(fn (Forms\Components\Field $component) => [
-                        'class' => $this->isFilterColumnInvisible($component->getName()) ? 'hidden' : null,
-                    ]),
+                    ->hidden(fn ($component) => $this->isFilterColumnInvisible($component->getName()))
+                    ->dehydratedWhenHidden(),
             ])
             ->statePath($this->getFilterFormStatePath());
     }

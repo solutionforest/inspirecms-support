@@ -22,6 +22,7 @@ trait HasSorts
     public function sortForm(Form $form): Form
     {
         return $form
+            ->extraAttributes(['class' => 'gap-y-2 lg:gap-x-2'])
             ->columns(2)
             ->schema([
                 Forms\Components\Select::make('type')
@@ -31,9 +32,8 @@ trait HasSorts
                     ->selectablePlaceholder(false)
                     ->live(true)
                     ->default('default')
-                    ->extraAttributes(fn (Forms\Components\Field $component) => [
-                        'class' => $this->isSortColumnInvisible($component->getName()) ? 'hidden' : null,
-                    ]),
+                    ->hidden(fn ($component) => $this->isSortColumnInvisible($component->getName()))
+                    ->dehydratedWhenHidden(),
 
                 Forms\Components\Select::make('direction')
                     ->hiddenLabel()
@@ -42,9 +42,8 @@ trait HasSorts
                     ->selectablePlaceholder(false)
                     ->live(true)
                     ->default('asc')
-                    ->extraAttributes(fn (Forms\Components\Field $component) => [
-                        'class' => $this->isSortColumnInvisible($component->getName()) ? 'hidden' : null,
-                    ]),
+                    ->hidden(fn ($component) => $this->isSortColumnInvisible($component->getName()))
+                    ->dehydratedWhenHidden(),
             ])
             ->statePath($this->getSortFormStatePath());
     }

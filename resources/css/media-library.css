@@ -12,11 +12,7 @@
             }
 
             .form-container-content {
-                @apply flex gap-3 flex-row;
-
-                &.filter-form-container-content {
-                    @apply items-center;
-                }
+                @apply flex flex-col gap-x-3 lg:flex-row ;
             }
         }
         .ensure-select-width input.choices__input {

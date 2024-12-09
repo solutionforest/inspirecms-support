@@ -57,6 +57,9 @@ return [
         'upload' => [
             'label' => 'Upload',
         ],
+        'clear' => [
+            'label' => 'Clear',
+        ],
     ],
     'detail_info' => [
         'file_name' => [

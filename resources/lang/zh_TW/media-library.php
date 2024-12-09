@@ -57,6 +57,9 @@ return [
         'upload' => [
             'label' => '上傳',
         ],
+        'clear' => [
+            'label' => '清除',
+        ],
     ],
     'detail_info' => [
         'file_name' => [
