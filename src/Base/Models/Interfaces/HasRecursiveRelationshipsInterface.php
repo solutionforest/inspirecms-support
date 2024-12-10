@@ -2,8 +2,19 @@
 
 namespace SolutionForest\InspireCms\Support\Base\Models\Interfaces;
 
+use Illuminate\Support\Collection;
+
 /**
  * @template TModel of \Illuminate\Database\Eloquent\Model
+ * 
+ * @property Collection<TModel> $ancestors
+ * @property Collection<TModel> $ancestorsAndSelf
+ * @property Collection<TModel> $bloodline
+ * @property Collection<TModel> $children
+ * @property Collection<TModel> $childrenAndSelf
+ * @property Collection<TModel> $descendants
+ * @property null | TModel $parent
+ * @property Collection<TModel> $parentAndSelf
  *
  * @see \SolutionForest\InspireCms\Support\Models\Concerns\HasRecursiveRelationships
  */

@@ -4,11 +4,14 @@ namespace SolutionForest\InspireCms\Support\Base\Models\Interfaces;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use SolutionForest\InspireCms\Support\Models\Contracts\NestableTree;
 
 /**
  * @property ?int nestable_tree_order
  * @property ?int nestable_tree_parent_id
  * @property ?int nestable_tree_id
+ * 
+ * @property null | Model & NestableTree $nestableTree
  *
  * @see \SolutionForest\InspireCms\Support\Models\Concerns\BelongsToNestableTree
  */
