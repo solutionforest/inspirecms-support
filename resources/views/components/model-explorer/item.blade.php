@@ -22,7 +22,6 @@
         'text-gray-700 dark:text-gray-200',
         'text-md font-bold' => $nodeDepth < 0,
         'text-sm font-medium' => $nodeDepth >= 0,
-        'ms-2' => !$hasChildren,
         ... collect($item['extraAttributes']['class'] ?? [])->filter()->all(),
     ]);
     
@@ -42,8 +41,8 @@
             x-on:click="await toggleItem('{{ $nodeKey }}', @js($nodeDepth))"
         >
             @if ($hasChildren)
-                <x-icon x-cloak x-show="isExpanded('{{ $nodeKey }}')" name="heroicon-o-chevron-down" class="w-4 h-4 text-gray-800 dark:text-gray-100" />
-                <x-icon x-show="!isExpanded('{{ $nodeKey }}')" name="heroicon-o-chevron-right" class="w-4 h-4 text-gray-800 dark:text-gray-100" />
+                <x-icon x-cloak x-show="isExpanded('{{ $nodeKey }}')" name="heroicon-o-chevron-down" class="text-gray-800 dark:text-gray-100" />
+                <x-icon x-show="!isExpanded('{{ $nodeKey }}')" name="heroicon-o-chevron-right" class="text-gray-800 dark:text-gray-100" />
             @endif
         </span>
         @if (filled($item['link'] ?? null))
