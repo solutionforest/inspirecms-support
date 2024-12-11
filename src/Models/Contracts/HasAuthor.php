@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * @property string $author_type
  * @property string $author_id
- * 
  * @property null|Model $author
  */
 interface HasAuthor

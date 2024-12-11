@@ -6,7 +6,7 @@ use Illuminate\Support\Collection;
 
 /**
  * @template TModel of \Illuminate\Database\Eloquent\Model
- * 
+ *
  * @property Collection<TModel> $ancestors
  * @property Collection<TModel> $ancestorsAndSelf
  * @property Collection<TModel> $bloodline
