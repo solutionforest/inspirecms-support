@@ -2,12 +2,13 @@
 
 namespace SolutionForest\InspireCms\Support\Models\Contracts;
 
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 
 /**
  * @property string $author_type
  * @property string $author_id
- * @property null|Model $author
+ * @property-read null|Model&Authenticatable $author
  */
 interface HasAuthor
 {
