@@ -3,7 +3,6 @@
     $modelableConfig = $this->modelableConfig;
 @endphp
 <div class="media-library gap-3"
-    x-ignore
     ax-load
     ax-load-src="{{ \Filament\Support\Facades\FilamentAsset::getAlpineComponentSrc('media-library-component', 'solution-forest/inspirecms-support') }}"
     x-data="mediaLibraryComponent({
