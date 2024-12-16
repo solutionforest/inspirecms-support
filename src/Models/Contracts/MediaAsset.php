@@ -5,10 +5,11 @@ namespace SolutionForest\InspireCms\Support\Models\Contracts;
 use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Support\Base\Models\Interfaces\BelongsToNestableTree;
 use SolutionForest\InspireCms\Support\Base\Models\Interfaces\HasDtoModel;
+use SolutionForest\InspireCms\Support\Base\Models\Interfaces\HasRecursiveRelationshipsInterface;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-interface MediaAsset extends BelongsToNestableTree, HasAuthor, HasDtoModel, HasMedia
+interface MediaAsset extends BelongsToNestableTree, HasAuthor, HasDtoModel, HasMedia, HasRecursiveRelationshipsInterface
 {
     /**
      * @return null | Model&Media

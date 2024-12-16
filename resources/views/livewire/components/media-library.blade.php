@@ -1,6 +1,8 @@
 @php
     $formKey = $this->getId() . '.forms.' . $this->getFormStatePathFor('uploadFileForm');
     $modelableConfig = $this->modelableConfig;
+
+    $createFolderAction = $this->getCachedMediaLibraryAction('create-folder');
 @endphp
 <div class="media-library gap-3"
     ax-load
@@ -17,17 +19,20 @@
     x-modelable="{{ $modelable }}" x-model="{{ $model }}"
     @endif
     >
-    <div class="pb-2 flex gap-2 justify-end">
-        <x-filament::button size="md" wire:click="mountAction('createFolder')">
-            {{ trans('inspirecms-support::media-library.actions.create_folder.label') }}
-        </x-filament::button>
-    </div>
 
-    <div class="form-container">
-        <x-inspirecms-support::media-library.upload-form :livewireKey="$formKey" :is-collapsed="$this->isFormCollapsed('uploadFileForm')">
-            {{ $this->uploadFileForm }}
-        </x-inspirecms-support::media-library.upload-form>
-    </div>
+    @if ($createFolderAction->isVisible())
+        <div class="pb-2 flex gap-2 justify-end">
+            {{ $createFolderAction }}
+        </div>
+    @endif
+
+    @if (static::canCreate())
+        <div class="form-container">
+            <x-inspirecms-support::media-library.upload-form :livewireKey="$formKey" :is-collapsed="$this->isFormCollapsed('uploadFileForm')">
+                {{ $this->uploadFileForm }}
+            </x-inspirecms-support::media-library.upload-form>
+        </div>
+    @endif
     
     <div class="form-container ensure-select-width">
         <div class="flex flex-col gap-y-4 lg:flex-row lg:gap-x-4">
@@ -60,19 +65,10 @@
             </x-filament::grid>
         </div>
         @if ($this->selectedMedia)
-            <x-inspirecms-support::media-library.detail-info :mediaItem="$this->selectedMedia">
-                <x-slot name="mediaActions">
-                    <x-filament::button size="md" wire:click="mountAction('editMedia')" icon="heroicon-o-pencil">
-                        {{ trans('inspirecms-support::media-library.actions.edit.label') }}
-                    </x-filament::button>
-
-                    <x-filament::button size="md" wire:click="mountAction('viewMedia')" color="gray"
-                        icon="heroicon-o-eye">
-                        {{ trans('inspirecms-support::media-library.actions.view.label') }}
-                    </x-filament::button>
-                </x-slot>
-            </x-inspirecms-support::media-library.detail-info>
+            <x-inspirecms-support::media-library.detail-info :media-item="$this->selectedMedia" :actions="$this->getActionsForAsset($this->selectedMedia)"/>
         @endif
-        <x-filament-actions::modals />
     </div>
+
+    <x-filament-actions::modals />
+    
 </div>

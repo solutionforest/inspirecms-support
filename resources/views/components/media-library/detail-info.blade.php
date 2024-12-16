@@ -1,4 +1,4 @@
-@props(['mediaItem', 'mediaActions' => null])
+@props(['mediaItem', 'actions' => []])
 <div class="media-library__item_detail">
     @php
         $selectedMediaUrl = $mediaItem->getUrl();
@@ -70,19 +70,8 @@
         </div>
     </div>
     <div class="media-library__item_detail__content__actions">
-
-        @if (!$mediaItem->isFolder() && $mediaActions)
-            {{ $mediaActions }}
-        @endif
-
-        @if ($mediaItem->isFolder())
-            <x-filament::button wire:click="openFolder" color="gray" icon="heroicon-o-folder">
-                {{ trans('inspirecms-support::media-library.actions.open_folder.label') }}
-            </x-filament::button>
-        @endif
-
-        <x-filament::button wire:click="deleteMedia" color="danger" icon="heroicon-o-trash">
-            {{ trans('inspirecms-support::media-library.actions.delete.label') }}
-        </x-filament::button>
+        @foreach ($actions as $action)
+            {{ $action }}
+        @endforeach
     </div>
 </div>
