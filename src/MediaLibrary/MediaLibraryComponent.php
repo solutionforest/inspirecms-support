@@ -195,12 +195,12 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
     protected function getCachedMediaLibraryAction(string $name): ?Action
     {
         $actions = $this->cachedMediaLibraryActions;
-        
+
         return collect($actions)->first(fn (Action | ActionGroup $action) => $action->getName() === $name);
     }
 
     /**
-     * @param Model & MediaAsset $asset
+     * @param  Model & MediaAsset  $asset
      * @return array
      */
     public function getActionsForAsset($asset)
@@ -427,7 +427,7 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
         $this->selectedMediaId = [];
         $this->selectedMedia = null;
     }
-    
+
     protected function isMultiple(): bool
     {
         return $this->isMultiple;

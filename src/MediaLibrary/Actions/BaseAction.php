@@ -16,7 +16,7 @@ abstract class BaseAction extends Action
         parent::setUp();
 
         $this->model(ModelRegistry::get(MediaAsset::class));
-        
+
         $this->modelLabel(__('inspirecms-support::media-library.media'));
 
         $this->visible(fn () => $this->isAuthorized());
@@ -29,7 +29,7 @@ abstract class BaseAction extends Action
         return $this;
     }
 
-    public function getParentKey():  string | int | null
+    public function getParentKey(): string | int | null
     {
         return $this->evaluate($this->parentKey) ?? app($this->getModel())->getRootLevelParentId();
     }

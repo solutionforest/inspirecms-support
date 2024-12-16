@@ -2,13 +2,10 @@
 
 namespace SolutionForest\InspireCms\Support\MediaLibrary\Actions;
 
-use Filament\Actions\Action;
 use Filament\Infolists;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\HtmlString;
-use SolutionForest\InspireCms\Support\Facades\MediaLibraryRegistry;
-use SolutionForest\InspireCms\Support\MediaLibrary\Actions\BaseAction;
 use SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset;
 
 class ViewAction extends BaseAction
@@ -25,7 +22,7 @@ class ViewAction extends BaseAction
         $this->label(__('inspirecms-support::media-library.actions.view.label'));
 
         $this->modalHeading(fn () => __('inspirecms-support::media-library.actions.view.modal.heading', ['name' => $this->getModelLabel()]));
-        
+
         $this->successNotificationTitle(__('inspirecms-support::media-library.actions.edit.notifications.saved.title'));
 
         $this->authorize('view');
@@ -57,7 +54,8 @@ class ViewAction extends BaseAction
                                 <img src="$urlOrIcon" class="w-32 h-32 object-cover">
                                 Html);
                         } else {
-                            return new HtmlString(Blade::render(<<<'blade'
+                            return new HtmlString(
+                                Blade::render(<<<'blade'
                                 <x-filament::icon 
                                     icon="{{ $icon }}" 
                                     class="h-6 w-6"
@@ -80,7 +78,6 @@ class ViewAction extends BaseAction
             ])
             ->disabledForm()
             ->modalSubmitAction(false)
-            ->modalCancelAction(false)
-            ;
+            ->modalCancelAction(false);
     }
 }
