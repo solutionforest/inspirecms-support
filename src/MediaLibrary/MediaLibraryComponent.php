@@ -111,6 +111,7 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
             $this->selectedMedia = null;
         }
     }
+
     public function openFolder($mediaId = null)
     {
         $mediaId ??= $this->selectedMediaId;
