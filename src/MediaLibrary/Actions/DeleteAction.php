@@ -3,7 +3,6 @@
 namespace SolutionForest\InspireCms\Support\MediaLibrary\Actions;
 
 use Illuminate\Database\Eloquent\Model;
-use SolutionForest\InspireCms\Support\MediaLibrary\Actions\BaseAction;
 
 class DeleteAction extends BaseAction
 {

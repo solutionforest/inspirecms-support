@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Model;
 use League\Flysystem\UnableToCheckFileExistence;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use SolutionForest\InspireCms\Support\Facades\MediaLibraryRegistry;
-use SolutionForest\InspireCms\Support\MediaLibrary\Actions\BaseAction;
 use SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset;
 
 class EditAction extends BaseAction
@@ -27,7 +26,7 @@ class EditAction extends BaseAction
         $this->label(__('inspirecms-support::media-library.actions.edit.label'));
 
         $this->modalHeading(fn () => __('inspirecms-support::media-library.actions.edit.modal.heading', ['name' => $this->getModelLabel()]));
-        
+
         $this->successNotificationTitle(__('inspirecms-support::media-library.actions.edit.notifications.saved.title'));
 
         $this->authorize('update');
