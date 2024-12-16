@@ -111,6 +111,14 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
             $this->selectedMedia = null;
         }
     }
+    public function openFolder($mediaId = null)
+    {
+        $mediaId ??= $this->selectedMediaId;
+        if (! $this->isMultiple()) {
+            $this->resetSelectedMedia();
+        }
+        $this->changeParent($mediaId);
+    }
 
     public function changeParent($key)
     {
@@ -231,14 +239,7 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
     public function openFolderAction(): Action
     {
         return \SolutionForest\InspireCms\Support\MediaLibrary\Actions\OpenFolderAction::make()
-            ->action(function (?Model $record) {
-
-                $mediaId = $record?->getKey() ?? $this->selectedMediaId;
-                if (! $this->isMultiple()) {
-                    $this->resetSelectedMedia();
-                }
-                $this->changeParent($mediaId);
-            });
+            ->action(fn (?Model $record) => $this->openFolder($record?->getKey()));
     }
 
     public function deleteMediaAction(): Action

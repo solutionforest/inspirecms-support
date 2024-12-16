@@ -15,8 +15,6 @@ class OpenFolderAction extends BaseAction
 
         $this->label(__('inspirecms-support::media-library.actions.open_folder.label'));
 
-        $this->authorize('view');
-
         $this->color('gray');
 
         $this->icon('heroicon-o-folder');
