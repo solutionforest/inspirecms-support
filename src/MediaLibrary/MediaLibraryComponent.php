@@ -2,16 +2,18 @@
 
 namespace SolutionForest\InspireCms\Support\MediaLibrary;
 
+use Closure;
 use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Forms;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
-use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Model;
-use League\Flysystem\UnableToCheckFileExistence;
+use Illuminate\Support\Facades\Gate;
+use InvalidArgumentException;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Url;
 use Livewire\Component;
@@ -46,6 +48,11 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
 
     public array $formConfig = [];
 
+    /**
+     * @var array<Action | ActionGroup>
+     */
+    protected array $cachedMediaLibraryActions = [];
+
     public function mount($parentKey = null)
     {
         if ($parentKey) {
@@ -60,6 +67,18 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
         $this->fillForm();
     }
 
+    public function booted()
+    {
+        $this->cacheMediaLibraryActions();
+    }
+
+    public static function canCreate(): bool
+    {
+        return Gate::check('create', [
+            static::getMediaAssetModel(),
+        ]);
+    }
+
     public function getBreadcrumbs(): array
     {
         $breadcrumbs = [
@@ -71,9 +90,11 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
             return $breadcrumbs;
         }
 
-        $ancestorsAndSelf = $this->getEloquentQuery()
-            ->find($this->parentKey)
-            ?->ancestorsAndSelf()->get()->reverse()->values() ?? collect();
+        /**
+         * @var Model & MediaAsset $asset
+         */
+        $asset = $this->getEloquentQuery()->find($this->parentKey);
+        $ancestorsAndSelf = $asset?->ancestorsAndSelf()->get()->reverse()->values() ?? collect();
         foreach ($ancestorsAndSelf as $item) {
             $breadcrumbs[$item->getKey()] = $item->title;
         }
@@ -91,30 +112,11 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
         }
     }
 
-    public function deleteMedia()
-    {
-        if ($this->selectedMediaId) {
-            $media = $this->getEloquentQuery()->find($this->selectedMediaId);
-            if ($media) {
-                $media->delete();
-            }
-        }
-
-        Notification::make()
-            ->title(__('inspirecms-support::media-library.actions.delete.notifications.deleted.title'))
-            ->success()
-            ->send();
-
-        $this->selectedMediaId = [];
-        $this->selectedMedia = null;
-    }
-
     public function openFolder($mediaId = null)
     {
         $mediaId ??= $this->selectedMediaId;
         if (! $this->isMultiple()) {
-            $this->selectedMediaId = [];
-            $this->selectedMedia = null;
+            $this->resetSelectedMedia();
         }
         $this->changeParent($mediaId);
     }
@@ -138,134 +140,113 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
     }
 
     //region Actions
+    protected function cacheMediaLibraryActions(): void
+    {
+        /** @var array<string, Action | ActionGroup> */
+        $actions = Action::configureUsing(
+            Closure::fromCallable([$this, 'configureAction']),
+            fn (): array => [
+                $this->createFolderAction(),
+                $this->editMediaAction(),
+                $this->viewMediaAction(),
+                $this->openFolderAction(),
+                $this->deleteMediaAction(),
+            ],
+        );
+
+        foreach ($actions as $action) {
+            if ($action instanceof ActionGroup) {
+                $action->livewire($this);
+
+                /** @var array<string, Action> $flatActions */
+                $flatActions = $action->getFlatActions();
+
+                $this->mergeCachedActions($flatActions);
+                $this->cachedMediaLibraryActions[] = $action;
+
+                continue;
+            }
+
+            if (! $action instanceof Action) {
+                throw new InvalidArgumentException('The actions must be an instance of ' . Action::class . ', or ' . ActionGroup::class . '.');
+            }
+
+            $this->cacheAction($action);
+            $this->cachedMediaLibraryActions[] = $action;
+        }
+    }
+
+    protected function configureAction(Action $action): void
+    {
+        if ($action instanceof \SolutionForest\InspireCms\Support\MediaLibrary\Actions\BaseAction) {
+            $action->parentKey(fn () => $this->parentKey);
+        }
+
+        switch (true) {
+            case $action instanceof \SolutionForest\InspireCms\Support\MediaLibrary\Actions\EditAction:
+            case $action instanceof \SolutionForest\InspireCms\Support\MediaLibrary\Actions\ViewAction:
+            case $action instanceof \SolutionForest\InspireCms\Support\MediaLibrary\Actions\DeleteAction:
+            case $action instanceof \SolutionForest\InspireCms\Support\MediaLibrary\Actions\OpenFolderAction:
+                $action->record(fn () => $this->selectedMedia);
+
+                break;
+        }
+    }
+
+    protected function getCachedMediaLibraryAction(string $name): ?Action
+    {
+        $actions = $this->cachedMediaLibraryActions;
+
+        return collect($actions)->first(fn (Action | ActionGroup $action) => $action->getName() === $name);
+    }
+
+    /**
+     * @param  Model & MediaAsset  $asset
+     * @return array
+     */
+    public function getActionsForAsset($asset)
+    {
+        $actions = [];
+
+        if ($asset->isFolder()) {
+            $actions[] = $this->getCachedMediaLibraryAction('open-folder');
+        } else {
+            $actions[] = $this->getCachedMediaLibraryAction('edit');
+            $actions[] = $this->getCachedMediaLibraryAction('view');
+        }
+
+        $actions[] = $this->getCachedMediaLibraryAction('delete');
+
+        return collect($actions)
+            ->filter(fn (Action $action) => $action->isVisible())
+            ->all();
+    }
+
     public function createFolderAction(): Action
     {
-        return Action::make('createFolder')
-            ->modalHeading(__('inspirecms-support::media-library.actions.create_folder.modal.heading'))
-            ->form([
-                Forms\Components\TextInput::make('title')
-                    ->label(__('inspirecms-support::media-library.forms.title.label'))
-                    ->required(),
-            ])
-            ->successNotificationTitle(__('inspirecms-support::media-library.actions.create_folder.notifications.created.title'))
-            ->action(function (array $data, Action $action) {
-                if (empty($data['title'])) {
-                    return;
-                }
-                $this->createMediaFolder($data['title']);
-                $action->success();
-            });
+        return \SolutionForest\InspireCms\Support\MediaLibrary\Actions\CreateFolderAction::make();
     }
 
     public function editMediaAction(): Action
     {
-        return Action::make('editMedia')
-            ->modalHeading(fn (Action $action) => __('inspirecms-support::media-library.actions.edit.modal.heading', ['name' => $action->getModelLabel()]))
-            ->modelLabel(__('inspirecms-support::media-library.media'))
-            ->record(fn () => $this->selectedMedia)
-            ->fillForm(function (?Model $record) {
-                $data = $record?->attributesToArray();
-                if ($record && $record instanceof MediaAsset) {
-                    $media = $record->getFirstMedia();
-                    if ($media) {
-                        $data['file'] = $media->getPathRelativeToRoot();
-                    }
-                }
-
-                return $data;
-            })
-            ->form(
-                fn (Form $form) => $form
-                    ->schema([
-                        Forms\Components\FileUpload::make('file')
-                            ->label(__('inspirecms-support::media-library.forms.files.label'))
-                            ->disk(MediaLibraryRegistry::getDisk())
-                            ->directory(MediaLibraryRegistry::getDirectory())
-                            ->deletable(false)
-                            ->openable()
-                            ->downloadable()
-                            ->imageEditor()
-                            ->saveUploadedFileUsing(function ($component, TemporaryUploadedFile $file, MediaAsset $record): ?string {
-                                try {
-                                    if (! $file->exists()) {
-                                        return null;
-                                    }
-                                } catch (UnableToCheckFileExistence $exception) {
-                                    return null;
-                                }
-
-                                $record->media()->delete();
-                                $record->addMedia($file)->toMediaCollection();
-
-                                return $record->getFirstMedia()->getPathRelativeToRoot();
-                            }),
-                        Forms\Components\TextInput::make('title')
-                            ->label(__('inspirecms-support::media-library.forms.title.label'))
-                            ->required(),
-                        Forms\Components\TextInput::make('caption')
-                            ->label(__('inspirecms-support::media-library.forms.caption.label')),
-                        Forms\Components\Textarea::make('description')
-                            ->label(__('inspirecms-support::media-library.forms.description.label')),
-                    ])
-            )
-            ->successNotificationTitle(__('inspirecms-support::media-library.actions.edit.notifications.saved.title'))
-            ->action(function (array $data, ?Model $record, Action $action) {
-                if (empty($data) || ! $record) {
-                    return;
-                }
-                $record->update($data);
-                $action->success();
-            });
+        return \SolutionForest\InspireCms\Support\MediaLibrary\Actions\EditAction::make();
     }
 
     public function viewMediaAction(): Action
     {
-        return Action::make('viewMedia')
-            ->modalHeading(fn (Action $action) => __('inspirecms-support::media-library.actions.view.modal.heading', ['name' => $action->getModelLabel()]))
-            ->modelLabel(__('inspirecms-support::media-library.media'))
-            ->record(fn () => $this->selectedMedia)
-            ->fillForm(function (?Model $record) {
-                $data = $record?->attributesToArray();
-                if ($record && $record instanceof MediaAsset) {
-                    $media = $record->getFirstMedia();
-                    if ($media) {
-                        $data['media'] = $media->attributesToArray();
-                        $data['file'] = $media->getPathRelativeToRoot();
-                    }
-                }
+        return \SolutionForest\InspireCms\Support\MediaLibrary\Actions\ViewAction::make();
+    }
 
-                return $data;
-            })
-            ->form(
-                fn (Form $form) => $form
-                    ->schema([
-                        Forms\Components\FileUpload::make('file')
-                            ->label(__('inspirecms-support::media-library.forms.files.label'))
-                            ->disk(MediaLibraryRegistry::getDisk())
-                            ->directory(MediaLibraryRegistry::getDirectory())
-                            ->deletable(false)
-                            ->openable()
-                            ->downloadable(),
-                        Forms\Components\TextInput::make('title')
-                            ->label(__('inspirecms-support::media-library.forms.title.label'))
-                            ->required(),
-                        Forms\Components\Grid::make(2)
-                            ->statePath('media')
-                            ->schema([
-                                Forms\Components\TextInput::make('file_name')
-                                    ->label(__('inspirecms-support::media-library.forms.file_name.label')),
-                                Forms\Components\TextInput::make('mime_type')
-                                    ->label(__('inspirecms-support::media-library.forms.mime_type.label')),
-                            ]),
-                        Forms\Components\TextInput::make('caption')
-                            ->label(__('inspirecms-support::media-library.forms.caption.label')),
-                        Forms\Components\Textarea::make('description')
-                            ->label(__('inspirecms-support::media-library.forms.description.label')),
-                    ])
-            )
-            ->disabledForm()
-            ->modalSubmitAction(false)
-            ->modalCancelAction(false);
+    public function openFolderAction(): Action
+    {
+        return \SolutionForest\InspireCms\Support\MediaLibrary\Actions\OpenFolderAction::make()
+            ->action(fn (?Model $record) => $this->openFolder($record?->getKey()));
+    }
+
+    public function deleteMediaAction(): Action
+    {
+        return \SolutionForest\InspireCms\Support\MediaLibrary\Actions\DeleteAction::make()
+            ->after(fn () => $this->resetSelectedMedia());
     }
     //endregion Actions
 
@@ -442,6 +423,12 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
     }
 
     //region Helpers
+    protected function resetSelectedMedia(): void
+    {
+        $this->selectedMediaId = [];
+        $this->selectedMedia = null;
+    }
+
     protected function isMultiple(): bool
     {
         return $this->isMultiple;
@@ -457,15 +444,6 @@ class MediaLibraryComponent extends Component implements HasActions, HasForms
         $media->addMediaWithMappedProperties($file);
 
         return $media;
-    }
-
-    protected function createMediaFolder(string $title): Model
-    {
-        return $this->getEloquentQuery()->create([
-            'parent_id' => $this->parentKey,
-            'title' => $title,
-            'is_folder' => true,
-        ]);
     }
 
     protected function isFilterColumnInvisible(string $column): bool

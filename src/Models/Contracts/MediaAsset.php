@@ -5,10 +5,20 @@ namespace SolutionForest\InspireCms\Support\Models\Contracts;
 use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Support\Base\Models\Interfaces\BelongsToNestableTree;
 use SolutionForest\InspireCms\Support\Base\Models\Interfaces\HasDtoModel;
+use SolutionForest\InspireCms\Support\Base\Models\Interfaces\HasRecursiveRelationshipsInterface;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-interface MediaAsset extends BelongsToNestableTree, HasAuthor, HasDtoModel, HasMedia
+/**
+ * @property string $title
+ * @property bool $is_folder
+ * @property string $parent_id
+ * @property ?string $caption
+ * @property ?string $description
+ * @property ?\Carbon\Carbon $created_at
+ * @property ?\Carbon\Carbon $updated_at
+ */
+interface MediaAsset extends BelongsToNestableTree, HasAuthor, HasDtoModel, HasMedia, HasRecursiveRelationshipsInterface
 {
     /**
      * @return null | Model&Media
