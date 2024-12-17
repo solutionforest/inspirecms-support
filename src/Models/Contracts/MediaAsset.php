@@ -9,6 +9,15 @@ use SolutionForest\InspireCms\Support\Base\Models\Interfaces\HasRecursiveRelatio
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
+/**
+ * @property string $title
+ * @property bool $is_folder
+ * @property string $parent_id
+ * @property ?string $caption
+ * @property ?string $description
+ * @property ?\Carbon\Carbon $created_at
+ * @property ?\Carbon\Carbon $updated_at
+ */
 interface MediaAsset extends BelongsToNestableTree, HasAuthor, HasDtoModel, HasMedia, HasRecursiveRelationshipsInterface
 {
     /**
