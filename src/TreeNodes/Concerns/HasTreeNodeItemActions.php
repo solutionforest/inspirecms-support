@@ -66,7 +66,7 @@ trait HasTreeNodeItemActions
             return null;
         }
 
-        if (filled($this->mountedTreeNodeItemActionRecord) && ($action->getRecord() === null)) {
+        if (blank($this->mountedTreeNodeItemActionRecord)) {
             return null;
         }
 

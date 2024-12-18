@@ -15,8 +15,8 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @property string $parent_id
  * @property ?string $caption
  * @property ?string $description
- * @property ?\Carbon\Carbon $created_at
- * @property ?\Carbon\Carbon $updated_at
+ * @property ?\Carbon\CarbonInterface $created_at
+ * @property ?\Carbon\CarbonInterface $updated_at
  */
 interface MediaAsset extends BelongsToNestableTree, HasAuthor, HasDtoModel, HasMedia, HasRecursiveRelationshipsInterface
 {

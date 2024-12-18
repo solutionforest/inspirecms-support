@@ -83,7 +83,7 @@ trait CanSelectModeltem
 
         // Convert the items array as node tree items array
         $nodes = [];
-        $groupByDepth = collect($this->cachedModelExplorerItems)->flatten(1)->groupBy('depth')->sortKeys();
+        $groupByDepth = collect($this->mutateCachedModelExplorerItemsBeforeGroup($this->cachedModelExplorerItems))->flatten(1)->groupBy('depth')->sortKeys();
         foreach ($groupByDepth as $depth => $flattenItems) {
             if ($depth === -1) {
 
@@ -114,6 +114,11 @@ trait CanSelectModeltem
         }
 
         return $nodes;
+    }
+
+    protected function mutateCachedModelExplorerItemsBeforeGroup(array $items): array
+    {
+        return $items;
     }
 
     protected function getModelExplorerItemsFrom(string | int $parentKey, int $depth): array
