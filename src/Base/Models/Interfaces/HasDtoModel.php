@@ -4,12 +4,15 @@ namespace SolutionForest\InspireCms\Support\Base\Models\Interfaces;
 
 use SolutionForest\InspireCms\Support\Base\Dtos\BaseDto;
 
+/**
+ * @template TDto of BaseDto
+ */
 interface HasDtoModel
 {
     /**
      * Converts the current model instance to a Data Transfer Object (DTO).
      *
-     * @return BaseDto The DTO representation of the model.
+     * @return TDto The DTO representation of the model.
      */
     public function toDto(...$args);
 
