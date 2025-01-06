@@ -35,7 +35,7 @@ class DeleteAction extends ItemAction
             if ($record) {
                 $record->delete();
                 $this->success();
-            } 
+            }
         });
     }
 }

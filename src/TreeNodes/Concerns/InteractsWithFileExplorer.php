@@ -82,7 +82,7 @@ trait InteractsWithFileExplorer
         return __('inspirecms-support::notification.permission_denied.body');
     }
 
-    //region Forms
+    // region Forms
     /**
      * @return array<string, Forms\Form>
      */
@@ -92,5 +92,5 @@ trait InteractsWithFileExplorer
             'mountedTreeNodeItemActionForm' => $this->getMountedTreeNodeItemActionForm(),
         ];
     }
-    //endregion Forms
+    // endregion Forms
 }

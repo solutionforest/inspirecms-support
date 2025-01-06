@@ -33,6 +33,7 @@ class ItemBulkAction extends Action
     {
         if ($selectedRecords = $this->getRecords()) {
             $recordKeys = Js::from(collect($selectedRecords)->map(fn ($record) => $record instanceof Model ? $record->getKey() : $record)->all());
+
             return "{$method}('{$this->getName()}', {$recordKeys})";
         }
 

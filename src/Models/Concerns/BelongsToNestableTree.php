@@ -131,7 +131,7 @@ trait BelongsToNestableTree
         return $this->nestableTree()->getRelated()->qualifyColumn($this->getParentId());
     }
 
-    //region Scopes
+    // region Scopes
 
     public function scopeWhereAncesterOfTree(Builder $query, $id)
     {
@@ -148,6 +148,6 @@ trait BelongsToNestableTree
 
         $query->orderBy('nestable_tree_order', $direction);
     }
-    //endregion Scopes
+    // endregion Scopes
 
 }

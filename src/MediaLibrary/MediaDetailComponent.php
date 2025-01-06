@@ -13,12 +13,12 @@ use SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset;
 #[Lazy]
 class MediaDetailComponent extends Component implements Contracts\HasItemActions
 {
-    use Concerns\WithMediaAssets;
     use Concerns\HasItemActions;
+    use Concerns\WithMediaAssets;
 
     #[Reactive]
     public array $selectedMediaId = [];
- 
+
     public function placeholder()
     {
         return view('inspirecms-support::components.media-library.loading-section', [
@@ -49,13 +49,13 @@ class MediaDetailComponent extends Component implements Contracts\HasItemActions
     }
 
     /**
-     * @param Model & MediaAsset $asset
+     * @param  Model & MediaAsset  $asset
      * @return array
      */
     public function getInformationFor($asset)
     {
         $media = $asset?->getFirstMedia();
-        
+
         return collect($asset->getDisplayedColumns())
             ->map(function ($key) use ($media, $asset) {
                 $fallback = match ($key) {
@@ -78,6 +78,7 @@ class MediaDetailComponent extends Component implements Contracts\HasItemActions
                     // Default for custom properties
                     default => $media->getCustomProperty($customPropertyKey) ?? $fallback,
                 };
+
                 return [
                     'label' => trans("inspirecms-support::media-library.detail_info.{$key}.label"),
                     'value' => $value,
@@ -86,7 +87,7 @@ class MediaDetailComponent extends Component implements Contracts\HasItemActions
             ->all();
     }
 
-    //region Actions
+    // region Actions
     protected function getMediaItemActions(): array
     {
         return [
@@ -94,10 +95,10 @@ class MediaDetailComponent extends Component implements Contracts\HasItemActions
                 ->after(fn () => $this->dispatch('resetMediaLibrary')),
         ];
     }
-    //endregion Actions
+    // endregion Actions
 
     /**
-     * @param Collection<Model & MediaAsset> $assets
+     * @param  Collection<Model & MediaAsset>  $assets
      * @return array
      */
     protected function mututaThumbnail($assets)
@@ -112,15 +113,15 @@ class MediaDetailComponent extends Component implements Contracts\HasItemActions
         $asset = $assets->first();
 
         $data['is_image'] = $asset->isImage() ?? false;
-        $data['thumbnail'] = $asset->isImage() 
+        $data['thumbnail'] = $asset->isImage()
             ? $asset->getThumbnailUrl()
             : $asset->getThumbnail();
-        
+
         return $data;
     }
 
     /**
-     * @param Collection<Model & MediaAsset> $assets
+     * @param  Collection<Model & MediaAsset>  $assets
      * @return array
      */
     protected function mutateInformation($assets)
@@ -134,7 +135,7 @@ class MediaDetailComponent extends Component implements Contracts\HasItemActions
          */
         $asset = $assets->first();
         $media = $asset?->getFirstMedia();
-        
+
         return collect($asset->getDisplayedColumns())
             ->map(function ($key) use ($media, $asset) {
                 $fallback = match ($key) {
@@ -157,6 +158,7 @@ class MediaDetailComponent extends Component implements Contracts\HasItemActions
                     // Default for custom properties
                     default => $media->getCustomProperty($customPropertyKey) ?? $fallback,
                 };
+
                 return [
                     'label' => trans("inspirecms-support::media-library.detail_info.{$key}.label"),
                     'value' => $value,

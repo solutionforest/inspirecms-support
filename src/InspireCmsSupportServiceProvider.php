@@ -2,7 +2,6 @@
 
 namespace SolutionForest\InspireCms\Support;
 
-use Filament\Support\Assets\AlpineComponent;
 use Filament\Support\Assets\Css;
 use Filament\Support\Facades\FilamentAsset;
 use Filament\Support\Facades\FilamentIcon;
@@ -75,7 +74,7 @@ class InspireCmsSupportServiceProvider extends PackageServiceProvider
             'inspirecms-support::pdf' => view('inspirecms-support::icons.pdf'),
             'inspirecms-support::excel' => view('inspirecms-support::icons.excel'),
         ]);
-        
+
         FilamentView::registerRenderHook(
             PanelsRenderHook::BODY_END,
             fn () => view('inspirecms-support::forms.components.media-picker.modal')

@@ -71,7 +71,7 @@ trait HasSorts
     /**
      * Apply sorting to the given query.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query The query builder instance.
+     * @param  \Illuminate\Database\Eloquent\Builder  $query  The query builder instance.
      * @return \Illuminate\Database\Eloquent\Builder
      */
     protected function applySortCriteria($query)

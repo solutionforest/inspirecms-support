@@ -342,7 +342,7 @@ trait HasTreeNodeItemActions
         );
     }
 
-    //region Helpers
+    // region Helpers
     /**
      * Remove the last the mounted tree node item action.
      *
@@ -391,5 +391,5 @@ trait HasTreeNodeItemActions
     {
         return "{$this->getId()}-treenodeitem-action";
     }
-    //endregion Modal
+    // endregion Modal
 }

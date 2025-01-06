@@ -9,14 +9,14 @@ use Livewire\Component;
 #[Lazy]
 class FolderBrowserComponent extends Component implements Contracts\HasItemActions
 {
-    use Concerns\WithMediaAssets;
     use Concerns\HasItemActions;
+    use Concerns\WithMediaAssets;
 
     #[Reactive]
     public ?string $parentKey = null;
 
     public string $title = 'Folders';
-    
+
     public function placeholder()
     {
         return view('inspirecms-support::components.media-library.loading-section', [
@@ -31,7 +31,7 @@ class FolderBrowserComponent extends Component implements Contracts\HasItemActio
             'folders' => is_null($this->parentKey) ? [] : $this->getFoldersFromUpperLevel(),
         ]);
     }
-    
+
     protected function getFoldersFromUpperLevel()
     {
         if (is_null($this->parentKey)) {
@@ -41,6 +41,7 @@ class FolderBrowserComponent extends Component implements Contracts\HasItemActio
         if (is_null($record)) {
             return collect();
         }
+
         return $this->getEloquentQuery()
             ->withCount('children')
             ->whereParent($record->getParentId())
@@ -48,7 +49,7 @@ class FolderBrowserComponent extends Component implements Contracts\HasItemActio
             ->get();
     }
 
-    //region Actions
+    // region Actions
     protected function getMediaItemActions(): array
     {
         return [
@@ -60,5 +61,5 @@ class FolderBrowserComponent extends Component implements Contracts\HasItemActio
             ])->dropdown(false),
         ];
     }
-    //endregion Actions
+    // endregion Actions
 }

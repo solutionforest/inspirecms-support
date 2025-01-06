@@ -203,14 +203,14 @@ class MediaAsset extends BaseModel implements MediaAssetContract
         return $columns;
     }
 
-    //region Scopes
+    // region Scopes
     public function scopeFolders($query, bool $condition = true)
     {
         return $query->where('is_folder', $condition);
     }
-    //endregion Scopes
+    // endregion Scopes
 
-    //region Dto
+    // region Dto
     public static function getDtoClass()
     {
         return \SolutionForest\InspireCms\Support\Dtos\MediaAssetDto::class;
@@ -224,7 +224,7 @@ class MediaAsset extends BaseModel implements MediaAssetContract
 
         return $dtoClass::fromModel($this);
     }
-    //endregion Dto
+    // endregion Dto
 
     protected function shouldMapVideoPropertiesWithFfmpeg(): bool
     {

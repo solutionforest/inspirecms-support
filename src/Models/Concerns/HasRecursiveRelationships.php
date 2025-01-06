@@ -65,7 +65,7 @@ trait HasRecursiveRelationships
         return $this;
     }
 
-    //region Scopes
+    // region Scopes
     /**
      * Limit the query to root models.
      *
@@ -105,5 +105,5 @@ trait HasRecursiveRelationships
     {
         return $query->whereDoesntHave('children');
     }
-    //endregion Scopes
+    // endregion Scopes
 }

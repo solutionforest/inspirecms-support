@@ -30,7 +30,7 @@ class NestableTree extends BaseModel implements NestableTreeContract
         return $this->morphTo();
     }
 
-    //region Sortable
+    // region Sortable
     public function buildSortQuery()
     {
         return static::query()
@@ -47,7 +47,7 @@ class NestableTree extends BaseModel implements NestableTreeContract
     {
         return 'order';
     }
-    //endregion Sortable
+    // endregion Sortable
 
     /** {@inheritDoc} */
     public static function setNewOrderForNestable($parentId, array $morphableIds, string $morphableType): void

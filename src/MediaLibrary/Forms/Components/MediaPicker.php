@@ -146,12 +146,12 @@ class MediaPicker extends Field
         if (! is_null($this->cachedSelectedAssets)) {
             return $this->cachedSelectedAssets;
         }
-        
+
         $ids ??= $this->getState();
 
         if (! is_array($ids)) {
             $ids = is_null($ids) || empty($ids) ? [] : [$ids];
-        } 
+        }
 
         $ids = array_values(array_unique(array_filter($ids)));
 

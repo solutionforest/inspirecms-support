@@ -2,7 +2,6 @@
 
 namespace SolutionForest\InspireCms\Support\MediaLibrary\Actions;
 
-use Closure;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Js;
 
@@ -33,6 +32,7 @@ class ItemAction extends Action
 
         if ($selectedRecords = $this->getRecords()) {
             $recordKeys = Js::from($selectedRecords->map(fn ($record) => $record instanceof Model ? $record->getKey() : $record)->all());
+
             return "{$method}('{$this->getName()}', {$recordKeys})";
         }
 

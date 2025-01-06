@@ -41,12 +41,14 @@ trait HasItemActions
     }
 
     /**
-     * @param Actions\Action | Actions\ActionGroup $action
-     * @return void
+     * @param  Actions\Action | Actions\ActionGroup  $action
      */
-    protected function configureMediaItemAction($action): void  { }
+    protected function configureMediaItemAction($action): void {}
 
-    protected function getMediaItemActions(): array { return []; }
+    protected function getMediaItemActions(): array
+    {
+        return [];
+    }
 
     public function getMountedAction(): ?Action
     {
@@ -73,9 +75,8 @@ trait HasItemActions
     }
 
     /**
-     * @param string $name
-     * @param null | string | array $record
-     * @param array $arguments
+     * @param  string  $name
+     * @param  null | string | array  $record
      * @return mixed
      */
     public function mountMediaLibraryItemAction($name, $record = null, array $arguments = [])
@@ -102,7 +103,7 @@ trait HasItemActions
                 $this->unmountMediaItemAction();
 
                 return null;
-                
+
             } elseif ($action instanceof Actions\ItemBulkAction && ($action->getRecords() === null)) {
                 $this->unmountMediaItemAction();
 
@@ -166,7 +167,7 @@ trait HasItemActions
     public function unmountMediaItemAction(bool $shouldCancelParentActions = true, bool $shouldCloseModal = true): void
     {
         $action = $this->getMountedAction();
-        dd($this,$action);
+        dd($this, $action);
 
         if (! ($shouldCancelParentActions && $action)) {
             $this->popMountedAction();
@@ -224,7 +225,7 @@ trait HasItemActions
 
         $this->cachedMountedMediaItemActionRecordKey = $recordKey;
 
-        return $this->cachedMountedMediaItemActionRecord = is_array($recordKey) 
+        return $this->cachedMountedMediaItemActionRecord = is_array($recordKey)
             ? $this->resolveAssetRecords($recordKey)
             : $this->resolveAssetRecord($recordKey);
     }
@@ -238,7 +239,7 @@ trait HasItemActions
         );
 
         foreach ($actions as $action) {
-            
+
             if ($action instanceof ActionGroup || $action instanceof Actions\ActionGroup) {
                 $action->livewire($this);
 
@@ -251,6 +252,7 @@ trait HasItemActions
                 }
 
                 $this->cachedMediaItemActions[] = $action;
+
                 return;
             }
 

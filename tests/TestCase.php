@@ -55,7 +55,7 @@ class TestCase extends Orchestra
     {
         config()->set('database.default', 'testing');
 
-        //region inspirecms support
+        // region inspirecms support
         \SolutionForest\InspireCms\Support\Facades\MediaLibraryRegistry::setDisk('public');
         \SolutionForest\InspireCms\Support\Facades\MediaLibraryRegistry::setDirectory('');
         \SolutionForest\InspireCms\Support\Facades\MediaLibraryRegistry::setThumbnailCrop(300, 300);
@@ -63,7 +63,7 @@ class TestCase extends Orchestra
         \SolutionForest\InspireCms\Support\Facades\InspireCmsSupport::setTablePrefix('cms_');
 
         \SolutionForest\InspireCms\Support\Facades\ResolverRegistry::set('user', \SolutionForest\InspireCms\Support\Resolver\UserResolver::class);
-        //endregion inspirecms support
+        // endregion inspirecms support
     }
 
     /**

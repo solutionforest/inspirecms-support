@@ -39,7 +39,7 @@ trait CanSelectFileItem
 
                 return is_dir($fullPath);
             } catch (\Throwable $th) {
-                //throw $th;
+                // throw $th;
             }
         }
 

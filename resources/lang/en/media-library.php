@@ -26,7 +26,7 @@ return [
                     'title' => 'File Deleted',
                 ],
             ],
-            
+
         ],
         'edit' => [
             'label' => 'Edit',

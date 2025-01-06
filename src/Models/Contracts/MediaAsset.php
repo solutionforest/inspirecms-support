@@ -85,8 +85,7 @@ interface MediaAsset extends BelongsToNestableTree, HasAuthor, HasDtoModel, HasM
     /**
      * Scope a query to only include folders.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param bool $condition
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeFolders($query, bool $condition = true);

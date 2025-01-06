@@ -12,21 +12,20 @@ use Livewire\Attributes\Computed;
 use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Livewire\WithPagination;
-use SolutionForest\InspireCms\Support\MediaLibrary\Actions;
 use SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset;
 
 class MediaLibraryComponent extends Component implements Contracts\HasItemActions
 {
-    use Concerns\WithMediaAssets;
     use Concerns\HasFilters;
+    use Concerns\HasItemActions;
     use Concerns\HasSorts;
     use Concerns\InteractsWithHeaderActions;
-    use Concerns\HasItemActions;
+    use Concerns\WithMediaAssets;
     use WithPagination;
 
     public array $selectedMediaId = [];
 
-    public string | null $parentKey = null;
+    public ?string $parentKey = null;
 
     public null | int | string $page = null;
 
@@ -56,6 +55,7 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
         if ($this->isModalPicker) {
             return [];
         }
+
         return [
             'parentKey' => ['as' => 'mp'],
             'page' => ['as' => static::getPageName()],
@@ -73,7 +73,7 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
     public function getBreadcrumbs(): array
     {
         $breadcrumbs = [
-            //todo: add translations
+            // todo: add translations
             static::getRootLevelParentId() => 'Root',
         ];
 
@@ -122,7 +122,7 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
             if (isset($config['forms']['sort']['invisibleColumns']) && is_array($config['forms']['sort']['invisibleColumns'])) {
                 $this->formConfig['sort']['invisible_columns'] = $config['forms']['sort']['invisibleColumns'];
             }
-            
+
             if (isset($config['forms']['filter']['d']) && is_array($config['forms']['filter']['d'])) {
                 foreach ($config['forms']['filter']['d'] as $key => $value) {
                     $this->filter[$key] = $value;
@@ -181,7 +181,7 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
         $this->resetSelectedMedia();
         $this->clearCache();
     }
-    //region Actions
+    // region Actions
 
     protected function getHeaderActions(): array
     {
@@ -218,7 +218,7 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
     public function getVisibleHeaderActions(): array
     {
         return collect($this->getCachedHeaderActions())
-            ->filter(fn (Action|ActionGroup $action) => $action->isVisible())
+            ->filter(fn (Action | ActionGroup $action) => $action->isVisible())
             ->all();
     }
 
@@ -228,7 +228,7 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
             Actions\ItemAction::make('openFolder')
                 ->icon('heroicon-o-folder-open')
                 ->dispatch('openFolder', fn (?Model $record) => ['mediaId' => $record?->getKey()]),
-            
+
             Actions\EditAction::make(),
             Actions\ViewAction::make(),
 
@@ -256,23 +256,26 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
             case $action->getName() == 'openFolder':
                 $action
                     ->visible(fn (?Model $record): bool => $record !== null && $record instanceof MediaAsset && $record->isFolder());
+
                 break;
             case $action instanceof Actions\RenameAction:
             case $action instanceof Actions\DeleteAction:
                 $action->after(fn () => $this->clearCache());
+
                 break;
             case $action instanceof Actions\EditAction:
             case $action instanceof Actions\ViewAction:
                 $action
                     ->visible(function (?Model $record): bool {
-                        return $record !== null && $record instanceof MediaAsset && !$record->isFolder();
+                        return $record !== null && $record instanceof MediaAsset && ! $record->isFolder();
                     });
+
                 break;
         }
     }
-    //endregion Actions
+    // endregion Actions
 
-    //region Form
+    // region Form
 
     public function getFormStatePathFor(string $formName): ?string
     {
@@ -293,27 +296,28 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
 
     protected function mutateSortData(array $data): array
     {
-        if (!isset($data['type'])) {
+        if (! isset($data['type'])) {
             $data['type'] = 'default';
         }
-        if (!isset($data['direction'])) {
+        if (! isset($data['direction'])) {
             $data['direction'] = 'desc';
         }
+
         return $data;
     }
-    //endregion Form
+    // endregion Form
 
-    //region Computed
+    // region Computed
 
     /**
      * Get the media assets from the parent.
-     * 
+     *
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator<int, Model&MediaAsset>
      */
     #[Computed(cache: true, key: 'media-library-assets')]
     public function assets()
     {
-        if ($this->isModalPicker && !$this->mountedMediaPickerModal) {
+        if ($this->isModalPicker && ! $this->mountedMediaPickerModal) {
             return new \Illuminate\Pagination\LengthAwarePaginator(
                 items: collect(),
                 total: 0,
@@ -337,7 +341,7 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
             page: $this->page,
         );
     }
-    //endregion Computed
+    // endregion Computed
 
     public function render()
     {
@@ -346,7 +350,7 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
         ]);
     }
 
-    //region Helpers
+    // region Helpers
 
     protected function isFilterColumnInvisible(string $column): bool
     {
@@ -371,7 +375,7 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
     protected function changeParent($key)
     {
         $this->clearCache();
-        if (!$this->isModalPicker) {
+        if (! $this->isModalPicker) {
             $this->resetSelectedMedia();
         }
         $this->resetPage(static::getPageName());
@@ -392,5 +396,5 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
             return;
         }
     }
-    //endregion Helpers
+    // endregion Helpers
 }

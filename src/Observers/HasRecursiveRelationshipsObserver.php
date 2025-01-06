@@ -15,11 +15,11 @@ class HasRecursiveRelationshipsObserver
      */
     public function creating(HasRecursiveRelationshipsInterface | Model $model)
     {
-        //region Set the parent ID to the fallback parent ID if it is blank
+        // region Set the parent ID to the fallback parent ID if it is blank
         if (blank($model->{$model->getParentKeyName()}) && ! is_null($model->getRootLevelParentId())) {
             $model->{$model->getParentKeyName()} = $model->getRootLevelParentId();
         }
-        //endregion
+        // endregion
     }
 
     /**

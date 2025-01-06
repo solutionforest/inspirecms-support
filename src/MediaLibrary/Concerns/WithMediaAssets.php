@@ -19,7 +19,6 @@ trait WithMediaAssets
     }
 
     /**
-     * @param array $ids
      * @return Collection<Model & MediaAsset>
      */
     protected function resolveAssetRecords(array $ids)

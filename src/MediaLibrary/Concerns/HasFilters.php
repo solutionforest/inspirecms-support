@@ -78,13 +78,13 @@ trait HasFilters
     /**
      * Apply a filter to the given query.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query The query builder instance.
+     * @param  \Illuminate\Database\Eloquent\Builder  $query  The query builder instance.
      * @return \Illuminate\Database\Eloquent\Builder
      */
     protected function applyFilterCriteria($query)
     {
         $filter = $this->ensureFilter();
-        
+
         if (isset($filter['title'])) {
             $query->where('title', 'like', "%{$filter['title']}%");
             unset($filter['title']);
@@ -129,7 +129,7 @@ trait HasFilters
                 if ($this->isModalPicker) {
                     $query->orWhereDoesntHave('media');
                 }
-            };
+            }
         });
 
         return $query;
