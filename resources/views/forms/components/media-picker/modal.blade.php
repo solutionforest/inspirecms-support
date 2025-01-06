@@ -17,7 +17,6 @@
         formStatePath: '', 
         modalInitialized: false,
         closeMediaPickerModal: function(save = true) {
-            console.log('onCloseMediaPickerModal', this.selected);
             if (save) {
                 this.$dispatch('close-modal', { id: '{{ $modalId }}', save: true, statePath: this.formStatePath, data: { selected: this.selected } });
             } else {
