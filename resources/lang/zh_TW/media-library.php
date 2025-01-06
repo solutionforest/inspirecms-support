@@ -158,24 +158,31 @@ return [
     'forms' => [
         'title' => [
             'label' => '標題',
+            'validation_attribute' => '標題',
         ],
         'description' => [
             'label' => '描述',
+            'validation_attribute' => '描述',
         ],
         'file' => [
             'label' => '檔案',
+            'validation_attribute' => '檔案',
         ],
         'caption' => [
             'label' => '說明文字',
+            'validation_attribute' => '說明文字',
         ],
         'file_name' => [
             'label' => '檔案名稱',
+            'validation_attribute' => '檔案名稱',
         ],
         'files' => [
             'label' => '檔案',
+            'validation_attribute' => '檔案',
         ],
         'mime_type' => [
             'label' => 'MIME 類型',
+            'validation_attribute' => 'MIME 類型',
         ],
     ],
 ];
