@@ -1,0 +1,241 @@
+.media-library {
+    @apply rounded-md;
+    background-color: white;
+    &:is(.dark *) {
+        background-color: rgba(var(--gray-900),1);
+    }
+}
+
+.media-library__header, .media-library__footer {
+    @apply top-16 sticky z-10 h-14 px-4 py-2 backdrop-blur-sm ring-1 ring-slate-900/10;
+    background-color: rgba(var(--gray-50),0.5);
+    &:is(.dark *) {
+        @apply ring-black/10;
+        background-color: rgba(var(--gray-700),0.5);
+    }
+}
+.media-library__header {
+    @apply flex items-center justify-between;
+}
+
+.media-library__content {
+    @apply flex relative h-svh;
+
+    > .ctn {
+        @apply p-4 h-full overflow-y-scroll;
+
+        &::-webkit-scrollbar {
+            @apply w-3 h-3;
+        }
+        &::-webkit-scrollbar-track, &::-webkit-scrollbar-thumb {
+            @apply rounded-full;
+            background: transparent;
+        }
+        &:hover::-webkit-scrollbar-thumb {
+            background-color: rgba(var(--primary-100),1);
+            &:hover {
+                background-color: rgba(var(--primary-300),1);
+            }
+        }
+        &:is(.dark *):hover::-webkit-scrollbar-thumb {
+            background-color: rgba(var(--gray-800),1);
+            &:hover {
+                background-color: rgba(var(--gray-700),1);
+            }
+        }
+
+    }
+    > .ctn:not(.browser-ctn) {
+        @apply flex-auto;
+    }
+    > .browser-ctn {
+        @apply flex-1 grow;
+        .filter-ctn {
+            @apply flex gap-x-4 items-center justify-between;
+        }
+        .browser-items-ctn {
+            @apply flex flex-col gap-y-4;
+        }
+        > .ctn:not(:last-child) {
+            @apply pb-4;
+        }
+    }
+    > .folder-ctn {
+        max-width: 250px;
+    }
+    > .detail-info-ctn {
+        max-width: 400px;
+        border-left: 1px solid rgba(var(--gray-300), 1);
+    }
+}
+
+.media-library {
+    .header {
+        @apply pb-4;
+
+        .title {
+            @apply text-lg font-bold;
+        }
+    }
+    .thumbnail-ctn  svg {
+        color: rgba(var(--gray-400), 1);
+    }
+    .filter-ctn form {
+        @apply flex items-center gap-1;
+        &#filterForm {
+            @apply flex-1;
+        }
+    }
+    .actions, .media-library__header__actions {
+        @apply flex gap-x-2;
+    }
+
+    .browser-item, .folder-item {
+        @apply hover:ring-1 hover:ring-gray-300 rounded-lg;
+    }
+    .browser-item .title, .folder-item .main {
+        @apply select-none;
+    }
+
+    .browser-items-grid-ctn {
+        h4 {
+            @apply text-lg font-bold;
+        }
+        .browser-items-grid {
+            @apply grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2;
+        }
+    }
+
+    .browser-item :not(:has(:disabled)) .main, .folder-item {
+        @apply cursor-pointer;
+    }
+
+    .browser-item {
+        @apply p-2 gap-3;
+        &:has(:checked) {
+            background-color: rgba(var(--primary-200), 1);
+        }
+        &:has(:checked):is(.dark *) {
+            background-color: rgba(var(--primary-600), 0.4);
+        }
+        &:not(:has(:disabled)) .main {
+            @apply cursor-pointer;
+        }
+
+        .header {
+            @apply flex items-center justify-between;
+        }
+
+        input[type=checkbox] {
+            @apply appearance-none rounded border border-gray-300 bg-white disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100 forced-colors:appearance-auto;
+            &:checked, &:indeterminate, &:focus-visible {
+                border-color: rgba(var(--primary-600), 1);
+                background-color: rgba(var(--primary-600), 1);
+            }
+            &:focus-visible, &:focus {
+                @apply outline outline-2 outline-offset-2;
+                outline-color: rgba(var(--primary-600), 1);
+            }
+        }
+        
+        .thumbnail-ctn {
+            img, svg {
+                @apply w-24 h-24;
+            }
+        }
+
+        .main {
+            @apply w-full flex flex-col gap-y-1 items-center justify-center;
+        }
+
+        .title-ctn {
+            @apply flex flex-col items-center justify-center gap-y-1 overflow-hidden w-full;
+
+            span {
+                @apply w-full text-center truncate;
+            }
+
+            .description {
+                @apply text-gray-400 text-sm;
+            }
+        }
+    }
+
+    .folder-item {
+        @apply flex items-center gap-2 p-2;
+        &.selected {
+            @apply bg-gray-200;
+            .title {
+                color: rgba(var(--primary-600), 1)
+            }
+        }
+        &.selected:is(.dark *) {
+            @apply bg-white/5;
+        }
+
+        .main {
+            @apply flex-1 inline-flex flex-col;
+            .description {
+                @apply text-gray-400 text-sm;
+            }
+        }
+
+        svg.icon {
+            @apply w-6 h-6;
+            color: rgba(var(--c-400), 1)
+        }
+    }
+
+    .media-library__details {
+        .header {
+            @apply flex items-center justify-between;
+            .heading {
+                @apply w-full truncate;
+            }
+        }
+        .thumbnail-ctn {
+            @apply py-4 flex items-center justify-center;
+            img, svg {
+                @apply w-48 h-48;
+            }
+        }
+        .information-ctn {
+            @apply font-mono pb-2;
+
+            .title-ctn {
+                @apply pb-4;
+                > span {
+                    @apply font-bold;
+                }
+            }
+            .information-content-ctn {
+                > .row {
+                    @apply grid grid-cols-3 gap-2 pb-2 ;
+                }
+            }
+        }
+    }
+}
+
+.media-library-browser-modal .media-library__content {
+    @apply h-[calc(100vh-16rem)];
+}
+.media-library-browser-modal .fi-modal-content:has(.media-library) {
+    @apply !p-0;
+}
+
+.media-library__loading-sections {
+    @apply gap-4;
+
+    .media-library__loading-section {
+        @apply p-4 rounded-lg ring-1 ring-gray-300/50 dark:ring-white/10;
+
+        .bar-ctn {
+            @apply animate-pulse grid grid-cols-1 gap-4;
+
+            .bar  {
+                @apply h-2 rounded bg-gray-300 dark:bg-white/10;
+            }
+        }
+    }
+}

@@ -38,12 +38,14 @@
                 <div class="pb-4">
                     <span class="font-bold">Information</span>
                 </div>
-                @foreach ($this->getInformationFor($selectedMedia) ?? [] as $item)
-                    <div class="grid grid-cols-3 gap-2 pb-2">
-                        <span class="text-sm text-gray-500">{{ $item['label'] ?? null }}</span>
-                        <span class="col-span-2 font-semibold truncate">{{ $item['value'] ?? null }}</span>
-                    </div>
-                @endforeach
+                <div class="information-content-ctn">
+                    @foreach ($this->getInformationFor($selectedMedia) ?? [] as $item)
+                        <div class="row">
+                            <span class="text-sm text-gray-500">{{ $item['label'] ?? null }}</span>
+                            <span class="col-span-2 font-semibold truncate">{{ $item['value'] ?? null }}</span>
+                        </div>
+                    @endforeach
+                </div>
             </div>
         </div>
     @endif

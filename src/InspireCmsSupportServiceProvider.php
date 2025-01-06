@@ -63,8 +63,8 @@ class InspireCmsSupportServiceProvider extends PackageServiceProvider
 
         // Asset Registration
         FilamentAsset::register([
-            Css::make('tree-node', __DIR__ . '/../resources/dist/tree-node.css'),
-            Css::make('media-library', __DIR__ . '/../resources/dist/media-library.css'),
+            Css::make('tree-node', __DIR__ . '/../resources/dist/components/tree-node.css'),
+            Css::make('media-library', __DIR__ . '/../resources/dist/components/media-library.css'),
         ], 'solution-forest/inspirecms-support');
 
         // Testing

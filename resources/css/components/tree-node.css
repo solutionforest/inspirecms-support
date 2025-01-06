@@ -1,0 +1,29 @@
+.tree-node-layout {
+    @apply flex flex-col max-h-full gap-2;
+
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+
+    ::-webkit-scrollbar {
+        display: none;
+    }
+}
+.tree-node-sidebar-container {
+    @apply flex flex-col;
+}
+.tree-node-sidebar {
+    @apply h-52 overflow-scroll;
+}
+
+.tree-node-main-container {
+    @apply grow overflow-auto p-1;
+}
+
+@media screen(lg) {
+    .tree-node-layout {
+        @apply flex-row;
+    }
+    .tree-node-sidebar{
+        @apply h-svh min-w-56 w-64;
+    }
+}

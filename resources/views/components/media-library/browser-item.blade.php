@@ -26,7 +26,7 @@
         </div>
     </div>
 
-    <label for="media-item-{{ $mediaItem->getKey() }}" class="cursor-pointer w-full flex flex-col gap-y-1 items-center justify-center">
+    <label for="media-item-{{ $mediaItem->getKey() }}" class="main">
         <div class="thumbnail-ctn">
             @if ($mediaItem->isImage())
                 <img loading="lazy" src="{{ $mediaItem->getThumbnailUrl() }}" alt="{{ $mediaItem->getKey() }}" />
@@ -36,10 +36,10 @@
                 />
             @endif
         </div>
-        <div class="flex flex-col items-center justify-center gap-y-1 overflow-hidden w-full">
-            <span class="w-full text-center truncate">{{ $mediaItem->title }}</span>
+        <div class="title-ctn">
+            <span class="title">{{ $mediaItem->title }}</span>
             @if ($mediaItem->isFolder())
-                <span class="w-full text-center text-gray-400 text-xs">{{ $mediaItem->children_count }} items</span>
+                <span class="description">{{ $mediaItem->children_count }} items</span>
             @endif
         </div>
     </label>

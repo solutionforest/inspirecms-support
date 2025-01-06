@@ -14,7 +14,7 @@
             @endphp
             <div 
                 @class([
-                    'folder-item cursor-pointer',
+                    'folder-item',
                     'selected' => $isSeleted,
                 ])
             >

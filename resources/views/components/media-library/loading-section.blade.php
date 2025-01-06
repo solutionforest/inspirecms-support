@@ -14,17 +14,17 @@
     :lg="$columns['lg'] ?? null"
     :xl="$columns['xl'] ?? null"
     :twoXl="$columns['2xl'] ?? null"
-    class="media-library__loading-section gap-4"
+    class="media-library__loading-sections gap-4"
 >
     @for ($i = 0; $i < $count; $i++)
-        <x-filament::grid.column default="1" class="p-4 rounded-lg ring-1 ring-gray-300/50 dark:ring-white/10" 
+        <x-filament::grid.column default="1" class="media-library__loading-section" 
             @style([
                 "height: $height" => isset($height),
             ])
         >
-            <div class="animate-pulse grid grid-cols-1 gap-4">
-                <div class="h-2 rounded bg-gray-300 dark:bg-white/10"></div>
-                <div class="h-2 rounded bg-gray-300 dark:bg-white/10"></div>
+            <div class="bar-ctn">
+                <div class="bar"></div>
+                <div class="bar"></div>
             </div>
         </x-filament::grid.column>
     @endfor
