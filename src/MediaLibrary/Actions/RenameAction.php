@@ -39,6 +39,7 @@ class RenameAction extends ItemAction
             ->form([
                 TextInput::make('title')
                     ->label(__('inspirecms-support::media-library.forms.title.label'))
+                    ->validationAttribute(__('inspirecms-support::media-library.forms.title.validation_attribute'))
                     ->required(),
             ])
             ->action(function (?Model $record, array $data) {

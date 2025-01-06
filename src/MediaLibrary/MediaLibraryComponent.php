@@ -197,6 +197,7 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
                 ->form([
                     Forms\Components\TextInput::make('title')
                         ->label(__('inspirecms-support::media-library.forms.title.label'))
+                        ->validationAttribute(__('inspirecms-support::media-library.forms.title.validation_attribute'))
                         ->required()
                         ->autofocus(),
                 ])

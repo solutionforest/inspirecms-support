@@ -180,24 +180,31 @@ return [
     'forms' => [
         'title' => [
             'label' => 'Title',
+            'validation_attribute' => 'title',
         ],
         'description' => [
             'label' => 'Description',
+            'validation_attribute' => 'description',
         ],
         'file' => [
             'label' => 'File',
+            'validation_attribute' => 'file',
         ],
         'caption' => [
             'label' => 'Caption',
+            'validation_attribute' => 'caption',
         ],
         'file_name' => [
             'label' => 'File Name',
+            'validation_attribute' => 'file name',
         ],
         'files' => [
             'label' => 'Files',
+            'validation_attribute' => 'files',
         ],
         'mime_type' => [
             'label' => 'Mime Type',
+            'validation_attribute' => 'mime type',
         ],
     ],
 ];
