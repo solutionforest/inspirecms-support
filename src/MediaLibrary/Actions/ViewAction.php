@@ -47,7 +47,6 @@ class ViewAction extends ItemAction
             ->infolist([
                 Infolists\Components\TextEntry::make('file')
                     ->label(__('inspirecms-support::media-library.forms.file.label'))
-                    ->validationAttribute(__('inspirecms-support::media-library.forms.file.validation_attribute'))
                     ->inlineLabel()
                     ->state(function (MediaAsset | Model $record) {
                         $urlOrIcon = $record->getThumbnail();
