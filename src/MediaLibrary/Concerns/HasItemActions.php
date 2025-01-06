@@ -167,7 +167,6 @@ trait HasItemActions
     public function unmountMediaItemAction(bool $shouldCancelParentActions = true, bool $shouldCloseModal = true): void
     {
         $action = $this->getMountedAction();
-        dd($this, $action);
 
         if (! ($shouldCancelParentActions && $action)) {
             $this->popMountedAction();
