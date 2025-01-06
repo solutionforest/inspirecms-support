@@ -12,6 +12,18 @@ return [
 
         'label' => '選擇',
 
+        'modal' => [
+
+            'heading' => '選擇',
+
+        ],
+
+    ],
+
+    'cancel' => [
+
+        'label' => '取消',
+
     ],
 
 ];

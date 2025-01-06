@@ -2,9 +2,9 @@
 
 namespace SolutionForest\InspireCms\Support\MediaLibrary\Actions;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
-class DeleteAction extends ItemAction
+class BulkDeleteAction extends ItemBulkAction
 {
     public static function getDefaultName(): ?string
     {
@@ -23,7 +23,7 @@ class DeleteAction extends ItemAction
 
         $this->successNotificationTitle(__('inspirecms-support::media-library.actions.delete.notification.deleted.title'));
 
-        $this->authorize('delete');
+        $this->authorize('deleteAny');
 
         $this->color('danger');
 
@@ -31,11 +31,11 @@ class DeleteAction extends ItemAction
 
         $this->modalIcon('heroicon-o-trash');
 
-        $this->action(function (?Model $record) {
-            if ($record) {
-                $record->delete();
+        $this->action(function (?Collection $records) {
+            if ($records != null) {
+                $result = $records->each->delete();
                 $this->success();
-            } 
+            }
         });
     }
 }

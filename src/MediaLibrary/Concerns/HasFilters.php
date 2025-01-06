@@ -4,14 +4,28 @@ namespace SolutionForest\InspireCms\Support\MediaLibrary\Concerns;
 
 use Filament\Forms;
 use Filament\Forms\Form;
+use SolutionForest\InspireCms\Support\MediaLibrary\FilterType;
 
+/**
+ * @property Form $filterForm
+ */
 trait HasFilters
 {
     public array $filter = [];
 
-    protected function fillFilterForm(): void
+    public function mountHasFilters(): void
     {
-        $this->filterForm->fill($this->filter ?? []);
+        $this->fillFilterForm();
+    }
+
+    protected function fillFilterForm(array $data = []): void
+    {
+        $this->filterForm->fill($this->mutateFilterData($data));
+    }
+
+    protected function mutateFilterData(array $data): array
+    {
+        return $data;
     }
 
     protected function getFilterFormStatePath(): string
@@ -38,11 +52,12 @@ trait HasFilters
                             ->color('gray')
                             ->icon('heroicon-o-x-mark')
                             ->action(fn ($component) => $component->state(''))
+                            ->after(fn () => $this->clearCache())
                     ),
                 Forms\Components\Select::make('type')
                     ->hiddenLabel()
                     ->placeholder(__('inspirecms-support::media-library.filter.type.placeholder'))
-                    ->options(__('inspirecms-support::media-library.filter.type.options'))
+                    ->options(FilterType::class)
                     ->multiple()
                     ->live(true)
                     ->hidden(fn ($component) => $this->isFilterColumnInvisible($component->getName()))
@@ -58,5 +73,65 @@ trait HasFilters
             fn ($value): bool => (is_array($value) && ! empty($value)) ||
             (is_string($value) && strlen($value) > 0)
         );
+    }
+
+    /**
+     * Apply a filter to the given query.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query The query builder instance.
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    protected function applyFilterCriteria($query)
+    {
+        $filter = $this->ensureFilter();
+        
+        if (isset($filter['title'])) {
+            $query->where('title', 'like', "%{$filter['title']}%");
+            unset($filter['title']);
+        }
+
+        $query->where(function ($query) use ($filter) {
+            if (count($filter) > 0) {
+                $query
+                    ->whereHas('media', function ($query) use ($filter) {
+
+                        foreach ($filter as $key => $value) {
+                            switch ($key) {
+                                case 'type':
+                                    if (is_array($value)) {
+                                        $mimeTypes = collect(FilterType::toMimeTypes($value))
+                                            ->filter()
+                                            ->map(fn ($value) => str_replace('*', '%', $value))
+                                            ->filter(fn ($value) => ! is_null($value) && $value != '%')
+                                            ->toArray();
+                                        $query = $query->where(function ($q) use ($mimeTypes) {
+                                            foreach ($mimeTypes as $mimeType) {
+                                                if (str_contains($mimeType, '%')) {
+                                                    $q->orWhere('mime_type', 'like', $mimeType);
+                                                } else {
+                                                    $q->orWhere('mime_type', $mimeType);
+                                                }
+                                            }
+                                        });
+                                    }
+
+                                    break;
+                                default:
+                                    if (! is_null($value)) {
+                                        $query->where($key, $value);
+                                    }
+
+                                    break;
+                            }
+                        }
+                    });
+
+                if ($this->isModalPicker) {
+                    $query->orWhereDoesntHave('media');
+                }
+            };
+        });
+
+        return $query;
     }
 }

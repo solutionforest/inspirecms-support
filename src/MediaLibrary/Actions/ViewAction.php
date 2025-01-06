@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\HtmlString;
 use SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset;
 
-class ViewAction extends BaseAction
+class ViewAction extends ItemAction
 {
     public static function getDefaultName(): ?string
     {
@@ -23,11 +23,13 @@ class ViewAction extends BaseAction
 
         $this->modalHeading(fn () => __('inspirecms-support::media-library.actions.view.modal.heading', ['name' => $this->getModelLabel()]));
 
-        $this->successNotificationTitle(__('inspirecms-support::media-library.actions.edit.notifications.saved.title'));
+        $this->successNotificationTitle(__('inspirecms-support::media-library.actions.edit.notification.saved.title'));
 
         $this->authorize('view');
 
         $this->color('gray');
+
+        $this->groupedIcon('heroicon-o-eye');
 
         $this
             ->fillForm(function (?Model $record) {
@@ -67,7 +69,7 @@ class ViewAction extends BaseAction
                             );
                         }
                     })
-                    ->url(fn (MediaAsset | Model $record) => $record->getFirstMedia()->getUrl(), true),
+                    ->url(fn (MediaAsset | Model $record) => $record->getFirstMedia()?->getUrl(), true),
                 Infolists\Components\TextEntry::make('title')->label(__('inspirecms-support::media-library.forms.title.label')),
                 Infolists\Components\Grid::make(2)->statePath('media')->schema([
                     Infolists\Components\TextEntry::make('file_name')->label(__('inspirecms-support::media-library.forms.file_name.label')),

@@ -1,6 +1,6 @@
 <?php
 
-namespace SolutionForest\InspireCms\Support\Forms\Components\Concerns;
+namespace SolutionForest\InspireCms\Support\MediaLibrary\Forms\Components\Concerns;
 
 trait HasMediaFilterTypes
 {

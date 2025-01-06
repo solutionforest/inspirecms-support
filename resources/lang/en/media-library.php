@@ -15,11 +15,18 @@ return [
         'delete' => [
             'label' => 'Delete',
 
-            'notifications' => [
+            'modal' => [
+
+                'heading' => 'Delete :name',
+
+            ],
+
+            'notification' => [
                 'deleted' => [
                     'title' => 'File Deleted',
                 ],
             ],
+            
         ],
         'edit' => [
             'label' => 'Edit',
@@ -30,14 +37,11 @@ return [
 
             ],
 
-            'notifications' => [
+            'notification' => [
                 'saved' => [
                     'title' => 'Saved',
                 ],
             ],
-        ],
-        'open_folder' => [
-            'label' => 'Open Folder',
         ],
         'create_folder' => [
             'label' => 'Create Folder',
@@ -48,7 +52,7 @@ return [
 
             ],
 
-            'notifications' => [
+            'notification' => [
                 'created' => [
                     'title' => 'Folder Created',
                 ],
@@ -56,9 +60,39 @@ return [
         ],
         'upload' => [
             'label' => 'Upload',
+
+            'modal' => [
+
+                'heading' => 'Upload Files',
+
+                'submit' => [
+                    'label' => 'Upload',
+                ],
+            ],
+
+            'notification' => [
+                'uploaded' => [
+                    'title' => 'File Uploaded',
+                ],
+            ],
         ],
         'clear' => [
             'label' => 'Clear',
+        ],
+        'rename' => [
+            'label' => 'Rename',
+
+            'modal' => [
+
+                'heading' => 'Rename :name',
+
+            ],
+
+            'notification' => [
+                'renamed' => [
+                    'title' => 'File Renamed',
+                ],
+            ],
         ],
     ],
     'detail_info' => [

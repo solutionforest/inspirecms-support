@@ -6,6 +6,8 @@ use Filament\Support\Assets\AlpineComponent;
 use Filament\Support\Assets\Css;
 use Filament\Support\Facades\FilamentAsset;
 use Filament\Support\Facades\FilamentIcon;
+use Filament\Support\Facades\FilamentView;
+use Filament\View\PanelsRenderHook;
 use Illuminate\Database\Schema\Blueprint;
 use Livewire\Features\SupportTesting\Testable;
 use Livewire\Livewire;
@@ -57,12 +59,13 @@ class InspireCmsSupportServiceProvider extends PackageServiceProvider
         Livewire::component('inspirecms-support::model-explorer', TreeNodes\ModelExplorerComponent::class);
 
         Livewire::component('inspirecms-support::media-library', MediaLibrary\MediaLibraryComponent::class);
+        Livewire::component('inspirecms-support::media-library.folders', MediaLibrary\FolderBrowserComponent::class);
+        Livewire::component('inspirecms-support::media-library.detail-info', MediaLibrary\MediaDetailComponent::class);
 
         // Asset Registration
         FilamentAsset::register([
             Css::make('tree-node', __DIR__ . '/../resources/dist/tree-node.css'),
             Css::make('media-library', __DIR__ . '/../resources/dist/media-library.css'),
-            AlpineComponent::make('media-library-component', __DIR__ . '/../resources/dist/components/media-library.js')->loadedOnRequest(),
         ], 'solution-forest/inspirecms-support');
 
         // Testing
@@ -72,6 +75,11 @@ class InspireCmsSupportServiceProvider extends PackageServiceProvider
             'inspirecms-support::pdf' => view('inspirecms-support::icons.pdf'),
             'inspirecms-support::excel' => view('inspirecms-support::icons.excel'),
         ]);
+        
+        FilamentView::registerRenderHook(
+            PanelsRenderHook::BODY_END,
+            fn () => view('inspirecms-support::forms.components.media-picker.modal')
+        );
     }
 
     /**

@@ -33,7 +33,7 @@
                 @endif
 
                 <span
-                    wire:click="changeParent('{{ $key }}')"
+                    wire:click="openFolder('{{ $key }}')"
                     class="{{ $itemLabelClasses }} cursor-pointer transition duration-75 hover:text-gray-700 dark:hover:text-gray-200"
                 >
                     {{ $label }}

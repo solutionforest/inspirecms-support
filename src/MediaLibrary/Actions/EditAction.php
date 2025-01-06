@@ -12,7 +12,7 @@ use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use SolutionForest\InspireCms\Support\Facades\MediaLibraryRegistry;
 use SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset;
 
-class EditAction extends BaseAction
+class EditAction extends ItemAction
 {
     public static function getDefaultName(): ?string
     {
@@ -27,9 +27,11 @@ class EditAction extends BaseAction
 
         $this->modalHeading(fn () => __('inspirecms-support::media-library.actions.edit.modal.heading', ['name' => $this->getModelLabel()]));
 
-        $this->successNotificationTitle(__('inspirecms-support::media-library.actions.edit.notifications.saved.title'));
+        $this->successNotificationTitle(__('inspirecms-support::media-library.actions.edit.notification.saved.title'));
 
         $this->authorize('update');
+
+        $this->groupedIcon('heroicon-o-pencil');
 
         $this
             ->fillForm(function (?Model $record) {

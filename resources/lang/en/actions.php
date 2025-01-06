@@ -12,6 +12,18 @@ return [
 
         'label' => 'Select',
 
+        'modal' => [
+
+            'heading' => 'Select',
+
+        ],
+
+    ],
+
+    'cancel' => [
+
+        'label' => 'Cancel',
+
     ],
 
 ];

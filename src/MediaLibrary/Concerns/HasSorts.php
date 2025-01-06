@@ -5,16 +5,29 @@ namespace SolutionForest\InspireCms\Support\MediaLibrary\Concerns;
 use Filament\Forms;
 use Filament\Forms\Form;
 
+/**
+ * @property Form $sortForm
+ */
 trait HasSorts
 {
     public array $sort = [];
 
-    protected function fillsortForm(): void
+    public function mountHasSorts(): void
     {
-        $this->sortForm->fill($this->sort ?? []);
+        $this->fillSortForm();
     }
 
-    protected function getsortFormStatePath(): string
+    protected function fillSortForm(array $data = []): void
+    {
+        $this->sortForm->fill($this->mutateSortData($data));
+    }
+
+    protected function mutateSortData(array $data): array
+    {
+        return $data;
+    }
+
+    protected function getSortFormStatePath(): string
     {
         return 'sort';
     }
@@ -30,8 +43,7 @@ trait HasSorts
                     ->placeholder(__('inspirecms-support::media-library.sort.type.placeholder'))
                     ->options(__('inspirecms-support::media-library.sort.type.options'))
                     ->selectablePlaceholder(false)
-                    ->live(true)
-                    ->default('default')
+                    ->live()
                     ->hidden(fn ($component) => $this->isSortColumnInvisible($component->getName()))
                     ->dehydratedWhenHidden(),
 
@@ -40,8 +52,7 @@ trait HasSorts
                     ->placeholder(__('inspirecms-support::media-library.sort.direction.placeholder'))
                     ->options(__('inspirecms-support::media-library.sort.direction.options'))
                     ->selectablePlaceholder(false)
-                    ->live(true)
-                    ->default('asc')
+                    ->live()
                     ->hidden(fn ($component) => $this->isSortColumnInvisible($component->getName()))
                     ->dehydratedWhenHidden(),
             ])
@@ -55,5 +66,44 @@ trait HasSorts
             fn ($value): bool => (is_array($value) && ! empty($value)) ||
                 (is_string($value) && strlen($value) > 0)
         );
+    }
+
+    /**
+     * Apply sorting to the given query.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query The query builder instance.
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    protected function applySortCriteria($query)
+    {
+        $sort = $this->ensureSort();
+
+        if (empty($sort)) {
+            return $query;
+        }
+        $sortDirection = $sort['direction'] ?? 'asc';
+
+        switch ($sort['type'] ?? null) {
+            case 'name':
+                $query->withAggregate('media', 'name')->orderBy('media_name', $sortDirection);
+
+                break;
+            case 'created_at':
+                $query->withAggregate('media', 'created_at')->orderBy('media_created_at', $sortDirection);
+
+                break;
+            case 'updated_at':
+                $query->withAggregate('media', 'updated_at')->orderBy('media_updated_at', $sortDirection);
+
+                break;
+            case 'size':
+                $query->withSum('media', 'size')->orderBy('media_sum_size', $sortDirection);
+            default:
+                $query->orderBy('id', $sortDirection);
+
+                break;
+        }
+
+        return $query;
     }
 }

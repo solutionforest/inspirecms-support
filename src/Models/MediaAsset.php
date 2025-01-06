@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Storage;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
 use SolutionForest\InspireCms\Support\Facades\MediaLibraryRegistry;
+use SolutionForest\InspireCms\Support\Helpers\KeyHelper;
 use SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset as MediaAssetContract;
 use Spatie\Image\Enums\Fit;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -40,6 +41,14 @@ class MediaAsset extends BaseModel implements MediaAssetContract
     protected $casts = [
         'is_folder' => 'boolean',
     ];
+
+    /**
+     * @return int|string|null
+     */
+    public function getRootLevelParentId()
+    {
+        return KeyHelper::generateMinUuid();
+    }
 
     /** {@inheritDoc} */
     public function registerMediaConversions($media = null): void
@@ -79,7 +88,7 @@ class MediaAsset extends BaseModel implements MediaAssetContract
             return $this->getThumbnailUrl();
         }
         if ($this->isFolder()) {
-            return 'heroicon-o-folder';
+            return 'heroicon-s-folder';
         }
 
         $media = $this->getFirstMedia();

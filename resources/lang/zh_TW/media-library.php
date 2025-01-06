@@ -15,7 +15,7 @@ return [
         'delete' => [
             'label' => '刪除',
 
-            'notifications' => [
+            'notification' => [
                 'deleted' => [
                     'title' => '檔案已刪除',
                 ],
@@ -30,7 +30,7 @@ return [
 
             ],
 
-            'notifications' => [
+            'notification' => [
                 'saved' => [
                     'title' => '已保存',
                 ],
@@ -48,7 +48,7 @@ return [
 
             ],
 
-            'notifications' => [
+            'notification' => [
                 'created' => [
                     'title' => '資料夾已創建',
                 ],
@@ -56,6 +56,18 @@ return [
         ],
         'upload' => [
             'label' => '上傳',
+
+            'modal' => [
+
+                'heading' => '上傳檔案',
+
+            ],
+
+            'notification' => [
+                'uploaded' => [
+                    'title' => '檔案已上傳',
+                ],
+            ],
         ],
         'clear' => [
             'label' => '清除',
