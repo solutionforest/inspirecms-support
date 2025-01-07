@@ -4,26 +4,31 @@
 @endphp
 
 <div class="media-library__details">
-    <div class="header">
-        <div class="heading">
-            <span class="title">{{ $this->getTitleFor($selectedMedia) }}</span>
+    @if ($mediaItemForActions->isNotEmpty())
+        <div class="header">
+            <div class="heading">
+                <span class="title">{{ $mediaItemForActions->count() }} items selected</span>
+            </div>
+            <div class="actions">
+                <x-inspirecms-support::media-library.actions
+                    :actions="$actions" 
+                    :media-item="$mediaItemForActions"
+                />
+                <x-filament::icon-button
+                    icon="heroicon-o-x-mark"
+                    title="Deselected all"
+                    color="gray"
+                    wire:click="$parent.resetSelectedMedia"
+                />
+            </div>
         </div>
-        <div class="actions">
-            <x-inspirecms-support::media-library.actions
-                :actions="$actions" 
-                :media-item="$mediaItemForActions"
-            />
-            <x-filament::icon-button
-                icon="heroicon-o-x-mark"
-                title="Deselected all"
-                color="gray"
-                wire:click="$parent.resetSelectedMedia"
-            />
-        </div>
-    </div>
+    @endif
 
-    @if ($selectedMedia != null)
+    @if ($selectedMedia != null && $mediaItemForActions->count() == 1)
         <div class="main">
+            <div class="title-ctn">
+                <span class="title">{{ $selectedMedia->title }}</span>
+            </div>
             <div class="thumbnail-ctn">
                 @if($selectedMedia->isImage())
                     <img loading="lazy" src="{{ $selectedMedia->getThumbnailUrl() }}" />

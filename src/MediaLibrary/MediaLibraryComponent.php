@@ -25,6 +25,8 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
 
     public array $selectedMediaId = [];
 
+    public ?string $toggleMediaId = null;
+
     public ?string $parentKey = null;
 
     public null | int | string $page = null;
@@ -150,6 +152,13 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
         $this->changeParent($mediaId);
     }
 
+    public function toggleMedia($mediaId)
+    {
+        $this->resetSelectedMedia();
+        $this->toggleMediaId = $mediaId;
+        $this->selectedMediaId = [$mediaId];
+    }
+
     public function isUnderRoot(): bool
     {
         return $this->isUnderFolder(static::getRootLevelParentId());
@@ -162,13 +171,18 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
 
     public function hasAnyMediaSelected(): bool
     {
-        return count($this->selectedMediaId) > 0;
+        return count($this->selectedMediaId) > 0 || $this->toggleMediaId != null;
     }
 
     public function resetSelectedMedia(): void
     {
         $this->selectedMediaId = [];
         $this->cachedSelectedMedia = null;
+    }
+
+    public function resetToggleMediaId(): void
+    {
+        $this->toggleMediaId = null;
     }
 
     public function clearCache()
@@ -179,6 +193,7 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
     public function resetAll()
     {
         $this->resetSelectedMedia();
+        $this->resetToggleMediaId();
         $this->clearCache();
     }
     // region Actions
@@ -379,6 +394,7 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
         if (! $this->isModalPicker) {
             $this->resetSelectedMedia();
         }
+        $this->resetToggleMediaId();
         $this->resetPage(static::getPageName());
 
         if (blank($key) || $key == $this->parentKey) {

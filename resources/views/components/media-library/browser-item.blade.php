@@ -26,7 +26,7 @@
         </div>
     </div>
 
-    <label for="media-item-{{ $mediaItem->getKey() }}" class="main">
+    <div class="main" wire:click="toggleMedia('{{ $mediaItem->getKey() }}')">
         <div class="thumbnail-ctn">
             @if ($mediaItem->isImage())
                 <img loading="lazy" src="{{ $mediaItem->getThumbnailUrl() }}" alt="{{ $mediaItem->getKey() }}" />
@@ -42,5 +42,5 @@
                 <span class="description">{{ $mediaItem->children_count }} items</span>
             @endif
         </div>
-    </label>
+    </div>
 </div>

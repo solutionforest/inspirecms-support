@@ -19,6 +19,9 @@ class MediaDetailComponent extends Component implements Contracts\HasItemActions
     #[Reactive]
     public array $selectedMediaId = [];
 
+    #[Reactive]
+    public ?string $toggleMediaId = null;
+
     public function placeholder()
     {
         return view('inspirecms-support::components.media-library.loading-section', [
@@ -30,7 +33,7 @@ class MediaDetailComponent extends Component implements Contracts\HasItemActions
     public function render()
     {
         return view('inspirecms-support::livewire.components.media-library.media-detail', [
-            'selectedMedia' => $this->getFirstSelectedMedia(),
+            'selectedMedia' => $this->toggleMediaId != null ? $this->resolveAssetRecord($this->toggleMediaId) : null,
         ]);
     }
 
@@ -41,11 +44,6 @@ class MediaDetailComponent extends Component implements Contracts\HasItemActions
         }
 
         return $this->resolveAssetRecord(Arr::first($this->selectedMediaId));
-    }
-
-    public function getTitleFor($asset)
-    {
-        return $asset?->title ?? 'Total ' . count($this->selectedMediaId) . ' items selected';
     }
 
     /**

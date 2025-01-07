@@ -79,7 +79,7 @@
 
         @if ($this->hasAnyMediaSelected())
             <div class="ctn detail-info-ctn">
-                <livewire:inspirecms-support::media-library.detail-info :$selectedMediaId />
+                <livewire:inspirecms-support::media-library.detail-info :$selectedMediaId :$toggleMediaId />
             </div>
         @endif
     </div>
