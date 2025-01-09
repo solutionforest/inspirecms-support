@@ -194,6 +194,12 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
         $this->toggleMediaId = null;
     }
 
+    public function deselectAllMedia(): void
+    {
+        $this->resetSelectedMedia();
+        $this->resetToggleMediaId();
+    }
+
     public function clearCache()
     {
         unset($this->assets);

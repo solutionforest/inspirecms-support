@@ -18,7 +18,7 @@
                     icon="heroicon-o-x-mark"
                     title="Deselected all"
                     color="gray"
-                    wire:click="$parent.resetSelectedMedia"
+                    wire:click="$parent.deselectAllMedia"
                 />
             </div>
         </div>
