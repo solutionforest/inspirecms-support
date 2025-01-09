@@ -41,7 +41,7 @@ class MediaDetailComponent extends Component implements Contracts\HasItemActions
     }
 
     /**
-     * @param null | (Model & MediaAsset) $asset
+     * @param  null | (Model & MediaAsset)  $asset
      * @return bool
      */
     public function canViewInformation($asset)
@@ -50,7 +50,7 @@ class MediaDetailComponent extends Component implements Contracts\HasItemActions
 
             return $asset != null;
         }
-        
+
         return count($this->selectedMediaId) == 1 && $asset != null;
     }
 
