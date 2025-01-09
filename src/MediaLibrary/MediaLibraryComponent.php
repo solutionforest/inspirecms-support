@@ -155,11 +155,15 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
         $this->changeParent($mediaId);
     }
 
-    public function toggleMedia($mediaId)
+    public function toggleMedia($mediaId, $isFolder)
     {
-        $this->resetSelectedMedia();
         $this->toggleMediaId = $mediaId;
-        $this->selectedMediaId = [$mediaId];
+        if ($this->isMediaPickerModal() && $isFolder) {
+            //
+        } else {
+            $this->resetSelectedMedia();
+            $this->selectedMediaId = [$mediaId];
+        }
     }
 
     public function isUnderRoot(): bool
@@ -198,6 +202,11 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
         $this->resetSelectedMedia();
         $this->resetToggleMediaId();
         $this->clearCache();
+    }
+
+    public function isMediaPickerModal(): bool
+    {
+        return $this->isModalPicker;
     }
     // region Actions
 

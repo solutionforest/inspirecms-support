@@ -1,4 +1,4 @@
-@props(['mediaItem', 'actions' => [], 'disabled' => false])
+@props(['mediaItem', 'actions' => [], 'selectable' => true])
 @php
     $isFolder = $mediaItem->isFolder();
 @endphp
@@ -16,7 +16,7 @@
             id="media-item-{{ $mediaItem->getKey() }}"
             value=@js($mediaItem->getKey())
             type="checkbox" 
-            @disabled($disabled)
+            @disabled(!$selectable)
         >
         <div class="actions">
             <x-inspirecms-support::media-library.actions
@@ -26,7 +26,7 @@
         </div>
     </div>
 
-    <div class="main" wire:click="toggleMedia('{{ $mediaItem->getKey() }}')">
+    <div class="main" wire:click="toggleMedia('{{ $mediaItem->getKey() }}', '{{ $isFolder }}')">
         <div class="thumbnail-ctn">
             @if ($mediaItem->isImage())
                 <img loading="lazy" src="{{ $mediaItem->getThumbnailUrl() }}" alt="{{ $mediaItem->getKey() }}" />
