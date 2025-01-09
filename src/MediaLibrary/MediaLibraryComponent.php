@@ -210,6 +210,8 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
                 ->successNotificationTitle(__('inspirecms-support::media-library.actions.create_folder.notification.created.title'))
                 ->authorize('create')
                 ->icon('heroicon-o-folder-plus')
+                ->modalIcon('heroicon-o-folder-plus')
+                ->modalWidth('sm')
                 ->color(\Filament\Support\Colors\Color::Neutral)
                 ->outlined()
                 ->form([
