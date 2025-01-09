@@ -51,12 +51,12 @@
     > .browser-ctn {
         @apply flex-1 grow;
         .filter-ctn {
-            @apply flex gap-x-4 items-center justify-between;
+            @apply flex flex-col gap-4 md:flex-row md:items-center md:justify-between;
         }
         .browser-items-ctn {
             @apply flex flex-col gap-y-4;
         }
-        > .ctn:not(:last-child) {
+        > .ctn {
             @apply pb-4;
         }
     }

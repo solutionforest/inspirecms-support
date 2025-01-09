@@ -36,7 +36,7 @@ trait HasFilters
     public function filterForm(Form $form): Form
     {
         return $form
-            ->columns(2)
+            ->columns(['default' => 1, 'lg' => 2])
             ->extraAttributes(['class' => 'gap-y-2 lg:gap-x-2'])
             ->schema([
                 Forms\Components\TextInput::make('title')

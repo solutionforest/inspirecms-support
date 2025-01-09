@@ -69,8 +69,8 @@
                         <x-inspirecms-support::media-library.loading-section :count="$loadingIndicator['count']" :columns="$loadingIndicator['columns']" />
                     </div>
                     <div class="browser-items-grid" wire:loading.remove wire:target="{{ $loadingIndicatorTargets }}">
-                    @foreach ($media ?? [] as $item)
-                    <x-inspirecms-support::media-library.browser-item :media-item="$item" :actions="$this->getCachedMediaItemActions()" />
+                        @foreach ($media ?? [] as $item)
+                            <x-inspirecms-support::media-library.browser-item :media-item="$item" :actions="$this->getCachedMediaItemActions()" />
                         @endforeach
                     </div>
                 </div>
