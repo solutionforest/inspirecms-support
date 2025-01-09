@@ -6,15 +6,12 @@ use SolutionForest\InspireCms\Support\Helpers\TranslatableHelper;
 
 trait Translatable
 {
-    /**
-     * @var ?string
-     */
-    protected $locale;
+    use HasFallbackLocale;
 
     /**
      * @var ?string
      */
-    protected $fallbackLocale;
+    protected $locale;
 
     protected array $availableLocales = [];
 
@@ -35,25 +32,6 @@ trait Translatable
     public function getLocale()
     {
         return $this->locale;
-    }
-
-    /**
-     * @param string
-     * @return self
-     */
-    public function setFallbackLocale(string $locale)
-    {
-        $this->fallbackLocale = $locale;
-
-        return $this;
-    }
-
-    /**
-     * @return ?string
-     */
-    public function getFallbackLocale()
-    {
-        return $this->fallbackLocale;
     }
 
     public function setAvailableLocales(array $locales)
