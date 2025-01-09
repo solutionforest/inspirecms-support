@@ -24,17 +24,17 @@
         </div>
     @endif
 
-    @if ($selectedMedia != null && $mediaItemForActions->count() == 1)
+    @if ($this->canViewInformation($toggleMedia))
         <div class="main">
             <div class="title-ctn">
-                <span class="title">{{ $selectedMedia->title }}</span>
+                <span class="title">{{ $toggleMedia->title }}</span>
             </div>
             <div class="thumbnail-ctn">
-                @if($selectedMedia->isImage())
-                    <img loading="lazy" src="{{ $selectedMedia->getThumbnailUrl() }}" />
+                @if($toggleMedia->isImage())
+                    <img loading="lazy" src="{{ $toggleMedia->getThumbnailUrl() }}" />
                 @else
                     <x-inspirecms-support::media-library.thumbnail-icon 
-                        :icon="$selectedMedia->getThumbnail()"
+                        :icon="$toggleMedia->getThumbnail()"
                     />
                 @endif
             </div>
@@ -44,7 +44,7 @@
                     <span class="font-bold">Information</span>
                 </div>
                 <div class="information-content-ctn">
-                    @foreach ($this->getInformationFor($selectedMedia) ?? [] as $item)
+                    @foreach ($this->getInformationFor($toggleMedia) ?? [] as $item)
                         <div class="information-content__row">
                             <span class="information-content__row__label">{{ $item['label'] ?? null }}</span>
                             <span class="information-content__row__value">{{ $item['value'] ?? null }}</span>

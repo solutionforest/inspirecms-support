@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Support;
 
+use Filament\Support\Assets\AlpineComponent;
 use Filament\Support\Assets\Css;
 use Filament\Support\Facades\FilamentAsset;
 use Filament\Support\Facades\FilamentIcon;
@@ -65,6 +66,7 @@ class InspireCmsSupportServiceProvider extends PackageServiceProvider
         FilamentAsset::register([
             Css::make('tree-node', __DIR__ . '/../resources/dist/components/tree-node.css'),
             Css::make('media-library', __DIR__ . '/../resources/dist/components/media-library.css'),
+            AlpineComponent::make('media-draggable-item-component', __DIR__ . '/../resources/dist/components/media-draggable-item.js')->loadedOnRequest(),
         ], 'solution-forest/inspirecms-support');
 
         // Testing

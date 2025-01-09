@@ -16,7 +16,7 @@
 @endphp
 
 <div class="media-library"
-    @if ($this->isModalPicker)
+    @if ($this->isMediaPickerModal())
         x-data="{
             selectedMediaId: $wire.entangle('selectedMediaId').live,
         }" 
@@ -59,7 +59,12 @@
                     </div>
                     <div class="browser-items-grid" wire:loading.remove wire:target="{{ $loadingIndicatorTargets }}">
                         @foreach ($folders ?? [] as $item)
-                            <x-inspirecms-support::media-library.browser-item :media-item="$item" :actions="$this->getCachedMediaItemActions()" :disabled="$isModalPicker" />
+                            <x-inspirecms-support::media-library.browser-item 
+                                :media-item="$item" 
+                                :actions="$this->getCachedMediaItemActions()" 
+                                :selectable="!$this->isMediaPickerModal()"
+                                :is-draggable="$this->canDragAndDrop()"
+                            />
                         @endforeach
                     </div>
                 </div>
@@ -69,8 +74,12 @@
                         <x-inspirecms-support::media-library.loading-section :count="$loadingIndicator['count']" :columns="$loadingIndicator['columns']" />
                     </div>
                     <div class="browser-items-grid" wire:loading.remove wire:target="{{ $loadingIndicatorTargets }}">
-                    @foreach ($media ?? [] as $item)
-                    <x-inspirecms-support::media-library.browser-item :media-item="$item" :actions="$this->getCachedMediaItemActions()" />
+                        @foreach ($media ?? [] as $item)
+                            <x-inspirecms-support::media-library.browser-item 
+                                :media-item="$item" 
+                                :actions="$this->getCachedMediaItemActions()" 
+                                :is-draggable="$this->canDragAndDrop()"
+                            />
                         @endforeach
                     </div>
                 </div>
@@ -79,7 +88,7 @@
 
         @if ($this->hasAnyMediaSelected())
             <div class="ctn detail-info-ctn">
-                <livewire:inspirecms-support::media-library.detail-info :$selectedMediaId :$toggleMediaId />
+                <livewire:inspirecms-support::media-library.detail-info :$selectedMediaId :$toggleMediaId :$isModalPicker />
             </div>
         @endif
     </div>

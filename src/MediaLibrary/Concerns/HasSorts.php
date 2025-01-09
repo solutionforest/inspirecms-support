@@ -35,8 +35,8 @@ trait HasSorts
     public function sortForm(Form $form): Form
     {
         return $form
+            ->columns(['default' => 2])
             ->extraAttributes(['class' => 'gap-y-2 lg:gap-x-2'])
-            ->columns(2)
             ->schema([
                 Forms\Components\Select::make('type')
                     ->hiddenLabel()
