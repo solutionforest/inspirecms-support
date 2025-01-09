@@ -219,8 +219,8 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
     /**
      * Move a media item from one location to another.
      *
-     * @param string $targetId The ID of the media item to be moved.
-     * @param string $toId The ID of the target location where the media item will be moved to.
+     * @param  string  $targetId  The ID of the media item to be moved.
+     * @param  string  $toId  The ID of the target location where the media item will be moved to.
      * @return void
      */
     public function moveMediaItem($targetId, $toId)
@@ -247,7 +247,7 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
             }
 
         } catch (\Throwable $th) {
-            //Skip
+            // Skip
         }
     }
 
