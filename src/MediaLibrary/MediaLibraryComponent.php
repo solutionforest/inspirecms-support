@@ -330,7 +330,7 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
      *
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator<int, Model&MediaAsset>
      */
-    #[Computed(cache: true, key: 'media-library-assets')]
+    #[Computed(persist: true, seconds: 120)]
     public function assets()
     {
         if ($this->isModalPicker && ! $this->mountedMediaPickerModal) {
