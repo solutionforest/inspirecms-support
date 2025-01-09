@@ -108,6 +108,9 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
         $checkKey = Str::before($key, '.');
         if (in_array($checkKey, ['filter', 'sort'])) {
             $this->clearCache();
+            if (! $this->isModalPicker) {
+                $this->resetSelectedMedia();
+            }
         }
     }
 
