@@ -208,9 +208,16 @@
                     @apply font-bold;
                 }
             }
-            .information-content-ctn {
-                > .row {
-                    @apply grid grid-cols-3 gap-2 pb-2 ;
+        }
+        .information-content-ctn {
+            .information-content__row {
+                @apply grid grid-cols-3 gap-2 pb-2 ;
+                
+                .information-content__row__label {
+                    @apply col-span-1 text-sm text-gray-500;
+                }
+                .information-content__row__value {
+                    @apply col-span-2 font-semibold truncate;
                 }
             }
         }

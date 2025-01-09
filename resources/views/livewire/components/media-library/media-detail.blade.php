@@ -45,9 +45,9 @@
                 </div>
                 <div class="information-content-ctn">
                     @foreach ($this->getInformationFor($selectedMedia) ?? [] as $item)
-                        <div class="row">
-                            <span class="text-sm text-gray-500">{{ $item['label'] ?? null }}</span>
-                            <span class="col-span-2 font-semibold truncate">{{ $item['value'] ?? null }}</span>
+                        <div class="information-content__row">
+                            <span class="information-content__row__label">{{ $item['label'] ?? null }}</span>
+                            <span class="information-content__row__value">{{ $item['value'] ?? null }}</span>
                         </div>
                     @endforeach
                 </div>
