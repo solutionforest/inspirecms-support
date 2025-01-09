@@ -63,6 +63,7 @@
                                 :media-item="$item" 
                                 :actions="$this->getCachedMediaItemActions()" 
                                 :selectable="!$this->isMediaPickerModal()"
+                                :is-draggable="$this->canDragAndDrop()"
                             />
                         @endforeach
                     </div>
@@ -74,7 +75,11 @@
                     </div>
                     <div class="browser-items-grid" wire:loading.remove wire:target="{{ $loadingIndicatorTargets }}">
                         @foreach ($media ?? [] as $item)
-                            <x-inspirecms-support::media-library.browser-item :media-item="$item" :actions="$this->getCachedMediaItemActions()" />
+                            <x-inspirecms-support::media-library.browser-item 
+                                :media-item="$item" 
+                                :actions="$this->getCachedMediaItemActions()" 
+                                :is-draggable="$this->canDragAndDrop()"
+                            />
                         @endforeach
                     </div>
                 </div>

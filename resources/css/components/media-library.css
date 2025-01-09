@@ -92,8 +92,11 @@
 
     .browser-item, .folder-item {
         @apply hover:ring-1 hover:ring-gray-300 rounded-lg;
+        &:is(.dark *) {
+            @apply hover:ring-white/50;
+        }
     }
-    .browser-item .title, .folder-item .main {
+    .browser-item .title-ctn, .browser-item img, .folder-item .main, .browser-items-grid-ctn {
         @apply select-none;
     }
 
@@ -235,14 +238,37 @@
     @apply gap-4;
 
     .media-library__loading-section {
-        @apply p-4 rounded-lg ring-1 ring-gray-300/50 dark:ring-white/10;
+        @apply p-4 rounded-lg ring-1 ring-gray-300/50;
+        &:is(.dark *) {
+            @apply ring-white/10;
+        }
 
         .bar-ctn {
             @apply animate-pulse grid grid-cols-1 gap-4;
 
             .bar  {
-                @apply h-2 rounded bg-gray-300 dark:bg-white/10;
+                @apply h-2 rounded bg-gray-300;
+                &:is(.dark *) {
+                    @apply bg-white/10;
+                }
             }
         }
+    }
+}
+
+.browser-item .icon-folder-active {
+    display: none;
+}
+.drag-and-drop__item--drag-over {
+    @apply bg-gray-200/50 !important;
+    &:is(.dark *) {
+        @apply bg-white/5 !important;
+    }
+
+    .icon-folder {
+        display: none !important;
+    }
+    .icon-folder-active {
+        display: block !important;
     }
 }

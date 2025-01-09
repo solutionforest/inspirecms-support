@@ -5,6 +5,7 @@ namespace SolutionForest\InspireCms\Support\MediaLibrary;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Forms;
+use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
@@ -47,6 +48,7 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
 
     protected $listeners = [
         'openFolder',
+        'moveMediaItem',
         'resetMediaLibrary' => 'resetAll',
         'clearMediaLibraryCache' => 'clearCache',
         'media-picker-modal:init' => 'initializeMediaLibraryPickerModal',
@@ -54,7 +56,7 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
 
     protected function queryString()
     {
-        if ($this->isModalPicker) {
+        if ($this->isMediaPickerModal()) {
             return [];
         }
 
@@ -108,7 +110,7 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
         $checkKey = Str::before($key, '.');
         if (in_array($checkKey, ['filter', 'sort'])) {
             $this->clearCache();
-            if (! $this->isModalPicker) {
+            if (! $this->isMediaPickerModal()) {
                 $this->resetSelectedMedia();
             }
         }
@@ -208,6 +210,47 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
     {
         return $this->isModalPicker;
     }
+
+    public function canDragAndDrop(): bool
+    {
+        return ! $this->isMediaPickerModal();
+    }
+
+    /**
+     * Move a media item from one location to another.
+     *
+     * @param string $targetId The ID of the media item to be moved.
+     * @param string $toId The ID of the target location where the media item will be moved to.
+     * @return void
+     */
+    public function moveMediaItem($targetId, $toId)
+    {
+        try {
+            $toAsset = $this->resolveAssetRecord($toId);
+            if (is_null($toAsset) || ! $toAsset->isFolder()) {
+                return;
+            }
+            $targetAsset = $this->resolveAssetRecord($targetId);
+            if (is_null($targetAsset)) {
+                return;
+            }
+
+            $success = $targetAsset->setParentNode($toAsset);
+
+            if ($success == true) {
+                // todo: add translations
+                Notification::make()
+                    ->title('Media Item Moved')
+                    ->success()
+                    ->send();
+                $this->resetAll();
+            }
+
+        } catch (\Throwable $th) {
+            //Skip
+        }
+    }
+
     // region Actions
 
     protected function getHeaderActions(): array
@@ -347,7 +390,7 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
     #[Computed(persist: true, seconds: 120)]
     public function assets()
     {
-        if ($this->isModalPicker && ! $this->mountedMediaPickerModal) {
+        if ($this->isMediaPickerModal() && ! $this->mountedMediaPickerModal) {
             return new \Illuminate\Pagination\LengthAwarePaginator(
                 items: collect(),
                 total: 0,
@@ -405,7 +448,7 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
     protected function changeParent($key)
     {
         $this->clearCache();
-        if (! $this->isModalPicker) {
+        if (! $this->isMediaPickerModal()) {
             $this->resetSelectedMedia();
         }
         $this->resetToggleMediaId();

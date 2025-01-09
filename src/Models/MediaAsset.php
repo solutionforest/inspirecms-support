@@ -82,6 +82,15 @@ class MediaAsset extends BaseModel implements MediaAssetContract
         return $this->getUrl('preview');
     }
 
+    public function getActiveThumbnail()
+    {
+        if ($this->isFolder()) {
+            return 'heroicon-s-folder-open';
+        }
+
+        return $this->getThumbnail();
+    }
+
     public function getThumbnail()
     {
         if ($this->isImage()) {

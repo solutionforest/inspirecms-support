@@ -1,9 +1,26 @@
-@props(['mediaItem', 'actions' => [], 'selectable' => true])
+@props(['mediaItem', 'actions' => [], 'selectable' => true, 'isDraggable' => true])
 @php
     $isFolder = $mediaItem->isFolder();
 @endphp
     
 <div 
+    @if ($isDraggable)
+        ax-load
+        ax-load-src="{{ \Filament\Support\Facades\FilamentAsset::getAlpineComponentSrc('media-draggable-item-component', 'solution-forest/inspirecms-support') }}"
+        x-ignore
+        x-data="mediaDraggableItemComponent()"
+        draggable="true"
+        data-draggable-id=@js($mediaItem->getKey())
+        data-draggable-type="{{ ($isFolder ? 'folder' : 'media') }}"
+        x-bind:class="{
+            'drag-and-drop__item--dragging': dragging
+        }"
+        x-on:dragstart.self="onDragStart($event)"
+        x-on:dragend="onDragEnd($event)"
+        x-on:dragover.prevent="onDragOver($event)"
+        x-on:dragleave.prevent="onDragLeave($event)"
+        x-on:drop.prevent="onDrop($event)"
+    @endif
     {{ $attributes
         ->class([
             'browser-item',
@@ -31,9 +48,20 @@
             @if ($mediaItem->isImage())
                 <img loading="lazy" src="{{ $mediaItem->getThumbnailUrl() }}" alt="{{ $mediaItem->getKey() }}" />
             @else
-                <x-inspirecms-support::media-library.thumbnail-icon 
-                    :icon="$mediaItem->getThumbnail()" 
-                />
+                @if ($isFolder)
+                    <x-inspirecms-support::media-library.thumbnail-icon 
+                        :icon="$mediaItem->getThumbnail()" 
+                        class="icon-folder"
+                    />
+                    <x-inspirecms-support::media-library.thumbnail-icon 
+                        :icon="$mediaItem->getActiveThumbnail()" 
+                        class="icon-folder-active"
+                    />
+                @else
+                    <x-inspirecms-support::media-library.thumbnail-icon 
+                        :icon="$mediaItem->getThumbnail()" 
+                    />
+                @endif
             @endif
         </div>
         <div class="title-ctn">
