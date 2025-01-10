@@ -13,8 +13,6 @@ trait BelongsToNestableTree
     public static function bootBelongsToNestableTree()
     {
         static::observe(new BelongsToNestableTreeObserver);
-
-        static::addGlobalScope(new NestableTreeDetailScope);
     }
 
     public function nestableTree()
