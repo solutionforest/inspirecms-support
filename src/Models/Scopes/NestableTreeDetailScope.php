@@ -11,19 +11,18 @@ class NestableTreeDetailScope implements Scope
     {
         $nestableTree = $model->nestableTree()->getRelated();
 
-        $subQ = $nestableTree::query()->whereColumn('nestable_type', $model->getMorphClass());
+        $subQ = $nestableTree::query()
+            ->whereColumn('nestable_tree_type', $model->getMorphClass())
+            ->select([
+                ($nestableTree->determineOrderColumnName() ?? 'order') . ' as nestable_tree_order',
+                ($nestableTree->getParentKeyName() ?? 'parent_id') . ' as nestable_tree_parent_id',
+                ($nestableTree->getKeyName() ?? 'id') . ' as nestable_tree_id',
+                'nestable_type as nestable_tree_type',
+                'nestable_id as nestable_tree_nestable_id',
+            ]);
 
         $q = $builder->getQuery();
 
-        $q->leftJoinSub($subQ, 'nestable_tree', $model->getQualifiedKeyName(), '=', 'nestable_tree.nestable_id');
-
-        if (is_null($q->columns) || empty($q->columns)) {
-            $q->addSelect($model->qualifyColumn('*'));
-        }
-        $q->addSelect([
-            'nestable_tree.' . ($nestableTree->determineOrderColumnName() ?? 'order') . ' as nestable_tree_order',
-            'nestable_tree.' . ($nestableTree->getParentKeyName() ?? 'parent_id') . ' as nestable_tree_parent_id',
-            'nestable_tree.' . ($nestableTree->getKeyName() ?? 'id') . ' as nestable_tree_id',
-        ]);
+        $q->leftJoinSub($subQ, 'nestable_tree', $model->getQualifiedKeyName(), '=', 'nestable_tree_nestable_id');
     }
 }
