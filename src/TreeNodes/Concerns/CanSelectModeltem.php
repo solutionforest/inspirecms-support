@@ -142,10 +142,7 @@ trait CanSelectModeltem
     }
 
     /**
-     * @param Collection<Model> $records
-     * @param string|int $parentKey
-     * @param int $depth
-     * @return array
+     * @param  Collection<Model>  $records
      */
     protected function mutuateModelExplorerNodes($records, string | int $parentKey, int $depth): array
     {

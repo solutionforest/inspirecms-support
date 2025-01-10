@@ -133,7 +133,6 @@ trait HasModelItems
     }
 
     /**
-     * @param string|int|null $parentKey
      * @return Collection<Model>
      */
     public function getRecordsFrom(string | int | null $parentKey)
