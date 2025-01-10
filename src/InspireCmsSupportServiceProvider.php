@@ -91,6 +91,7 @@ class InspireCmsSupportServiceProvider extends PackageServiceProvider
         return [
             'create_nestable-trees_table',
             'create_media-assets_table',
+            'create_custom_spatie_media_table',
         ];
     }
 }

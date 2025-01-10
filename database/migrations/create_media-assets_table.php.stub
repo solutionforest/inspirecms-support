@@ -17,7 +17,7 @@ return new class extends BaseMigration
             $table->boolean('is_folder')->default(false);
             $table->string('caption')->nullable();
             $table->text('description')->nullable();
-            $table->author(nullable: true);
+            $table->author(userType: 'uuid', nullable: true);
             $table->timestamps();
 
             $table->index('title');

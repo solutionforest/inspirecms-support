@@ -138,7 +138,7 @@ trait BelongsToNestableTree
         // Ensure the nestable tree is loaded
         $query->withGlobalScope(NestableTreeDetailScope::class, new NestableTreeDetailScope);
 
-        $query->whereColumn('nestable_tree_parent_id', $id);
+        $query->where('nestable_tree_parent_id', $id);
     }
 
     public function scopeSortedByTree(Builder $query, string $direction = 'asc')

@@ -132,7 +132,11 @@ trait HasModelItems
         return $this;
     }
 
-    public function getRecordsFrom(string | int | null $parentKey): Collection
+    /**
+     * @param string|int|null $parentKey
+     * @return Collection<Model>
+     */
+    public function getRecordsFrom(string | int | null $parentKey)
     {
         return $parentKey === null ? $this->getRootItems() : $this->getChildren($parentKey);
     }
@@ -151,6 +155,7 @@ trait HasModelItems
     public function findRecord(string | int $key): ?Model
     {
         $query = $this->getModelExplorerQuery();
+
         if ($this->resolveRecordUsing) {
             return $this->evaluate($this->resolveRecordUsing, [
                 'key' => $key,

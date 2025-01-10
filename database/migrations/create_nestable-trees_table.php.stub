@@ -16,7 +16,7 @@ return new class extends BaseMigration
             $table->unsignedInteger('order')->default(0);
             $table->unsignedInteger('parent_id')->default(0);
 
-            $table->morphs('nestable');
+            $table->uuidMorphs('nestable');
 
             $table->timestamps();
 

@@ -4,13 +4,14 @@ namespace SolutionForest\InspireCms\Support\TreeNodes\Concerns;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 use Livewire\Attributes\On;
 
 trait CanSelectModeltem
 {
     public array $cachedModelExplorerItems = [];
 
-    public string | int $selectedModelItemKey = '';
+    public null | string | int $selectedModelItemKey = null;
 
     public ?Model $selectedModelItem = null;
 
@@ -131,7 +132,7 @@ trait CanSelectModeltem
 
         $records = $modelExplorer->getRecordsFrom($parentKey);
 
-        $items = $modelExplorer->parseAsItems($records, $depth)->toArray();
+        $items = $this->mutuateModelExplorerNodes($records, $parentKey, $depth);
 
         if ($parentKey === $modelExplorer->getRootLevelKey()) {
             $items = $modelExplorer->mutuateRootNodeItems($items);
@@ -140,10 +141,23 @@ trait CanSelectModeltem
         return $items;
     }
 
+    /**
+     * @param Collection<Model> $records
+     * @param string|int $parentKey
+     * @param int $depth
+     * @return array
+     */
+    protected function mutuateModelExplorerNodes($records, string | int $parentKey, int $depth): array
+    {
+        $modelExplorer = $this->getModelExplorer();
+
+        return $modelExplorer->parseAsItems($records, $depth)->toArray();
+    }
+
     protected function setSelectedModelItem(string | int | Model | null $record): void
     {
         if (is_null($record)) {
-            $this->selectedModelItemKey = '';
+            $this->selectedModelItemKey = null;
             $this->selectedModelItem = null;
         } elseif ($record instanceof Model) {
             $this->selectedModelItem = $record;

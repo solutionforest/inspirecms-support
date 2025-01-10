@@ -9,7 +9,7 @@ class BlueprintMarcos
 {
     public function author()
     {
-        return function (string $userType = 'integer', bool $nullable = false) {
+        return function (string $userType = 'uuid', bool $nullable = false) {
             if ($userType === 'integer') {
                 if ($nullable) {
                     $this->nullableMorphs('author');
