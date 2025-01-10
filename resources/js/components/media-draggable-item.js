@@ -4,7 +4,6 @@ export default function mediaDraggableItemComponent() {
 
         onDragStart(event) {
             this.dragging = true;
-            console.log('dragging', this.$el);
             event.dataTransfer.effectAllowed = 'move';
             event.dataTransfer.setData('draggable-id', this.$el.getAttribute('data-draggable-id'));
         },
@@ -34,7 +33,7 @@ export default function mediaDraggableItemComponent() {
                 this.moveItem(targetId, toId);
             }
         },
-        
+
         moveItem(targetId, toId) {
             Livewire.dispatch('moveMediaItem', { targetId: targetId, toId: toId });
         }
