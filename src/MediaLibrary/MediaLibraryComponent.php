@@ -157,14 +157,16 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
         $this->changeParent($mediaId);
     }
 
-    public function toggleMedia($mediaId, $isFolder)
+    public function toggleMedia($mediaId = null, $isFolder = true)
     {
         $this->toggleMediaId = $mediaId;
-        if ($this->isMediaPickerModal() && $isFolder) {
+        if ($this->isMediaPickerModal() && $isFolder == true) {
             //
         } else {
             $this->resetSelectedMedia();
-            $this->selectedMediaId = [$mediaId];
+            if ($mediaId != null) {
+                $this->selectedMediaId = [$mediaId];
+            }
         }
     }
 
