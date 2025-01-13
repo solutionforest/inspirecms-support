@@ -236,6 +236,7 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
         if ($livewireKey != $this->getId()) {
             return;
         }
+
         try {
             $toAsset = $this->resolveAssetRecord($toId);
             if (is_null($toAsset) || ! $toAsset->isFolder()) {
