@@ -1,4 +1,4 @@
-@props(['mediaItem', 'actions' => [], 'selectable' => true, 'isDraggable' => true])
+@props(['livewireKey', 'mediaItem', 'actions' => [], 'selectable' => true, 'isDraggable' => true])
 @php
     $isFolder = $mediaItem->isFolder();
 @endphp
@@ -8,7 +8,9 @@
         ax-load
         ax-load-src="{{ \Filament\Support\Facades\FilamentAsset::getAlpineComponentSrc('media-draggable-item-component', 'solution-forest/inspirecms-support') }}"
         x-ignore
-        x-data="mediaDraggableItemComponent()"
+        x-data="mediaDraggableItemComponent({
+            livewireKey: @js($livewireKey),
+        })"
         draggable="true"
         data-draggable-id=@js($mediaItem->getKey())
         data-draggable-type="{{ ($isFolder ? 'folder' : 'media') }}"

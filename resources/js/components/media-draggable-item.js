@@ -1,5 +1,8 @@
-export default function mediaDraggableItemComponent() {
+export default function mediaDraggableItemComponent({
+    livewireKey
+}) {
     return {
+        livewireKey: livewireKey,
         dragging: false,
 
         onDragStart(event) {
@@ -35,7 +38,7 @@ export default function mediaDraggableItemComponent() {
         },
 
         moveItem(targetId, toId) {
-            Livewire.dispatch('moveMediaItem', { targetId: targetId, toId: toId });
+            Livewire.dispatch('moveMediaItem', { livewireKey: this.livewireKey, targetId: targetId, toId: toId });
         }
     }
 }

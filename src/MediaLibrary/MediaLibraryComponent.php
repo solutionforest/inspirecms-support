@@ -231,8 +231,11 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
      * @param  string  $toId  The ID of the target location where the media item will be moved to.
      * @return void
      */
-    public function moveMediaItem($targetId, $toId)
+    public function moveMediaItem($livewireKey, $targetId, $toId)
     {
+        if ($livewireKey != $this->getId()) {
+            return;
+        }
         try {
             $toAsset = $this->resolveAssetRecord($toId);
             if (is_null($toAsset) || ! $toAsset->isFolder()) {

@@ -13,6 +13,8 @@
         ],
     ];
     $loadingIndicatorTargets = implode(',', ['clearCache', 'updating', 'gotoPage', 'resetPage', 'nextPage', 'setPage']);
+
+    $livewireKey = $this->getId();
 @endphp
 
 <div class="media-library"
@@ -60,6 +62,7 @@
                     <div class="browser-items-grid" wire:loading.remove wire:target="{{ $loadingIndicatorTargets }}">
                         @foreach ($folders ?? [] as $item)
                             <x-inspirecms-support::media-library.browser-item 
+                                :livewire-key="$livewireKey"
                                 :media-item="$item" 
                                 :actions="$this->getCachedMediaItemActions()" 
                                 :selectable="!$this->isMediaPickerModal()"
@@ -76,6 +79,7 @@
                     <div class="browser-items-grid" wire:loading.remove wire:target="{{ $loadingIndicatorTargets }}">
                         @foreach ($media ?? [] as $item)
                             <x-inspirecms-support::media-library.browser-item 
+                                :livewire-key="$livewireKey"
                                 :media-item="$item" 
                                 :actions="$this->getCachedMediaItemActions()" 
                                 :is-draggable="$this->canDragAndDrop()"
