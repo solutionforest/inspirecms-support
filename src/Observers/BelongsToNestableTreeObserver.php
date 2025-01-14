@@ -73,7 +73,9 @@ class BelongsToNestableTreeObserver
         /**
          * @var \SolutionForest\InspireCms\Support\Models\Contracts\NestableTree | Model
          */
-        $nestableTreeModel = app(\SolutionForest\InspireCms\Support\Models\Contracts\NestableTree::class);
+        $nestableTreeModel = app(
+            \SolutionForest\InspireCms\Support\Facades\ModelRegistry::get(\SolutionForest\InspireCms\Support\Models\Contracts\NestableTree::class)
+        );
 
         $parentId = $model->nestableTree?->getParentId();
         $morphableType = $model->getMorphClass();

@@ -44,6 +44,11 @@ class InspireCmsSupportServiceProvider extends PackageServiceProvider
         }
     }
 
+    public function registeringPackage()
+    {
+        //
+    }
+
     public function packageRegistered(): void
     {
         $this->app->singleton(Manifests\ModelRegistryInterface::class, fn () => $this->app->make(Manifests\ModelRegistry::class));
@@ -51,6 +56,8 @@ class InspireCmsSupportServiceProvider extends PackageServiceProvider
         $this->app->singleton(Manifests\ResolverRegistryInterface::class, fn () => $this->app->make(Manifests\ResolverRegistry::class));
 
         Blueprint::mixin(new \SolutionForest\InspireCms\Support\Macros\BlueprintMarcos);
+
+        \SolutionForest\InspireCms\Support\Facades\ResolverRegistry::register($this->app);
     }
 
     public function packageBooted(): void
