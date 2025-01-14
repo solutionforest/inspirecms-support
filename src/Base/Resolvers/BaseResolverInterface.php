@@ -10,5 +10,5 @@ interface BaseResolverInterface
     /**
      * @return T|null
      */
-    public function resolve(... $args);
+    public function resolve(...$args);
 }

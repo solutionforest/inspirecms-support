@@ -8,11 +8,11 @@ use SolutionForest\InspireCms\Support\Facades\InspireCmsSupport;
 class UserResolver implements UserResolverInterface
 {
     /** {@inheritDoc} */
-    public function resolve(... $args)
+    public function resolve(...$args)
     {
         return $this->resolveForModel(null);
     }
-    
+
     /** {@inheritDoc} */
     public function resolveForModel($model)
     {
