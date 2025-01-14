@@ -9,17 +9,24 @@ class ResolverRegistry implements ResolverRegistryInterface
     public function __construct()
     {
         $this->resolvers = [
-            'user' => \SolutionForest\InspireCms\Support\Resolvers\UserResolver::class,
+            \SolutionForest\InspireCms\Support\Resolvers\UserResolverInterface::class => \SolutionForest\InspireCms\Support\Resolvers\UserResolver::class,
         ];
     }
 
-    public function set(string $name, string $resolver): void
+    public function register(\Illuminate\Contracts\Foundation\Application $application): void
     {
-        $this->resolvers[$name] = $resolver;
+        foreach ($this->resolvers as $interface => $resolver) {
+            $application->scoped($interface, fn () => $application->make($resolver));
+        }
     }
 
-    public function get(string $name): ?string
+    public function set(string $interface, string $resolver): void
     {
-        return $this->resolvers[$name] ?? null;
+        $this->resolvers[$interface] = $resolver;
+    }
+
+    public function get(string $interface)
+    {
+        return app($interface);
     }
 }

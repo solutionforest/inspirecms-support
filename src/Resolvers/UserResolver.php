@@ -8,7 +8,13 @@ use SolutionForest\InspireCms\Support\Facades\InspireCmsSupport;
 class UserResolver implements UserResolverInterface
 {
     /** {@inheritDoc} */
-    public static function resolve()
+    public function resolve(... $args)
+    {
+        return $this->resolveForModel(null);
+    }
+    
+    /** {@inheritDoc} */
+    public function resolveForModel($model)
     {
         $guard = InspireCmsSupport::getAuthGuard();
 

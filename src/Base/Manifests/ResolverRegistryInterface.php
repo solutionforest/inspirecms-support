@@ -2,9 +2,16 @@
 
 namespace SolutionForest\InspireCms\Support\Base\Manifests;
 
+/**
+ * @template T \SolutionForest\InspireCms\Support\Base\Resolvers\BaseResolverInterface
+ */
 interface ResolverRegistryInterface
 {
-    public function set(string $name, string $resolver): void;
+    public function set(string $interface, string $resolver): void;
 
-    public function get(string $name): ?string;
+    /**
+     * @param string $name
+     * @return null | T
+     */
+    public function get(string $interface);
 }

@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms\Support\Models\Concerns;
 
 use SolutionForest\InspireCms\Support\Facades\ResolverRegistry;
+use SolutionForest\InspireCms\Support\Resolvers\UserResolverInterface;
 
 trait HasAuthor
 {
@@ -26,12 +27,12 @@ trait HasAuthor
 
     protected function resolveAuthor()
     {
-        $resolver = ResolverRegistry::get('user');
+        $resolver = ResolverRegistry::get(UserResolverInterface::class);
 
-        if (! in_array(\SolutionForest\InspireCms\Support\Resolvers\UserResolverInterface::class, class_implements($resolver))) {
+        if (! $resolver instanceof UserResolverInterface) {
             throw new \Exception('User resolver must implement UserResolverInterface');
         }
 
-        return $resolver::resolve();
+        return $resolver->resolveForModel($this);
     }
 }
