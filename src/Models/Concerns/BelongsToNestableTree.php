@@ -71,7 +71,7 @@ trait BelongsToNestableTree
             }
 
             $newParentNodeId = $this->getParentNestableTreeId();
-            
+
             $node->{$node->getParentIdName()} = $newParentNodeId;
             $node->save();
 

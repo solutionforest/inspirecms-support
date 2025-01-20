@@ -23,6 +23,7 @@ class NestableTree extends BaseModel implements NestableTreeContract
     {
         return $this->getLftName();
     }
+
     protected function getScopeAttributes()
     {
         return [
@@ -53,8 +54,7 @@ class NestableTree extends BaseModel implements NestableTreeContract
 
             static::rebuildTreeForNestable($morphableType, $morphableIds);
 
-
-        } else if (($parent = static::find($parentId)) && $parent != null) {
+        } elseif (($parent = static::find($parentId)) && $parent != null) {
 
             $records = static::scopedForNestableType($morphableType)
                 ->where(app(static::class)->getParentIdName(), $parentId)
@@ -77,7 +77,7 @@ class NestableTree extends BaseModel implements NestableTreeContract
             ->get();
 
         if (! empty($morphableIds)) {
-            
+
             $sortedRecords = $records->toTree()
                 ->sortBy(fn ($item) => array_search($item->nestable_id, $morphableIds))
                 ->values()
