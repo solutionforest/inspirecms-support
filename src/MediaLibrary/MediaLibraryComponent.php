@@ -256,6 +256,7 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
                     ->success()
                     ->send();
                 $this->resetAll();
+                $this->dispatch('$refresh');
             }
 
         } catch (\Throwable $th) {
