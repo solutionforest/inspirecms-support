@@ -49,7 +49,7 @@ class ActionGroup extends BaseAction
             if ($action instanceof ActionGroup && $action->isHidden()) {
                 continue;
             }
-            
+
             if ($action->isHiddenInGroup()) {
                 continue;
             }
