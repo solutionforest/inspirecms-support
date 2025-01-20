@@ -38,4 +38,25 @@ class ActionGroup extends BaseAction
             default => parent::resolveDefaultClosureDependencyForEvaluationByType($parameterType),
         };
     }
+
+    public function isHidden(): bool
+    {
+        if ($this->baseIsHidden()) {
+            return true;
+        }
+
+        foreach ($this->getActions() as $action) {
+            if ($action instanceof ActionGroup && $action->isHidden()) {
+                continue;
+            }
+            
+            if ($action->isHiddenInGroup()) {
+                continue;
+            }
+
+            return false;
+        }
+
+        return true;
+    }
 }
