@@ -35,8 +35,8 @@ interface NestableTree
     /**
      * Rebuilds the tree structure for a nestable entity.
      *
-     * @param string $morphableType The type of the morphable entity.
-     * @param array $morphableIds An array of IDs for the morphable entities. Default is an empty array.
+     * @param  string  $morphableType  The type of the morphable entity.
+     * @param  array  $morphableIds  An array of IDs for the morphable entities. Default is an empty array.
      * @return void
      */
     public static function rebuildTreeForNestable($morphableType, $morphableIds = []);
