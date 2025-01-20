@@ -2,26 +2,13 @@
 
 namespace SolutionForest\InspireCms\Support\Models\Polymorphic;
 
+use Kalnoy\Nestedset\NodeTrait;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
-use SolutionForest\InspireCms\Support\Models\Concerns\HasRecursiveRelationships;
 use SolutionForest\InspireCms\Support\Models\Contracts\NestableTree as NestableTreeContract;
-use Spatie\EloquentSortable\SortableTrait;
 
-/**
- * @property string|int $id
- * @property string $nestable_type
- * @property string|int $nestable_id
- * @property int $order
- * @property string|int $parent_id
- * @property-read ?\Illuminate\Support\Carbon $created_at
- * @property-read ?\Illuminate\Support\Carbon $updated_at
- *
- * @implements NestableTreeContract<NestableTree>
- */
 class NestableTree extends BaseModel implements NestableTreeContract
 {
-    use HasRecursiveRelationships;
-    use SortableTrait;
+    use NodeTrait;
 
     protected $guarded = ['id'];
 
@@ -30,24 +17,29 @@ class NestableTree extends BaseModel implements NestableTreeContract
         return $this->morphTo();
     }
 
-    // region Sortable
-    public function buildSortQuery()
-    {
-        return static::query()
-            ->where($this->getParentKeyName(), $this->getParentId())
-            ->where('nestable_type', $this->nestable_type);
-    }
-
-    public function shouldSortWhenCreating(): bool
-    {
-        return true;
-    }
+    // region Node
 
     public function determineOrderColumnName(): string
     {
-        return 'order';
+        return $this->getLftName();
     }
-    // endregion Sortable
+    protected function getScopeAttributes()
+    {
+        return [
+            'nestable_type',
+        ];
+    }
+
+    public function getRootLevelParentId()
+    {
+        return null;
+    }
+
+    public function isRoot()
+    {
+        return $this->getParentId() === $this->getRootLevelParentId();
+    }
+    // endregion Node
 
     /** {@inheritDoc} */
     public static function setNewOrderForNestable($parentId, array $morphableIds, string $morphableType): void
@@ -57,14 +49,51 @@ class NestableTree extends BaseModel implements NestableTreeContract
             $morphableType = app($morphableType)->getMorphClass();
         }
 
-        static::setNewOrder(
-            $morphableIds,
-            1,
-            'nestable_id',
-            fn ($q) => $q
-                ->where('nestable_type', $morphableType)
-                ->whereParent($parentId)
-        );
+        if ($parentId === app(static::class)->getRootLevelParentId()) {
 
+            static::rebuildTreeForNestable($morphableType, $morphableIds);
+
+
+        } else if (($parent = static::find($parentId)) && $parent != null) {
+
+            $records = static::scopedForNestableType($morphableType)
+                ->where(app(static::class)->getParentIdName(), $parentId)
+                ->get();
+
+            $sortedRecords = $records->sortBy(fn ($item) => array_search($item->nestable_id, $morphableIds))
+                ->values()
+                ->toArray();
+
+            static::scopedForNestableType($morphableType)
+                ->rebuildSubtree($parent, $sortedRecords);
+        }
+
+    }
+
+    public static function rebuildTreeForNestable($morphableType, $morphableIds = [])
+    {
+        $records = static::scopedForNestableType($morphableType)
+            ->withDepth()
+            ->get();
+
+        if (! empty($morphableIds)) {
+            
+            $sortedRecords = $records->toTree()
+                ->sortBy(fn ($item) => array_search($item->nestable_id, $morphableIds))
+                ->values()
+                ->toArray();
+        } else {
+            $sortedRecords = $records->toTree()->toArray();
+        }
+
+        static::scopedForNestableType($morphableType)
+            ->rebuildTree($sortedRecords);
+    }
+
+    protected static function scopedForNestableType($morphableType)
+    {
+        return static::scoped([
+            'nestable_type' => $morphableType,
+        ]);
     }
 }

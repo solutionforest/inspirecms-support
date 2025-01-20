@@ -44,6 +44,8 @@ class TestCase extends Orchestra
             LivewireServiceProvider::class,
             NotificationsServiceProvider::class,
             SupportServiceProvider::class,
+            
+            \Kalnoy\Nestedset\NestedSetServiceProvider::class,
 
             \Spatie\MediaLibrary\MediaLibraryServiceProvider::class,
 

@@ -18,7 +18,7 @@ class NestableTreeDetailScope implements Scope
         $subQ = $nestableTree::query()
             ->select([
                 ($nestableTree->determineOrderColumnName() ?? 'order') . ' as nestable_tree_order',
-                ($nestableTree->getParentKeyName() ?? 'parent_id') . ' as nestable_tree_parent_id',
+                ($nestableTree->getParentIdName() ?? 'parent_id') . ' as nestable_tree_parent_id',
                 ($nestableTree->getKeyName() ?? 'id') . ' as nestable_tree_id',
                 'nestable_type as nestable_tree_type',
                 'nestable_id as nestable_tree_nestable_id',

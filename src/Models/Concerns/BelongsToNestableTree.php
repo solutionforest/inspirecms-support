@@ -4,6 +4,7 @@ namespace SolutionForest\InspireCms\Support\Models\Concerns;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use SolutionForest\InspireCms\Support\Facades\ModelRegistry;
 use SolutionForest\InspireCms\Support\Models\Scopes\NestableTreeDetailScope;
 use SolutionForest\InspireCms\Support\Observers\BelongsToNestableTreeObserver;
@@ -15,6 +16,9 @@ trait BelongsToNestableTree
         static::observe(new BelongsToNestableTreeObserver);
     }
 
+    /**
+     * @return MorphOne
+     */
     public function nestableTree()
     {
         $model = ModelRegistry::get(\SolutionForest\InspireCms\Support\Models\Contracts\NestableTree::class);
@@ -45,7 +49,11 @@ trait BelongsToNestableTree
         }
 
         $node = $this->nestableTree()->make();
-        $node->setParentNode($this->getParentNestableTree());
+        if ($parent = $this->getParentNestableTree()) {
+            $parent->appendNode($node);
+        } else {
+            $node->makeRoot()->save();
+        }
 
     }
 
@@ -63,10 +71,10 @@ trait BelongsToNestableTree
             }
 
             $newParentNodeId = $this->getParentNestableTreeId();
-            $node->setParentNode($newParentNodeId, false);
-            $node->moveToEnd();
-            $node->{$node->determineOrderColumnName()}++;
+            
+            $node->{$node->getParentIdName()} = $newParentNodeId;
             $node->save();
+
         }
         // if not create
         else {
@@ -87,9 +95,7 @@ trait BelongsToNestableTree
      */
     public function getParentNestableTreeId()
     {
-        $fallbackParentId = $this->nestableTree()->getRelated()->getRootLevelParentId();
-
-        return $this->parent?->nestableTree?->getKey() ?? $fallbackParentId;
+        return $this->parent?->nestableTree?->getKey() ?? $this->getNestableTreeRootLevelParentId();
     }
 
     public function getNestableTreeRootLevelParentId()
@@ -110,7 +116,7 @@ trait BelongsToNestableTree
      */
     public function getNestableTreeParentIdName()
     {
-        return $this->nestableTree()->getRelated()->getParentKeyName();
+        return $this->nestableTree()->getRelated()->getParentIdName();
     }
 
     /**

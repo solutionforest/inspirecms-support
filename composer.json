@@ -23,6 +23,7 @@
         "php": "^8.2",
         "laravel/framework": "^11.0",
         "filament/filament": "^3.0",
+        "kalnoy/nestedset": "^6.0",
         "php-ffmpeg/php-ffmpeg": "^1.2",
         "spatie/eloquent-sortable": "^4.4",
         "spatie/laravel-medialibrary": "^10.0|^11.0",
