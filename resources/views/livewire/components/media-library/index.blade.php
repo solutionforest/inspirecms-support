@@ -19,9 +19,7 @@
 
 <div class="media-library"
     @if ($this->isMediaPickerModal())
-        x-data="{
-            selectedMediaId: $wire.entangle('selectedMediaId').live,
-        }" 
+        x-data="{selectedMediaId: $wire.entangle('selectedMediaId').live}"
         x-modelable="selectedMediaId" 
         x-model="selected"
     @endif
@@ -39,8 +37,26 @@
     <div class="media-library__content">
         
         @if (!$this->isUnderRoot())
-            <div class="ctn folder-ctn">
-                <livewire:inspirecms-support::media-library.folders :$parentRecord />
+            <div class="ctn folder-ctn" 
+                x-data="{ expanded: false }"
+                x-bind:class="{ 'expanded': expanded }"
+                x-on:click.outside="expanded = false"
+            >
+                <div class="trigger" 
+                    x-on:click="expanded = !expanded">
+                    <button type="button" 
+                        class="p-4 rounded-full shadow-md bg-white ring-1 ring-gray-300 hover:bg-gray-100 dark:bg-gray-600 dark:ring-gray-400/20 dark:hover:text-gray-400" 
+                        label="Expand folder"
+                    >
+                        <x-filament::icon 
+                            icon="heroicon-o-folder-open" 
+                            class="h-5 w-5" 
+                        />
+                    </button>
+                </div>
+                <div class="folder-ctn__main">
+                    <livewire:inspirecms-support::media-library.folders :$parentRecord />
+                </div>
             </div>
         @endif
 
