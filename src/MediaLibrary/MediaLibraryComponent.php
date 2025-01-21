@@ -470,7 +470,7 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
             return;
         }
 
-        if (($currentParent = $this->getParentRecord()) && $currentParent->getKey() != $key) {
+        if ($this->getParentRecord()?->getKey() != $key) {
             $this->parentRecord = $this->getEloquentQuery()->find($key);
         }
         // Check if the key is a folder
