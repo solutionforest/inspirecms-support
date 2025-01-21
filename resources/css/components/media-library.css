@@ -142,9 +142,10 @@
         }
         
         .thumbnail-ctn {
-            img, svg {
-                @apply w-24 h-24;
-            }
+            @apply h-24 w-24 max-w-full;
+        }
+        .thumbnail-ctn img {
+            @apply w-full object-cover;
         }
 
         .main {
