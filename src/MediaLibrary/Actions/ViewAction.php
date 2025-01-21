@@ -4,7 +4,6 @@ namespace SolutionForest\InspireCms\Support\MediaLibrary\Actions;
 
 use Filament\Infolists;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\HtmlString;
 use SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset;
 
@@ -49,25 +48,15 @@ class ViewAction extends ItemAction
                     ->label(__('inspirecms-support::media-library.forms.file.label'))
                     ->inlineLabel()
                     ->state(function (MediaAsset | Model $record) {
-                        $urlOrIcon = $record->getThumbnail();
-
+                        
                         if ($record->isImage()) {
+                            $urlOrIcon = $record->getThumbnail();
                             return new HtmlString(<<<Html
                                 <img src="$urlOrIcon" class="w-32 h-32 object-cover">
                                 Html);
-                        } else {
-                            return new HtmlString(
-                                Blade::render(<<<'blade'
-                                <x-filament::icon 
-                                    icon="{{ $icon }}" 
-                                    class="h-6 w-6"
-                                >
-                                </x-filament::icon>
-                                blade, [
-                                    'icon' => $urlOrIcon,
-                                ])
-                            );
-                        }
+                        } 
+                        
+                        return 'View';
                     })
                     ->url(fn (MediaAsset | Model $record) => $record->getFirstMedia()?->getUrl(), true),
                 Infolists\Components\TextEntry::make('title')->label(__('inspirecms-support::media-library.forms.title.label')),
