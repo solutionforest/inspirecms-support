@@ -30,6 +30,11 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
 
     public ?string $parentKey = null;
 
+    /**
+     * @var MediaAsset | Model | null
+     */
+    public ?Model $parentRecord = null;
+
     public null | int | string $page = null;
 
     public null | int | string $perPage = 15;
@@ -72,29 +77,9 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
         if (is_null($this->parentKey) || blank($this->parentKey)) {
             $this->parentKey = static::getRootLevelParentId();
         }
-    }
-
-    public function getBreadcrumbs(): array
-    {
-        $breadcrumbs = [
-            // todo: add translations
-            static::getRootLevelParentId() => 'Root',
-        ];
-
-        if ($this->isUnderRoot()) {
-            return $breadcrumbs;
+        if ($this->parentKey != null) {
+            $this->parentRecord = $this->resolveAssetRecord($this->parentKey);
         }
-
-        /**
-         * @var Model & MediaAsset $asset
-         */
-        $asset = $this->getEloquentQuery()->find($this->parentKey);
-        $ancestorsAndSelf = $asset?->ancestorsAndSelf()->get()->reverse()->values() ?? collect();
-        foreach ($ancestorsAndSelf as $item) {
-            $breadcrumbs[$item->getKey()] = $item->title;
-        }
-
-        return $breadcrumbs;
     }
 
     public function updatedPaginators($page, $pageName)
@@ -113,7 +98,7 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
             if (! $this->isMediaPickerModal()) {
                 $this->resetSelectedMedia();
             }
-        }
+        } 
     }
 
     public function initializeMediaLibraryPickerModal(array $config = [])
@@ -433,6 +418,7 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
     {
         return view('inspirecms-support::livewire.components.media-library.index', [
             'pageOptions' => static::getPageOptions(),
+            'breadcrumbs' => $this->getBreadcrumbs(),
         ]);
     }
 
@@ -475,13 +461,42 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
 
             return;
         }
-        // Check if the key is a folder
-        $media = $this->resolveAssetRecord($key);
-        if ($media && $media->isFolder()) {
-            $this->parentKey = $key;
 
-            return;
+        if (($currentParent = $this->getParentRecord()) && $currentParent->getKey() != $key) {
+            $this->parentRecord = $this->getEloquentQuery()->find($key);
         }
+        // Check if the key is a folder
+        if ($this->getParentRecord()?->isFolder() ?? false) {
+            $this->parentKey = $key;
+        }
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Model & MediaAsset |null
+     */
+    protected function getParentRecord()
+    {
+        return $this->parentRecord;
+    }
+
+    protected function getBreadcrumbs(): array
+    {
+        $breadcrumbs = [
+            // todo: add translations
+            static::getRootLevelParentId() => 'Root',
+        ];
+
+        if ($this->isUnderRoot()) {
+            return $breadcrumbs;
+        }
+
+        $asset = $this->getParentRecord();
+        $ancestorsAndSelf = $asset?->ancestorsAndSelf->reverse()->values() ?? collect();
+        foreach ($ancestorsAndSelf as $item) {
+            $breadcrumbs[$item->getKey()] = $item->title;
+        }
+
+        return $breadcrumbs;
     }
     // endregion Helpers
 }

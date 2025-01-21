@@ -224,6 +224,10 @@ trait HasItemActions
 
         $this->cachedMountedMediaItemActionRecordKey = $recordKey;
 
+        if (is_null($recordKey)) {
+            return $this->cachedMountedMediaItemActionRecord = null;
+        }
+
         return $this->cachedMountedMediaItemActionRecord = is_array($recordKey)
             ? $this->resolveAssetRecords($recordKey)
             : $this->resolveAssetRecord($recordKey);

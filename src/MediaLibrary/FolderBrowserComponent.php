@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Support\MediaLibrary;
 
+use Illuminate\Database\Eloquent\Model;
 use Livewire\Attributes\Lazy;
 use Livewire\Attributes\Reactive;
 use Livewire\Component;
@@ -13,7 +14,7 @@ class FolderBrowserComponent extends Component implements Contracts\HasItemActio
     use Concerns\WithMediaAssets;
 
     #[Reactive]
-    public ?string $parentKey = null;
+    public ?Model $parentRecord = null;
 
     public string $title = 'Folders';
 
@@ -28,23 +29,19 @@ class FolderBrowserComponent extends Component implements Contracts\HasItemActio
     public function render()
     {
         return view('inspirecms-support::livewire.components.media-library.folder-browser', [
-            'folders' => is_null($this->parentKey) ? [] : $this->getFoldersFromUpperLevel(),
+            'folders' => is_null($this->parentRecord) ? [] : $this->getFoldersFromUpperLevel(),
         ]);
     }
 
     protected function getFoldersFromUpperLevel()
     {
-        if (is_null($this->parentKey)) {
-            return collect();
-        }
-        $record = $this->resolveAssetRecord($this->parentKey);
-        if (is_null($record)) {
+        if (is_null($this->parentRecord)) {
             return collect();
         }
 
         return $this->getEloquentQuery()
             ->withCount('children')
-            ->whereParent($record->getParentId())
+            ->whereParent($this->parentRecord->getParentId())
             ->folders()
             ->get();
     }
@@ -62,4 +59,9 @@ class FolderBrowserComponent extends Component implements Contracts\HasItemActio
         ];
     }
     // endregion Actions
+
+    protected function getEloquentQuery()
+    {
+        return static::getMediaAssetModel()::with([]);
+    }
 }

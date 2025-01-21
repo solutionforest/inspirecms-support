@@ -28,7 +28,7 @@
 >
 
     <div class="media-library__header">
-        <x-inspirecms-support::media-library.breadcrumbs :breadcrumbs="$this->getBreadcrumbs()" />
+        <x-inspirecms-support::media-library.breadcrumbs :breadcrumbs="$breadcrumbs" />
         <div class="media-library__header__actions">
             @foreach ($this->getVisibleHeaderActions() as $action)
                 {{ $action }}
@@ -40,7 +40,7 @@
         
         @if (!$this->isUnderRoot())
             <div class="ctn folder-ctn">
-                <livewire:inspirecms-support::media-library.folders :$parentKey />
+                <livewire:inspirecms-support::media-library.folders :$parentRecord />
             </div>
         @endif
 
