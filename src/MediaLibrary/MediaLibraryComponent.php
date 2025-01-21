@@ -104,9 +104,9 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
     public function updated($key, $value)
     {
         $checkKey = Str::before($key, '.');
-        if($checkKey == 'selectedMediaId' && count($this->selectedMediaId) <= 0) { // Remove media
+        if ($checkKey == 'selectedMediaId' && count($this->selectedMediaId) <= 0) { // Remove media
             $this->resetToggleMediaId();
-        } 
+        }
     }
 
     public function initializeMediaLibraryPickerModal(array $config = [])

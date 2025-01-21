@@ -48,14 +48,15 @@ class ViewAction extends ItemAction
                     ->label(__('inspirecms-support::media-library.forms.file.label'))
                     ->inlineLabel()
                     ->state(function (MediaAsset | Model $record) {
-                        
+
                         if ($record->isImage()) {
                             $urlOrIcon = $record->getThumbnail();
+
                             return new HtmlString(<<<Html
                                 <img src="$urlOrIcon" class="w-32 h-32 object-cover">
                                 Html);
-                        } 
-                        
+                        }
+
                         return 'View';
                     })
                     ->url(fn (MediaAsset | Model $record) => $record->getFirstMedia()?->getUrl(), true),
