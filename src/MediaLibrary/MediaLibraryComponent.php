@@ -98,6 +98,14 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
             if (! $this->isMediaPickerModal()) {
                 $this->resetSelectedMedia();
             }
+        }
+    }
+
+    public function updated($key, $value)
+    {
+        $checkKey = Str::before($key, '.');
+        if($checkKey == 'selectedMediaId' && count($this->selectedMediaId) <= 0) { // Remove media
+            $this->resetToggleMediaId();
         } 
     }
 
