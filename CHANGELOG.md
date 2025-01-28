@@ -2,6 +2,14 @@
 
 All notable changes to `inspirecms-support` will be documented in this file.
 
+## 0.0.23 - 2025-01-28
+
+### What's Changed
+
+* Bump dependabot/fetch-metadata from 2.2.0 to 2.3.0 by @dependabot in https://github.com/solutionforest/inspirecms-support/pull/2
+
+**Full Changelog**: https://github.com/solutionforest/inspirecms-support/compare/0.0.22...0.0.23
+
 ## 0.0.22 - 2025-01-21
 
 **Full Changelog**: https://github.com/solutionforest/inspirecms-support/compare/0.0.21...0.0.22
