@@ -10,10 +10,10 @@ use SolutionForest\InspireCms\Support\TreeNodes\ModelExplorer\Concerns;
 class ModelExplorer extends ViewComponent implements TreeNode
 {
     use Concerns\BelongsToLivewire;
+    use Concerns\CanSelectItem;
     use Concerns\HasActions;
     use Concerns\HasModelItems;
     use Concerns\ModelExplorerBase;
-    use Concerns\CanSelectItem;
 
     /**
      * @var view-string
