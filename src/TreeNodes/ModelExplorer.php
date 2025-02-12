@@ -13,6 +13,7 @@ class ModelExplorer extends ViewComponent implements TreeNode
     use Concerns\HasActions;
     use Concerns\HasModelItems;
     use Concerns\ModelExplorerBase;
+    use Concerns\CanSelectItem;
 
     /**
      * @var view-string

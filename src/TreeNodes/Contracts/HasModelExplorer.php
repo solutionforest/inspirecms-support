@@ -13,4 +13,8 @@ interface HasModelExplorer extends HasTreeNode
     public function cacheModelItemNode(string | int $parentKey, array $node): void;
 
     public function getCacheModelItemNode(string | int $key): ?array;
+
+    public function getMaxSelectItem(): ?int;
+
+    public function getMinSelectItem(): ?int;
 }

@@ -27,3 +27,11 @@
         @apply h-svh min-w-56 w-64;
     }
 }
+
+.model-explorer {
+    li[role="treeitem"] {
+        ul[role="group"] > [role="list"] {
+            @apply ps-5;
+        }
+    }
+}

@@ -12,9 +12,19 @@ trait HasModelItems
 {
     protected ?Closure $modifyQueryUsing = null;
 
-    protected ?Closure $determineRecordLabelUsing = null;
+    protected ?Closure $determineItemTitleUsing = null;
 
-    protected ?Closure $determineRecordHasChildrenUsing = null;
+    protected ?Closure $determineItemDescriptionUsing = null;
+
+    protected ?Closure $determineItemIconUsing = null;
+
+    protected ?Closure $determineItemUrlUsing = null;
+
+    protected ?Closure $determineItemDepthUsing = null;
+
+    protected ?Closure $determineItemHasChildrenUsing = null;
+
+    protected ?Closure $determineItemIsDisabledUsing = null;
 
     protected ?Closure $resolveRecordUsing = null;
 
@@ -56,7 +66,7 @@ trait HasModelItems
      *
      * @throws \Exception
      */
-    protected function getModelExplorerQuery()
+    public function getModelExplorerQuery()
     {
         $model = $this->getModel();
 
@@ -64,11 +74,11 @@ trait HasModelItems
             throw new \Exception('Model not configured: Please set up the model for the ModelExplorer.');
         }
 
-        if (is_null($this->determineRecordLabelUsing)) {
+        if (is_null($this->determineItemTitleUsing)) {
             throw new \Exception('Record label not configured: Please set up the record label for the ModelExplorer.');
         }
 
-        if (is_null($this->determineRecordHasChildrenUsing)) {
+        if (is_null($this->determineItemHasChildrenUsing)) {
             throw new \Exception('Record has children not configured: Please set up the record has children for the ModelExplorer.');
         }
 
@@ -90,20 +100,55 @@ trait HasModelItems
         return $this;
     }
 
-    public function determineRecordLabelUsing(Closure $callback): static
+    public function determineItemTitleUsing(Closure $callback): static
     {
-        $this->determineRecordLabelUsing = $callback;
+        $this->determineItemTitleUsing = $callback;
 
         return $this;
     }
 
-    public function determineRecordHasChildrenUsing(Closure $callback): static
+    public function determineItemDescriptionUsing(Closure $callback): static
     {
-        $this->determineRecordHasChildrenUsing = $callback;
+        $this->determineItemDescriptionUsing = $callback;
 
         return $this;
     }
 
+    public function determineItemHasChildrenUsing(Closure $callback): static
+    {
+        $this->determineItemHasChildrenUsing = $callback;
+
+        return $this;
+    }
+
+    public function determineItemIconUsing(Closure $callback): static
+    {
+        $this->determineItemIconUsing = $callback;
+
+        return $this;
+    }
+
+    public function determineItemUrlUsing(Closure $callback): static
+    {
+        $this->determineItemUrlUsing = $callback;
+
+        return $this;
+    }
+
+    public function determineItemDepthUsing(Closure $callback): static
+    {
+        $this->determineItemDepthUsing = $callback;
+
+        return $this;
+    }
+
+    public function determineItemIsDisabledUsing(Closure $callback): static
+    {
+        $this->determineItemIsDisabledUsing = $callback;
+
+        return $this;
+    }
+    
     public function resolveRecordUsing(Closure $callback): static
     {
         $this->resolveRecordUsing = $callback;
@@ -151,7 +196,11 @@ trait HasModelItems
         return $items;
     }
 
-    public function findRecord(string | int $key): ?Model
+    /**
+     * @param string|int|array $key
+     * @return null|Model|Collection<Model>
+     */
+    public function findRecord($key)
     {
         $query = $this->getModelExplorerQuery();
 
@@ -168,21 +217,47 @@ trait HasModelItems
     /**
      * @param  Collection<Model>  $records
      */
-    public function parseAsItems($records, int $depth = 0): Collection
+    public function parseAsItems($records, string | int $parentKey): Collection
     {
-        return collect($records)->map(function ($record) use ($depth): array {
+        return collect($records)->map(function ($record) use ($parentKey): array {
+
+            $itemParentKey = $this->evaluate($this->determineRecordParentIdUsing, [
+                'record' => $record,
+            ]) ?? $record->{$this->getParentColumnName()} ?? $parentKey;
+            
             $item = [
                 'key' => $record->getKey(),
-                'parentKey' => $record->getParentId(),
-                'label' => $this->evaluate($this->determineRecordLabelUsing, [
+
+                'parentKey' => $itemParentKey,
+
+                'title' => $this->evaluate($this->determineItemTitleUsing, [
                     'record' => $record,
                 ]),
-                'hasChildren' => $this->evaluate($this->determineRecordHasChildrenUsing, [
+
+                'description' => $this->evaluate($this->determineItemDescriptionUsing, [
                     'record' => $record,
                 ]),
-                'depth' => $depth,
-                'icon' => null,
-                'link' => null,
+
+                'hasChildren' => $this->evaluate($this->determineItemHasChildrenUsing, [
+                    'record' => $record,
+                ]),
+
+                'depth' => $this->evaluate($this->determineItemDepthUsing, [
+                    'record' => $record,
+                    'parentKey' => $itemParentKey,
+                ]) ?? 0,
+
+                'icon' => $this->evaluate($this->determineItemIconUsing, [
+                    'record' => $record,
+                ]),
+
+                'link' => $this->evaluate($this->determineItemUrlUsing, [
+                    'record' => $record,
+                ]),
+
+                'isDisabled' => $this->evaluate($this->determineItemIsDisabledUsing, [
+                    'record' => $record,
+                ]) ?? false,
             ];
 
             if ($this->mutuateNodeItemsUsing) {
@@ -213,5 +288,20 @@ trait HasModelItems
     public function getNodeItemArguments(array $item): array
     {
         return Arr::only($item, ['key', 'parentKey', 'hasChildren', 'depth']);
+    }
+
+    public function getTitleForItem(array $item, ?string $locale = null): ?string
+    {
+        $title = $item['title'] ?? null;
+
+        if (filled($locale) && is_array($title)) {
+            $title = $title[$locale] ?? $item['fallbackTitle'] ?? null;
+        }
+        
+        if (is_array($title)) {
+            $title = Arr::first($title);
+        }
+
+        return $title;
     }
 }

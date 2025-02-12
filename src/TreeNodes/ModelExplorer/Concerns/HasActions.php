@@ -79,9 +79,7 @@ trait HasActions
 
             if ($action instanceof ActionGroup || $action instanceof TreeNodeAction) {
                 $action->itemKey($this->getNodeItemKey($item));
-            }
-
-            if ($action instanceof Action) {
+            } elseif ($action instanceof Action) {
                 $action->arguments($this->getNodeItemArguments($item));
             }
 

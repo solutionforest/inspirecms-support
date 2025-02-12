@@ -2,6 +2,8 @@
 
 namespace SolutionForest\InspireCms\Support\TreeNodes\ModelExplorer\Concerns;
 
+use Closure;
+
 trait ModelExplorerBase
 {
     protected string $model;
@@ -9,6 +11,8 @@ trait ModelExplorerBase
     protected string $parentColumnName = 'parent_id';
 
     protected null | int | string $rootLevelKey = null;
+
+    protected ?Closure $determineRecordParentIdUsing = null;
 
     public function model(string $model): static
     {
@@ -34,6 +38,13 @@ trait ModelExplorerBase
     public function getModel(): string
     {
         return $this->model;
+    }
+
+    public function determineRecordParentIdUsing(Closure $closure): static
+    {
+        $this->determineRecordParentIdUsing = $closure;
+
+        return $this;
     }
 
     public function getParentColumnName(): string
