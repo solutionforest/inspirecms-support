@@ -71,10 +71,10 @@ trait CanSelectModeltem
     /**
      * @return Collection<Model>
      */
-    protected function resolveSelectedModelItems(... $keys)
+    protected function resolveSelectedModelItems(...$keys)
     {
         $keys = collect($keys)->flatten()->unique()->filter()->values()->all();
-        
+
         return $this->getModelExplorer()->findRecord($keys);
     }
 
@@ -159,7 +159,7 @@ trait CanSelectModeltem
     protected function setSelectedModelItem(array $keys, bool $merge = true, bool $replace = false): void
     {
         $filteredKeys = $this->mutuateSelectedKeys($keys);
-        
+
         if ($replace) {
             $this->selectedModelItemKeys = $filteredKeys;
         } elseif ($merge) {
@@ -183,7 +183,7 @@ trait CanSelectModeltem
     protected function mutuateSelectedKeys(array $keys)
     {
         $max = $this->getMaxSelectItem();
-        
+
         $filtered = collect($keys)
             ->unique()
             ->filter(fn ($key) => $this->isValidSelectableModelItemKey($key))
@@ -220,7 +220,7 @@ trait CanSelectModeltem
         return false;
     }
 
-    protected function getAncestorsFor(... $keys): array
+    protected function getAncestorsFor(...$keys): array
     {
         return [];
     }

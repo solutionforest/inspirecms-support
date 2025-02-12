@@ -4,7 +4,6 @@ namespace SolutionForest\InspireCms\Support;
 
 use Filament\Support\Assets\AlpineComponent;
 use Filament\Support\Assets\Css;
-use Filament\Support\Assets\Js;
 use Filament\Support\Facades\FilamentAsset;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Support\Facades\FilamentView;

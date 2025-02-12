@@ -148,7 +148,7 @@ trait HasModelItems
 
         return $this;
     }
-    
+
     public function resolveRecordUsing(Closure $callback): static
     {
         $this->resolveRecordUsing = $callback;
@@ -197,7 +197,7 @@ trait HasModelItems
     }
 
     /**
-     * @param string|int|array $key
+     * @param  string|int|array  $key
      * @return null|Model|Collection<Model>
      */
     public function findRecord($key)
@@ -224,7 +224,7 @@ trait HasModelItems
             $itemParentKey = $this->evaluate($this->determineRecordParentIdUsing, [
                 'record' => $record,
             ]) ?? $record->{$this->getParentColumnName()} ?? $parentKey;
-            
+
             $item = [
                 'key' => $record->getKey(),
 
@@ -297,7 +297,7 @@ trait HasModelItems
         if (filled($locale) && is_array($title)) {
             $title = $title[$locale] ?? $item['fallbackTitle'] ?? null;
         }
-        
+
         if (is_array($title)) {
             $title = Arr::first($title);
         }
