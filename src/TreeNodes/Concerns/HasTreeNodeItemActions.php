@@ -34,7 +34,7 @@ trait HasTreeNodeItemActions
     public ?array $mountedTreeNodeItemActionsData = [];
 
     public int | string | null $mountedTreeNodeItemActionRecord = null;
-    
+
     protected bool $hasTreeNodeItemActionModalRendered = false;
 
     /**
