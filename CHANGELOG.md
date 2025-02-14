@@ -2,6 +2,14 @@
 
 All notable changes to `inspirecms-support` will be documented in this file.
 
+## 0.0.26 - 2025-02-14
+
+### What's Changed
+
+* Bump aglipanci/laravel-pint-action from 2.4 to 2.5 by @dependabot in https://github.com/solutionforest/inspirecms-support/pull/3
+
+**Full Changelog**: https://github.com/solutionforest/inspirecms-support/compare/0.0.25...0.0.26
+
 ## 0.0.25 - 2025-02-06
 
 **Full Changelog**: https://github.com/solutionforest/inspirecms-support/compare/0.0.24...0.0.25
