@@ -5,17 +5,20 @@
     'translatableLocale' => null,
     'spaMode' => false,
     'isDisabled' => false,
+    'skipAlpine' => false,
 ])
 
 <nav 
     role="tree" 
     aria-orientation="vertical" 
-    ax-load
-    ax-load-src="{{ \Filament\Support\Facades\FilamentAsset::getAlpineComponentSrc('tree-node-component', 'solution-forest/inspirecms-support') }}"
-    x-data="treeNode({
-        selected: $wire.entangle('selectedModelItemKeys').live,
-        expanded: $wire.entangle('expandedModelItemKeys').live,
-    })"
+    @unless ($skipAlpine)
+        ax-load
+        ax-load-src="{{ \Filament\Support\Facades\FilamentAsset::getAlpineComponentSrc('tree-node-component', 'solution-forest/inspirecms-support') }}"
+        x-data="treeNode({
+            selected: $wire.entangle('selectedModelItemKeys').live,
+            expanded: $wire.entangle('expandedModelItemKeys').live,
+        })"
+    @endunless
     {{ 
         $attributes->merge([
             'class' => 'model-explorer',
