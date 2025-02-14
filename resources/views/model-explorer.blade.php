@@ -1,7 +1,22 @@
-@php
-    $items = $this->getGroupedNodeItems();
-@endphp
+@props(['items' => []])
 
-<x-inspirecms-support::model-explorer :items="$items" :model-explorer="$this->modelExplorer">
-    {{ $this->selectedModelItemKey }}
-</x-inspirecms-support::model-explorer>
+<x-inspirecms-support::tree-node class="model-explorer">
+
+    <x-slot:sidebar>
+
+        <x-inspirecms-support::model-explorer
+            :items="$items" 
+            :model-explorer="$modelExplorer"
+        />
+        
+    </x-slot:sidebar>
+
+    <x-slot:main>
+        
+        @foreach ($this->selectedModelItemKeys as $item)
+            {{ $item }}
+        @endforeach
+
+    </x-slot:main>
+
+</x-inspirecms-support::tree-node>

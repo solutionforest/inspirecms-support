@@ -1,5 +1,5 @@
 
-@if ($this instanceof \SolutionForest\InspireCms\Support\TreeNodes\Contracts\HasTreeNodeActions)
+@if ($this instanceof \SolutionForest\InspireCms\Support\TreeNodes\Contracts\HasTreeNodeActions && (! $this->hasTreeNodeItemActionModalRendered))
     <form wire:submit.prevent="callMountedTreeNodeItemAction">
         @php
             $action = $this->getMountedTreeNodeItemAction();
@@ -57,6 +57,6 @@
     </form>
 
     @php
-        // $this->hasActionsModalRendered = true;
+        $this->hasTreeNodeItemActionModalRendered = true;
     @endphp
 @endif

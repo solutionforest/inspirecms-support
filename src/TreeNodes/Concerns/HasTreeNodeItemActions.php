@@ -35,6 +35,8 @@ trait HasTreeNodeItemActions
 
     public int | string | null $mountedTreeNodeItemActionRecord = null;
 
+    protected bool $hasTreeNodeItemActionModalRendered = false;
+
     /**
      * @var mixed
      */

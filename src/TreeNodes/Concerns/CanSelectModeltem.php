@@ -5,15 +5,14 @@ namespace SolutionForest\InspireCms\Support\TreeNodes\Concerns;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
-use Livewire\Attributes\On;
 
 trait CanSelectModeltem
 {
     public array $cachedModelExplorerItems = [];
 
-    public null | string | int $selectedModelItemKey = null;
+    public array $selectedModelItemKeys = [];
 
-    public ?Model $selectedModelItem = null;
+    public array $expandedModelItemKeys = [];
 
     public function cacheModelItemNode(string | int $parentKey, array $node): void
     {
@@ -38,48 +37,54 @@ trait CanSelectModeltem
         return null;
     }
 
-    #[On('getNodes')]
-    public function cacheModelExplorerNodesOn(string | int $parentKey, int $depth = 0)
+    public function getMaxSelectItem(): ?int
     {
-        $this->cacheModelItemNode($parentKey, $this->getModelExplorerItemsFrom($parentKey, $depth));
+        return $this->getModelExplorer()->getMaxSelectItem();
     }
 
-    #[On('selectItem')]
-    public function selectModelExplorerNode(string | int | null $nodeKey)
+    public function getMinSelectItem(): ?int
     {
-        $this->selectedModelItem($nodeKey);
-
-        $this->refreshSelectedModelItem($nodeKey);
+        return $this->getModelExplorer()->getMinSelectItem();
     }
 
-    protected function resolveSelectedModelItem(string | int $key): ?Model
+    public function updatingExpandedModelItemKeys($value, $key = null)
     {
-        return $this->getModelExplorer()->findRecord($key);
+        if (is_array($value)) {
+            foreach ($value as $recordKey) {
+                $this->cacheModelExplorerNodesOn($recordKey);
+            }
+        }
     }
 
-    protected function refreshSelectedModelItem(string | int | null $key): void
+    public function updatingSelectedModelItemKeys($value, $key = null)
     {
-        //
+        if (is_array($value)) {
+            $this->expandParentModelItemIfSelected($value);
+        }
     }
 
-    public function selectedModelItem(int | string | Model | null $record): static
+    protected function cacheModelExplorerNodesOn($parentKey)
     {
-        $this->setSelectedModelItem($record);
-
-        return $this;
+        $this->cacheModelItemNode($parentKey, $this->getModelExplorerItemsFrom($parentKey));
     }
 
-    public function getSelectedModelItem(): ?Model
+    /**
+     * @return Collection<Model>
+     */
+    protected function resolveSelectedModelItems(...$keys)
     {
-        return $this->selectedModelItem;
+        $keys = collect($keys)->flatten()->unique()->filter()->values()->all();
+
+        return $this->getModelExplorer()->findRecord($keys);
     }
 
     public function getGroupedNodeItems()
     {
         $modelExplorer = $this->getModelExplorer();
+        $rootLevelKey = $modelExplorer->getRootLevelKey();
 
-        if (empty($this->cachedModelExplorerItems)) {
-            $this->cacheModelExplorerNodesOn($modelExplorer->getRootLevelKey());
+        if (empty($this->cachedModelExplorerItems) || ! isset($this->cachedModelExplorerItems[$rootLevelKey]) || empty($this->cachedModelExplorerItems[$rootLevelKey])) {
+            $this->cacheModelExplorerNodesOn(parentKey: $rootLevelKey);
         }
 
         // Convert the items array as node tree items array
@@ -122,7 +127,7 @@ trait CanSelectModeltem
         return $items;
     }
 
-    protected function getModelExplorerItemsFrom(string | int $parentKey, int $depth): array
+    protected function getModelExplorerItemsFrom(string | int $parentKey): array
     {
         if (isset($this->cachedModelExplorerItems[$parentKey])) {
             return $this->cachedModelExplorerItems[$parentKey];
@@ -132,7 +137,7 @@ trait CanSelectModeltem
 
         $records = $modelExplorer->getRecordsFrom($parentKey);
 
-        $items = $this->mutuateModelExplorerNodes($records, $parentKey, $depth);
+        $items = $this->mutuateModelExplorerNodes($records, $parentKey);
 
         if ($parentKey === $modelExplorer->getRootLevelKey()) {
             $items = $modelExplorer->mutuateRootNodeItems($items);
@@ -144,24 +149,93 @@ trait CanSelectModeltem
     /**
      * @param  Collection<Model>  $records
      */
-    protected function mutuateModelExplorerNodes($records, string | int $parentKey, int $depth): array
+    protected function mutuateModelExplorerNodes($records, string | int $parentKey): array
     {
         $modelExplorer = $this->getModelExplorer();
 
-        return $modelExplorer->parseAsItems($records, $depth)->toArray();
+        return $modelExplorer->parseAsItems($records, $parentKey)->toArray();
     }
 
-    protected function setSelectedModelItem(string | int | Model | null $record): void
+    protected function setSelectedModelItem(array $keys, bool $merge = true, bool $replace = false): void
     {
-        if (is_null($record)) {
-            $this->selectedModelItemKey = null;
-            $this->selectedModelItem = null;
-        } elseif ($record instanceof Model) {
-            $this->selectedModelItem = $record;
-            $this->selectedModelItemKey = $record->getKey();
+        $filteredKeys = $this->mutuateSelectedKeys($keys);
+
+        if ($replace) {
+            $this->selectedModelItemKeys = $filteredKeys;
+        } elseif ($merge) {
+            $this->selectedModelItemKeys = array_unique(array_merge($this->selectedModelItemKeys, $filteredKeys));
         } else {
-            $this->selectedModelItem = $this->resolveSelectedModelItem($record);
-            $this->selectedModelItemKey = $this->selectedModelItem?->getKey() ?? '';
+            $this->selectedModelItemKeys = $filteredKeys;
+        }
+    }
+
+    protected function setExpandedModelItem(array $keys, bool $merge = true, bool $replace = false): void
+    {
+        if ($replace) {
+            $this->expandedModelItemKeys = $keys;
+        } elseif ($merge) {
+            $this->expandedModelItemKeys = array_unique(array_merge($this->expandedModelItemKeys, $keys));
+        } else {
+            $this->expandedModelItemKeys = $keys;
+        }
+    }
+
+    protected function mutuateSelectedKeys(array $keys)
+    {
+        $max = $this->getMaxSelectItem();
+
+        $filtered = collect($keys)
+            ->unique()
+            ->filter(fn ($key) => $this->isValidSelectableModelItemKey($key))
+            ->values()
+            ->all();
+
+        if ($max != null && $max > 0) {
+            $filtered = array_slice($filtered, 0, $max);
+        }
+
+        return $filtered;
+    }
+
+    protected function isValidSelectableModelItemKey($key): bool
+    {
+        if (is_array($key)) {
+            return collect($key)
+                ->flatten()
+                ->unique()
+                ->filter(fn ($key) => $this->isValidSelectableModelItemKey($key))
+                ->isNotEmpty();
+        }
+
+        if (is_string($key)) {
+            return filled($key) &&
+                $key != null &&
+                $key != intval('');
+        }
+
+        if (is_int($key)) {
+            return $key != 0;
+        }
+
+        return false;
+    }
+
+    protected function getAncestorsFor(...$keys): array
+    {
+        return [];
+    }
+
+    protected function expandParentModelItemIfSelected(array $keys)
+    {
+        $ancestors = collect($this->getAncestorsFor($keys))
+            ->flatten()
+            ->keyBy(fn ($model) => $model->getKey())
+            ->all();
+
+        $this->setExpandedModelItem(keys: array_keys($ancestors), merge: true, replace: false);
+
+        foreach (array_keys($ancestors) as $key) {
+            $this->cacheModelExplorerNodesOn(parentKey: $key);
         }
     }
 }

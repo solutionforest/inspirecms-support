@@ -48,3 +48,8 @@ compile({
     entryPoints: ['./resources/js/components/media-draggable-item.js'],
     outfile: './resources/dist/components/media-draggable-item.js',
 })
+compile({
+    ...defaultOptions,
+    entryPoints: ['./resources/js/components/tree-node.js'],
+    outfile: './resources/dist/components/tree-node.js',
+})
