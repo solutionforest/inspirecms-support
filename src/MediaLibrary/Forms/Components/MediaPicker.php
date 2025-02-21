@@ -13,6 +13,7 @@ use SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset;
 class MediaPicker extends Field
 {
     use Concerns\HasMediaFilterTypes;
+    use Concerns\InteractsWithMediaLibraryModal;
 
     /**
      * @var view-string
@@ -110,11 +111,6 @@ class MediaPicker extends Field
     public function getLimitDisplay(): int
     {
         return $this->evaluate($this->limitDisplay);
-    }
-
-    public function getModalId(): string
-    {
-        return 'media-library-picker-modal';
     }
 
     /**
