@@ -28,9 +28,9 @@ trait InteractsWithMediaLibraryModal
         ];
     }
 
-    private function getFormComponentMediaPickerUrl(array|string $ids): array
+    private function getFormComponentMediaPickerUrl(array | string $ids): array
     {
-        if (!is_array($ids)) {
+        if (! is_array($ids)) {
             $ids = [$ids];
         }
 
