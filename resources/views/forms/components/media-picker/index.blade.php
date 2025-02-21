@@ -16,19 +16,9 @@
     $imgStyles = "height: $height; width: $width;";
     $imgPlaceholderClasses = 'flex items-center justify-center bg-gray-100 font-medium text-gray-500 dark:bg-gray-800 dark:text-gray-400 rounded-lg';
 
-    $modalId = $getModalId();
-
     $filterTypes = $getFilterTypes();
-    $mediaPickerModalConfig = [
-        'page' => 1,
-        'forms' => [
-            'filter' => [
-                'd' => ['type' => $filterTypes],
-                'invisibleColumns' => count($filterTypes) === 1 ? ['type'] : [],
-            ],
-            'sort' => [],
-        ],
-    ];
+    $modalId = $getMediaLibraryModalId();
+    $mediaPickerModalConfig = $getMediaLibraryModalConfig($filterTypes);
 @endphp
 <div 
     {{

@@ -52,4 +52,9 @@ abstract class BaseDto
     {
         return (array) $this;
     }
+
+    public function __toString()
+    {
+        return json_encode($this->__toArray());
+    }
 }

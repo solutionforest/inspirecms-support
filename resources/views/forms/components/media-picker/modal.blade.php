@@ -16,6 +16,7 @@
         selected: [], 
         formStatePath: '', 
         modalInitialized: false,
+
         closeMediaPickerModal: function(save = true) {
             if (save) {
                 this.$dispatch('close-modal', { id: '{{ $modalId }}', save: true, statePath: this.formStatePath, data: { selected: this.selected } });
@@ -30,9 +31,11 @@
 
             this.$dispatch('media-picker-modal:init', { config: $event.detail?.config ?? [] });
         },
+
         onMediaPickerModalSetupComplete: function($event) {
             this.modalInitialized = true;
         },
+        
     }"
     x-on:media-picker-setup.window="onMediaPickerModalSetup($event)"
     x-on:media-picker-modal-setup-complete="onMediaPickerModalSetupComplete($event)"
