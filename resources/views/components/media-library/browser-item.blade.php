@@ -37,7 +37,10 @@
             type="checkbox" 
             @disabled(!$selectable)
         >
-        <div class="actions">
+        <div 
+            class="actions"
+            wire:ignore
+        >
             <x-inspirecms-support::media-library.actions
                 :actions="$actions" 
                 :media-item="$mediaItem"
