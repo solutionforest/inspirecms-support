@@ -51,7 +51,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "SolutionForest\\InspireCms\\Support\\Tests\\": "tests/"
+            "SolutionForest\\InspireCms\\Support\\Tests\\": "tests"
         }
     },
     "scripts": {

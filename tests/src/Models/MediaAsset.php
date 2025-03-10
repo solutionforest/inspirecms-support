@@ -1,6 +1,6 @@
 <?php
 
-namespace SolutionForest\InspireCms\Support\Tests\TestModels;
+namespace SolutionForest\InspireCms\Support\Tests\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 

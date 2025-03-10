@@ -1,6 +1,6 @@
 <?php
 
-namespace SolutionForest\InspireCms\Support\Tests\TestModels\HasRecursiveRelationships;
+namespace SolutionForest\InspireCms\Support\Tests\Models\HasRecursiveRelationships;
 
 use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Support\Base\Models\Interfaces\HasRecursiveRelationshipsInterface;
