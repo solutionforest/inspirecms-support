@@ -9,7 +9,6 @@ use Filament\Forms\FormsServiceProvider;
 use Filament\Infolists\InfolistsServiceProvider;
 use Filament\Notifications\NotificationsServiceProvider;
 use Filament\Support\SupportServiceProvider;
-use Illuminate\Database\Eloquent\Casts\Json;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Livewire\LivewireServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
@@ -19,8 +18,6 @@ use SolutionForest\InspireCms\Support\Facades\MediaLibraryRegistry;
 use SolutionForest\InspireCms\Support\Facades\ResolverRegistry;
 use SolutionForest\InspireCms\Support\InspireCmsSupportServiceProvider;
 use SolutionForest\InspireCms\Support\Resolvers\UserResolver;
-
-use function Pest\Laravel\json;
 
 class TestCase extends Orchestra
 {
@@ -84,7 +81,7 @@ class TestCase extends Orchestra
                 if ($migrationPath == false) {
                     continue;
                 }
-    
+
                 // Load .stub files
                 foreach (glob("{$migrationPath}/*.php.stub") as $path) {
                     $migration = include $path;
@@ -101,8 +98,7 @@ class TestCase extends Orchestra
                 $migration = include $path;
                 $migration->up();
             }
-        }
-        else {
+        } else {
             parent::loadMigrationsFrom($paths);
         }
     }
