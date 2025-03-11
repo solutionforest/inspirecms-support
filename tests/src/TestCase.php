@@ -106,7 +106,7 @@ class TestCase extends Orchestra
 
     protected function defineDatabaseMigrations()
     {
-        $this->loadLaravelMigrations();
+        // $this->loadLaravelMigrations();
 
         $this->loadMigrationsFrom([
             // __DIR__ . '/../../vendor/spatie/laravel-medialibrary/database/migrations',
