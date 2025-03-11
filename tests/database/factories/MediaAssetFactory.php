@@ -1,6 +1,6 @@
 <?php
 
-namespace SolutionForest\InspireCms\Support\Database\Factories;
+namespace SolutionForest\InspireCms\Support\Tests\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use SolutionForest\InspireCms\Support\Helpers\KeyHelper;

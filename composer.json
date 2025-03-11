@@ -45,13 +45,13 @@
     },
     "autoload": {
         "psr-4": {
-            "SolutionForest\\InspireCms\\Support\\": "src/",
-            "SolutionForest\\InspireCms\\Support\\Database\\Factories\\": "database/factories/"
+            "SolutionForest\\InspireCms\\Support\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "SolutionForest\\InspireCms\\Support\\Tests\\": "tests/src/"
+            "SolutionForest\\InspireCms\\Support\\Tests\\": "tests/src/",
+            "SolutionForest\\InspireCms\\Support\\Tests\\Database\\Factories\\": "tests/database/factories/"
         }
     },
     "scripts": {

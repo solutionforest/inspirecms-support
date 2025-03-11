@@ -9,7 +9,6 @@ use Filament\Support\Facades\FilamentIcon;
 use Filament\Support\Facades\FilamentView;
 use Filament\View\PanelsRenderHook;
 use Illuminate\Database\Schema\Blueprint;
-use Livewire\Features\SupportTesting\Testable;
 use Livewire\Livewire;
 use SolutionForest\InspireCms\Support\Base\Manifests;
 use Spatie\LaravelPackageTools\Package;

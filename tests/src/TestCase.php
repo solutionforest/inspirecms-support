@@ -11,22 +11,25 @@ use Filament\Notifications\NotificationsServiceProvider;
 use Filament\Support\SupportServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Livewire\LivewireServiceProvider;
+use Orchestra\Testbench\Concerns\WithWorkbench;
 use Orchestra\Testbench\TestCase as Orchestra;
 use RyanChandler\BladeCaptureDirective\BladeCaptureDirectiveServiceProvider;
-use SolutionForest\InspireCms\Support\Facades\ModelRegistry;
 use SolutionForest\InspireCms\Support\Facades\MediaLibraryRegistry;
+use SolutionForest\InspireCms\Support\Facades\ModelRegistry;
 use SolutionForest\InspireCms\Support\Facades\ResolverRegistry;
 use SolutionForest\InspireCms\Support\InspireCmsSupportServiceProvider;
 use SolutionForest\InspireCms\Support\Resolvers\UserResolver;
 
 class TestCase extends Orchestra
 {
+    use WithWorkbench;
+
     protected function setUp(): void
     {
         parent::setUp();
 
         Factory::guessFactoryNamesUsing(
-            fn (string $modelName) => 'SolutionForest\\InspireCms\\Support\\Database\\Factories\\' . class_basename($modelName) . 'Factory'
+            fn (string $modelName) => '\\SolutionForest\\InspireCms\\Support\\Tests\\Database\\Factories\\' . class_basename($modelName) . 'Factory'
         );
         Factory::guessModelNamesUsing(
             fn ($factory) => 'SolutionForest\\InspireCms\\Support\\Tests\\Models\\' . str_replace('Factory', '', class_basename($factory))
@@ -58,6 +61,10 @@ class TestCase extends Orchestra
     {
         config()->set('database.default', 'testing');
 
+        // Avoid migration for 'cache', 'sessions', to avoid migration error
+        $app['config']->set('session.driver', 'array');
+        $app['config']->set('cache.default', 'array');
+        
         // region inspirecms support
         MediaLibraryRegistry::setDisk('public');
         MediaLibraryRegistry::setDirectory('');
