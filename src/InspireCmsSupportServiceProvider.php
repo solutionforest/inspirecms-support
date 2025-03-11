@@ -12,7 +12,6 @@ use Illuminate\Database\Schema\Blueprint;
 use Livewire\Features\SupportTesting\Testable;
 use Livewire\Livewire;
 use SolutionForest\InspireCms\Support\Base\Manifests;
-use SolutionForest\InspireCms\Support\Testing\TestsInspireCmsSupport;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -77,9 +76,6 @@ class InspireCmsSupportServiceProvider extends PackageServiceProvider
             AlpineComponent::make('media-draggable-item-component', __DIR__ . '/../resources/dist/components/media-draggable-item.js')->loadedOnRequest(),
             AlpineComponent::make('tree-node-component', __DIR__ . '/../resources/dist/components/tree-node.js')->loadedOnRequest(),
         ], 'solution-forest/inspirecms-support');
-
-        // Testing
-        Testable::mixin(new TestsInspireCmsSupport);
 
         FilamentIcon::register([
             'inspirecms-support::pdf' => view('inspirecms-support::icons.pdf'),
