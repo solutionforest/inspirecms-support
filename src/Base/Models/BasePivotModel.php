@@ -3,7 +3,7 @@
 namespace SolutionForest\InspireCms\Support\Base\Models;
 
 use Illuminate\Database\Eloquent\Relations\Pivot;
-use SolutionForest\InspireCms\Support\Facades\InspireCmsSupport;
+use SolutionForest\InspireCms\Support\Facades\ModelRegistry;
 
 abstract class BasePivotModel extends Pivot
 {
@@ -11,6 +11,6 @@ abstract class BasePivotModel extends Pivot
     {
         parent::__construct($attributes);
 
-        $this->setTable(InspireCmsSupport::getTablePrefix() . $this->getTable());
+        $this->setTable(ModelRegistry::getTablePrefix() . $this->getTable());
     }
 }

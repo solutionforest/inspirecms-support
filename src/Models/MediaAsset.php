@@ -15,19 +15,6 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\FileAdder;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
-/**
- * @property string $id
- * @property string $title
- * @property string|int $nestable_id
- * @property string $parent_id
- * @property bool $is_folder
- * @property ?string $caption
- * @property ?string $description
- * @property ?string $author_type
- * @property ?string $author_id
- * @property-read ?\Illuminate\Support\Carbon $created_at
- * @property-read ?\Illuminate\Support\Carbon $updated_at
- */
 class MediaAsset extends BaseModel implements MediaAssetContract
 {
     use Concerns\BelongsToNestableTree;

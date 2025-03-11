@@ -54,6 +54,7 @@ class InspireCmsSupportServiceProvider extends PackageServiceProvider
         $this->app->singleton(Manifests\ModelRegistryInterface::class, fn () => $this->app->make(Manifests\ModelRegistry::class));
         $this->app->singleton(Manifests\MediaLibraryRegistryInterface::class, fn () => $this->app->make(Manifests\MediaLibraryRegistry::class));
         $this->app->singleton(Manifests\ResolverRegistryInterface::class, fn () => $this->app->make(Manifests\ResolverRegistry::class));
+        $this->app->singleton(Manifests\AuthManagerInterface::class, fn () => $this->app->make(Manifests\AuthManager::class));
 
         Blueprint::mixin(new \SolutionForest\InspireCms\Support\Macros\BlueprintMarcos);
 

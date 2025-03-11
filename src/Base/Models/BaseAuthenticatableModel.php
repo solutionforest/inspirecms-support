@@ -3,7 +3,7 @@
 namespace SolutionForest\InspireCms\Support\Base\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use SolutionForest\InspireCms\Support\Facades\InspireCmsSupport;
+use SolutionForest\InspireCms\Support\Facades\ModelRegistry;
 
 abstract class BaseAuthenticatableModel extends Authenticatable
 {
@@ -11,6 +11,6 @@ abstract class BaseAuthenticatableModel extends Authenticatable
     {
         parent::__construct($attributes);
 
-        $this->setTable(InspireCmsSupport::getTablePrefix() . $this->getTable());
+        $this->setTable(ModelRegistry::getTablePrefix() . $this->getTable());
     }
 }

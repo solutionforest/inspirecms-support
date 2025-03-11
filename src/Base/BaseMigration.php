@@ -3,7 +3,7 @@
 namespace SolutionForest\InspireCms\Support\Base;
 
 use Illuminate\Database\Migrations\Migration;
-use SolutionForest\InspireCms\Support\Facades\InspireCmsSupport;
+use SolutionForest\InspireCms\Support\Facades\ModelRegistry;
 
 abstract class BaseMigration extends Migration
 {
@@ -11,6 +11,6 @@ abstract class BaseMigration extends Migration
 
     public function __construct()
     {
-        $this->prefix = InspireCmsSupport::getTablePrefix();
+        $this->prefix = ModelRegistry::getTablePrefix();
     }
 }

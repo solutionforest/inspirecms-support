@@ -9,18 +9,15 @@ use Filament\Forms\FormsServiceProvider;
 use Filament\Infolists\InfolistsServiceProvider;
 use Filament\Notifications\NotificationsServiceProvider;
 use Filament\Support\SupportServiceProvider;
-use Illuminate\Database\Eloquent\Casts\Json;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Livewire\LivewireServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
 use RyanChandler\BladeCaptureDirective\BladeCaptureDirectiveServiceProvider;
-use SolutionForest\InspireCms\Support\Facades\InspireCmsSupport;
+use SolutionForest\InspireCms\Support\Facades\ModelRegistry;
 use SolutionForest\InspireCms\Support\Facades\MediaLibraryRegistry;
 use SolutionForest\InspireCms\Support\Facades\ResolverRegistry;
 use SolutionForest\InspireCms\Support\InspireCmsSupportServiceProvider;
 use SolutionForest\InspireCms\Support\Resolvers\UserResolver;
-
-use function Pest\Laravel\json;
 
 class TestCase extends Orchestra
 {
@@ -66,7 +63,7 @@ class TestCase extends Orchestra
         MediaLibraryRegistry::setDirectory('');
         MediaLibraryRegistry::setThumbnailCrop(300, 300);
 
-        InspireCmsSupport::setTablePrefix('cms_');
+        ModelRegistry::setTablePrefix('cms_');
 
         ResolverRegistry::set('user', UserResolver::class);
         // endregion inspirecms support

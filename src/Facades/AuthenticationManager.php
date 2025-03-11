@@ -3,22 +3,21 @@
 namespace SolutionForest\InspireCms\Support\Facades;
 
 use Illuminate\Support\Facades\Facade;
+use SolutionForest\InspireCms\Support\Base\Manifests\AuthManagerInterface;
 
 /**
- * @method static void setTablePrefix(string $tablePrefix)
  * @method static void setAuthGuard(string $guard)
- * @method static string getTablePrefix()
  * @method static string getAuthGuard()
  *
- * @see \SolutionForest\InspireCms\Support\InspireCmsSupportManager
+ * @see \SolutionForest\InspireCms\Support\Base\Manifests\AuthManager
  */
-class InspireCmsSupport extends Facade
+class AuthenticationManager extends Facade
 {
     /**
      * {@inheritdoc}
      */
     protected static function getFacadeAccessor()
     {
-        return \SolutionForest\InspireCms\Support\InspireCmsSupportManager::class;
+        return AuthManagerInterface::class;
     }
 }

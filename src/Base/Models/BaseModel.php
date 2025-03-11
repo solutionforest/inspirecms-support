@@ -3,7 +3,7 @@
 namespace SolutionForest\InspireCms\Support\Base\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use SolutionForest\InspireCms\Support\Facades\InspireCmsSupport;
+use SolutionForest\InspireCms\Support\Facades\ModelRegistry;
 
 abstract class BaseModel extends Model
 {
@@ -11,6 +11,6 @@ abstract class BaseModel extends Model
     {
         parent::__construct($attributes);
 
-        $this->setTable(InspireCmsSupport::getTablePrefix() . $this->getTable());
+        $this->setTable(ModelRegistry::getTablePrefix() . $this->getTable());
     }
 }

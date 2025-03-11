@@ -20,4 +20,9 @@ interface ModelRegistryInterface
      * @return void
      */
     public function replace(string $interfaceClass, string $modelClass);
+    
+
+    public function setTablePrefix(string $tablePrefix): void;
+
+    public function getTablePrefix(): string;
 }

@@ -2,6 +2,10 @@
 
 namespace SolutionForest\InspireCms\Support\Base\Manifests;
 
+use SolutionForest\InspireCms\Support\Resolvers\UserResolver;
+use SolutionForest\InspireCms\Support\Resolvers\UserResolverInterface;
+use Illuminate\Contracts\Foundation\Application;
+
 class ResolverRegistry implements ResolverRegistryInterface
 {
     protected array $resolvers = [];
@@ -9,11 +13,11 @@ class ResolverRegistry implements ResolverRegistryInterface
     public function __construct()
     {
         $this->resolvers = [
-            \SolutionForest\InspireCms\Support\Resolvers\UserResolverInterface::class => \SolutionForest\InspireCms\Support\Resolvers\UserResolver::class,
+            UserResolverInterface::class => UserResolver::class,
         ];
     }
 
-    public function register(\Illuminate\Contracts\Foundation\Application $application): void
+    public function register(Application $application): void
     {
         foreach ($this->resolvers as $interface => $resolver) {
             $application->scoped($interface, fn () => $application->make($resolver));
