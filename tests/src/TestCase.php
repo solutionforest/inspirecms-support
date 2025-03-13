@@ -88,7 +88,7 @@ class TestCase extends Orchestra
                 if ($migrationPath == false) {
                     continue;
                 }
-    
+
                 // Load .stub files
                 foreach (glob("{$migrationPath}/*.php.stub") as $path) {
                     $migration = include $path;
@@ -105,8 +105,7 @@ class TestCase extends Orchestra
                 $migration = include $path;
                 $migration->up();
             }
-        }
-        else {
+        } else {
             parent::loadMigrationsFrom($paths);
         }
     }
