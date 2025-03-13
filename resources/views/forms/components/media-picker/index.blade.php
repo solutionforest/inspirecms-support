@@ -5,16 +5,16 @@
 
     $limitedStateCount = $getLimitDisplay();
     $cachedSelectedAssets = collect($getCachedSelectedAssets());
-    $limitedState = $cachedSelectedAssets->take($limitedStateCount);
+    $limitedState = $limitedStateCount != null ? $cachedSelectedAssets->take($limitedStateCount) : $cachedSelectedAssets;
     $stateCount = $cachedSelectedAssets->count();
 
-    $height = $width = '8rem';
+    $height = $width = '6rem';
 
-    $hasLimitedRemainingText = $limitedStateCount < $stateCount;
+    $hasLimitedRemainingText = $limitedStateCount != null && $limitedStateCount < $stateCount;
 
-    $ringClasses = 'ring-white dark:ring-gray-900 ring-2';
     $imgStyles = "height: $height; width: $width;";
-    $imgPlaceholderClasses = 'flex items-center justify-center bg-gray-100 font-medium text-gray-500 dark:bg-gray-800 dark:text-gray-400 rounded-lg';
+    $remainingTextCtnStyles = "padding: 0 4rem;";
+    $itemCtnClasses = 'bg-gray-100 dark:bg-gray-800 rounded-lg';
 
     $filterTypes = $getFilterTypes();
     $modalId = $getMediaLibraryModalId();
@@ -57,44 +57,42 @@
         :component="$getFieldWrapperView()"
         :field="$field"
     >
-        <div class="flex flex-wrap gap-1.5">
+        <div class="flex gap-x-2 overflow-x-auto text-gray-500 dark:text-gray-400">
             @foreach ($limitedState as $asset)
                 <div 
                     @class([
-                        'thumbnail-ctn',
-                        $imgPlaceholderClasses,
-                        $ringClasses,
+                        'flex-none px-3 py-6',
+                        $itemCtnClasses,
                     ])
-                    style="{{ $imgStyles }}"
                 >
-                    @if ($asset->isImage())
-                        <img loading="lazy" 
-                            src="{{ $asset->getThumbnailUrl() }}" 
-                            alt="{{ $asset->getKey() }}" 
-                            class="max-w-none w-full object-cover object-center"
-                        />
-                    @else
-                        <div class="flex flex-col items-center justify-center text-xs text-gray-500 dark:text-gray-400 w-full">
+                    <div class="flex flex-col items-center justify-center gap-3 h-full">
+                        @if ($asset->isImage())
+                            <img loading="lazy" 
+                                src="{{ $asset->getThumbnailUrl() }}" 
+                                alt="{{ $asset->getKey() }}" 
+                                style="{{ $imgStyles }}"
+                            />
+                            
+                        @else
                             <x-inspirecms-support::media-library.thumbnail-icon 
                                 :icon="$asset->getThumbnail()"
-                                class="size-16" 
+                                style="{{ $imgStyles }}"
                             />
-                            <span class="max-w-full truncate select-none">{{ $asset->title }}</span>
-                        </div>
+                        @endif
 
-                    @endif
+                        <span class="font-medium max-w-full truncate select-none">{{ $asset->title }}</span>
+                    </div>
                 </div>
             @endforeach
             @if ($hasLimitedRemainingText)
                 <div
-                    style="{{ $imgStyles }}"
+                    style="{{ $remainingTextCtnStyles }}"
                     @class([
-                        $imgPlaceholderClasses,
-                        'text-xs',
-                        $ringClasses,
+                        'flex flex-col items-center justify-center',
+                        $itemCtnClasses,
                     ])
                 >
-                    <span class="-ms-0.5">
+                    <span class="text-xs">
                         +{{ $stateCount - $limitedStateCount }}
                     </span>
                 </div>

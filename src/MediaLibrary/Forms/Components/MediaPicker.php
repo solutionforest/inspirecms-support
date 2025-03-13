@@ -24,7 +24,7 @@ class MediaPicker extends Field
 
     protected int | Closure | null $min = null;
 
-    protected int | Closure $limitDisplay = 3;
+    protected null | int | Closure $limitDisplay = null;
 
     /**
      * @var Collection<Model>|null
@@ -108,7 +108,7 @@ class MediaPicker extends Field
         return $this;
     }
 
-    public function getLimitDisplay(): int
+    public function getLimitDisplay(): ?int
     {
         return $this->evaluate($this->limitDisplay);
     }
