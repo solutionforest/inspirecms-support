@@ -64,7 +64,7 @@ class TestCase extends Orchestra
         // Avoid migration for 'cache', 'sessions', to avoid migration error
         $app['config']->set('session.driver', 'array');
         $app['config']->set('cache.default', 'array');
-        
+
         // region inspirecms support
         MediaLibraryRegistry::setDisk('public');
         MediaLibraryRegistry::setDirectory('');

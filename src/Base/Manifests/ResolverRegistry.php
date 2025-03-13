@@ -2,9 +2,9 @@
 
 namespace SolutionForest\InspireCms\Support\Base\Manifests;
 
+use Illuminate\Contracts\Foundation\Application;
 use SolutionForest\InspireCms\Support\Resolvers\UserResolver;
 use SolutionForest\InspireCms\Support\Resolvers\UserResolverInterface;
-use Illuminate\Contracts\Foundation\Application;
 
 class ResolverRegistry implements ResolverRegistryInterface
 {
