@@ -2,6 +2,7 @@
 
 return [
     // General
+    'root' => '根目錄',
     'select_file_to_view' => '選擇一個文件以查看其內容。',
     'loading_file_content' => '正在加載文件內容...',
     'unable_to_load_content' => '無法加載文件內容。',

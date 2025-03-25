@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms\Support\MediaLibrary\Actions;
 
 use Filament\Infolists;
+use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\HtmlString;
 use SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset;
@@ -18,17 +19,17 @@ class ViewAction extends ItemAction
     {
         parent::setUp();
 
-        $this->label(__('inspirecms-support::media-library.actions.view.label'));
+        $this->label(__('inspirecms-support::media-library.buttons.view.label'));
 
-        $this->modalHeading(fn () => __('inspirecms-support::media-library.actions.view.modal.heading', ['name' => $this->getModelLabel()]));
+        $this->modalHeading(fn () => __('inspirecms-support::media-library.buttons.view.heading', ['name' => $this->getModelLabel()]));
 
-        $this->successNotificationTitle(__('inspirecms-support::media-library.actions.edit.notification.saved.title'));
+        $this->successNotificationTitle(__('inspirecms-support::media-library.buttons.edit.messages.success.title'));
 
         $this->authorize('view');
 
         $this->color('gray');
 
-        $this->groupedIcon('heroicon-o-eye');
+        $this->groupedIcon(FilamentIcon::resolve('inspirecms::view'));
 
         $this
             ->fillForm(function (?Model $record) {

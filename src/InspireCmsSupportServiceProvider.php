@@ -109,18 +109,25 @@ class InspireCmsSupportServiceProvider extends PackageServiceProvider
             'warn' => 'heroicon-o-exclamation-triangle',
             'error' => 'heroicon-o-exclamation-circle',
             'success' => 'heroicon-o-check-circle',
+            
+            'add' => 'heroicon-o-plus-small',
+            'edit' => 'heroicon-m-pencil-square',
+            'view' => 'heroicon-o-eye',
+            'delete' => 'heroicon-m-trash',
 
             'reset' => 'heroicon-o-arrow-path',
             'clone' => 'heroicon-o-document-duplicate',
-            'add' => 'heroicon-o-plus-small',
             'attach' => 'heroicon-o-link',
             'detach' => 'heroicon-m-x-mark',
-            'edit' => 'heroicon-m-pencil-square',
-            'delete' => 'heroicon-m-trash',
             'restore' => 'heroicon-m-arrow-uturn-left',
+
+            'edit.simple' => 'heroicon-o-pencil',
 
             'upload' => 'heroicon-m-arrow-up-tray',
             'download' => 'heroicon-m-arrow-down-tray',
+
+            'create_folder' => 'heroicon-o-folder-plus',
+            'open_folder' => 'heroicon-o-folder-open',
 
             'pdf' => view('inspirecms-support::icons.pdf'),
             'excel' => view('inspirecms-support::icons.excel'),

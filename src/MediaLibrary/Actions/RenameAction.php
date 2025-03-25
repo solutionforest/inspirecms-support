@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms\Support\MediaLibrary\Actions;
 
 use Filament\Forms\Components\TextInput;
+use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset;
 
@@ -17,15 +18,15 @@ class RenameAction extends ItemAction
     {
         parent::setUp();
 
-        $this->label(__('inspirecms-support::media-library.actions.rename.label'));
+        $this->label(__('inspirecms-support::media-library.buttons.rename.label'));
 
-        $this->modalHeading(fn (null | Model | MediaAsset $record) => __('inspirecms-support::media-library.actions.rename.modal.heading', ['name' => $record?->title]));
+        $this->modalHeading(fn (null | Model | MediaAsset $record) => __('inspirecms-support::media-library.buttons.rename.heading', ['name' => $record?->title]));
 
-        $this->successNotificationTitle(__('inspirecms-support::media-library.actions.rename.notification.renamed.title'));
+        $this->successNotificationTitle(__('inspirecms-support::media-library.buttons.rename.messages.success.title'));
 
         $this->authorize('update');
 
-        $this->groupedIcon('heroicon-o-pencil');
+        $this->groupedIcon(FilamentIcon::resolve('inspirecms::edit.simple'));
 
         $this->color('gray');
 

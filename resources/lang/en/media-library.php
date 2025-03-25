@@ -2,99 +2,6 @@
 
 return [
     'media' => 'Media',
-    'actions' => [
-        'view' => [
-            'label' => 'View',
-
-            'modal' => [
-
-                'heading' => 'View :name',
-
-            ],
-        ],
-        'delete' => [
-            'label' => 'Delete',
-
-            'modal' => [
-
-                'heading' => 'Delete :name',
-
-            ],
-
-            'notification' => [
-                'deleted' => [
-                    'title' => 'File Deleted',
-                ],
-            ],
-
-        ],
-        'edit' => [
-            'label' => 'Edit',
-
-            'modal' => [
-
-                'heading' => 'Edit :name',
-
-            ],
-
-            'notification' => [
-                'saved' => [
-                    'title' => 'Saved',
-                ],
-            ],
-        ],
-        'create_folder' => [
-            'label' => 'Create Folder',
-
-            'modal' => [
-
-                'heading' => 'Create Folder',
-
-            ],
-
-            'notification' => [
-                'created' => [
-                    'title' => 'Folder Created',
-                ],
-            ],
-        ],
-        'upload' => [
-            'label' => 'Upload',
-
-            'modal' => [
-
-                'heading' => 'Upload Files',
-
-                'submit' => [
-                    'label' => 'Upload',
-                ],
-            ],
-
-            'notification' => [
-                'uploaded' => [
-                    'title' => 'File Uploaded',
-                ],
-            ],
-        ],
-        'clear' => [
-            'label' => 'Clear',
-        ],
-        'rename' => [
-            'label' => 'Rename',
-
-            'modal' => [
-
-                'heading' => 'Rename :name',
-
-            ],
-
-            'notification' => [
-                'renamed' => [
-                    'title' => 'File Renamed',
-                ],
-            ],
-        ],
-    ],
     'detail_info' => [
         'file_name' => [
             'label' => 'File Name',
@@ -206,5 +113,67 @@ return [
             'label' => 'Mime Type',
             'validation_attribute' => 'mime type',
         ],
+    ],
+    
+    'buttons' => [
+        'view' => [
+            'label' => 'View',
+            'heading' => 'View :name',
+        ],
+        'delete' => [
+            'label' => 'Delete',
+            'heading' => 'Delete :name',
+            'messages' => [
+                'success' => [
+                    'title' => 'File Deleted',
+                ],
+            ],
+
+        ],
+        'edit' => [
+            'label' => 'Edit',
+            'heading' => 'Edit :name',
+            'messages' => [
+                'success' => [
+                    'title' => 'Saved',
+                ],
+            ],
+        ],
+        'open_folder' => [
+            'label' => 'Open folder',
+        ],
+        'create_folder' => [
+            'label' => 'Create Folder',
+            'messages' => [
+                'success' => [
+                    'title' => 'Folder Created',
+                ],
+            ],
+        ],
+        'upload' => [
+            'label' => 'Upload',
+            'heading' => 'Upload Files',
+            'messages' => [
+                'success' => [
+                    'title' => 'File Uploaded',
+                ],
+            ],
+        ],
+        'clear' => [
+            'label' => 'Clear',
+        ],
+        'rename' => [
+            'label' => 'Rename',
+            'heading' => 'Rename :name',
+            'messages' => [
+                'success' => [
+                    'title' => 'File Renamed',
+                ],
+            ],
+        ],
+    ],
+
+    'messages' => [
+        'item_moved' => 'Item moved successfully.',
     ],
 ];

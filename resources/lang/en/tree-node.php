@@ -1,8 +1,8 @@
 <?php
 
-// translations for SolutionForest/InspireCms/Support
 return [
     // General
+    'root' => 'Root',
     'select_file_to_view' => 'Select a file to view its content.',
     'loading_file_content' => 'Loading file content...',
     'unable_to_load_content' => 'Unable to load file content.',
