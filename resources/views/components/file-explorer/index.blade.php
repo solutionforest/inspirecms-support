@@ -4,7 +4,7 @@
     
     <x-slot:sidebar>
         @if (empty($items))
-            <p>@lang('inspirecms-support::tree-node.no_files_or_directories')</p>
+            <p>@lang('inspirecms-support::tree-node.messages.no_files_or_directories')</p>
         @else
             <div x-data="{
                 expandedItems: [],

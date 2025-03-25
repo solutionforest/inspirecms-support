@@ -30,7 +30,7 @@
     }"
 >
     <x-slot name="heading">
-        {{ __('inspirecms-support::actions.select.modal.heading') }}
+        {{ __('inspirecms-support::buttons.select.heading') }}
     </x-slot>
 
     <livewire:inspirecms-support::media-library
@@ -39,10 +39,10 @@
 
     <x-slot name="footerActions">
         <x-filament::button x-on:click="$dispatch('close-modal', { id: '{{ $modalId }}', save: true, statePath: this.formStatePath, data: { selected: this.selected } })">
-            {{ __('inspirecms-support::actions.select.label') }}
+            {{ __('inspirecms-support::buttons.select.label') }}
         </x-filament::button>
         <x-filament::button color="gray" x-on:click="$dispatch('close-modal', { id: '{{ $modalId }}', save: false, statePath: this.formStatePath })">
-            {{ __('inspirecms-support::actions.cancel.label') }}
+            {{ __('inspirecms-support::buttons.cancel.label') }}
         </x-filament::button>
     </x-slot>
 

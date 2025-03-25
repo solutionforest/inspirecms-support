@@ -3,27 +3,16 @@
 return [
 
     'clear' => [
-
         'label' => 'Clear',
-
     ],
 
     'select' => [
-
         'label' => 'Select',
-
-        'modal' => [
-
-            'heading' => 'Select',
-
-        ],
-
+        'heading' => 'Select',
     ],
 
     'cancel' => [
-
         'label' => 'Cancel',
-
     ],
 
 ];

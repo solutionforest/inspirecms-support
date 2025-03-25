@@ -13,11 +13,11 @@
 
     @elseif (filled($selectedItemPath) && $isSelectedItemDirectory($selectedItemPath))
         <p class="text-gray-500 non-selectable-text">
-            @lang('inspirecms-support::tree-node.selected_item_is_directory')
+            @lang('inspirecms-support::tree-node.messages.selected_item_is_directory')
         </p>
     @else
         <p class="text-gray-500 non-selectable-text">
-            @lang('inspirecms-support::tree-node.select_file_to_view')
+            @lang('inspirecms-support::tree-node.messages.select_file_to_view')
         </p>
     @endif
 

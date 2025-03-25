@@ -489,7 +489,6 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
     protected function getBreadcrumbs(): array
     {
         $breadcrumbs = [
-            // todo: add translations
             static::getRootLevelParentId() => __('inspirecms-support::tree-node.root'),
         ];
 
