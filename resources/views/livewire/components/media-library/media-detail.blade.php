@@ -7,7 +7,9 @@
     @if ($mediaItemForActions->isNotEmpty())
         <div class="header">
             <div class="heading">
-                <span class="title">{{ $mediaItemForActions->count() }} items selected</span>
+                <span class="title">
+                    {{ __('inspirecms-support::media-library.messages.xxx_items_selected', ['count' => $mediaItemForActions->count()]) }}
+                </span>
             </div>
             <div class="actions">
                 <x-inspirecms-support::media-library.actions
@@ -41,7 +43,7 @@
 
             <div class="information-ctn">
                 <div class="pb-4">
-                    <span class="font-bold">Information</span>
+                    <span class="font-bold">{{ __('inspirecms-support::media-library.detail_info.heading') }}</span>
                 </div>
                 <div class="information-content-ctn">
                     @foreach ($this->getInformationFor($toggleMedia) ?? [] as $item)

@@ -72,7 +72,9 @@
         <div class="title-ctn">
             <span class="title">{{ $mediaItem->title }}</span>
             @if ($mediaItem->isFolder())
-                <span class="description">{{ $mediaItem->children_count }} items</span>
+                <span class="description">
+                    {{ __('inspirecms-support::media-library.messages.total_xxx_items', ['count' => $mediaItem->children_count]) }}
+                </span>
             @endif
         </div>
     </div>

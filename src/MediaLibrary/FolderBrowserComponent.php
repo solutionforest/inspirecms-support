@@ -16,8 +16,6 @@ class FolderBrowserComponent extends Component implements Contracts\HasItemActio
     #[Reactive]
     public ?Model $parentRecord = null;
 
-    public string $title = 'Folders';
-
     public function placeholder()
     {
         return view('inspirecms-support::components.media-library.loading-section', [

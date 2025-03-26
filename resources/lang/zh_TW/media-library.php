@@ -1,8 +1,21 @@
 <?php
 
 return [
-    'media' => '媒體',
+
+    'media' => [
+        'singular' => '媒體',
+        'plural' => '媒體',
+    ],
+
+    'folder' => [
+        'singular' => '資料夾',
+        'plural' => '資料夾',
+    ],
+
     'detail_info' => [
+
+        'heading' => '資訊',
+
         'file_name' => [
             'label' => '檔案名稱',
         ],
@@ -50,6 +63,7 @@ return [
             ],
         ],
     ],
+
     'filter' => [
         'title' => [
             'placeholder' => '按標題搜索',
@@ -65,6 +79,7 @@ return [
             ],
         ],
     ],
+
     'sort' => [
         'type' => [
             'placeholder' => '排序類型',
@@ -84,6 +99,7 @@ return [
             ],
         ],
     ],
+
     'forms' => [
         'title' => [
             'label' => '標題',
@@ -171,7 +187,10 @@ return [
             ],
         ],
     ],
+
     'messages' => [
         'item_moved' => '項目已成功移動。',
+        'xxx_items_selected' => ':count 項目已選擇。',
+        'total_xxx_items' => ':count 項目',
     ],
 ];

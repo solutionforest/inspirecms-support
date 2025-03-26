@@ -244,7 +244,6 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
             $success = $targetAsset->setParentNode($toAsset);
 
             if ($success == true) {
-                // todo: add translations
                 Notification::make()
                     ->title(__('inspirecms-support::media-library.messages.item_moved'))
                     ->success()

@@ -1,8 +1,21 @@
 <?php
 
 return [
-    'media' => 'Media',
+
+    'media' => [
+        'singular' => 'Media',
+        'plural' => 'Media',
+    ],
+
+    'folder' => [
+        'singular' => 'Folder',
+        'plural' => 'Folders',
+    ],
+
     'detail_info' => [
+        
+        'heading' => 'Information',
+
         'file_name' => [
             'label' => 'File Name',
         ],
@@ -50,6 +63,7 @@ return [
             ],
         ],
     ],
+
     'filter' => [
         'title' => [
             'placeholder' => 'Search by title',
@@ -65,6 +79,7 @@ return [
             ],
         ],
     ],
+
     'sort' => [
         'type' => [
             'placeholder' => 'Sort Type',
@@ -84,6 +99,7 @@ return [
             ],
         ],
     ],
+
     'forms' => [
         'title' => [
             'label' => 'Title',
@@ -175,5 +191,7 @@ return [
 
     'messages' => [
         'item_moved' => 'Item moved successfully.',
+        'xxx_items_selected' => ':count items selected.',
+        'total_xxx_items' => ':count items',
     ],
 ];

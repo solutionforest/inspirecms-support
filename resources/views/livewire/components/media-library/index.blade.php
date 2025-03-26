@@ -71,7 +71,7 @@
             </div>
             <div class="browser-items-ctn ctn">
                 <div class="browser-items-grid-ctn">
-                    <h4>Folders</h4>
+                    <h4>{{ __('inspirecms-support::media-library.folder.plural') }}</h4>
                     <div class="w-full" wire:loading wire:target="{{ $loadingIndicatorTargets }}">
                         <x-inspirecms-support::media-library.loading-section :count="$loadingIndicator['count']" :columns="$loadingIndicator['columns']" />
                     </div>
@@ -88,7 +88,7 @@
                     </div>
                 </div>
                 <div class="browser-items-grid-ctn">
-                    <h4>Media</h4>
+                    <h4>{{ __('inspirecms-support::media-library.media.plural') }}</h4>
                     <div class="w-full" wire:loading wire:target="{{ $loadingIndicatorTargets }}">
                         <x-inspirecms-support::media-library.loading-section :count="$loadingIndicator['count']" :columns="$loadingIndicator['columns']" />
                     </div>
