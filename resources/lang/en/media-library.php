@@ -13,7 +13,7 @@ return [
     ],
 
     'detail_info' => [
-        
+
         'heading' => 'Information',
 
         'file_name' => [
@@ -130,7 +130,7 @@ return [
             'validation_attribute' => 'mime type',
         ],
     ],
-    
+
     'buttons' => [
         'view' => [
             'label' => 'View',

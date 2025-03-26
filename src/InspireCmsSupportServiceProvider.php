@@ -109,7 +109,7 @@ class InspireCmsSupportServiceProvider extends PackageServiceProvider
             'warn' => 'heroicon-o-exclamation-triangle',
             'error' => 'heroicon-o-exclamation-circle',
             'success' => 'heroicon-o-check-circle',
-            
+
             'add' => 'heroicon-o-plus-small',
             'edit' => 'heroicon-m-pencil-square',
             'view' => 'heroicon-o-eye',
