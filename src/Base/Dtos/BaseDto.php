@@ -50,7 +50,7 @@ abstract class BaseDto
 
     public function toArray(): array
     {
-        return (array) $this;
+        return $this->__toArray();
     }
 
     public function __toString()
