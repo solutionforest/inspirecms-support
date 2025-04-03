@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms\Support\Base\Dtos;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 
 /**
  * Class BaseModelDto
@@ -45,5 +46,14 @@ abstract class BaseModelDto extends BaseDto
     public static function fromModel($model)
     {
         return static::fromArray($model->attributesToArray())->setModel($model);
+    }
+
+    public function __toString()
+    {
+        $exclude = ['model'];
+
+        $array = Arr::except($this->__toArray(), $exclude);
+
+        return json_encode($array);
     }
 }
