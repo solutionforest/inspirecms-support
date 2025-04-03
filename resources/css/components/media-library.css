@@ -1,13 +1,12 @@
 .media-library {
-    @apply rounded-md;
-    background-color: white;
+    @apply rounded-md bg-white;
     &:is(.dark *) {
         background-color: rgba(var(--gray-900),1);
     }
 }
 
 .media-library__header, .media-library__footer {
-    @apply top-16 sticky z-10 h-14 px-4 py-2 backdrop-blur-sm ring-1 ring-slate-900/10;
+    @apply h-14 px-4 py-2 backdrop-blur-sm ring-1 ring-slate-900/10;
     background-color: rgba(var(--gray-50),0.5);
     &:is(.dark *) {
         @apply ring-black/10;
@@ -15,7 +14,7 @@
     }
 }
 .media-library__header {
-    @apply flex items-center justify-between;
+    @apply top-16 sticky z-10 flex items-center justify-between;
 }
 
 .media-library__content {
@@ -90,6 +89,10 @@
         @apply flex-auto p-4;
         max-width: 400px;
         border-left: 1px solid rgba(var(--gray-300), 1);
+
+        &:is(.dark *) {
+            border-color: rgba(var(--gray-700), 1);
+        }
     }
 }
 
@@ -115,9 +118,13 @@
     }
 
     .browser-item, .folder-item {
-        @apply hover:ring-1 hover:ring-gray-300 rounded-lg;
+        @apply rounded-lg;
+        &:hover {
+            @apply ring-1;
+            --tw-ring-color: rgb(var(--gray-300));
+        }
         &:is(.dark *) {
-            @apply hover:ring-white/50;
+            @apply hover:ring-white/20;
         }
     }
     .browser-item .title-ctn, .browser-item img, .folder-item .main, .browser-items-grid-ctn {
@@ -154,14 +161,47 @@
         }
 
         input[type=checkbox] {
-            @apply appearance-none rounded border border-gray-300 bg-white disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100 forced-colors:appearance-auto;
+
+            @apply appearance-none rounded border-none bg-white shadow-sm ring-1 transition duration-75;
+            
+            --tw-ring-color: rgb(var(--gray-400));
+
             &:checked, &:indeterminate, &:focus-visible {
                 border-color: rgba(var(--primary-600), 1);
                 background-color: rgba(var(--primary-600), 1);
             }
+
+            &:checked, &:indeterminate {
+                @apply ring-0;
+            }
             &:focus-visible, &:focus {
-                @apply outline outline-2 outline-offset-2;
-                outline-color: rgba(var(--primary-600), 1);
+                @apply ring-2 ring-offset-0;
+            }
+
+            &:disabled {
+
+                @apply pointer-events-none;
+
+                color: rgb(var(--gray-50));
+                background-color: rgb(var(--gray-50));
+                
+                &:checked, &:indeterminate {
+                    color: rgb(var(--gray-400));
+                    background-color: rgb(var(--gray-400));
+                }
+            }
+
+            &:is(.dark *) {
+                @apply bg-white/5;
+
+                &:disabled {
+                    @apply bg-transparent;
+
+                    &:checked, &:indeterminate {
+                        background-color: rgb(var(--gray-600));
+                    }
+                }
+
             }
         }
         

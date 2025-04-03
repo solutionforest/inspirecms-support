@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Support\MediaLibrary\Actions;
 
+use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Database\Eloquent\Model;
 
 class DeleteAction extends ItemAction
@@ -15,21 +16,21 @@ class DeleteAction extends ItemAction
     {
         parent::setUp();
 
-        $this->label(__('inspirecms-support::media-library.actions.delete.label'));
+        $this->label(__('inspirecms-support::media-library.buttons.delete.label'));
 
         $this->requiresConfirmation();
 
-        $this->modalHeading(fn () => __('inspirecms-support::media-library.actions.delete.modal.heading', ['name' => $this->getModelLabel()]));
+        $this->modalHeading(fn () => __('inspirecms-support::media-library.buttons.delete.heading', ['name' => $this->getModelLabel()]));
 
-        $this->successNotificationTitle(__('inspirecms-support::media-library.actions.delete.notification.deleted.title'));
+        $this->successNotificationTitle(__('inspirecms-support::media-library.buttons.delete.messages.success.title'));
 
         $this->authorize('delete');
 
         $this->color('danger');
 
-        $this->icon('heroicon-o-trash');
+        $this->icon(FilamentIcon::resolve('inspirecms::delete'));
 
-        $this->modalIcon('heroicon-o-trash');
+        $this->modalIcon(FilamentIcon::resolve('inspirecms::delete'));
 
         $this->action(function (?Model $record) {
             if ($record) {

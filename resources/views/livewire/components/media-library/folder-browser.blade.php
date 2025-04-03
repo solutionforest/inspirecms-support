@@ -1,7 +1,7 @@
 <div class="media-library__folders">
     <div class="header">
         <div class="heading">
-            <span class="title">{{ $title }}</span>
+            <span class="title">{{ __('inspirecms-support::media-library.folder.plural') }}</span>
         </div>
     </div>
     <div class="main">
@@ -34,7 +34,7 @@
                         {{ $mediaItem->title }}
                     </span>
                     <span class="description">
-                        {{ $childrenCount }} items
+                        {{ __('inspirecms-support::media-library.messages.total_xxx_items', ['count' => $childrenCount]) }}
                     </span>
                 </div>
 

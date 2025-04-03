@@ -1,79 +1,21 @@
 <?php
 
 return [
-    'media' => '媒體',
-    'actions' => [
-        'view' => [
-            'label' => '查看',
 
-            'modal' => [
-
-                'heading' => '查看:name',
-
-            ],
-        ],
-        'delete' => [
-            'label' => '刪除',
-
-            'notification' => [
-                'deleted' => [
-                    'title' => '檔案已刪除',
-                ],
-            ],
-        ],
-        'edit' => [
-            'label' => '編輯',
-
-            'modal' => [
-
-                'heading' => '編輯:name',
-
-            ],
-
-            'notification' => [
-                'saved' => [
-                    'title' => '已保存',
-                ],
-            ],
-        ],
-        'open_folder' => [
-            'label' => '打開資料夾',
-        ],
-        'create_folder' => [
-            'label' => '創建資料夾',
-
-            'modal' => [
-
-                'heading' => '創建資料夾',
-
-            ],
-
-            'notification' => [
-                'created' => [
-                    'title' => '資料夾已創建',
-                ],
-            ],
-        ],
-        'upload' => [
-            'label' => '上傳',
-
-            'modal' => [
-
-                'heading' => '上傳檔案',
-
-            ],
-
-            'notification' => [
-                'uploaded' => [
-                    'title' => '檔案已上傳',
-                ],
-            ],
-        ],
-        'clear' => [
-            'label' => '清除',
-        ],
+    'media' => [
+        'singular' => '媒體',
+        'plural' => '媒體',
     ],
+
+    'folder' => [
+        'singular' => '資料夾',
+        'plural' => '資料夾',
+    ],
+
     'detail_info' => [
+
+        'heading' => '資訊',
+
         'file_name' => [
             'label' => '檔案名稱',
         ],
@@ -121,6 +63,7 @@ return [
             ],
         ],
     ],
+
     'filter' => [
         'title' => [
             'placeholder' => '按標題搜索',
@@ -136,6 +79,7 @@ return [
             ],
         ],
     ],
+
     'sort' => [
         'type' => [
             'placeholder' => '排序類型',
@@ -155,6 +99,7 @@ return [
             ],
         ],
     ],
+
     'forms' => [
         'title' => [
             'label' => '標題',
@@ -184,5 +129,68 @@ return [
             'label' => 'MIME 類型',
             'validation_attribute' => 'MIME 類型',
         ],
+    ],
+
+    'buttons' => [
+        'view' => [
+            'label' => '查看',
+            'heading' => '查看:name',
+        ],
+        'delete' => [
+            'label' => '刪除',
+            'heading' => '刪除 :name',
+            'messages' => [
+                'success' => [
+                    'title' => '檔案已刪除',
+                ],
+            ],
+        ],
+        'edit' => [
+            'label' => '編輯',
+            'heading' => '編輯:name',
+            'messages' => [
+                'success' => [
+                    'title' => '已保存',
+                ],
+            ],
+        ],
+        'open_folder' => [
+            'label' => '打開資料夾',
+        ],
+        'create_folder' => [
+            'label' => '創建資料夾',
+            'messages' => [
+                'success' => [
+                    'title' => '資料夾已創建',
+                ],
+            ],
+        ],
+        'upload' => [
+            'label' => '上傳',
+            'heading' => '上傳檔案',
+            'messages' => [
+                'success' => [
+                    'title' => '檔案已上傳',
+                ],
+            ],
+        ],
+        'clear' => [
+            'label' => '清除',
+        ],
+        'rename' => [
+            'label' => '重命名',
+            'heading' => '重命名 :name',
+            'messages' => [
+                'success' => [
+                    'title' => '檔案已重命名',
+                ],
+            ],
+        ],
+    ],
+
+    'messages' => [
+        'item_moved' => '項目已成功移動。',
+        'xxx_items_selected' => ':count 項目已選擇。',
+        'total_xxx_items' => ':count 項目',
     ],
 ];

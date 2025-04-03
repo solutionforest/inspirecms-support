@@ -6,6 +6,7 @@ use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Forms;
 use Filament\Notifications\Notification;
+use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
@@ -243,9 +244,8 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
             $success = $targetAsset->setParentNode($toAsset);
 
             if ($success == true) {
-                // todo: add translations
                 Notification::make()
-                    ->title('Media Item Moved')
+                    ->title(__('inspirecms-support::media-library.messages.item_moved'))
                     ->success()
                     ->send();
                 $this->resetAll();
@@ -263,12 +263,11 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
     {
         return [
             Actions\Action::make('createFolder')
-                ->label(__('inspirecms-support::media-library.actions.create_folder.label'))
-                ->modalHeading(__('inspirecms-support::media-library.actions.create_folder.modal.heading'))
-                ->successNotificationTitle(__('inspirecms-support::media-library.actions.create_folder.notification.created.title'))
+                ->label(__('inspirecms-support::media-library.buttons.create_folder.label'))
+                ->successNotificationTitle(__('inspirecms-support::media-library.buttons.create_folder.messages.success.title'))
                 ->authorize('create')
-                ->icon('heroicon-o-folder-plus')
-                ->modalIcon('heroicon-o-folder-plus')
+                ->icon(FilamentIcon::resolve('inspirecms::create_folder'))
+                ->modalIcon(FilamentIcon::resolve('inspirecms::create_folder'))
                 ->modalWidth('sm')
                 ->color(\Filament\Support\Colors\Color::Neutral)
                 ->outlined()
@@ -304,8 +303,7 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
     protected function getMediaItemActions(): array
     {
         return [
-            Actions\ItemAction::make('openFolder')
-                ->icon('heroicon-o-folder-open')
+            Actions\OpenFolderAction::make()
                 ->dispatch('openFolder', fn (?Model $record) => ['mediaId' => $record?->getKey()]),
 
             Actions\EditAction::make(),
@@ -332,7 +330,7 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
         $action->parentKey(fn () => $this->parentKey);
 
         switch (true) {
-            case $action->getName() == 'openFolder':
+            case $action instanceof Actions\OpenFolderAction:
                 $action
                     ->visible(fn (?Model $record): bool => $record !== null && $record instanceof MediaAsset && $record->isFolder());
 
@@ -490,8 +488,7 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
     protected function getBreadcrumbs(): array
     {
         $breadcrumbs = [
-            // todo: add translations
-            static::getRootLevelParentId() => 'Root',
+            static::getRootLevelParentId() => __('inspirecms-support::tree-node.root'),
         ];
 
         if ($this->isUnderRoot()) {

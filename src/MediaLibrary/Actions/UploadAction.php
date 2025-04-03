@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Support\MediaLibrary\Actions;
 
+use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Database\Eloquent\Model;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use SolutionForest\InspireCms\Support\Facades\MediaLibraryRegistry;
@@ -18,15 +19,15 @@ class UploadAction extends Action
     {
         parent::setUp();
 
-        $this->label(__('inspirecms-support::media-library.actions.upload.label'));
+        $this->label(__('inspirecms-support::media-library.buttons.upload.label'));
 
-        $this->modalHeading(__('inspirecms-support::media-library.actions.upload.modal.heading'));
+        $this->modalHeading(__('inspirecms-support::media-library.buttons.upload.heading'));
 
-        $this->successNotificationTitle(__('inspirecms-support::media-library.actions.upload.notification.uploaded.title'));
+        $this->successNotificationTitle(__('inspirecms-support::media-library.buttons.upload.messages.success.title'));
 
         $this->authorize('create');
 
-        $this->icon('heroicon-o-arrow-up-tray');
+        $this->icon(FilamentIcon::resolve('inspirecms::upload'));
 
         $this->modalWidth('screen-xl');
 
@@ -34,7 +35,7 @@ class UploadAction extends Action
 
         $this->stickyModalFooter();
 
-        $this->modalSubmitActionLabel(__('inspirecms-support::media-library.actions.upload.modal.submit.label'));
+        $this->modalSubmitActionLabel(__('inspirecms-support::media-library.buttons.upload.label'));
 
         $this->form([
 

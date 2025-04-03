@@ -6,6 +6,7 @@ use Filament\Actions\Action;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Database\Eloquent\Model;
 use League\Flysystem\UnableToCheckFileExistence;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
@@ -23,15 +24,15 @@ class EditAction extends ItemAction
     {
         parent::setUp();
 
-        $this->label(__('inspirecms-support::media-library.actions.edit.label'));
+        $this->label(__('inspirecms-support::media-library.buttons.edit.label'));
 
-        $this->modalHeading(fn () => __('inspirecms-support::media-library.actions.edit.modal.heading', ['name' => $this->getModelLabel()]));
+        $this->modalHeading(fn () => __('inspirecms-support::media-library.buttons.edit.heading', ['name' => $this->getModelLabel()]));
 
-        $this->successNotificationTitle(__('inspirecms-support::media-library.actions.edit.notification.saved.title'));
+        $this->successNotificationTitle(__('inspirecms-support::media-library.buttons.edit.messages.success.title'));
 
         $this->authorize('update');
 
-        $this->groupedIcon('heroicon-o-pencil');
+        $this->groupedIcon(FilamentIcon::resolve('inspirecms::edit'));
 
         $this
             ->fillForm(function (?Model $record) {
