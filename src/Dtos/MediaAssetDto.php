@@ -63,6 +63,7 @@ class MediaAssetDto extends BaseModelDto
         } catch (\Throwable $th) {
             // Fallback to default URL if an error occurs
         }
+
         return $this->model?->getUrl($conversionName);
     }
 }
