@@ -55,6 +55,14 @@ class MediaAssetDto extends BaseModelDto
 
     public function getUrl(string $conversionName = ''): ?string
     {
+        try {
+            return route('inspirecms.asset', [
+                'key' => $this->model?->getKey(),
+                'conversion' => $conversionName,
+            ]);
+        } catch (\Throwable $th) {
+            // Fallback to default URL if an error occurs
+        }
         return $this->model?->getUrl($conversionName);
     }
 }
