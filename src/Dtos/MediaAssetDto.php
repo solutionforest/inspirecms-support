@@ -79,14 +79,13 @@ class MediaAssetDto extends BaseModelDto
 
     /**
      * @param ...string $conversionNames
-     * @return string|null
      */
-    public function getSrcset(... $conversionNames): ?string
+    public function getSrcset(...$conversionNames): ?string
     {
         $srcset = [];
-        
+
         $media = $this->model?->getFirstMedia();
-        if (!$media) {
+        if (! $media) {
             return null;
         }
         foreach (Arr::flatten($conversionNames) as $conversionName) {

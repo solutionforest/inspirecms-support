@@ -5,15 +5,12 @@ namespace SolutionForest\InspireCms\Support\Models;
 use FFMpeg\FFMpeg;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Support\Facades\Storage;
-use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
 use SolutionForest\InspireCms\Support\Facades\MediaLibraryRegistry;
 use SolutionForest\InspireCms\Support\Helpers\KeyHelper;
 use SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset as MediaAssetContract;
 use Spatie\Image\Enums\Fit;
 use Spatie\MediaLibrary\InteractsWithMedia;
-use Spatie\MediaLibrary\MediaCollections\FileAdder;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class MediaAsset extends BaseModel implements MediaAssetContract
 {
@@ -256,7 +253,7 @@ class MediaAsset extends BaseModel implements MediaAssetContract
         return $customProperties;
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
     public function addMediaWithMappedProperties($file)
     {
         $fileAdder = $this->addMedia($file);
@@ -268,12 +265,12 @@ class MediaAsset extends BaseModel implements MediaAssetContract
     }
 
     /**
-     * @param \Spatie\MediaLibrary\MediaCollections\Models\Media $media
+     * @param  \Spatie\MediaLibrary\MediaCollections\Models\Media  $media
      * @return void
      */
     private function syncMediaProperties($media)
     {
-        // Adjust properties 
+        // Adjust properties
         $customProperties = [];
         $shouldRetry = false;
 
