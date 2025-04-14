@@ -3,10 +3,13 @@
 namespace SolutionForest\InspireCms\Support\Models\Contracts;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\UploadedFile;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use SolutionForest\InspireCms\Support\Base\Models\Interfaces\BelongsToNestableTree;
 use SolutionForest\InspireCms\Support\Base\Models\Interfaces\HasDtoModel;
 use SolutionForest\InspireCms\Support\Base\Models\Interfaces\HasRecursiveRelationshipsInterface;
 use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\MediaCollections\FileAdder;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 /**
@@ -78,6 +81,13 @@ interface MediaAsset extends BelongsToNestableTree, HasAuthor, HasDtoModel, HasM
      * @return bool True if the media asset is a folder, false otherwise.
      */
     public function isFolder();
+
+    /**
+     * 
+     * @param string | UploadedFile | TemporaryUploadedFile $file
+     * @return FileAdder
+     */
+    public function addMediaWithMappedProperties($file);
 
     /**
      * Get the columns to be displayed.
