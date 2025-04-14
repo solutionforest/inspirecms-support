@@ -12,12 +12,12 @@ class MediaLibraryRegistry implements MediaLibraryRegistryInterface
 
     protected array $thumbnailCrop = [300, 300];
 
+    protected bool $shouldMapVideoPropertiesWithFfmpeg = false;
+
     /**
      * @var array<Closure>
      */
     protected array $registerConversionsUsing = [];
-
-    protected bool $shouldMapVideoPropertiesWithFfmpeg = false;
 
     public function setDisk(string $disk): void
     {
