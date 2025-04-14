@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Support\Dtos;
 
+use Illuminate\Support\Arr;
 use SolutionForest\InspireCms\Support\Base\Dtos\BaseModelDto;
 
 /**
@@ -55,15 +56,46 @@ class MediaAssetDto extends BaseModelDto
 
     public function getUrl(string $conversionName = ''): ?string
     {
+        $url = null;
+        if (filled($conversionName)) {
+            $media = $this->model->getFirstMedia();
+            $url = $media?->getUrl($conversionName);
+        }
+
+        if (filled($url)) {
+            return $url;
+        }
+
         try {
             return route('inspirecms.asset', [
                 'key' => $this->model?->getKey(),
-                'conversion' => $conversionName,
             ]);
         } catch (\Throwable $th) {
             // Fallback to default URL if an error occurs
         }
 
         return $this->model?->getUrl($conversionName);
+    }
+
+    /**
+     * @param ...string $conversionNames
+     * @return string|null
+     */
+    public function getSrcset(... $conversionNames): ?string
+    {
+        $srcset = [];
+        
+        $media = $this->model?->getFirstMedia();
+        if (!$media) {
+            return null;
+        }
+        foreach (Arr::flatten($conversionNames) as $conversionName) {
+            $url = $media->getSrcset($conversionName);
+            if (filled($url)) {
+                $srcset[] = $url;
+            }
+        }
+
+        return implode(', ', $srcset);
     }
 }

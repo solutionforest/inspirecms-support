@@ -40,10 +40,14 @@ class MediaAsset extends BaseModel implements MediaAssetContract
     /** {@inheritDoc} */
     public function registerMediaConversions($media = null): void
     {
-        [$width, $height] = MediaLibraryRegistry::getThumbnailCrop();
+        foreach (MediaLibraryRegistry::getRegisterConversionsUsing() as $callback) {
+            $callback($this, $media);
+        }
+
+        [$thumbW, $thumbH] = MediaLibraryRegistry::getThumbnailCrop();
         $this
             ->addMediaConversion('preview')
-            ->fit(Fit::Crop, $width, $height)
+            ->fit(Fit::Crop, $thumbW, $thumbH)
             ->nonQueued();
     }
 

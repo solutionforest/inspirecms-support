@@ -22,4 +22,8 @@ interface MediaLibraryRegistryInterface
     public function getThumbnailCrop(): array;
 
     public function shouldMapVideoPropertiesWithFfmpeg(): bool;
+
+    public function registerConversionUsing(\Closure $callback, bool $merge = true): void;
+
+    public function getRegisterConversionsUsing(): array;
 }
