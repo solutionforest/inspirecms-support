@@ -83,8 +83,7 @@ interface MediaAsset extends BelongsToNestableTree, HasAuthor, HasDtoModel, HasM
     public function isFolder();
 
     /**
-     * 
-     * @param string | UploadedFile | TemporaryUploadedFile $file
+     * @param  string | UploadedFile | TemporaryUploadedFile  $file
      * @return FileAdder
      */
     public function addMediaWithMappedProperties($file);
