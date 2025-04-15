@@ -2,6 +2,10 @@
 
 All notable changes to `inspirecms-support` will be documented in this file.
 
+## 0.0.36 - 2025-04-15
+
+**Full Changelog**: https://github.com/solutionforest/inspirecms-support/compare/0.0.35...0.0.36
+
 ## 0.0.34 - 2025-04-03
 
 **Full Changelog**: https://github.com/solutionforest/inspirecms-support/compare/0.0.33...0.0.34
