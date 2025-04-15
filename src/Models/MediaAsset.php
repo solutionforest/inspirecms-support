@@ -5,15 +5,12 @@ namespace SolutionForest\InspireCms\Support\Models;
 use FFMpeg\FFMpeg;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Support\Facades\Storage;
-use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
 use SolutionForest\InspireCms\Support\Facades\MediaLibraryRegistry;
 use SolutionForest\InspireCms\Support\Helpers\KeyHelper;
 use SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset as MediaAssetContract;
 use Spatie\Image\Enums\Fit;
 use Spatie\MediaLibrary\InteractsWithMedia;
-use Spatie\MediaLibrary\MediaCollections\FileAdder;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class MediaAsset extends BaseModel implements MediaAssetContract
 {
@@ -40,10 +37,14 @@ class MediaAsset extends BaseModel implements MediaAssetContract
     /** {@inheritDoc} */
     public function registerMediaConversions($media = null): void
     {
-        [$width, $height] = MediaLibraryRegistry::getThumbnailCrop();
+        foreach (MediaLibraryRegistry::getRegisterConversionsUsing() as $callback) {
+            $callback($this, $media);
+        }
+
+        [$thumbW, $thumbH] = MediaLibraryRegistry::getThumbnailCrop();
         $this
             ->addMediaConversion('preview')
-            ->fit(Fit::Crop, $width, $height)
+            ->fit(Fit::Crop, $thumbW, $thumbH)
             ->nonQueued();
     }
 
@@ -252,19 +253,33 @@ class MediaAsset extends BaseModel implements MediaAssetContract
         return $customProperties;
     }
 
-    public function addMediaWithMappedProperties(string | UploadedFile | TemporaryUploadedFile $file): FileAdder
+    /** {@inheritDoc} */
+    public function addMediaWithMappedProperties($file)
     {
+        $fileAdder = $this->addMedia($file);
+        $mediaItem = $fileAdder->toMediaCollection();
+
+        $this->syncMediaProperties($mediaItem);
+
+        return $fileAdder;
+    }
+
+    /**
+     * @param  \Spatie\MediaLibrary\MediaCollections\Models\Media  $media
+     * @return void
+     */
+    private function syncMediaProperties($media)
+    {
+        // Adjust properties
         $customProperties = [];
         $shouldRetry = false;
 
-        $fileAdder = $this->addMedia($file);
-        $mediaItem = $fileAdder->toMediaCollection();
-        $contents = Storage::disk(MediaLibraryRegistry::getDisk())->get($mediaItem->getPathRelativeToRoot());
-        $fileExtension = pathinfo($mediaItem->file_name, PATHINFO_EXTENSION);
+        $contents = Storage::disk(MediaLibraryRegistry::getDisk())->get($media->getPathRelativeToRoot());
+        $fileExtension = pathinfo($media->file_name, PATHINFO_EXTENSION);
 
         try {
             if ($this->shouldMapVideoPropertiesWithFfmpeg()) {
-                $videoPath = $mediaItem->getPath();
+                $videoPath = $media->getPath();
                 $customProperties = static::getPropertiesForVideo($videoPath, $customProperties);
             }
         } catch (\Exception $e) {
@@ -291,10 +306,10 @@ class MediaAsset extends BaseModel implements MediaAssetContract
         }
 
         foreach ($customProperties as $key => $value) {
-            $mediaItem->setCustomProperty($key, $value);
+            $media->setCustomProperty($key, $value);
         }
-        $mediaItem->save();
+        $media->save();
 
-        return $fileAdder;
+        return $media;
     }
 }

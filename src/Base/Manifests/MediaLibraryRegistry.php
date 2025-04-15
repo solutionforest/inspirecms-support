@@ -2,6 +2,8 @@
 
 namespace SolutionForest\InspireCms\Support\Base\Manifests;
 
+use Closure;
+
 class MediaLibraryRegistry implements MediaLibraryRegistryInterface
 {
     protected string $disk = 'public';
@@ -11,6 +13,11 @@ class MediaLibraryRegistry implements MediaLibraryRegistryInterface
     protected array $thumbnailCrop = [300, 300];
 
     protected bool $shouldMapVideoPropertiesWithFfmpeg = false;
+
+    /**
+     * @var array<Closure>
+     */
+    protected array $registerConversionsUsing = [];
 
     public function setDisk(string $disk): void
     {
@@ -50,5 +57,19 @@ class MediaLibraryRegistry implements MediaLibraryRegistryInterface
     public function shouldMapVideoPropertiesWithFfmpeg(): bool
     {
         return $this->shouldMapVideoPropertiesWithFfmpeg;
+    }
+
+    public function registerConversionUsing(Closure $callback, bool $merge = true): void
+    {
+        if ($merge) {
+            $this->registerConversionsUsing[] = $callback;
+        } else {
+            $this->registerConversionsUsing = [$callback];
+        }
+    }
+
+    public function getRegisterConversionsUsing(): array
+    {
+        return $this->registerConversionsUsing;
     }
 }

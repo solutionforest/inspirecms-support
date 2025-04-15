@@ -14,6 +14,8 @@ use SolutionForest\InspireCms\Support\Base\Manifests\MediaLibraryRegistryInterfa
  * @method static string getDirectory()
  * @method static array getThumbnailCrop()
  * @method static bool shouldMapVideoPropertiesWithFfmpeg()
+ * @method static void registerConversionUsing(\Closure $callback, bool $merge = true)
+ * @method static array getRegisterConversionsUsing()
  *
  * @see \SolutionForest\InspireCms\Support\Base\Manifests\MediaLibraryRegistry
  */
