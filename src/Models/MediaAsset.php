@@ -97,6 +97,10 @@ class MediaAsset extends BaseModel implements MediaAssetContract
             return $this->getThumbnailUrl();
         }
 
+        if ($this->isSvg()) {
+            return 'inspirecms::svg';
+        }
+
         if ($this->isAudio()) {
             return 'heroicon-o-musical-note';
         }
@@ -123,7 +127,7 @@ class MediaAsset extends BaseModel implements MediaAssetContract
 
     public function isImage()
     {
-        return $this->matchesMimeType('image/');
+        return $this->matchesMimeType('image/') && ! $this->isSvg();
     }
 
     public function isVideo()
