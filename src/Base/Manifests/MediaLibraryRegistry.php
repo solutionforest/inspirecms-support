@@ -91,7 +91,7 @@ class MediaLibraryRegistry implements MediaLibraryRegistryInterface
 
     public function hasLimitedMimeTypes(): bool
     {
-        return !empty($this->getLimitedMimeTypes());
+        return ! empty($this->getLimitedMimeTypes());
     }
 
     public function getLimitedMimeTypes(): array

@@ -43,7 +43,7 @@ class MediaAsset extends BaseModel implements MediaAssetContract
 
         [$thumbW, $thumbH] = MediaLibraryRegistry::getThumbnailCrop();
         $thumbConversion = 'preview';
-        
+
         $this
             ->addMediaConversion($thumbConversion)
             ->fit(Fit::Crop, $thumbW, $thumbH)
@@ -143,7 +143,7 @@ class MediaAsset extends BaseModel implements MediaAssetContract
     public function isPdf()
     {
         $mimeTypes = ['application/pdf', 'application/x-pdf', 'application/acrobat', 'applications/vnd.pdf', 'text/pdf', 'text/x-pdf'];
-        
+
         foreach ($mimeTypes as $mimeType) {
             if ($this->matchesMimeType($mimeType)) {
                 return true;

@@ -79,7 +79,7 @@ class EditAction extends ItemAction
                 if (MediaLibraryRegistry::hasLimitedMimeTypes()) {
                     $file->acceptedFileTypes(MediaLibraryRegistry::getLimitedMimeTypes());
                 }
-            
+
                 if (($maxSize = MediaLibraryRegistry::getMaxSize()) !== null) {
                     $file->maxSize($maxSize);
                 }

@@ -12,7 +12,7 @@ interface MediaLibraryRegistryInterface
 
     public function setShouldMapVideoPropertiesWithFfmpeg(bool $condition): void;
 
-    public function setLimitedMimeTypes(array $limitedMimeTypes): void; 
+    public function setLimitedMimeTypes(array $limitedMimeTypes): void;
 
     public function registerConversionUsing(\Closure $callback, bool $merge = true): void;
 

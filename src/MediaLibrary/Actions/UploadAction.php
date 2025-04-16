@@ -5,7 +5,6 @@ namespace SolutionForest\InspireCms\Support\MediaLibrary\Actions;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Database\Eloquent\Model;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
-use SolutionForest\InspireCms\Filament\Clusters\Media;
 use SolutionForest\InspireCms\Support\Facades\MediaLibraryRegistry;
 use SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset;
 
@@ -52,7 +51,7 @@ class UploadAction extends Action
             if (MediaLibraryRegistry::hasLimitedMimeTypes()) {
                 $file->acceptedFileTypes(MediaLibraryRegistry::getLimitedMimeTypes());
             }
-            
+
             if (($maxSize = MediaLibraryRegistry::getMaxSize()) !== null) {
                 $file->maxSize($maxSize);
             }
