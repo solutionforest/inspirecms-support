@@ -17,7 +17,7 @@ class Action extends BaseAction
 
         $this->model(ModelRegistry::get(MediaAsset::class));
 
-        $this->modelLabel(fn ($record) => $record ? $this->getRecordTitle($record) : __('inspirecms-support::media-library.media'));
+        $this->modelLabel(fn ($record) => $record ? $this->getRecordTitle($record) : __('inspirecms-support::media-library.media.singular'));
 
         $this->recordTitleAttribute('title');
     }
