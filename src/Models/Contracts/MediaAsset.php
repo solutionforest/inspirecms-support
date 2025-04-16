@@ -55,6 +55,13 @@ interface MediaAsset extends BelongsToNestableTree, HasAuthor, HasDtoModel, HasM
     public function getThumbnail();
 
     /**
+     * Determine if the media asset is a svg.
+     *
+     * @return bool True if the media asset is s svg, false otherwise.
+     */
+    public function isSvg();
+
+    /**
      * Determine if the media asset is an image.
      *
      * @return bool True if the media asset is an image, false otherwise.
@@ -74,6 +81,13 @@ interface MediaAsset extends BelongsToNestableTree, HasAuthor, HasDtoModel, HasM
      * @return bool True if the media asset is an audio file, false otherwise.
      */
     public function isAudio();
+
+    /**
+     * Determine if the media asset is a PDF.
+     *
+     * @return bool True if the media asset is a PDF, false otherwise.
+     */
+    public function isPdf();
 
     /**
      * Determine if the media asset is a folder.
