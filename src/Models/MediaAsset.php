@@ -42,8 +42,10 @@ class MediaAsset extends BaseModel implements MediaAssetContract
         }
 
         [$thumbW, $thumbH] = MediaLibraryRegistry::getThumbnailCrop();
+        $thumbConversion = 'preview';
+
         $this
-            ->addMediaConversion('preview')
+            ->addMediaConversion($thumbConversion)
             ->fit(Fit::Crop, $thumbW, $thumbH)
             ->nonQueued();
     }
@@ -81,69 +83,74 @@ class MediaAsset extends BaseModel implements MediaAssetContract
 
     public function getThumbnail()
     {
-        if ($this->isImage()) {
-            return $this->getThumbnailUrl();
-        }
         if ($this->isFolder()) {
             return 'heroicon-s-folder';
         }
 
         $media = $this->getFirstMedia();
         $extension = filled($media?->file_name) ? (string) str($media->file_name)->afterLast('.') : null;
-
-        // Check by mime type
-        $mime = $media?->mime_type;
-
-        if (blank($mime)) {
+        if (blank($media?->mime_type)) {
             return 'heroicon-s-x-mark';
         }
 
-        if (str_starts_with($mime, 'audio/')) {
+        if ($media?->hasGeneratedConversion('preview')) {
+            return $this->getThumbnailUrl();
+        }
+
+        if ($this->isSvg()) {
+            return 'inspirecms::svg';
+        }
+
+        if ($this->isAudio()) {
             return 'heroicon-o-musical-note';
         }
 
-        if (str_starts_with($mime, 'video/')) {
+        if ($this->isVideo()) {
             return 'heroicon-o-film';
         }
 
-        if (str_starts_with($mime, 'application/pdf')) {
-            return 'inspirecms-support::pdf';
+        if ($this->isPdf()) {
+            return 'inspirecms::pdf';
         }
 
         if ($extension === 'xlsx') {
-            return 'inspirecms-support::excel';
+            return 'inspirecms::excel';
         }
 
         return 'heroicon-o-document';
     }
 
-    public function checkIfMimeType(string $mimeType): bool
+    public function isSvg()
     {
-        if ($this->isFolder()) {
-            return false;
-        }
-        // Check by mime type
-        $mime = $this->getFirstMedia()?->mime_type;
-        if (blank($mime)) {
-            return false;
-        }
-
-        return str_starts_with($mime, $mimeType);
+        return $this->matchesMimeType('image/svg+xml') || $this->matchesMimeType('image/svg');
     }
 
     public function isImage()
     {
-        return $this->checkIfMimeType('image/');
+        return $this->matchesMimeType('image/') && ! $this->isSvg();
     }
 
     public function isVideo()
     {
-        return $this->checkIfMimeType('video/');
+        return $this->matchesMimeType('video/');
     }
 
     public function isAudio()
     {
-        return $this->checkIfMimeType('audio/');
+        return $this->matchesMimeType('audio/');
+    }
+
+    public function isPdf()
+    {
+        $mimeTypes = ['application/pdf', 'application/x-pdf', 'application/acrobat', 'applications/vnd.pdf', 'text/pdf', 'text/x-pdf'];
+
+        foreach ($mimeTypes as $mimeType) {
+            if ($this->matchesMimeType($mimeType)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function isFolder()
@@ -311,5 +318,19 @@ class MediaAsset extends BaseModel implements MediaAssetContract
         $media->save();
 
         return $media;
+    }
+
+    protected function matchesMimeType(string $mimeType): bool
+    {
+        if ($this->isFolder()) {
+            return false;
+        }
+        // Check by mime type
+        $mime = $this->getFirstMedia()?->mime_type;
+        if (blank($mime)) {
+            return false;
+        }
+
+        return str_starts_with($mime, $mimeType);
     }
 }

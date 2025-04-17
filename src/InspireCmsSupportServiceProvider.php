@@ -131,6 +131,7 @@ class InspireCmsSupportServiceProvider extends PackageServiceProvider
 
             'pdf' => view('inspirecms-support::icons.pdf'),
             'excel' => view('inspirecms-support::icons.excel'),
+            'svg' => view('inspirecms-support::icons.svg'),
 
         ])->mapWithKeys(fn ($icon, $key) => ["{$iconPrefix}{$key}" => $icon])->all();
     }

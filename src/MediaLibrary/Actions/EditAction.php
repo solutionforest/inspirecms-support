@@ -46,8 +46,9 @@ class EditAction extends ItemAction
 
                 return $data;
             })
-            ->form([
-                FileUpload::make('file')
+            ->form(function () {
+
+                $file = FileUpload::make('file')
                     ->label(__('inspirecms-support::media-library.forms.file.label'))
                     ->validationAttribute(__('inspirecms-support::media-library.forms.file.validation_attribute'))
                     ->disk(MediaLibraryRegistry::getDisk())
@@ -73,18 +74,33 @@ class EditAction extends ItemAction
                         $record->addMedia($file)->toMediaCollection();
 
                         return $record->getFirstMedia()->getPathRelativeToRoot();
-                    }),
-                TextInput::make('title')
-                    ->label(__('inspirecms-support::media-library.forms.title.label'))
-                    ->validationAttribute(__('inspirecms-support::media-library.forms.title.validation_attribute'))
-                    ->required(),
-                TextInput::make('caption')
-                    ->label(__('inspirecms-support::media-library.forms.caption.label'))
-                    ->validationAttribute(__('inspirecms-support::media-library.forms.title.caption')),
-                Textarea::make('description')
-                    ->label(__('inspirecms-support::media-library.forms.description.label'))
-                    ->validationAttribute(__('inspirecms-support::media-library.forms.description.caption')),
-            ])
+                    });
+
+                if (MediaLibraryRegistry::hasLimitedMimeTypes()) {
+                    $file->acceptedFileTypes(MediaLibraryRegistry::getLimitedMimeTypes());
+                }
+
+                if (($maxSize = MediaLibraryRegistry::getMaxSize()) !== null) {
+                    $file->maxSize($maxSize);
+                }
+                if (($minSize = MediaLibraryRegistry::getMinSize()) !== null) {
+                    $file->minSize($minSize);
+                }
+
+                return [
+                    $file,
+                    TextInput::make('title')
+                        ->label(__('inspirecms-support::media-library.forms.title.label'))
+                        ->validationAttribute(__('inspirecms-support::media-library.forms.title.validation_attribute'))
+                        ->required(),
+                    TextInput::make('caption')
+                        ->label(__('inspirecms-support::media-library.forms.caption.label'))
+                        ->validationAttribute(__('inspirecms-support::media-library.forms.title.caption')),
+                    Textarea::make('description')
+                        ->label(__('inspirecms-support::media-library.forms.description.label'))
+                        ->validationAttribute(__('inspirecms-support::media-library.forms.description.caption')),
+                ];
+            })
             ->action(function (array $data, ?Model $record, Action $action) {
                 if (empty($data) || ! $record) {
                     return;
