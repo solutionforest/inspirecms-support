@@ -54,6 +54,26 @@ class MediaAssetDto extends BaseModelDto
         ])->setModel($model);
     }
 
+    public function getFilename(): ?string
+    {
+        return $this->model->getFirstMedia()?->file_name;
+    }
+
+    public function getMimeType(): ?string
+    {
+        return $this->model->getFirstMedia()?->mime_type;
+    }
+
+    public function getSize(): ?int
+    {
+        return $this->model->getFirstMedia()?->size;
+    }
+
+    public function getExtension(): ?string
+    {
+        return $this->model->getFirstMedia()?->extension;
+    }
+
     public function getUrl(string $conversionName = ''): ?string
     {
         $url = null;
