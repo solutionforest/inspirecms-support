@@ -19,8 +19,16 @@ jobs:
         include:
           - laravel: 11.*
             testbench: 9.*
+            larastan: 3.*
+            pest_arch: 3.*
+            pest_laravel: 3.*
+            phpstan_depre_rule: 2.*
           - laravel: 12.*
             testbench: 10.*
+            larastan: 3.*
+            pest_arch: 3.*
+            pest_laravel: 3.*
+            phpstan_depre_rule: 2.*
 
     name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - ${{ matrix.os }}
 
@@ -42,7 +50,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --no-interaction --no-update
+          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" "nunomaduro/larastan:${{ matrix.larastan }}" "pestphp/pest-plugin-arch:${{ matrix.pest_arch }}" "pestphp/pest-plugin-laravel:${{ matrix.pest_laravel }}" "phpstan/phpstan-deprecation-rules:${{ matrix.phpstan_depre_rule }}" --no-interaction --no-update
           composer update --${{ matrix.stability }} --prefer-dist --no-interaction
 
       - name: List Installed Dependencies
