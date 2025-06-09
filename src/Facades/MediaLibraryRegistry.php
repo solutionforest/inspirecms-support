@@ -7,7 +7,6 @@ use SolutionForest\InspireCms\Support\Base\Manifests\MediaLibraryRegistryInterfa
 
 /**
  * @method static void setDisk(string $disk)
- * @method static void setDirectory(string $directory)
  * @method static void setThumbnailCrop(int $width, int $height)
  * @method static void setShouldMapVideoPropertiesWithFfmpeg(bool $condition)
  * @method static void setLimitedMimeTypes(array $limitedMimeTypes)
@@ -15,7 +14,6 @@ use SolutionForest\InspireCms\Support\Base\Manifests\MediaLibraryRegistryInterfa
  * @method static void setMaxSize(?int $maxSize)
  * @method static void setMinSize(?int $minSize)
  * @method static string getDisk()
- * @method static string getDirectory()
  * @method static array getThumbnailCrop()
  * @method static bool shouldMapVideoPropertiesWithFfmpeg()
  * @method static bool hasLimitedMimeTypes()

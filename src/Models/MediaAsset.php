@@ -264,7 +264,7 @@ class MediaAsset extends BaseModel implements MediaAssetContract
     public function addMediaWithMappedProperties($file)
     {
         $fileAdder = $this->addMedia($file);
-        $mediaItem = $fileAdder->toMediaCollection();
+        $mediaItem = $fileAdder->toMediaCollection(diskName: MediaLibraryRegistry::getDisk());
 
         $this->syncMediaProperties($mediaItem);
 

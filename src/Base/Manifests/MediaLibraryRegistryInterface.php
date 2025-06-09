@@ -6,8 +6,6 @@ interface MediaLibraryRegistryInterface
 {
     public function setDisk(string $disk): void;
 
-    public function setDirectory(string $directory): void;
-
     public function setThumbnailCrop(int $width, int $height): void;
 
     public function setShouldMapVideoPropertiesWithFfmpeg(bool $condition): void;
@@ -21,8 +19,6 @@ interface MediaLibraryRegistryInterface
     public function setMinSize(?int $minSize): void;
 
     public function getDisk(): string;
-
-    public function getDirectory(): string;
 
     /**
      * @return array<int>

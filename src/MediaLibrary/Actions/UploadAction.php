@@ -42,8 +42,6 @@ class UploadAction extends Action
             $file = \Filament\Forms\Components\FileUpload::make('files')
                 ->label(__('inspirecms-support::media-library.forms.files.label'))
                 ->validationAttribute(__('inspirecms-support::media-library.forms.files.validation_attribute'))
-                ->disk(MediaLibraryRegistry::getDisk())
-                ->directory(MediaLibraryRegistry::getDirectory())
                 ->imageEditor()
                 ->multiple()
                 ->storeFiles(false);
