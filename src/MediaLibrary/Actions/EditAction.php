@@ -52,7 +52,6 @@ class EditAction extends ItemAction
                     ->label(__('inspirecms-support::media-library.forms.file.label'))
                     ->validationAttribute(__('inspirecms-support::media-library.forms.file.validation_attribute'))
                     ->disk(MediaLibraryRegistry::getDisk())
-                    ->directory(MediaLibraryRegistry::getDirectory())
                     ->deletable(false)
                     ->openable()
                     ->downloadable()

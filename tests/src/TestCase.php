@@ -67,7 +67,6 @@ class TestCase extends Orchestra
 
         // region inspirecms support
         MediaLibraryRegistry::setDisk('public');
-        MediaLibraryRegistry::setDirectory('');
         MediaLibraryRegistry::setThumbnailCrop(300, 300);
 
         ModelRegistry::setTablePrefix('cms_');
