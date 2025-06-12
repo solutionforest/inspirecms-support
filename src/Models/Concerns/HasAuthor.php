@@ -30,9 +30,9 @@ trait HasAuthor
         $resolver = ResolverRegistry::get(UserResolverInterface::class);
 
         if (! $resolver instanceof UserResolverInterface) {
-            throw new \Exception('User resolver must implement UserResolverInterface');
+            throw new \Exception('User resolver must implement ' . UserResolverInterface::class);
         }
 
-        return $resolver->resolveForModel($this);
+        return $resolver->resolve($this);
     }
 }
