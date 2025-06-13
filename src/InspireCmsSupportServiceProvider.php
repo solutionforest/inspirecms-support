@@ -11,6 +11,10 @@ use Filament\View\PanelsRenderHook;
 use Illuminate\Database\Schema\Blueprint;
 use Livewire\Livewire;
 use SolutionForest\InspireCms\Support\Base\Manifests;
+use SolutionForest\InspireCms\Support\MediaLibrary\FolderBrowserComponent;
+use SolutionForest\InspireCms\Support\MediaLibrary\MediaDetailComponent;
+use SolutionForest\InspireCms\Support\MediaLibrary\MediaLibraryComponent;
+use SolutionForest\InspireCms\Support\TreeNode\ModelExplorerComponent;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -61,12 +65,11 @@ class InspireCmsSupportServiceProvider extends PackageServiceProvider
 
     public function packageBooted(): void
     {
-        Livewire::component('inspirecms-support::file-explorer', TreeNodes\FileExplorerComponent::class);
-        Livewire::component('inspirecms-support::model-explorer', TreeNodes\ModelExplorerComponent::class);
+        Livewire::component('inspirecms-support::model-explorer', ModelExplorerComponent::class);
 
-        Livewire::component('inspirecms-support::media-library', MediaLibrary\MediaLibraryComponent::class);
-        Livewire::component('inspirecms-support::media-library.folders', MediaLibrary\FolderBrowserComponent::class);
-        Livewire::component('inspirecms-support::media-library.detail-info', MediaLibrary\MediaDetailComponent::class);
+        Livewire::component('inspirecms-support::media-library', MediaLibraryComponent::class);
+        Livewire::component('inspirecms-support::media-library.folders', FolderBrowserComponent::class);
+        Livewire::component('inspirecms-support::media-library.detail-info', MediaDetailComponent::class);
 
         // Asset Registration
         FilamentAsset::register([
