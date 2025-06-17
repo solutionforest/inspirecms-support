@@ -52,11 +52,11 @@ class MediaAssetDto extends BaseModelDto
             'caption' => $model->caption,
             'description' => $model->description,
             'meta' => $media?->manipulations,
-            'src' => $model->getUrl(),
+            'src' => $model->getUrl(isAbsolute: false),
             'responsive' => collect($media?->generated_conversions ?? [])
                 ->mapWithKeys(function ($condition, $conversion) use ($model) {
                     try {
-                        $url = $model->getUrl($conversion);
+                        $url = $model->getUrl($conversion, false);
                     } catch (\Throwable $e) {
                         $url = null;
                     }
