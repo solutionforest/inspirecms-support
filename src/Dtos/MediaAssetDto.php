@@ -2,14 +2,14 @@
 
 namespace SolutionForest\InspireCms\Support\Dtos;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use SolutionForest\InspireCms\Support\Base\Dtos\BaseModelDto;
-use SolutionForest\InspireCms\Support\Facades\MediaLibraryRegistry;
 use SolutionForest\InspireCms\Support\Facades\ModelRegistry;
 use SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset;
 
 /**
- * @extends BaseModelDto<\SolutionForest\InspireCms\Support\Models\MediaAsset,MediaAssetDto>
+ * @extends BaseModelDto<MediaAsset|Model,MediaAssetDto>
  */
 class MediaAssetDto extends BaseModelDto
 {
@@ -80,7 +80,7 @@ class MediaAssetDto extends BaseModelDto
     public function getSrcset(...$conversionNames): ?string
     {
         $srcset = [];
-        
+
         foreach (Arr::flatten($conversionNames) as $conversionName) {
             if (($url = $this->getUrl($conversionName)) && filled($url)) {
                 $srcset[] = $url;
