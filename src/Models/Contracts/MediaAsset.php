@@ -2,7 +2,6 @@
 
 namespace SolutionForest\InspireCms\Support\Models\Contracts;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use SolutionForest\InspireCms\Support\Base\Models\Interfaces\BelongsToNestableTree;
@@ -10,7 +9,6 @@ use SolutionForest\InspireCms\Support\Base\Models\Interfaces\HasDtoModel;
 use SolutionForest\InspireCms\Support\Base\Models\Interfaces\HasRecursiveRelationshipsInterface;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\MediaCollections\FileAdder;
-use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 /**
  * @property string $id
@@ -24,11 +22,13 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @property ?string $author_id
  * @property ?\Carbon\CarbonInterface $created_at
  * @property ?\Carbon\CarbonInterface $updated_at
+ * 
+ * @template TMedia of \Spatie\MediaLibrary\MediaCollections\Models\Media = \Spatie\MediaLibrary\MediaCollections\Models\Media
  */
 interface MediaAsset extends BelongsToNestableTree, HasAuthor, HasDtoModel, HasMedia, HasRecursiveRelationshipsInterface
 {
     /**
-     * @return null | Model&Media
+     * @return TMedia|null
      */
     public function getFirstMedia();
 
@@ -36,16 +36,20 @@ interface MediaAsset extends BelongsToNestableTree, HasAuthor, HasDtoModel, HasM
      * Get the URL for the media asset.
      *
      * @param  string  $conversionName  The name of the conversion (optional).
+     * @param  bool  $isAbsolute  Whether to return an absolute URL.
+     * 
      * @return ?string The URL of the media asset.
      */
-    public function getUrl(string $conversionName = '');
+    public function getUrl(string $conversionName = '', bool $isAbsolute = true);
 
     /**
      * Get the URL of the thumbnail for the media asset.
+     * 
+     * @param  bool  $isAbsolute  Whether to return an absolute URL.
      *
      * @return ?string The URL of the thumbnail.
      */
-    public function getThumbnailUrl();
+    public function getThumbnailUrl(bool $isAbsolute = true);
 
     /**
      * Get the thumbnail URL or path for the media asset.

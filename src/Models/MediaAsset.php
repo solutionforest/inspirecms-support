@@ -26,6 +26,8 @@ class MediaAsset extends BaseModel implements MediaAssetContract
         'is_folder' => 'boolean',
     ];
 
+    const MEDIA_COLLECTION_NAME = 'default';
+
     /**
      * @return int|string|null
      */
@@ -50,26 +52,30 @@ class MediaAsset extends BaseModel implements MediaAssetContract
             ->nonQueued();
     }
 
-    /** {@inheritDoc} */
-    public function getFirstMedia()
+    public function getUrl(string $conversionName = '', bool $isAbsolute = true): ?string
     {
-        if ($this->relationLoaded('media')) {
-            return $this->media->first();
+        if ($this->isFolder()) {
+            return null;
         }
 
-        return $this->media()->first();
+        $result = $this->getFirstMediaUrl(collectionName: self::MEDIA_COLLECTION_NAME, conversionName: $conversionName);
+
+        // For spatie/laravel-medialibrary v11
+        // Fallback to getLastMediaUrl if getFirstMediaUrl is not available
+        if (blank($result) && method_exists($this, 'getLastMediaUrl')) {
+            $result = $this->getLastMediaUrl(collectionName: self::MEDIA_COLLECTION_NAME, conversionName: $conversionName);
+        }
+
+        if (! $isAbsolute && filled($result)) {
+            $result = str_replace(config('app.url'), '', $result);
+        }
+
+        return $result ?: null;
     }
 
-    public function getUrl(string $conversionName = '')
+    public function getThumbnailUrl(bool $isAbsolute = true)
     {
-        $media = $this->getFirstMedia();
-
-        return $media?->getUrl($conversionName);
-    }
-
-    public function getThumbnailUrl()
-    {
-        return $this->getUrl('preview');
+        return $this->getUrl(conversionName: 'preview', isAbsolute: $isAbsolute);
     }
 
     public function getActiveThumbnail()
@@ -264,7 +270,9 @@ class MediaAsset extends BaseModel implements MediaAssetContract
     public function addMediaWithMappedProperties($file)
     {
         $fileAdder = $this->addMedia($file);
-        $mediaItem = $fileAdder->toMediaCollection(diskName: MediaLibraryRegistry::getDisk());
+        $mediaItem = $fileAdder->toMediaCollection(
+            collectionName: static::MEDIA_COLLECTION_NAME,
+            diskName: MediaLibraryRegistry::getDisk());
 
         $this->syncMediaProperties($mediaItem);
 

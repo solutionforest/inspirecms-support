@@ -4,6 +4,9 @@ namespace SolutionForest\InspireCms\Support\Dtos;
 
 use Illuminate\Support\Arr;
 use SolutionForest\InspireCms\Support\Base\Dtos\BaseModelDto;
+use SolutionForest\InspireCms\Support\Facades\MediaLibraryRegistry;
+use SolutionForest\InspireCms\Support\Facades\ModelRegistry;
+use SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset;
 
 /**
  * @extends BaseModelDto<\SolutionForest\InspireCms\Support\Models\MediaAsset,MediaAssetDto>
@@ -31,14 +34,14 @@ class MediaAssetDto extends BaseModelDto
     public $meta;
 
     /**
-     * @var array
+     * @var ?string
      */
-    public $responsive;
+    public $src;
 
     /**
-     * @var string
+     * @var array<string,?string>
      */
-    public $disk;
+    public array $responsive = [];
 
     public static function fromModel($model)
     {
@@ -49,72 +52,79 @@ class MediaAssetDto extends BaseModelDto
             'caption' => $model->caption,
             'description' => $model->description,
             'meta' => $media?->manipulations,
-            'responsive' => array_keys($media?->responsive_images ?? []),
-            'disk' => $media?->disk,
+            'src' => $model->getUrl(),
+            'responsive' => collect($media?->generated_conversions ?? [])
+                ->mapWithKeys(function ($condition, $conversion) use ($model) {
+                    try {
+                        $url = $model->getUrl($conversion);
+                    } catch (\Throwable $e) {
+                        $url = null;
+                    } 
+                    return [$conversion => $url];
+                })->all(),
         ])->setModel($model);
-    }
-
-    public function getFilename(): ?string
-    {
-        return $this->model->getFirstMedia()?->file_name;
-    }
-
-    public function getMimeType(): ?string
-    {
-        return $this->model->getFirstMedia()?->mime_type;
-    }
-
-    public function getSize(): ?int
-    {
-        return $this->model->getFirstMedia()?->size;
-    }
-
-    public function getExtension(): ?string
-    {
-        return $this->model->getFirstMedia()?->extension;
     }
 
     public function getUrl(string $conversionName = ''): ?string
     {
-        $url = null;
+        $default = $this->src;
         if (filled($conversionName)) {
-            $media = $this->model->getFirstMedia();
-            $url = $media?->getUrl($conversionName);
+            return $this->responsive[$conversionName] ?? $default;
         }
-
-        if (filled($url)) {
-            return $url;
-        }
-
-        try {
-            return route('inspirecms.asset', [
-                'key' => $this->model?->getKey(),
-            ]);
-        } catch (\Throwable $th) {
-            // Fallback to default URL if an error occurs
-        }
-
-        return $this->model?->getUrl($conversionName);
+        return $default;
     }
-
+        
     /**
      * @param ...string $conversionNames
      */
     public function getSrcset(...$conversionNames): ?string
     {
         $srcset = [];
-
-        $media = $this->model?->getFirstMedia();
-        if (! $media) {
-            return null;
-        }
+        
         foreach (Arr::flatten($conversionNames) as $conversionName) {
-            $url = $media->getSrcset($conversionName);
-            if (filled($url)) {
+            if (($url = $this->getUrl($conversionName)) && filled($url)) {
                 $srcset[] = $url;
             }
         }
 
         return implode(', ', $srcset);
+    }
+
+    public function getModel()
+    {
+        if ($this->model) {
+            return $this->model;
+        }
+
+        if (!filled($this->uid)) {
+            return null;
+        }
+
+        return $this->model = static::getMediaAssetModel()::with(['media'])->find($this->uid);
+    }
+
+    public function getFilename(): ?string
+    {
+        return $this->getModel()?->getFirstMedia()?->file_name;
+    }
+
+    public function getMimeType(): ?string
+    {
+        return $this->getModel()?->getFirstMedia()?->mime_type;
+    }
+
+    public function getSize(): ?int
+    {
+        return $this->getModel()?->getFirstMedia()?->size;
+    }
+
+    public function getExtension(): ?string
+    {
+        return $this->getModel()?->getFirstMedia()?->extension;
+    }
+
+    protected static function getMediaAssetModel(): string
+    {
+        return ModelRegistry::get(MediaAsset::class);
     }
 }
