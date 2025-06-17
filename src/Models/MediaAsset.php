@@ -272,7 +272,8 @@ class MediaAsset extends BaseModel implements MediaAssetContract
         $fileAdder = $this->addMedia($file);
         $mediaItem = $fileAdder->toMediaCollection(
             collectionName: static::MEDIA_COLLECTION_NAME,
-            diskName: MediaLibraryRegistry::getDisk());
+            diskName: MediaLibraryRegistry::getDisk()
+        );
 
         $this->syncMediaProperties($mediaItem);
 

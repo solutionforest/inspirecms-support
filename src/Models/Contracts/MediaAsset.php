@@ -22,7 +22,7 @@ use Spatie\MediaLibrary\MediaCollections\FileAdder;
  * @property ?string $author_id
  * @property ?\Carbon\CarbonInterface $created_at
  * @property ?\Carbon\CarbonInterface $updated_at
- * 
+ *
  * @template TMedia of \Spatie\MediaLibrary\MediaCollections\Models\Media = \Spatie\MediaLibrary\MediaCollections\Models\Media
  */
 interface MediaAsset extends BelongsToNestableTree, HasAuthor, HasDtoModel, HasMedia, HasRecursiveRelationshipsInterface
@@ -37,16 +37,14 @@ interface MediaAsset extends BelongsToNestableTree, HasAuthor, HasDtoModel, HasM
      *
      * @param  string  $conversionName  The name of the conversion (optional).
      * @param  bool  $isAbsolute  Whether to return an absolute URL.
-     * 
      * @return ?string The URL of the media asset.
      */
     public function getUrl(string $conversionName = '', bool $isAbsolute = true);
 
     /**
      * Get the URL of the thumbnail for the media asset.
-     * 
-     * @param  bool  $isAbsolute  Whether to return an absolute URL.
      *
+     * @param  bool  $isAbsolute  Whether to return an absolute URL.
      * @return ?string The URL of the thumbnail.
      */
     public function getThumbnailUrl(bool $isAbsolute = true);

@@ -59,7 +59,8 @@ class MediaAssetDto extends BaseModelDto
                         $url = $model->getUrl($conversion);
                     } catch (\Throwable $e) {
                         $url = null;
-                    } 
+                    }
+
                     return [$conversion => $url];
                 })->all(),
         ])->setModel($model);
@@ -71,9 +72,10 @@ class MediaAssetDto extends BaseModelDto
         if (filled($conversionName)) {
             return $this->responsive[$conversionName] ?? $default;
         }
+
         return $default;
     }
-        
+
     /**
      * @param ...string $conversionNames
      */
@@ -96,7 +98,7 @@ class MediaAssetDto extends BaseModelDto
             return $this->model;
         }
 
-        if (!filled($this->uid)) {
+        if (! filled($this->uid)) {
             return null;
         }
 

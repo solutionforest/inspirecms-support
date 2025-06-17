@@ -6,7 +6,6 @@ use Closure;
 use Filament\Forms\Components\Field;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use SolutionForest\InspireCms\Support\Dtos\MediaAssetDto;
 use SolutionForest\InspireCms\Support\Facades\ModelRegistry;
@@ -42,7 +41,7 @@ class MediaPicker extends Field
         $this->afterStateHydrated(function (MediaPicker $component, $state) {
             try {
 
-                if (! is_array($state) ) {
+                if (! is_array($state)) {
                     if ((is_string($state) && filled($state) && str($state)->isJson())) {
                         $state = json_decode($state, true);
                     } else {
@@ -70,7 +69,7 @@ class MediaPicker extends Field
         // Ensure stored state as specified array format
         $this->mutateDehydratedStateUsing(function (MediaPicker $component, $state) {
             // Ensure the state is always an array
-            if (!is_array($state)) {
+            if (! is_array($state)) {
                 $state = is_null($state) || empty($state) ? [] : [$state];
             }
             $keys = array_values(array_unique(array_filter($state)));
