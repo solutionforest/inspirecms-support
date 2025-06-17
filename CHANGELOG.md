@@ -2,6 +2,16 @@
 
 All notable changes to `inspirecms-support` will be documented in this file.
 
+## 0.0.80 - 2025-06-17
+
+- update mediaAssetDTO
+
+### What's Changed
+
+* Bump stefanzweifel/git-auto-commit-action from 5 to 6 by @dependabot in https://github.com/solutionforest/inspirecms-support/pull/5
+
+**Full Changelog**: https://github.com/solutionforest/inspirecms-support/compare/0.0.78...0.0.80
+
 ## 0.0.79 - 2025-06-16
 
 **Full Changelog**: https://github.com/solutionforest/inspirecms-support/compare/0.0.77...0.0.79
