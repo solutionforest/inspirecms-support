@@ -229,11 +229,14 @@ trait CanSelectModeltem
     {
         $ancestors = collect($this->getAncestorsFor($keys))
             ->flatten()
+            ->reverse()
             ->keyBy(fn ($model) => $model->getKey())
             ->all();
 
+        // Adding ancestors to expanded model items
         $this->setExpandedModelItem(keys: array_keys($ancestors), merge: true, replace: false);
 
+        // Caching ancestors nodes for display used
         foreach (array_keys($ancestors) as $key) {
             $this->cacheModelExplorerNodesOn(parentKey: $key);
         }
