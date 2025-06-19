@@ -3,8 +3,23 @@ export default function treeNode({
     selected,
 }) {
     return {
+        
         expanded,
+
         selected,
+
+        init () {
+            this.expanded = this.expanded || [];
+            this.selected = this.selected || [];
+            this.$watch('expanded', (value) => {
+                // Ensure expanded is always an array
+                this.expanded = Array.isArray(value) ? value : (Array.from(value) || []);
+            });
+            this.$watch('selected', (value) => {
+                // Ensure selected is always an array
+                this.selected = Array.isArray(value) ? value : (Array.from(value) || []);
+            });
+        },
 
         toggleItem(key) {
             if (this.expanded.includes(key)) {
