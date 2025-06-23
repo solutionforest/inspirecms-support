@@ -102,26 +102,6 @@
     border-bottom: 2px solid rgb(var(--primary-700));
 }
 
-/* Modal styles */
-.tree-modal-backdrop {
-    position: fixed;
-    inset: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 50;
-}
-
-.tree-modal {
-    background-color: white;
-    padding: 1.5rem;
-    border-radius: 0.5rem;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-    width: 24rem;
-    max-width: 90vw;
-}
-
 /* Search highlighting */
 .search-highlight {
     background-color: #ffd700;
@@ -132,7 +112,7 @@
 
 .tree-node.search-match {
     border-color: rgb(var(--primary-700));
-    background-color: rgba(24, 144, 255, 0.1);
+    background-color: rgba(var(--primary-700), 0.1);
 }
 
 .tree-node:focus {
@@ -162,7 +142,7 @@
     inset: -1px;
     border-radius: inherit;
     pointer-events: none;
-    box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+    box-shadow: 0 0 0 2px rgba(var(--primary-700), 0.2);
     opacity: 0;
     transition: opacity 0.2s;
 }
