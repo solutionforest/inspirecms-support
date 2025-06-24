@@ -53,7 +53,9 @@ class MediaPicker extends Field
                 $ids = collect($state)
                     ->filter()
                     ->values()
-                    ->pluck('uid')
+                    // Situation 1: If the item is an array, get the 'uid' key (Normal)
+                    // Situation 2: If the item is not an array, it is assumed to be a uid (string or int) (Preview)
+                    ->map(fn ($item) => is_array($item) ? $item['uid'] ?? null : $item)
                     ->all();
 
                 $state = $component->getCachedSelectedAssets($ids)->keys()->all();
@@ -154,22 +156,6 @@ class MediaPicker extends Field
         return $this->evaluate($this->limitDisplay);
     }
 
-    /**
-     * @return Builder
-     */
-    protected function getEloquentQuery()
-    {
-        return static::getMediaAssetModel()::query()->with('media');
-    }
-
-    /**
-     * @return class-string<Model>
-     */
-    protected static function getMediaAssetModel(): string
-    {
-        return ModelRegistry::get(MediaAsset::class);
-    }
-
     public function clearCachedSelectedAssets(): void
     {
         $this->cachedSelectedAssets = null;
@@ -203,6 +189,24 @@ class MediaPicker extends Field
         return $this->cachedSelectedAssets = $this->getOrderedAssets($ids);
     }
 
+    //region Helpers
+
+    /**
+     * @return Builder
+     */
+    protected function getEloquentQuery()
+    {
+        return static::getMediaAssetModel()::query()->with('media');
+    }
+
+    /**
+     * @return class-string<Model>
+     */
+    protected static function getMediaAssetModel(): string
+    {
+        return ModelRegistry::get(MediaAsset::class);
+    }
+
     private function getOrderedAssets(array $ids): Collection
     {
         return $this->getEloquentQuery()
@@ -212,4 +216,6 @@ class MediaPicker extends Field
             // Sort the assets by the order of the ids
             ->sortBy(fn ($asset, $key) => array_search($key, $ids));
     }
+
+    //endregion Helpers
 }
