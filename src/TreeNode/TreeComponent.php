@@ -11,7 +11,7 @@ use SolutionForest\InspireCms\Support\TreeNode\Concerns\HasTreeNodeItemActions;
 
 abstract class TreeComponent extends Component implements HasActions, HasForms
 {
+    use HasTreeNodeItemActions;
     use InteractsWithActions;
     use InteractsWithForms;
-    use HasTreeNodeItemActions;
 }
