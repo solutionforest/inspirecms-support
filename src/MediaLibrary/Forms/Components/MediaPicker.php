@@ -189,7 +189,7 @@ class MediaPicker extends Field
         return $this->cachedSelectedAssets = $this->getOrderedAssets($ids);
     }
 
-    //region Helpers
+    // region Helpers
 
     /**
      * @return Builder
@@ -217,5 +217,5 @@ class MediaPicker extends Field
             ->sortBy(fn ($asset, $key) => array_search($key, $ids));
     }
 
-    //endregion Helpers
+    // endregion Helpers
 }
