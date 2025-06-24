@@ -11,7 +11,7 @@
     sticky-footer
     footer-actions-alignment="end"
     width="screen"
-    class="media-library-browser-modal"
+    class="media-library-browser-modal-content"
     x-init="() => {
         this.selected = [];
         this.formStatePath = false;

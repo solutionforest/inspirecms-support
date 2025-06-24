@@ -292,10 +292,14 @@
     }
 }
 
-.media-library-browser-modal .media-library__content {
+.fi-modal-close-overlay, .fi-modal-close-overlay ~ div:has(.media-library-browser-modal-content) {
+    z-index: 10000; /* Ensure this is higher than any other modal */
+}
+
+.media-library-browser-modal-content .media-library__content {
     @apply h-[calc(100vh-16rem)];
 }
-.media-library-browser-modal .fi-modal-content:has(.media-library) {
+.media-library-browser-modal-content .fi-modal-content:has(.media-library) {
     @apply !p-0;
 }
 
