@@ -994,7 +994,7 @@ const TreeView = (config = {}) => {
             clearTimeout(this.searchDebounceTimeout);
             this.searchDebounceTimeout = setTimeout(() => {
                 this.searchResults = this.searchTree(query);
-                options.onSearch(query, this.searchResults);
+                options.onSearch(query, this.searchResults, this);
             }, options.searchDebounceMs);
         },
         
@@ -1206,7 +1206,7 @@ const TreeView = (config = {}) => {
                 for (let i = 0; i < nodePath.length - 1; i++) {
                     const segment = nodePath[i];
                     const found = current.find(
-                        n => n[options.nameField] === segment
+                        n => n[options.idField] === segment
                     );
                     
                     if (found) {

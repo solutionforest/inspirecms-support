@@ -62,16 +62,7 @@
                 <div class="flex-1 flex flex-col">
 
                     <!-- Node text -->
-                    <span class="flex items-center gap-x-1">
-                        <x-filament::icon 
-                            icon="heroicon-o-eye-slash"
-                            alias="inspirecms::invisiable" 
-                            class="h-4 w-4" 
-                            color="gray" 
-                            x-show="!{{ $nodeVariable }}.visible" 
-                        />
-                        <span x-html="formatNodeText({{ $nodeVariable }})"></span>
-                    </span>
+                    <span x-html="formatNodeText({{ $nodeVariable }})"></span>
                     
                     <!-- Node description -->
                     <span x-show="{{ $nodeVariable }}.description" 
