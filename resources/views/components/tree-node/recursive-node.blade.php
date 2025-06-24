@@ -4,7 +4,7 @@
     'indexVariable' => 'index',
     'parentId' => 'null',
     'actions' => [],
-    'maxDepth' => null, // null means unlimited
+    'maxDepth' => -1, // -1 means unlimited
 ])
 
 @php
@@ -93,12 +93,17 @@
         
         @php
             $childLevel = $level + 1;
-            $shouldRender = $maxDepth === null || $childLevel <= $maxDepth;
+            $shouldRender = 
+                (
+                    $maxDepth === -1
+                    && $level < 25 // Prevent infinite recursion in case of circular references
+                )
+                || $maxDepth != -1 && $childLevel <= $maxDepth;
             $childNodeVar = "node_level{$childLevel}";
             $childIndexVar = "index_level{$childLevel}";
             $parentIdVar = "{$nodeVariable}.id";
         @endphp
-        @if($maxDepth === null || $childLevel <= $maxDepth)
+        @if($shouldRender)
             <template x-for="({{ $childNodeVar }}, {{ $childIndexVar }}) in {{ $nodeVariable }}.children" :key="{{ $childNodeVar }}.id + '-' + {{ $childIndexVar }}">
                 <x-inspirecms-support::tree-node.recursive-node 
                     :level="$childLevel"

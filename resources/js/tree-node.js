@@ -841,21 +841,21 @@ const TreeView = (config = {}) => {
             
             // Handle maxVisibleDepth constraint for visualization purposes
             if (targetDepth > this.getMaxVisibleDepth()) {
-                console.log(`Dropping at depth ${targetDepth} which exceeds maxVisibleDepth ${this.getMaxVisibleDepth()}`);
+                // console.log(`Dropping at depth ${targetDepth} which exceeds maxVisibleDepth ${this.getMaxVisibleDepth()}`);
                 // Node will still be added but we need to handle visualization
                 // Allow the drop but mark the node for special visibility handling
             }
             
             // Validation checks
             if (this.wouldCreateCycle(this.draggedNodeId, targetParentId)) {
-                console.log("Cannot move a node into its own descendant");
+                // console.log("Cannot move a node into its own descendant");
                 this.dragEnd();
                 this.isUpdating = false;
                 return;
             }
             
             if (options.maxDepth !== -1 && this.wouldExceedMaxDepth(this.draggedNodeId, targetParentId)) {
-                console.log("Cannot exceed maximum depth");
+                console.error("Cannot exceed maximum depth");
                 this.dragEnd();
                 this.isUpdating = false;
                 return;
