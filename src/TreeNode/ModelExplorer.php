@@ -5,15 +5,19 @@ namespace SolutionForest\InspireCms\Support\TreeNode;
 use Filament\Support\Components\ViewComponent;
 use SolutionForest\InspireCms\Support\TreeNode\Contracts\HasModelExplorer;
 use SolutionForest\InspireCms\Support\TreeNode\Contracts\TreeNode;
-use SolutionForest\InspireCms\Support\TreeNode\ModelExplorer\Concerns;
+use SolutionForest\InspireCms\Support\TreeNode\ModelExplorer\Concerns\BelongsToLivewire;
+use SolutionForest\InspireCms\Support\TreeNode\ModelExplorer\Concerns\CanSelectItem;
+use SolutionForest\InspireCms\Support\TreeNode\ModelExplorer\Concerns\HasActions;
+use SolutionForest\InspireCms\Support\TreeNode\ModelExplorer\Concerns\HasModelItems;
+use SolutionForest\InspireCms\Support\TreeNode\ModelExplorer\Concerns\ModelExplorerBase;
 
 class ModelExplorer extends ViewComponent implements TreeNode
 {
-    use Concerns\BelongsToLivewire;
-    use Concerns\CanSelectItem;
-    use Concerns\HasActions;
-    use Concerns\HasModelItems;
-    use Concerns\ModelExplorerBase;
+    use BelongsToLivewire;
+    use CanSelectItem;
+    use HasActions;
+    use HasModelItems;
+    use ModelExplorerBase;
 
     /**
      * @var view-string

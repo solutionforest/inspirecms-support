@@ -7,11 +7,11 @@ use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Livewire\Component;
-use SolutionForest\InspireCms\Support\TreeNode\Contracts\HasModelExplorer;
+use SolutionForest\InspireCms\Support\TreeNode\Concerns\HasTreeNodeItemActions;
 
-abstract class ModelExplorerComponent extends Component implements HasActions, HasForms, HasModelExplorer
+abstract class TreeComponent extends Component implements HasActions, HasForms
 {
-    use Concerns\InteractsWithModelExplorer;
+    use HasTreeNodeItemActions;
     use InteractsWithActions;
     use InteractsWithForms;
 }

@@ -12,7 +12,6 @@ use SolutionForest\InspireCms\Support\TreeNode\ModelExplorer;
 trait InteractsWithModelExplorer
 {
     use CanSelectModeltem;
-    use HasTreeNodeItemActions;
 
     protected ModelExplorer $modelExplorer;
 
@@ -61,16 +60,4 @@ trait InteractsWithModelExplorer
     {
         return null;
     }
-
-    // region Forms
-    /**
-     * @return array<string, Forms\Form>
-     */
-    protected function getInteractsWithModelExplorerForms(): array
-    {
-        return [
-            'mountedTreeNodeItemActionForm' => $this->getMountedTreeNodeItemActionForm(),
-        ];
-    }
-    // endregion Forms
 }

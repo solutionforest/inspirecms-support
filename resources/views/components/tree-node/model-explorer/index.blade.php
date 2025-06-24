@@ -12,9 +12,7 @@
     role="tree" 
     aria-orientation="vertical" 
     @unless ($skipAlpine)
-        ax-load
-        ax-load-src="{{ \Filament\Support\Facades\FilamentAsset::getAlpineComponentSrc('tree-node-component', 'solution-forest/inspirecms-support') }}"
-        x-data="treeNode({
+        x-data="TreeNode({
             selected: $wire.entangle('selectedModelItemKeys').live,
             expanded: $wire.entangle('expandedModelItemKeys').live,
         })"

@@ -394,4 +394,16 @@ trait HasTreeNodeItemActions
         return "{$this->getId()}-treenodeitem-action";
     }
     // endregion Modal
+
+    // region Forms
+    /**
+     * @return array<string, Forms\Form>
+     */
+    protected function getHasTreeNodeItemActionsForms(): array
+    {
+        return [
+            'mountedTreeNodeItemActionForm' => $this->getMountedTreeNodeItemActionForm(),
+        ];
+    }
+    // endregion Forms
 }
