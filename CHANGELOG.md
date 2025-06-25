@@ -2,6 +2,12 @@
 
 All notable changes to `inspirecms-support` will be documented in this file.
 
+## 0.0.94 - 2025-06-25
+
+Sync core plugin version
+
+**Full Changelog**: https://github.com/solutionforest/inspirecms-support/compare/0.0.93...0.0.94
+
 ## 0.0.93 - 2025-06-25
 
 ### New Features
