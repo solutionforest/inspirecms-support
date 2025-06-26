@@ -12,6 +12,7 @@
     footer-actions-alignment="end"
     width="screen"
     class="media-library-browser-modal-content"
+    display-classes="block"
     x-init="() => {
         this.selected = [];
         this.formStatePath = false;
