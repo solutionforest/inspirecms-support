@@ -147,6 +147,7 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
 
     public function openFolder($mediaId = null)
     {
+        $this->clearCache();
         $mediaId ??= $this->selectedMediaId;
         $this->changeParent($mediaId);
     }
@@ -303,13 +304,13 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
     protected function getMediaItemActions(): array
     {
         return [
-            Actions\OpenFolderAction::make()
-                ->dispatch('openFolder', fn (?Model $record) => ['mediaId' => $record?->getKey()]),
-
-            Actions\EditAction::make(),
-            Actions\ViewAction::make(),
-
             Actions\ActionGroup::make([
+                Actions\OpenFolderAction::make()
+                    ->dispatch('openFolder', fn (?Model $record) => ['mediaId' => $record?->getKey()]),
+
+                Actions\EditAction::make(),
+                Actions\ViewAction::make(),
+
                 Actions\RenameAction::make(),
                 Actions\DeleteAction::make(),
             ])->dropdown(false),

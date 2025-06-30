@@ -39,7 +39,6 @@
         >
         <div 
             class="actions"
-            wire:ignore
         >
             <x-inspirecms-support::media-library.actions
                 :actions="$actions" 

@@ -1,18 +1,21 @@
 @props(['mediaItem', 'actions' => []])
+@use('Filament\Actions\Action')
+@use('Filament\Actions\ActionGroup')
+@use('Illuminate\Database\Eloquent\Model')
+@use('SolutionForest\InspireCms\Support\MediaLibrary\Actions\Action', 'MediaLibraryAction')
+@use('SolutionForest\InspireCms\Support\MediaLibrary\Actions\ActionGroup', 'MediaLibraryActionGroup')
+@use('SolutionForest\InspireCms\Support\MediaLibrary\Actions\ItemBulkAction', 'MediaLibraryItemBulkAction')
 
 @php
-    use Illuminate\Database\Eloquent\Model;
-    use SolutionForest\InspireCms\Support\MediaLibrary\Actions;
-
-    $actions = array_filter(
+    $mediaAssetsActions = array_filter(
         array_map(
             function ($action) use ($mediaItem) {
                 // Single record action
-                if ($mediaItem instanceof Model && ($action instanceof \Filament\Actions\Action || $action instanceof Actions\ActionGroup)) {
+                if ($mediaItem instanceof Model && ($action instanceof Action || $action instanceof MediaLibraryActionGroup)) {
                     $action = $action->record($mediaItem);
                 } 
                 // Bulk action
-                elseif ($action instanceof Actions\ItemBulkAction || $action instanceof Actions\ActionGroup) {
+                elseif ($action instanceof MediaLibraryItemBulkAction || $action instanceof MediaLibraryActionGroup) {
                     $action = $action->records($mediaItem);
                 }
                 return $action;
@@ -25,11 +28,19 @@
     );
 @endphp
 
-@if (count($actions) > 0)
-    <x-filament-actions::group
-        :actions="$actions"
-        color="gray"
-    />
+@if (count($mediaAssetsActions) > 0)
+    <x-filament::dropdown wire:key="mediaasset-{{ $mediaItem->getKey() }}-actions">
+        <x-slot name="trigger">
+            <x-filament::icon-button icon="heroicon-m-ellipsis-vertical" color="gray">
+                More actions
+            </x-filament::icon-button>
+        </x-slot>
+        <div class="fi-dropdown-list p-1">
+            @foreach ($mediaAssetsActions as $mediaAssetsAction)
+                {{ $mediaAssetsAction }}
+            @endforeach
+        </div>
+    </x-filament::dropdown>
 @else
     <div></div>
 @endif
