@@ -26,10 +26,11 @@
             return $action->isVisible();
         },
     );
+    $livewireKey = $mediaItem instanceof Model ? "mediaasset-{$mediaItem->getKey()}-actions" : 'mediaasset-actions';
 @endphp
 
 @if (count($mediaAssetsActions) > 0)
-    <x-filament::dropdown wire:key="mediaasset-{{ $mediaItem->getKey() }}-actions">
+    <x-filament::dropdown wire:key="{{ $livewireKey }}">
         <x-slot name="trigger">
             <x-filament::icon-button icon="heroicon-m-ellipsis-vertical" color="gray">
                 More actions
