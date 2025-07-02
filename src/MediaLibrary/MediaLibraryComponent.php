@@ -304,16 +304,14 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
     protected function getMediaItemActions(): array
     {
         return [
-            Actions\ActionGroup::make([
-                Actions\OpenFolderAction::make()
-                    ->dispatch('openFolder', fn (?Model $record) => ['mediaId' => $record?->getKey()]),
+            Actions\OpenFolderAction::make()
+                ->dispatch('openFolder', fn (?Model $record) => ['mediaId' => $record?->getKey()]),
 
-                Actions\EditAction::make(),
-                Actions\ViewAction::make(),
+            Actions\EditAction::make(),
+            Actions\ViewAction::make(),
 
-                Actions\RenameAction::make(),
-                Actions\DeleteAction::make(),
-            ])->dropdown(false),
+            Actions\RenameAction::make(),
+            Actions\DeleteAction::make(),
         ];
     }
 

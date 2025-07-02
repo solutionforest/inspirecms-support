@@ -38,7 +38,7 @@
         </x-slot>
         <div class="fi-dropdown-list p-1">
             @foreach ($mediaAssetsActions as $mediaAssetsAction)
-                {{ $mediaAssetsAction }}
+                {{ $mediaAssetsAction->grouped() }}
             @endforeach
         </div>
     </x-filament::dropdown>
