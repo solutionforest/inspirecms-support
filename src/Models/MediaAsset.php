@@ -113,7 +113,7 @@ class MediaAsset extends BaseModel implements MediaAssetContract
         }
 
         if ($this->isSvg()) {
-            return 'inspirecms::svg';
+            return $this->getUrl(); // return 'inspirecms::svg';
         }
 
         if ($this->isAudio()) {

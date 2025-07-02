@@ -32,7 +32,7 @@
                 <span class="title">{{ $toggleMedia->title }}</span>
             </div>
             <div class="thumbnail-ctn">
-                @if($toggleMedia->isImage())
+                @if($toggleMedia->isImage() || $toggleMedia->isSvg())
                     <img loading="lazy" src="{{ $toggleMedia->getThumbnailUrl() }}" />
                 @else
                     <x-inspirecms-support::media-library.thumbnail-icon 

@@ -50,7 +50,7 @@ class ViewAction extends ItemAction
                     ->inlineLabel()
                     ->state(function (MediaAsset | Model $record) {
 
-                        if ($record->isImage()) {
+                        if ($record->isImage() || $record->isSvg()) {
                             $urlOrIcon = $record->getThumbnail();
 
                             return new HtmlString(<<<Html
