@@ -46,10 +46,14 @@ class MediaAsset extends BaseModel implements MediaAssetContract
         [$thumbW, $thumbH] = MediaLibraryRegistry::getThumbnailCrop();
         $thumbConversion = 'preview';
 
-        $this
+        $callbackThumbConversion = $this
             ->addMediaConversion($thumbConversion)
             ->fit(Fit::Crop, $thumbW, $thumbH)
             ->nonQueued();
+
+        if ($media && $media->extension == 'webp') {
+            $callbackThumbConversion->format('FORMAT_WEBP');
+        } 
     }
 
     public function getUrl(string $conversionName = '', bool $isAbsolute = true): ?string
@@ -101,6 +105,11 @@ class MediaAsset extends BaseModel implements MediaAssetContract
 
         if ($media?->hasGeneratedConversion('preview')) {
             return $this->getThumbnailUrl();
+        }
+
+        if ($this->isImage()) {
+            // Fallback to default image if no thumbnail is available
+            return $this->getUrl();
         }
 
         if ($this->isSvg()) {
@@ -270,12 +279,19 @@ class MediaAsset extends BaseModel implements MediaAssetContract
     public function addMediaWithMappedProperties($file)
     {
         $fileAdder = $this->addMedia($file);
-        $mediaItem = $fileAdder->toMediaCollection(
-            collectionName: static::MEDIA_COLLECTION_NAME,
-            diskName: MediaLibraryRegistry::getDisk()
-        );
+        try {
+            $mediaItem = $fileAdder->toMediaCollection(
+                collectionName: static::MEDIA_COLLECTION_NAME,
+                diskName: MediaLibraryRegistry::getDisk()
+            );
 
-        $this->syncMediaProperties($mediaItem);
+            $this->syncMediaProperties($mediaItem);
+        } catch (\Throwable $th) {
+            logger()->error('Failed to add media with mapped properties', [
+                'error' => $th->getMessage(),
+                'file' => $file,
+            ]);
+        }
 
         return $fileAdder;
     }
