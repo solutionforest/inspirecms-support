@@ -53,7 +53,7 @@ class MediaAsset extends BaseModel implements MediaAssetContract
 
         if ($media && $media->extension == 'webp') {
             $callbackThumbConversion->format('FORMAT_WEBP');
-        } 
+        }
     }
 
     public function getUrl(string $conversionName = '', bool $isAbsolute = true): ?string
@@ -279,6 +279,7 @@ class MediaAsset extends BaseModel implements MediaAssetContract
     public function addMediaWithMappedProperties($file)
     {
         $fileAdder = $this->addMedia($file);
+
         try {
             $mediaItem = $fileAdder->toMediaCollection(
                 collectionName: static::MEDIA_COLLECTION_NAME,
