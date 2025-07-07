@@ -27,13 +27,18 @@ describe('media unit', function () {
         $mediaAsset = MediaAsset::factory()->create();
         $testFileName = 'test-add-image.jpg';
 
-        if (isset($data['width']) && isset($data['height'])) {
-            $file = UploadedFile::fake()->image($testFileName, $data['width'], $data['height']);
+        if (isset($data['width']) || isset($data['height'])) {
+            $file = UploadedFile::fake()->image($testFileName, $data['width'] ?? 10, $data['height'] ?? 10);
             $mediaAsset->addMediaWithMappedProperties($file);
         } else {
             $file = UploadedFile::fake()->image($testFileName);
-            $mediaAsset->addMedia($file)->toMediaCollection();
+            $mediaAsset->addMedia($file)->toMediaCollection(
+                collectionName: MediaAsset::MEDIA_COLLECTION_NAME,
+                diskName: 'public',
+            );
         }
+
+        $mediaAsset->refresh();
 
         $media = $mediaAsset->getFirstMedia();
 
