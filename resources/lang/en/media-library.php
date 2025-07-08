@@ -16,6 +16,9 @@ return [
 
         'heading' => 'Information',
 
+        'model_id' => [
+            'label' => 'ID',
+        ],
         'file_name' => [
             'label' => 'File Name',
         ],
@@ -101,6 +104,10 @@ return [
     ],
 
     'forms' => [
+        'id' => [
+            'label' => 'ID',
+            'validation_attribute' => 'ID',
+        ],
         'title' => [
             'label' => 'Title',
             'validation_attribute' => 'title',

@@ -16,6 +16,9 @@ return [
 
         'heading' => '資訊',
 
+        'model_id' => [
+            'label' => 'ID',
+        ],
         'file_name' => [
             'label' => '檔案名稱',
         ],
@@ -101,6 +104,10 @@ return [
     ],
 
     'forms' => [
+        'id' => [
+            'label' => 'ID',
+            'validation_attribute' => 'ID',
+        ],
         'title' => [
             'label' => '標題',
             'validation_attribute' => '標題',

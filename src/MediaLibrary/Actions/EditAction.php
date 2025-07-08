@@ -88,6 +88,10 @@ class EditAction extends ItemAction
 
                 return [
                     $file,
+                    TextInput::make('id')
+                        ->label(__('inspirecms-support::media-library.forms.id.label'))
+                        ->validationAttribute(__('inspirecms-support::media-library.forms.id.validation_attribute'))
+                        ->readOnly(),
                     TextInput::make('title')
                         ->label(__('inspirecms-support::media-library.forms.title.label'))
                         ->validationAttribute(__('inspirecms-support::media-library.forms.title.validation_attribute'))

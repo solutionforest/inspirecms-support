@@ -176,6 +176,7 @@ class MediaAsset extends BaseModel implements MediaAssetContract
     public function getDisplayedColumns(): array
     {
         $columns = [
+            'model_id',
             'file_name',
             'mime_type',
             'size',

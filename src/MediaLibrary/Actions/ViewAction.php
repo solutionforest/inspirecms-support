@@ -61,6 +61,7 @@ class ViewAction extends ItemAction
                         return 'View';
                     })
                     ->url(fn (MediaAsset | Model $record) => $record->getFirstMedia()?->getUrl(), true),
+                Infolists\Components\TextEntry::make('id')->label(__('inspirecms-support::media-library.forms.id.label'))->copyable(),
                 Infolists\Components\TextEntry::make('title')->label(__('inspirecms-support::media-library.forms.title.label')),
                 Infolists\Components\Grid::make(2)->statePath('media')->schema([
                     Infolists\Components\TextEntry::make('file_name')->label(__('inspirecms-support::media-library.forms.file_name.label')),
