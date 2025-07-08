@@ -45,8 +45,8 @@ const defaultOptions = {
 
 compile({
     ...defaultOptions,
-    entryPoints: ['./resources/js/components/media-draggable-item.js'],
-    outfile: './resources/dist/components/media-draggable-item.js',
+    entryPoints: ['./resources/js/media-library.js'],
+    outfile: './resources/dist/media-library.js',
 })
 compile({
     ...defaultOptions,

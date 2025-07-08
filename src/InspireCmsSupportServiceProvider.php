@@ -2,7 +2,6 @@
 
 namespace SolutionForest\InspireCms\Support;
 
-use Filament\Support\Assets\AlpineComponent;
 use Filament\Support\Assets\Css;
 use Filament\Support\Assets\Js;
 use Filament\Support\Facades\FilamentAsset;
@@ -57,7 +56,6 @@ class InspireCmsSupportServiceProvider extends PackageServiceProvider
         $this->app->singleton(Manifests\ModelRegistryInterface::class, fn () => $this->app->make(Manifests\ModelRegistry::class));
         $this->app->singleton(Manifests\MediaLibraryRegistryInterface::class, fn () => $this->app->make(Manifests\MediaLibraryRegistry::class));
         $this->app->singleton(Manifests\ResolverRegistryInterface::class, fn () => $this->app->make(Manifests\ResolverRegistry::class));
-        $this->app->singleton(Manifests\AuthManagerInterface::class, fn () => $this->app->make(Manifests\AuthManager::class));
 
         Blueprint::mixin(new \SolutionForest\InspireCms\Support\Macros\BlueprintMarcos);
 
@@ -76,7 +74,7 @@ class InspireCmsSupportServiceProvider extends PackageServiceProvider
         FilamentAsset::register([
             Css::make('tree-node', __DIR__ . '/../resources/dist/components/tree-node.css'),
             Css::make('media-library', __DIR__ . '/../resources/dist/components/media-library.css'),
-            AlpineComponent::make('media-draggable-item-component', __DIR__ . '/../resources/dist/components/media-draggable-item.js')->loadedOnRequest(),
+            Js::make('media-library', __DIR__ . '/../resources/dist/media-library.js'),
             Js::make('tree-node', __DIR__ . '/../resources/dist/tree-node.js'),
         ], 'solution-forest/inspirecms-support');
 
