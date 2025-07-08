@@ -1,6 +1,6 @@
 {
     "name": "solution-forest/inspirecms-support",
-    "description": "This is my package inspirecms-support",
+    "description": "This is InspireCMS Support Library",
     "keywords": [
         "solution-forest",
         "laravel",
