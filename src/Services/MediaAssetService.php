@@ -158,29 +158,33 @@ class MediaAssetService
 
             if (($media = $mediaAsset->getFirstMedia())) {
 
+                $tempMediaAssetModel = app(MediaAssetHelper::getMediaAssetModel());
+                $limitedMimeTypes = MediaLibraryRegistry::hasLimitedMimeTypes() ? MediaLibraryRegistry::getLimitedMimeTypes() : [];
+                $fileAdder = $tempMediaAssetModel->addMediaFromUrl($url, $limitedMimeTypes);
+        
+                MediaAssetHelper::validateMediaBeforeAddFromUrl($fileAdder);
+
+                $tempFileRealPath = $fileAdder->getFile();
+
                 $disk = Storage::disk($media->disk);
-                $path = $media->getPathRelativeToRoot();
+                $originalPath = $media->getPathRelativeToRoot();
 
                 // Replace the existing media file with the new file
-                $disk->delete($path);
-                $fileAdder = $mediaAsset->addMediaFromUrl($url);
-                $fileAdder->toMediaCollection(
-                    collectionName: MediaAssetHelper::getDefaultCollectionName(),
-                    diskName: MediaAssetHelper::getDisk()
-                );
+                $disk->delete($originalPath);
+                $disk->putFileAs(dirname($originalPath), $tempFileRealPath, $media->file_name);
 
                 static::regenerateMediaConvertsions($media);
 
             } else {
                 // If no existing media, just add the new file
-                $mediaAsset->addMediaFromUrlWithMappedProperties($url);
+                [$mediaAsset, $media, $fileAdder] = static::createMediaFromUrl($mediaAsset, $url);
             }
 
             $mediaAsset->syncMediaProperties($mediaAsset->getFirstMedia());
 
             DB::commit();
 
-            return $mediaAsset->refresh();
+            return $mediaAsset;
 
         } catch (\Throwable $th) {
             DB::rollBack();
@@ -213,29 +217,24 @@ class MediaAssetService
             if (($media = $mediaAsset->getFirstMedia())) {
 
                 $disk = Storage::disk($media->disk);
-                $path = $media->getPathRelativeToRoot();
+                $originalPath = $media->getPathRelativeToRoot();
 
                 // Replace the existing media file with the new file
-                $disk->delete($path);
-                $disk->putFileAs(dirname($path), $file, $media->file_name);
+                $disk->delete($originalPath);
+                $disk->putFileAs(dirname($originalPath), $file, $media->file_name);
 
                 static::regenerateMediaConvertsions($media);
 
             } else {
                 // If no existing media, just add the new file
-                $media = $mediaAsset
-                    ->addMedia($file)
-                    ->toMediaCollection(
-                        collectionName: MediaAssetHelper::getDefaultCollectionName(),
-                        diskName: MediaAssetHelper::getDisk()
-                    );
+                [$mediaAsset, $media, $fileAdder] = static::createMediaFromFile($mediaAsset, $file);
             }
 
             $mediaAsset->syncMediaProperties($mediaAsset->getFirstMedia());
 
             DB::commit();
 
-            return $mediaAsset->refresh();
+            return $mediaAsset;
 
         } catch (\Throwable $th) {
             DB::rollBack();
