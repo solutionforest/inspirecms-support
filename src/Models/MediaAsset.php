@@ -29,8 +29,6 @@ class MediaAsset extends BaseModel implements MediaAssetContract
         'is_folder' => 'boolean',
     ];
 
-    const MEDIA_COLLECTION_NAME = 'default';
-
     /**
      * @return int|string|null
      */
@@ -65,12 +63,12 @@ class MediaAsset extends BaseModel implements MediaAssetContract
             return null;
         }
 
-        $result = $this->getFirstMediaUrl(collectionName: self::MEDIA_COLLECTION_NAME, conversionName: $conversionName);
+        $result = $this->getFirstMediaUrl(collectionName: MediaAssetHelper::getDefaultCollectionName(), conversionName: $conversionName);
 
         // For spatie/laravel-medialibrary v11
         // Fallback to getLastMediaUrl if getFirstMediaUrl is not available
         if (blank($result) && method_exists($this, 'getLastMediaUrl')) {
-            $result = $this->getLastMediaUrl(collectionName: self::MEDIA_COLLECTION_NAME, conversionName: $conversionName);
+            $result = $this->getLastMediaUrl(collectionName: MediaAssetHelper::getDefaultCollectionName(), conversionName: $conversionName);
         }
 
         if (! $isAbsolute && filled($result)) {
