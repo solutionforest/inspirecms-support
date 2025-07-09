@@ -96,6 +96,7 @@ describe('media unit', function () {
             file: $file,
         );
         $imageColumns = [
+            'model_id',
             'file_name',
             'mime_type',
             'size',
