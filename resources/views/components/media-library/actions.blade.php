@@ -30,7 +30,7 @@
 @endphp
 
 @if (count($mediaAssetsActions) > 0)
-    <x-filament::dropdown wire:key="{{ $livewireKey }}">
+    <x-filament::dropdown wire:key="{{ $livewireKey }}" placement="right-start">
         <x-slot name="trigger">
             <x-filament::icon-button icon="heroicon-m-ellipsis-vertical" color="gray">
                 More actions
