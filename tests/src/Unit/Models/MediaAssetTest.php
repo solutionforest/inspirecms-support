@@ -4,10 +4,9 @@ namespace SolutionForest\InspireCms\Support\Tests\Media;
 
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use SolutionForest\InspireCms\Support\Services\MediaAssetService;
 use SolutionForest\InspireCms\Support\Tests\Models\MediaAsset;
 use SolutionForest\InspireCms\Support\Tests\TestCase;
-use SolutionForest\InspireCms\Support\Helpers\MediaAssetHelper;
-use SolutionForest\InspireCms\Support\Services\MediaAssetService;
 
 uses(TestCase::class);
 

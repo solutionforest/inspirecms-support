@@ -88,7 +88,7 @@ class UploadAction extends Action
 
                 switch ($target) {
                     case 'file':
-                        if (empty($data['files']) || !is_array($data['files'])) {
+                        if (empty($data['files']) || ! is_array($data['files'])) {
                             return;
                         }
                         $results = MediaAssetService::createMediaAssetFromFiles(
@@ -111,17 +111,20 @@ class UploadAction extends Action
                             ->prepend('<ul>')
                             ->push('</ul>')
                             ->implode('');
-                            
-                        if (!empty($failMessages)) {
+
+                        if (! empty($failMessages)) {
                             $this
-                                ->failureNotification(fn (Notification $notification) => $notification
-                                    ->title('Some files failed to upload')
-                                    ->body($failMessages)
-                                    ->warning()
+                                ->failureNotification(
+                                    fn (Notification $notification) => $notification
+                                        ->title('Some files failed to upload')
+                                        ->body($failMessages)
+                                        ->warning()
                                 )
                                 ->failure();
+
                             return;
                         }
+
                         break;
 
                     case 'url':
@@ -132,6 +135,7 @@ class UploadAction extends Action
                             url: $data['url'],
                             parentKey: $this->getParentKey()
                         );
+
                         break;
 
                     default:
@@ -145,8 +149,9 @@ class UploadAction extends Action
             } catch (\Throwable $th) {
 
                 $this
-                    ->failureNotification(fn (Notification $notification) => $notification
-                        ->body($th->getMessage())
+                    ->failureNotification(
+                        fn (Notification $notification) => $notification
+                            ->body($th->getMessage())
                     )
                     ->failure();
             }

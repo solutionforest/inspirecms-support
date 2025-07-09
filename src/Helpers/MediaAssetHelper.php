@@ -14,7 +14,6 @@ use Spatie\MediaLibrary\MediaCollections\FileAdder;
 class MediaAssetHelper
 {
     /**
-     * @param \Spatie\MediaLibrary\MediaCollections\FileAdder $fileAdder
      * @throws \Throwable
      */
     public static function validateMediaBeforeAddFromUrl(FileAdder $fileAdder)
@@ -28,12 +27,13 @@ class MediaAssetHelper
              */
             $tempFilePath = $fileAdder->getFile();
             $tempFileSize = filesize($tempFilePath);
-            
+
             if (isset($maxSize) && $maxSize != null && $maxSize > -1 && $tempFileSize > $maxSize) {
                 $message = "File size of {$tempFileSize} bytes exceeds the maximum allowed size of {$maxSize} bytes.";
+
                 throw new FileIsTooBig($message);
             }
-            
+
             if (isset($minSize) && $minSize != null && $minSize > -1 && $tempFileSize < $minSize) {
                 throw new Exception("The file size is less than the minimum allowed size of {$minSize} bytes.");
             }
