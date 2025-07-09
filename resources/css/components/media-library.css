@@ -161,13 +161,8 @@
         @apply select-none;
     }
 
-    .browser-items-grid-ctn {
-        h4 {
-            @apply text-lg font-bold;
-        }
-        .browser-items-grid {
-            @apply grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4;
-        }
+    .browser-items-grid-ctn h4 {
+        @apply text-lg font-bold;
     }
 
     .browser-item :not(:has(:disabled)) .item-content, .folder-item {
@@ -322,6 +317,14 @@
 
 .folder-ctn.expanded {
     z-index: 10001; /* Ensure folder container is above the modal */
+}
+
+/* Grid adjustments for media library browser items */
+.media-library .browser-items-grid-ctn .browser-items-grid {
+    @apply grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4;
+}
+.media-library.media-library--detail-expanded .browser-items-grid-ctn .browser-items-grid {
+    @apply grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4;
 }
 
 .media-library-browser-modal-content .media-library__content {
