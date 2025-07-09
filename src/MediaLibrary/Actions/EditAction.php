@@ -17,7 +17,6 @@ use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use SolutionForest\InspireCms\Support\Facades\MediaLibraryRegistry;
 use SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset;
 use Spatie\MediaLibrary\Conversions\FileManipulator;
-use Spatie\MediaLibrary\MediaCollections\FileAdder;
 
 class EditAction extends ItemAction
 {
@@ -34,9 +33,10 @@ class EditAction extends ItemAction
 
         $this->modalHeading(fn () => __('inspirecms-support::media-library.buttons.edit.heading', ['name' => $this->getModelLabel()]));
 
-        $this->successNotification(fn (Notification $notification) => $notification
-            ->title(__('inspirecms-support::media-library.buttons.edit.messages.success.title'))
-            ->body('If you re-upload the file, please refresh the page to see the changes, e.g. thumbanil of media.')
+        $this->successNotification(
+            fn (Notification $notification) => $notification
+                ->title(__('inspirecms-support::media-library.buttons.edit.messages.success.title'))
+                ->body('If you re-upload the file, please refresh the page to see the changes, e.g. thumbanil of media.')
         );
 
         $this->authorize('update');
@@ -118,6 +118,7 @@ class EditAction extends ItemAction
                                 ->danger()
                                 ->send();
                             DB::rollBack();
+
                             throw new Halt;
                         }
 
@@ -153,7 +154,7 @@ class EditAction extends ItemAction
                         ->validationAttribute(__('inspirecms-support::media-library.forms.description.caption')),
                 ];
             })
-            ->action(function (array $data, ?Model $record, Action $action, \Livewire\Livewire|\Livewire\Component $livewire) {
+            ->action(function (array $data, ?Model $record, Action $action, \Livewire\Livewire | \Livewire\Component $livewire) {
                 if (empty($data) || ! $record) {
                     return;
                 }
