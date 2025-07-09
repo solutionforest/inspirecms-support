@@ -41,8 +41,8 @@
                             if (!updatedId) {
                                 return;
                             }
-                            if (updatedId === '{{ $mediaItem->getKey() }}') {
-                                src = '{{ $mediaItem->getThumbnailUrl() }}?' + Date.now()
+                            if (updatedId === '{{ $toggleMedia->getKey() }}') {
+                                src = '{{ $toggleMedia->getThumbnailUrl() }}?' + Date.now()
                             }
                         }"
                     />
