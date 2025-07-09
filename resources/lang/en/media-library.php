@@ -132,6 +132,14 @@ return [
             'label' => 'Mime Type',
             'validation_attribute' => 'mime type',
         ],
+        'upload_from' => [
+            'label' => 'Upload From',
+            'validation_attribute' => 'upload from',
+            'options' => [
+                'file' => 'Upload from File',
+                'url' => 'Upload from URL',
+            ],
+        ],
         'files' => [
             'label' => 'Files',
             'validation_attribute' => 'files',
@@ -163,6 +171,10 @@ return [
             'messages' => [
                 'success' => [
                     'title' => 'Saved',
+                    'body' => 'If you have re-uploaded the file, please refresh the page to see the changes, e.g., thumbnail of media.',
+                ],
+                'error' => [
+                    'title' => 'An error occurred while saving the media file.',
                 ],
             ],
         ],
@@ -186,13 +198,8 @@ return [
                 ],
                 'error' => [
                     'title' => 'File Upload Failed',
-                    'file_too_big' => 'The maximum allowed size is :max_size bytes.',
                 ],
             ],
-        ],
-        'upload_from_url' => [
-            'label' => 'Upload from URL',
-            'heading' => 'Upload File from URL',
         ],
         'clear' => [
             'label' => 'Clear',

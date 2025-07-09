@@ -6,6 +6,8 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use SolutionForest\InspireCms\Support\Tests\Models\MediaAsset;
 use SolutionForest\InspireCms\Support\Tests\TestCase;
+use SolutionForest\InspireCms\Support\Helpers\MediaAssetHelper;
+use SolutionForest\InspireCms\Support\Services\MediaAssetService;
 
 uses(TestCase::class);
 
@@ -24,17 +26,17 @@ describe('media unit', function () {
 
     it('can add media', function (array $data) {
 
-        $mediaAsset = MediaAsset::factory()->create();
         $testFileName = 'test-add-image.jpg';
 
         if (isset($data['width']) || isset($data['height'])) {
             $file = UploadedFile::fake()->image($testFileName, $data['width'] ?? 10, $data['height'] ?? 10);
-            $mediaAsset->addMediaWithMappedProperties($file);
+            $mediaAsset = MediaAssetService::createMediaAssetFromFile(
+                file: $file,
+            );
         } else {
             $file = UploadedFile::fake()->image($testFileName);
-            $mediaAsset->addMedia($file)->toMediaCollection(
-                collectionName: MediaAsset::MEDIA_COLLECTION_NAME,
-                diskName: 'public',
+            $mediaAsset = MediaAssetService::createMediaAssetFromFile(
+                file: $file,
             );
         }
 
@@ -88,10 +90,11 @@ describe('media unit', function () {
         ]);
 
     it('can get displayed columns', function () {
-        $mediaAsset = MediaAsset::factory()->create();
         $testFileName = 'test-add-image.jpg';
         $file = UploadedFile::fake()->image($testFileName);
-        $mediaAsset->addMediaWithMappedProperties($file);
+        $mediaAsset = MediaAssetService::createMediaAssetFromFile(
+            file: $file,
+        );
         $imageColumns = [
             'file_name',
             'mime_type',

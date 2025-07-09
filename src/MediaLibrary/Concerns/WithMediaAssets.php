@@ -5,6 +5,7 @@ namespace SolutionForest\InspireCms\Support\MediaLibrary\Concerns;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Support\Facades\ModelRegistry;
+use SolutionForest\InspireCms\Support\Helpers\MediaAssetHelper;
 use SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset;
 
 trait WithMediaAssets
@@ -36,7 +37,7 @@ trait WithMediaAssets
 
     protected static function getMediaAssetModel(): string
     {
-        return ModelRegistry::get(MediaAsset::class);
+        return MediaAssetHelper::getMediaAssetModel();
     }
 
     protected static function getRootLevelParentId(): string | int
