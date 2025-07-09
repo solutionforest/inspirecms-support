@@ -88,6 +88,7 @@
                     class="w-12 h-12 object-cover rounded"
                     x-data="{ src: '{{ $mediaItem->getThumbnailUrl() }}?' + Date.now() }"
                     :src="src" 
+                    src="{{ $mediaItem->getThumbnailUrl() }}"
                     x-on:media-thumb-updated.window="(event) => {
                         const updatedId = (Array.isArray(event.detail) ? event.detail[0]?.id : event.detail?.id) || null;
                         if (!updatedId) {
