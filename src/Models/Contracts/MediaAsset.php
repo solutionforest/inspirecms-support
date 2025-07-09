@@ -99,6 +99,15 @@ interface MediaAsset extends BelongsToNestableTree, HasAuthor, HasDtoModel, HasM
     public function isFolder();
 
     /**
+     * Add media from a URL with mapped properties.
+     *
+     * @param  string  $url  The URL of the media asset.
+     * @return FileAdder
+     * @throws \Exception
+     */
+    public function addMediaFromUrlWithMappedProperties($url);
+
+    /**
      * @param  string | UploadedFile | TemporaryUploadedFile  $file
      * @return FileAdder
      */

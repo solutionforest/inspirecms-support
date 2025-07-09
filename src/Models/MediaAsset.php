@@ -11,6 +11,7 @@ use SolutionForest\InspireCms\Support\Helpers\KeyHelper;
 use SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset as MediaAssetContract;
 use Spatie\Image\Enums\Fit;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Exceptions\FileIsTooBig;
 
 class MediaAsset extends BaseModel implements MediaAssetContract
 {
@@ -274,6 +275,57 @@ class MediaAsset extends BaseModel implements MediaAssetContract
         $customProperties['codec_long_name'] = $ffprobe->get('codec_long_name');
 
         return $customProperties;
+    }
+
+    /** {@inheritDoc} */
+    public function addMediaFromUrlWithMappedProperties($url)
+    {
+        try {
+            if (! is_string($url) || empty($url)) {
+                throw new \InvalidArgumentException('The URL must be a non-empty string.');
+            }
+
+            $limitedMimeTypes = MediaLibraryRegistry::hasLimitedMimeTypes() ? MediaLibraryRegistry::getLimitedMimeTypes() : [];
+            $fileAdder = $this->addMediaFromUrl($url, $limitedMimeTypes);
+
+            $fileName = $fileAdder->getFileName();
+            $this->title = $fileName;
+
+            // Validate size
+            if (($maxSize = MediaLibraryRegistry::getMaxSize()) || ($minSize = MediaLibraryRegistry::getMinSize())) {
+
+                // Get size from temporary file
+                /**
+                 * @var string
+                 */
+                $tempFilePath = $fileAdder->getFile();
+                $tempFileSize = filesize($tempFilePath);
+                
+                if (isset($maxSize) && $maxSize != null && $maxSize > -1 && $tempFileSize > $maxSize) {
+                    throw FileIsTooBig::create($tempFilePath, $tempFileSize);
+                }
+                
+                if (isset($minSize) && $minSize != null && $minSize > -1 && $tempFileSize < $minSize) {
+                    throw new \Exception("The file size is less than the minimum allowed size of {$minSize} bytes.");
+                }
+            }
+
+            $mediaItem = $fileAdder->toMediaCollection(
+                collectionName: static::MEDIA_COLLECTION_NAME,
+                diskName: MediaLibraryRegistry::getDisk()
+            );
+
+            $this->syncMediaProperties($mediaItem);
+
+            return $fileAdder;
+
+        } catch (\Throwable $th) {
+            logger()->error('Failed to add media from URL with mapped properties', [
+                'error' => $th->getMessage(),
+                'url' => $url,
+            ]);
+            throw $th;
+        }
     }
 
     /** {@inheritDoc} */

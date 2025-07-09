@@ -17,6 +17,7 @@ use SolutionForest\InspireCms\Support\MediaLibrary\MediaLibraryComponent;
 use SolutionForest\InspireCms\Support\TreeNode\ModelExplorerComponent;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
+use Spatie\MediaLibrary\MediaCollections\FileAdder;
 
 class InspireCmsSupportServiceProvider extends PackageServiceProvider
 {
@@ -58,6 +59,15 @@ class InspireCmsSupportServiceProvider extends PackageServiceProvider
         $this->app->singleton(Manifests\ResolverRegistryInterface::class, fn () => $this->app->make(Manifests\ResolverRegistry::class));
 
         Blueprint::mixin(new \SolutionForest\InspireCms\Support\Macros\BlueprintMarcos);
+
+        // Media library config START
+        FileAdder::macro('getFile', function () {
+            return $this->file;
+        });
+        FileAdder::macro('getFileName', function () {
+            return $this->fileName;
+        });
+        // Media library config END
 
         \SolutionForest\InspireCms\Support\Facades\ResolverRegistry::register($this->app);
     }

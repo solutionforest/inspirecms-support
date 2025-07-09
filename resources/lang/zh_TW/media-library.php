@@ -128,13 +128,17 @@ return [
             'label' => '檔案名稱',
             'validation_attribute' => '檔案名稱',
         ],
+        'mime_type' => [
+            'label' => 'MIME 類型',
+            'validation_attribute' => 'MIME 類型',
+        ],
         'files' => [
             'label' => '檔案',
             'validation_attribute' => '檔案',
         ],
-        'mime_type' => [
-            'label' => 'MIME 類型',
-            'validation_attribute' => 'MIME 類型',
+        'url' => [
+            'label' => 'URL',
+            'validation_attribute' => 'URL',
         ],
     ],
 
@@ -179,7 +183,15 @@ return [
                 'success' => [
                     'title' => '檔案已上傳',
                 ],
+                'error' => [
+                    'title' => '檔案上傳失敗',
+                    'file_too_big' => '最大允許大小為 :max_size 字節。',
+                ],
             ],
+        ],
+        'upload_from_url' => [
+            'label' => '從 URL 上傳',
+            'heading' => '從 URL 上傳檔案',
         ],
         'clear' => [
             'label' => '清除',

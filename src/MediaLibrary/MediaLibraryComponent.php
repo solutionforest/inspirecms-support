@@ -291,7 +291,16 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
                     ]);
                     $action->success();
                 }),
-            Actions\UploadAction::make(),
+            ActionGroup::make([
+                Actions\UploadAction::make(),
+                Actions\UploadAction::make('uploadFromUrl')->uploadFromUrl(),
+            ])
+                ->dropdown()
+                ->button()
+                ->icon(FilamentIcon::resolve('inspirecms::upload'))
+                ->iconPosition('after')
+                ->color('primary')
+                ->label(__('inspirecms-support::media-library.buttons.upload.label')),
         ];
     }
 

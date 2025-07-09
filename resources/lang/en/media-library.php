@@ -128,13 +128,17 @@ return [
             'label' => 'File Name',
             'validation_attribute' => 'file name',
         ],
+        'mime_type' => [
+            'label' => 'Mime Type',
+            'validation_attribute' => 'mime type',
+        ],
         'files' => [
             'label' => 'Files',
             'validation_attribute' => 'files',
         ],
-        'mime_type' => [
-            'label' => 'Mime Type',
-            'validation_attribute' => 'mime type',
+        'url' => [
+            'label' => 'URL',
+            'validation_attribute' => 'URL',
         ],
     ],
 
@@ -180,7 +184,15 @@ return [
                 'success' => [
                     'title' => 'File Uploaded',
                 ],
+                'error' => [
+                    'title' => 'File Upload Failed',
+                    'file_too_big' => 'The maximum allowed size is :max_size bytes.',
+                ],
             ],
+        ],
+        'upload_from_url' => [
+            'label' => 'Upload from URL',
+            'heading' => 'Upload File from URL',
         ],
         'clear' => [
             'label' => 'Clear',
