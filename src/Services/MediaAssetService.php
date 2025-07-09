@@ -18,6 +18,7 @@ class MediaAssetService
 {
     /**
      * @return MediaAsset | Model
+     *
      * @throws \Throwable
      */
     public static function createMediaAssetFromUrl($url, ?string $parentKey = null)
@@ -36,7 +37,7 @@ class MediaAssetService
                 'parent_id' => static::ensureParentKeyBeforeCreate($parentKey),
                 'title' => str(basename($url))->before('?')->toString(),
             ]);
-            
+
             [$mediaAsset, $media, $fileAdder] = static::createMediaFromUrl($mediaAsset, $url);
 
             $mediaAsset->syncMediaProperties($media);
@@ -47,6 +48,7 @@ class MediaAssetService
 
         } catch (\Throwable $th) {
             DB::rollBack();
+
             throw $th;
         }
     }
@@ -84,13 +86,13 @@ class MediaAssetService
                 } else {
                     $fails[] = [
                         'file' => $file,
-                        'error' => 'Invalid file type. Expected UploadedFile or string (file path).'
+                        'error' => 'Invalid file type. Expected UploadedFile or string (file path).',
                     ];
                 }
             } catch (\Throwable $th) {
                 $fails[] = [
                     'file' => $file,
-                    'error' => $th->getMessage()
+                    'error' => $th->getMessage(),
                 ];
             }
         }
@@ -104,7 +106,7 @@ class MediaAssetService
     /**
      * @return MediaAsset | Model
      */
-    public static function createMediaAssetFromFile(string|UploadedFile $file, ?string $parentKey = null)
+    public static function createMediaAssetFromFile(string | UploadedFile $file, ?string $parentKey = null)
     {
         try {
 
@@ -128,11 +130,12 @@ class MediaAssetService
 
         } catch (\Throwable $th) {
             DB::rollBack();
+
             throw $th;
         }
     }
 
-    protected static function createMediaFromFile(MediaAsset | Model $mediaAsset, string|UploadedFile $file)
+    protected static function createMediaFromFile(MediaAsset | Model $mediaAsset, string | UploadedFile $file)
     {
         $fileAdder = $mediaAsset->addMedia($file);
 
@@ -161,7 +164,7 @@ class MediaAssetService
                 $tempMediaAssetModel = app(MediaAssetHelper::getMediaAssetModel());
                 $limitedMimeTypes = MediaLibraryRegistry::hasLimitedMimeTypes() ? MediaLibraryRegistry::getLimitedMimeTypes() : [];
                 $fileAdder = $tempMediaAssetModel->addMediaFromUrl($url, $limitedMimeTypes);
-        
+
                 MediaAssetHelper::validateMediaBeforeAddFromUrl($fileAdder);
 
                 $tempFileRealPath = $fileAdder->getFile();
@@ -188,6 +191,7 @@ class MediaAssetService
 
         } catch (\Throwable $th) {
             DB::rollBack();
+
             throw $th;
         }
     }
@@ -197,13 +201,12 @@ class MediaAssetService
      * Keep:
      * - file_path
      * - file_name
-     * 
-     * @param \SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset|\Illuminate\Database\Eloquent\Model $mediaAsset
-     * @param string|\Symfony\Component\HttpFoundation\File\UploadedFile $file
-     * @throws \Throwable
+     *
      * @return MediaAsset|Model
+     *
+     * @throws \Throwable
      */
-    public static function updateMediaFromFileWithoutDelete(MediaAsset | Model $mediaAsset, string|UploadedFile $file)
+    public static function updateMediaFromFileWithoutDelete(MediaAsset | Model $mediaAsset, string | UploadedFile $file)
     {
         try {
 
@@ -213,7 +216,7 @@ class MediaAssetService
             if (! $mediaAsset->exists) {
                 throw new Exception('Media asset does not exist.');
             }
-            
+
             if (($media = $mediaAsset->getFirstMedia())) {
 
                 $disk = Storage::disk($media->disk);
@@ -238,6 +241,7 @@ class MediaAssetService
 
         } catch (\Throwable $th) {
             DB::rollBack();
+
             throw $th;
         }
     }

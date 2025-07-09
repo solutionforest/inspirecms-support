@@ -4,16 +4,13 @@ namespace SolutionForest\InspireCms\Support\Models;
 
 use FFMpeg\FFMpeg;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
 use SolutionForest\InspireCms\Support\Facades\MediaLibraryRegistry;
 use SolutionForest\InspireCms\Support\Helpers\KeyHelper;
-use SolutionForest\InspireCms\Support\Helpers\MediaAssetHelper;
 use SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset as MediaAssetContract;
 use Spatie\Image\Enums\Fit;
 use Spatie\MediaLibrary\InteractsWithMedia;
-use Spatie\MediaLibrary\MediaCollections\Exceptions\FileIsTooBig;
 
 class MediaAsset extends BaseModel implements MediaAssetContract
 {

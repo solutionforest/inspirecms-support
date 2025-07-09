@@ -2,7 +2,6 @@
 
 namespace SolutionForest\InspireCms\Support\MediaLibrary\Actions;
 
-use Filament\Actions\Action;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -12,14 +11,12 @@ use Filament\Support\Exceptions\Halt;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 use League\Flysystem\UnableToCheckFileExistence;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use SolutionForest\InspireCms\Support\Facades\MediaLibraryRegistry;
 use SolutionForest\InspireCms\Support\Helpers\MediaAssetHelper;
 use SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset;
 use SolutionForest\InspireCms\Support\Services\MediaAssetService;
-use Spatie\MediaLibrary\Conversions\FileManipulator;
 
 class EditAction extends ItemAction
 {
@@ -36,9 +33,10 @@ class EditAction extends ItemAction
 
         $this->modalHeading(fn () => __('inspirecms-support::media-library.buttons.edit.heading', ['name' => $this->getModelLabel()]));
 
-        $this->successNotification(fn (Notification $notification) => $notification
-            ->title(__('inspirecms-support::media-library.buttons.edit.messages.success.title'))
-            ->body(__('inspirecms-support::media-library.buttons.edit.messages.success.body'))
+        $this->successNotification(
+            fn (Notification $notification) => $notification
+                ->title(__('inspirecms-support::media-library.buttons.edit.messages.success.title'))
+                ->body(__('inspirecms-support::media-library.buttons.edit.messages.success.body'))
         );
 
         $this->failureNotificationTitle(__('inspirecms-support::media-library.buttons.edit.messages.error.title'));
@@ -105,7 +103,7 @@ class EditAction extends ItemAction
                         if (! $record instanceof MediaAsset) {
                             return null;
                         }
-                        
+
                         $this->handleMediaFileUpdateFromFile($record, $file);
 
                         return $record->getFirstMedia()->getPathRelativeToRoot();
@@ -134,7 +132,7 @@ class EditAction extends ItemAction
                         ->validationAttribute(__('inspirecms-support::media-library.forms.description.caption')),
                 ];
             })
-            ->action(function (array $data, ?Model $record, \Livewire\Livewire|\Livewire\Component $livewire) {
+            ->action(function (array $data, ?Model $record, \Livewire\Livewire | \Livewire\Component $livewire) {
                 if (empty($data) || ! $record) {
                     return;
                 }
@@ -143,25 +141,26 @@ class EditAction extends ItemAction
                 $fromUrl = $data['url'] ?? '';
                 unset($data['upload_from'], $data['url']);
 
-
                 if ($target === 'url') {
 
                     // already wrap in db-transaction
                     try {
-                        
+
                         $mediaAsset = MediaAssetService::uploadMediaFromUrlWithoutDelete(
-                            $record, 
+                            $record,
                             $fromUrl
                         );
 
                         $mediaAsset->update($data);
-                        
+
                     } catch (\Throwable $th) {
                         $this
-                            ->failureNotification(fn (Notification $notification) => $notification
-                                ->body($th->getMessage())
+                            ->failureNotification(
+                                fn (Notification $notification) => $notification
+                                    ->body($th->getMessage())
                             )
                             ->failure();
+
                         return;
                     }
                 } else {
@@ -184,13 +183,13 @@ class EditAction extends ItemAction
 
             $mediaAsset = MediaAssetService::updateMediaFromFileWithoutDelete($record, $file);
 
-
         } catch (\Throwable $th) {
             Notification::make()
                 ->title($this->getFailureNotificationTitle() ?? __('inspirecms-support::media-library.buttons.edit.messages.error.title'))
                 ->body($th->getMessage())
                 ->danger()
                 ->send();
+
             throw new Halt;
         }
     }
