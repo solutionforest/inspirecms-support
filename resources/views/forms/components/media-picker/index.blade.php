@@ -72,9 +72,19 @@
                     <div class="flex flex-col items-center justify-center gap-3">
                         @if ($asset->isImage())
                             <img loading="lazy" 
-                                src="{{ $asset->getThumbnailUrl() }}" 
                                 alt="{{ $asset->getKey() }}" 
                                 style="{{ $imgStyles }}"
+                                x-data="{ src: '{{ $asset->getThumbnailUrl() }}?' + Date.now() }"
+                                :src="src" 
+                                x-on:media-thumb-updated.window="(event) => {
+                                    const updatedId = (Array.isArray(event.detail) ? event.detail[0]?.id : event.detail?.id) || null;
+                                    if (!updatedId) {
+                                        return;
+                                    }
+                                    if (updatedId === '{{ $asset->getKey() }}') {
+                                        src = '{{ $asset->getThumbnailUrl() }}?' + Date.now()
+                                    }
+                                }"
                             />
                         @else
                             <x-inspirecms-support::media-library.thumbnail-icon 

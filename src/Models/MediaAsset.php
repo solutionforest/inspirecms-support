@@ -282,12 +282,14 @@ class MediaAsset extends BaseModel implements MediaAssetContract
         $fileAdder = $this->addMedia($file);
 
         try {
+
             $mediaItem = $fileAdder->toMediaCollection(
                 collectionName: static::MEDIA_COLLECTION_NAME,
                 diskName: MediaLibraryRegistry::getDisk()
             );
 
             $this->syncMediaProperties($mediaItem);
+
         } catch (\Throwable $th) {
             logger()->error('Failed to add media with mapped properties', [
                 'error' => $th->getMessage(),
@@ -298,11 +300,8 @@ class MediaAsset extends BaseModel implements MediaAssetContract
         return $fileAdder;
     }
 
-    /**
-     * @param  \Spatie\MediaLibrary\MediaCollections\Models\Media  $media
-     * @return void
-     */
-    private function syncMediaProperties($media)
+    /** {@inheritDoc} */
+    public function syncMediaProperties($media)
     {
         // Adjust properties
         $customProperties = [];

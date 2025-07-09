@@ -105,6 +105,17 @@ interface MediaAsset extends BelongsToNestableTree, HasAuthor, HasDtoModel, HasM
     public function addMediaWithMappedProperties($file);
 
     /**
+     * Sync the media properties with the model.
+     *
+     * This method is used to adjust the properties of the media asset
+     * based on the model's attributes and custom properties.
+     *
+     * @param  \Spatie\MediaLibrary\MediaCollections\Models\Media  $media
+     * @return void
+     */
+    public function syncMediaProperties($media);
+
+    /**
      * Get the columns to be displayed.
      *
      * @return string[] The array of displayed columns.

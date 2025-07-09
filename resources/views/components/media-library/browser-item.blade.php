@@ -83,7 +83,21 @@
                 </div>
 
             @elseif ($mediaItem->isImage())
-                <img loading="lazy" src="{{ $mediaItem->getThumbnailUrl() }}" alt="{{ $mediaItem->getKey() }}" class="w-12 h-12 object-cover rounded" />
+                <img loading="lazy" 
+                    alt="{{ $mediaItem->getKey() }}" 
+                    class="w-12 h-12 object-cover rounded"
+                    x-data="{ src: '{{ $mediaItem->getThumbnailUrl() }}?' + Date.now() }"
+                    :src="src" 
+                    x-on:media-thumb-updated.window="(event) => {
+                        const updatedId = (Array.isArray(event.detail) ? event.detail[0]?.id : event.detail?.id) || null;
+                        if (!updatedId) {
+                            return;
+                        }
+                        if (updatedId === '{{ $mediaItem->getKey() }}') {
+                            src = '{{ $mediaItem->getThumbnailUrl() }}?' + Date.now()
+                        }
+                    }"
+                />
             @else
                 <x-inspirecms-support::media-library.thumbnail-icon 
                     :icon="$mediaItem->getThumbnail()" 
