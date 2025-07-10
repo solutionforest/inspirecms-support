@@ -2,6 +2,25 @@
 
 All notable changes to `inspirecms-support` will be documented in this file.
 
+## 1.0.2 - 2025-07-10
+
+<!-- Release notes generated using configuration in .github/release.yml at 1.x -->
+### 🚀 New features
+
+- Media Library: re-upload media without delete original one
+- Media Library: upload media via URL
+
+### 🐛 Bug fixes
+
+- Media Library grid layout
+- Media Library "uploaded_by" is missing
+
+### Other Changes
+
+- Add test cases
+
+**Full Changelog**: https://github.com/solutionforest/inspirecms-support/compare/1.0.0...1.0.2
+
 ## 0.0.109 - 2025-07-08
 
 **Full Changelog**: https://github.com/solutionforest/inspirecms-support/compare/0.0.108...0.0.109
