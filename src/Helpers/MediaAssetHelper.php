@@ -18,6 +18,7 @@ class MediaAssetHelper
         'updated_at',
         'uploaded_by',
     ];
+
     private const DISPLAYED_COLUMNS_NON_FOLDER = [
         'model_id',
         'file_name',
@@ -25,6 +26,7 @@ class MediaAssetHelper
         'size',
         ...self::DISPLAYED_COLUMNS_DEFAULT,
     ];
+
     private const DISPLAYED_COLUMNS_FOLDER = [
         'title',
         ...self::DISPLAYED_COLUMNS_DEFAULT,
