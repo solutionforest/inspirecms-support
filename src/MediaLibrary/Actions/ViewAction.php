@@ -2,7 +2,6 @@
 
 namespace SolutionForest\InspireCms\Support\MediaLibrary\Actions;
 
-use Filament\Infolists;
 use Filament\Infolists\Components\Grid;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Support\Facades\FilamentIcon;
@@ -64,7 +63,7 @@ class ViewAction extends ItemAction
                 TextEntry::make('caption')
                     ->label(__('inspirecms-support::media-library.forms.caption.label')),
                 TextEntry::make('description')
-                ->label(__('inspirecms-support::media-library.forms.description.label')),
+                    ->label(__('inspirecms-support::media-library.forms.description.label')),
             ])
             ->disabledForm()
             ->modalSubmitAction(false)

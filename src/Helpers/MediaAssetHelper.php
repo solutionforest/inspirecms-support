@@ -140,7 +140,7 @@ class MediaAssetHelper
         ));
     }
 
-    public static function getHumanFileSize(int|float $size): string
+    public static function getHumanFileSize(int | float $size): string
     {
         return File::getHumanReadableSize($size);
     }

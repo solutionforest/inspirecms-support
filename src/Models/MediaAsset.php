@@ -187,7 +187,7 @@ class MediaAsset extends BaseModel implements MediaAssetContract
         return MediaAssetHelper::getMediaAssetDisplayedColumnsForNonFolder();
     }
 
-    //region Attributes
+    // region Attributes
 
     public function getUploadedByAttribute()
     {
@@ -207,7 +207,7 @@ class MediaAsset extends BaseModel implements MediaAssetContract
         return null;
     }
 
-    //endregion Attributes
+    // endregion Attributes
 
     // region Scopes
     public function scopeFolders($query, bool $condition = true)
