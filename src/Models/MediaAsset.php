@@ -192,7 +192,6 @@ class MediaAsset extends BaseModel implements MediaAssetContract
     public function getUploadedByAttribute()
     {
         if (($author = $this->author)) {
-            ray($author, 'MediaAsset::getUploadedByAttribute');
             if ($author instanceof \Filament\Models\Contracts\HasName) {
                 return $author->getFilamentName();
             }
