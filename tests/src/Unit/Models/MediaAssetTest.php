@@ -4,119 +4,138 @@ namespace SolutionForest\InspireCms\Support\Tests\Media;
 
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use SolutionForest\InspireCms\Support\Helpers\MediaAssetHelper;
 use SolutionForest\InspireCms\Support\Services\MediaAssetService;
 use SolutionForest\InspireCms\Support\Tests\Models\MediaAsset;
 use SolutionForest\InspireCms\Support\Tests\TestCase;
 
 uses(TestCase::class);
+pest()->group('media', 'unit');
 
-describe('media unit', function () {
+dataset('image_extensions', [
+    'jpg' => ['jpg'],
+    'png' => ['png'],
+    'webp' => ['webp'],
+    'gif' => ['gif'],
+]);
 
-    it('can convert to dto', function () {
+dataset('media_conversions', [
+    'base' => '',
+    'thumbnail' => 'preview',
+]);
+
+it('can convert to dto', function () {
+    $mediaAsset = MediaAsset::factory()->isFolder()->create();
+
+    $dto = $mediaAsset->toDto();
+
+    expect($dto->uid)->toBe($mediaAsset->id);
+    expect($dto->caption)->toBe($mediaAsset->caption);
+    expect($dto->description)->toBe($mediaAsset->description);
+    expect(array_keys($media->responsive_images ?? []))->toBe($dto->responsive);
+});
+
+it('can add image', function ($extension = 'jpg', $width = null, $height = null) {
+
+    $testFileName = "test-add-image.{$extension}";
+
+    if (isset($width) || isset($height)) {
+        $file = UploadedFile::fake()->image($testFileName, $width ?? 10, $height ?? 10);
+    } else {
+        $file = UploadedFile::fake()->image($testFileName);
+    }
+
+    $mediaAsset = MediaAssetService::createMediaAssetFromFile(
+        file: $file,
+    );
+
+    $mediaAsset->refresh();
+
+    $media = $mediaAsset->getFirstMedia();
+
+    expect($media)->not->toBeNull();
+
+    $diskName = $media->disk;
+    Storage::disk($diskName)->assertExists($media->getPathRelativeToRoot());
+
+    if (isset($width)) {
+        expect($media->custom_properties['width'])->toBe($width);
+    }
+    if (isset($height)) {
+        expect($media->custom_properties['height'])->toBe($height);
+    }
+})
+->with('image_extensions')
+->with([
+    'normal' => [],
+    'with mapped properties' => [120, 130],
+]);
+
+it('can get url', function ($conversionName) {
+
+    $mediaAsset = MediaAsset::factory()->create();
+    $testFileName = 'test-add-image.jpg';
+    $file = UploadedFile::fake()->image($testFileName);
+
+    $mediaAsset->addMedia($file)->toMediaCollection();
+
+    $media = $mediaAsset->getFirstMedia();
+
+    expect($media)->not->toBeNull();
+
+    // Check if the URL is correct
+    $url = $mediaAsset->getUrl($conversionName);
+    expect($url)->not->toBeNull();
+
+    // Check file existence on disk
+    $diskName = $media->disk;
+    Storage::disk($diskName)->assertExists($media->getPathRelativeToRoot($conversionName));
+
+})->with('media_conversions');
+
+it('can get displayed columns', function ($extension = null) {
+
+    $isFolder = is_null($extension);
+    if ($isFolder) {
         $mediaAsset = MediaAsset::factory()->isFolder()->create();
-
-        $dto = $mediaAsset->toDto();
-
-        expect($dto->uid)->toBe($mediaAsset->id);
-        expect($dto->caption)->toBe($mediaAsset->caption);
-        expect($dto->description)->toBe($mediaAsset->description);
-        expect(array_keys($media->responsive_images ?? []))->toBe($dto->responsive);
-    });
-
-    it('can add media', function (array $data) {
-
-        $testFileName = 'test-add-image.jpg';
-
-        if (isset($data['width']) || isset($data['height'])) {
-            $file = UploadedFile::fake()->image($testFileName, $data['width'] ?? 10, $data['height'] ?? 10);
-            $mediaAsset = MediaAssetService::createMediaAssetFromFile(
-                file: $file,
-            );
-        } else {
+        $targetColumns = MediaAssetHelper::getMediaAssetDisplayedColumnsForFolder();
+    } else {
+        $testFileName = "test-media.{$extension}";
+        if (in_array($extension, ['jpg', 'png', 'webp', 'gif'])) {
             $file = UploadedFile::fake()->image($testFileName);
-            $mediaAsset = MediaAssetService::createMediaAssetFromFile(
-                file: $file,
-            );
-        }
-
-        $mediaAsset->refresh();
-
-        $media = $mediaAsset->getFirstMedia();
-
-        expect($media)->not->toBeNull();
-        Storage::disk('public')->assertExists($media->getPathRelativeToRoot());
-
-        if (isset($data['width'])) {
-            expect($media->custom_properties['width'])->toBe($data['width']);
-        }
-        if (isset($data['height'])) {
-            expect($media->custom_properties['height'])->toBe($data['height']);
-        }
-
-    })->with([
-        'normal' => fn () => [
-            'width' => null,
-            'height' => null,
-        ],
-        'with mapped properties' => fn () => [
-            'width' => 120,
-            'height' => 130,
-        ],
-    ]);
-
-    it('can get url', function ($type) {
-
-        $mediaAsset = MediaAsset::factory()->create();
-        $testFileName = 'test-add-image.jpg';
-        $file = UploadedFile::fake()->image($testFileName);
-
-        $mediaAsset->addMedia($file)->toMediaCollection();
-
-        $media = $mediaAsset->getFirstMedia();
-
-        expect($media)->not->toBeNull();
-
-        if ($type === 'thumbnail') {
-            expect($mediaAsset->getThumbnailUrl())->not->toBeNull();
         } else {
-            expect($media->getUrl())->toBe($mediaAsset->getUrl());
+            $file = match ($extension) {
+                'mp4' => UploadedFile::fake()->create($testFileName, 1000, 'video/mp4'),
+                'mp3' => UploadedFile::fake()->create($testFileName, 1000, 'audio/mpeg'),
+                'pdf' => UploadedFile::fake()->createWithContent($testFileName, str_repeat('A', 1000)),
+                default => UploadedFile::fake()->create($testFileName, 1000),
+            };
         }
-
-    })
-        ->with([
-            'base',
-            'thumbnail',
-        ]);
-
-    it('can get displayed columns', function () {
-        $testFileName = 'test-add-image.jpg';
-        $file = UploadedFile::fake()->image($testFileName);
         $mediaAsset = MediaAssetService::createMediaAssetFromFile(
             file: $file,
         );
-        $imageColumns = [
-            'model_id',
-            'file_name',
-            'mime_type',
-            'size',
-            'custom-property.dimensions',
-            'created_at',
-            'updated_at',
-            'uploaded_by',
-        ];
+        $targetColumns = match ($extension) {
+            'jpg', 'png', 'webp', 'gif' => MediaAssetHelper::getMediaAssetDisplayedColumnsForImage(),
+            'mp4' => MediaAssetHelper::getMediaAssetDisplayedColumnsForVideo(),
+            'mp3' => MediaAssetHelper::getMediaAssetDisplayedColumnsForAudio(),
+            default => MediaAssetHelper::getMediaAssetDisplayedColumnsForNonFolder(),
+        };
+    }
+    $mediaAsset->refresh();
 
-        expect($mediaAsset->getDisplayedColumns())->toBe($imageColumns);
+    if ($isFolder) {
+        expect($mediaAsset->isFolder())->toBeTrue();
+    } else {
+        expect($mediaAsset->isFolder())->toBeFalse();
+        expect($mediaAsset->getFirstMedia())->not->toBeNull();
+    }
 
-        $mediaAsset = MediaAsset::factory()->isFolder()->create();
+    expect($mediaAsset->getDisplayedColumns())->toBe($targetColumns);
 
-        $folderColumns = [
-            'title',
-            'created_at',
-            'updated_at',
-            'created_by',
-        ];
-
-        expect($mediaAsset->getDisplayedColumns())->toBe($folderColumns);
-    });
-
-})->group('media', 'unit');
+})->with([
+    'image' => ['jpg'],
+    // 'video' => ['mp4'],
+    // 'audio' => ['mp3'],
+    'file' => ['txt'],
+    'folder' => [],
+]);

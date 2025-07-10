@@ -174,52 +174,17 @@ class MediaAsset extends BaseModel implements MediaAssetContract
 
     public function getDisplayedColumns(): array
     {
-        $columns = [
-            'model_id',
-            'file_name',
-            'mime_type',
-            'size',
-        ];
-        $timestamps = [
-            'created_at',
-            'updated_at',
-            'uploaded_by',
-        ];
-
-        $imageColumns = [
-            'custom-property.dimensions',
-        ];
-
-        $videoColumns = [
-            'custom-property.duration',
-            'custom-property.resolution',
-            'custom-property.channels',
-            'custom-property.bit_rate',
-            'custom-property.frame_rate',
-        ];
-
-        $audioColumns = [
-            'custom-property.duration',
-            'custom-property.channels',
-            'custom-property.bit_rate',
-        ];
-
         if ($this->isFolder()) {
-            return [
-                'title',
-                'created_at',
-                'updated_at',
-                'created_by',
-            ];
+            return MediaAssetHelper::getMediaAssetDisplayedColumnsForFolder();
         } elseif ($this->isImage()) {
-            $columns = array_merge($columns, $imageColumns, $timestamps);
+            return MediaAssetHelper::getMediaAssetDisplayedColumnsForImage();
         } elseif ($this->isVideo()) {
-            $columns = array_merge($columns, $videoColumns, $timestamps);
+            return MediaAssetHelper::getMediaAssetDisplayedColumnsForVideo();
         } elseif ($this->isAudio()) {
-            $columns = array_merge($columns, $audioColumns, $timestamps);
+            return MediaAssetHelper::getMediaAssetDisplayedColumnsForAudio();
         }
-
-        return $columns;
+            
+        return MediaAssetHelper::getMediaAssetDisplayedColumnsForNonFolder();
     }
 
     // region Scopes
