@@ -183,7 +183,7 @@ class MediaAsset extends BaseModel implements MediaAssetContract
         } elseif ($this->isAudio()) {
             return MediaAssetHelper::getMediaAssetDisplayedColumnsForAudio();
         }
-            
+
         return MediaAssetHelper::getMediaAssetDisplayedColumnsForNonFolder();
     }
 

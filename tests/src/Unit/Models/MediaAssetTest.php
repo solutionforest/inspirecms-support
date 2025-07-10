@@ -65,11 +65,11 @@ it('can add image', function ($extension = 'jpg', $width = null, $height = null)
         expect($media->custom_properties['height'])->toBe($height);
     }
 })
-->with('image_extensions')
-->with([
-    'normal' => [],
-    'with mapped properties' => [120, 130],
-]);
+    ->with('image_extensions')
+    ->with([
+        'normal' => [],
+        'with mapped properties' => [120, 130],
+    ]);
 
 it('can get url', function ($conversionName) {
 
