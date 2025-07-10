@@ -1,7 +1,5 @@
 <?php
 
-namespace SolutionForest\InspireCms\Support\Tests\RecursiveRelationships;
-
 use Illuminate\Support\Facades\DB;
 use SolutionForest\InspireCms\Support\Tests\Models\HasRecursiveRelationships\TestHasSoftDelete;
 use SolutionForest\InspireCms\Support\Tests\Models\HasRecursiveRelationships\TestNormal;
