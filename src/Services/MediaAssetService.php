@@ -169,14 +169,9 @@ class MediaAssetService
 
                 $tempFileRealPath = $fileAdder->getFile();
 
-                $disk = Storage::disk($media->disk);
-                $originalPath = $media->getPathRelativeToRoot();
+                static::validateMediaUpdateWithoutDelete($mediaAsset, $tempFileRealPath);
 
-                // Replace the existing media file with the new file
-                $disk->delete($originalPath);
-                $disk->putFileAs(dirname($originalPath), $tempFileRealPath, $media->file_name);
-
-                static::regenerateMediaConvertsions($media);
+                static::replaceOriginalMediaFile($media, $tempFileRealPath);
 
             } else {
                 // If no existing media, just add the new file
@@ -219,14 +214,9 @@ class MediaAssetService
 
             if (($media = $mediaAsset->getFirstMedia())) {
 
-                $disk = Storage::disk($media->disk);
-                $originalPath = $media->getPathRelativeToRoot();
+                static::validateMediaUpdateWithoutDelete($mediaAsset, $file);
 
-                // Replace the existing media file with the new file
-                $disk->delete($originalPath);
-                $disk->putFileAs(dirname($originalPath), $file, $media->file_name);
-
-                static::regenerateMediaConvertsions($media);
+                static::replaceOriginalMediaFile($media, $file);
 
             } else {
                 // If no existing media, just add the new file
@@ -261,5 +251,123 @@ class MediaAssetService
         }
 
         return $parentKey;
+    }
+
+    /**
+     * @throws \Throwable
+     */
+    protected static function validateMediaUpdateWithoutDelete(MediaAsset $originalMediaAsset, $newFile)
+    {
+        if ($originalMediaAsset->isFolder()) {
+            throw new Exception('Cannot update a folder with a file.');
+        }
+
+        $originalFile = $originalMediaAsset->getFirstMedia();
+
+        if (!$originalFile) {
+            throw new Exception('Media asset does not have an associated file.');
+        }
+        
+        // Validate file type can be replace (e.g., image to image, video to video)
+        if ($newFile instanceof UploadedFile) {
+            $newFileType = $newFile->getMimeType();
+        } elseif (is_string($newFile)) {
+            $newFileType = mime_content_type($newFile);
+        } else {
+            throw new Exception('Invalid file type. Expected UploadedFile or string (file path).');
+        }
+
+        // Check the new file can be convert to an image
+        if ($originalMediaAsset->isImage()) {
+            if (!str_starts_with($newFileType, 'image/')) {
+                throw new Exception('The new file must be an image type.');
+            } 
+        }
+        // Check if the new file type matches the original file type
+        else if ($newFileType !== $originalFile->mime_type) {
+            throw new Exception('The new file type does not match the original file type.');
+        }
+    }
+
+    protected static function replaceOriginalMediaFile(Media $originalMedia, $newFile)
+    {
+        $originalExtension = pathinfo($originalMedia->getPathRelativeToRoot(), PATHINFO_EXTENSION);
+
+        if ($newFile instanceof UploadedFile) {
+            $newFileExtension = $newFile->getClientOriginalExtension();
+        } elseif (is_string($newFile)) {
+            $newFileExtension = pathinfo($newFile, PATHINFO_EXTENSION);
+        } else {
+            throw new Exception('Invalid file type. Expected UploadedFile or string (file path).');
+        }
+
+        // Replace with the new file
+        if (str_starts_with($originalMedia->mime_type, 'image/')) {
+            // If extensions are same, use the original file name
+            if ($newFileExtension === $originalExtension) {
+                Storage::disk($originalMedia->disk)->putFileAs(
+                    dirname($originalMedia->getPathRelativeToRoot()),
+                    $newFile,
+                    $originalMedia->file_name
+                );
+            } 
+            // Otherwise, try converting the new file to the original extension
+            else {
+                $tempFilePath = static::convertImageAs($newFile, $originalExtension);
+                Storage::disk($originalMedia->disk)->putFileAs(
+                    dirname($originalMedia->getPathRelativeToRoot()),
+                    $tempFilePath,
+                    $originalMedia->file_name
+                );
+                // Delete the temporary file
+                unlink($tempFilePath);
+            }
+
+        } else {
+            Storage::disk($originalMedia->disk)->putFileAs(
+                dirname($originalMedia->getPathRelativeToRoot()),
+                $newFile,
+                $originalMedia->file_name
+            );
+        }
+
+        // Regenerate conversions
+        static::regenerateMediaConvertsions($originalMedia);
+    }
+
+    protected static function convertImageAs($file, string $targetExtension)
+    {
+        if ($file instanceof UploadedFile) {
+            $fileContent = file_get_contents($file->getRealPath());
+        } elseif (is_string($file)) {
+            $fileContent = file_get_contents($file);
+        } else {
+            throw new Exception('Invalid file type. Expected UploadedFile or string (file path).');
+        }
+        $tempFilePath = tempnam(sys_get_temp_dir(), 'media_asset_');
+        $image = imagecreatefromstring($fileContent);
+
+        if ($image === false) {
+            throw new Exception('Failed to create image from file.');
+        }
+
+        switch ($targetExtension) {
+            case 'jpg':
+            case 'jpeg':
+                imagejpeg($image, $tempFilePath);
+                break;
+            case 'png':
+                imagepng($image, $tempFilePath);
+                break;
+            case 'gif':
+                imagegif($image, $tempFilePath);
+                break;
+            default:
+                throw new Exception("Unsupported target extension: {$targetExtension}");
+        }
+
+        imagedestroy($image);
+
+        return $tempFilePath;
     }
 }
