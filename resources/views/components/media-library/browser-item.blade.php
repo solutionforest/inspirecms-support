@@ -68,15 +68,15 @@
                     @style([\Filament\Support\get_color_css_variables('warning', [400, 500, 600])])
                 >
                     @if ($isDraggable)
-                        <svg x-show="!isDragOver" class="w-12 h-12 text-custom-500" fill="currentColor" viewBox="0 0 20 20">
+                        <svg x-show="!isDragOver" class="folder-icon" fill="currentColor" viewBox="0 0 20 20">
                             <path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"></path>
                         </svg>
-                        <svg x-show="isDragOver" x-cloak class="w-12 h-12 text-custom-600" fill="currentColor" viewBox="0 0 20 20">
+                        <svg x-show="isDragOver" x-cloak class="folder-icon active" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1H8a3 3 0 00-3 3v1.5a1.5 1.5 0 01-3 0V6z" clip-rule="evenodd"></path>
                             <path d="M6 12a2 2 0 012-2h8a2 2 0 012 2v2a2 2 0 01-2 2H8a2 2 0 01-2-2v-2z"></path>
                         </svg>
                     @else
-                        <svg class="w-12 h-12 text-custom-500" fill="currentColor" viewBox="0 0 20 20">
+                        <svg class="folder-icon" fill="currentColor" viewBox="0 0 20 20">
                             <path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"></path>
                         </svg>
                     @endif
@@ -85,7 +85,7 @@
             @elseif ($mediaItem->isImage())
                 <img loading="lazy" 
                     alt="{{ $mediaItem->getKey() }}" 
-                    class="w-12 h-12 object-cover rounded"
+                    class="object-cover rounded"
                     x-data="{ src: '{{ $mediaItem->getThumbnailUrl() }}?' + Date.now() }"
                     :src="src" 
                     src="{{ $mediaItem->getThumbnailUrl() }}"
@@ -102,7 +102,6 @@
             @else
                 <x-inspirecms-support::media-library.thumbnail-icon 
                     :icon="$mediaItem->getThumbnail()" 
-                    class="w-12 h-12 text-gray-500"
                 />
             @endif
         </div>

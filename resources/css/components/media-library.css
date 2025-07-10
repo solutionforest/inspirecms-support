@@ -133,9 +133,21 @@
         text-decoration: underline;
     }
 
-    /* Smooth transitions for folder icons */
-    .thumbnail-ctn svg {
+    .thumbnail-ctn svg, .thumbnail-ctn img {
+        @apply w-12 h-12;
+        /* Smooth transitions for folder icons */
         transition: all 0.2s ease-in-out;
+    }
+
+    .thumbnail-ctn svg {
+        color: rgba(var(--gray-500), 1);
+    }
+
+    .thumbnail-ctn svg.folder-icon {
+        color: rgba(var(--c-500), 1);
+        &.active {
+            color: rgba(var(--c-600), 1);
+        }
     }
 
     /* Custom scrollbar */
@@ -270,8 +282,11 @@
         }
         .thumbnail-ctn {
             @apply py-4 flex items-center justify-center;
-            img, svg {
+            img {
                 @apply w-48 h-48;
+            }
+            svg {
+                @apply w-24 h-24;
             }
         }
         .information-ctn {
