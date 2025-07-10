@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Exceptions;
 use Illuminate\Support\Facades\Storage;
 use SolutionForest\InspireCms\Support\Helpers\MediaAssetHelper;
 use SolutionForest\InspireCms\Support\Services\MediaAssetService;
@@ -15,7 +14,6 @@ beforeEach(function () {
     $this->dummyRandImageUrl = 'https://picsum.photos/200/300';
 });
 
-
 dataset('image_extensions', [
     'jpg' => ['jpg'],
     'png' => ['png'],
@@ -27,15 +25,16 @@ dataset('upload_via', [
     'via_url' => ['via_url'],
 ]);
 
-function getDummyMediaUrl($extension) {
+function getDummyMediaUrl($extension)
+{
     return match ($extension) {
         // Images
-        'png' => "https://placehold.co/600x400.png",
+        'png' => 'https://placehold.co/600x400.png',
         'jpg', 'webp' => "https://picsum.photos/200/300.{$extension}",
         'gif' => 'https://www.sample-videos.com/gif/3.gif',
-        'bmp' => "https://www.filesampleshub.com/download/image/bmp/sample1.bmp",
-        'svg' => "https://upload.wikimedia.org/wikipedia/commons/0/02/SVG_logo.svg",
-        'tiff' => "https://examplefiles.org/files/images/tiff-example-file-download-500x500.tiff",
+        'bmp' => 'https://www.filesampleshub.com/download/image/bmp/sample1.bmp',
+        'svg' => 'https://upload.wikimedia.org/wikipedia/commons/0/02/SVG_logo.svg',
+        'tiff' => 'https://examplefiles.org/files/images/tiff-example-file-download-500x500.tiff',
         // Non-images
         'pdf' => 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
         'mp4' => 'https://www.w3schools.com/html/mov_bbb.mp4',
@@ -44,7 +43,8 @@ function getDummyMediaUrl($extension) {
     };
 }
 
-function validateConvertions($mediaAsset) {
+function validateConvertions($mediaAsset)
+{
     $media = $mediaAsset->getFirstMedia();
     $extension = $media->extension;
     $hasConversion = in_array($extension, ['jpg', 'png', 'webp', 'gif']);
@@ -54,7 +54,7 @@ function validateConvertions($mediaAsset) {
     ];
 
     foreach ($defaultConvertionNames as $conversionName) {
-        if (!$hasConversion) {
+        if (! $hasConversion) {
             continue;
         }
         if (filled($conversionName)) {
@@ -64,7 +64,8 @@ function validateConvertions($mediaAsset) {
     }
 }
 
-function validateMediaUrl($mediaAsset, $conversionName = '') {
+function validateMediaUrl($mediaAsset, $conversionName = '')
+{
 
     $media = $mediaAsset->getFirstMedia();
 
@@ -79,7 +80,8 @@ function validateMediaUrl($mediaAsset, $conversionName = '') {
     Storage::disk($diskName)->assertExists($media->getPathRelativeToRoot($conversionName));
 }
 
-function getExpectedDisplayedColumnsByExtension($extension) {
+function getExpectedDisplayedColumnsByExtension($extension)
+{
     return match ($extension) {
         'jpg', 'png', 'webp', 'gif' => MediaAssetHelper::getMediaAssetDisplayedColumnsForImage(),
         'mp4' => MediaAssetHelper::getMediaAssetDisplayedColumnsForVideo(),
@@ -88,7 +90,8 @@ function getExpectedDisplayedColumnsByExtension($extension) {
     };
 }
 
-function validateDisplayedColumns($mediaAsset, $expectedColumns) {
+function validateDisplayedColumns($mediaAsset, $expectedColumns)
+{
     $displayedColumns = $mediaAsset->getDisplayedColumns();
     // Compare displayed columns with expected columns
     foreach ($expectedColumns as $column) {
@@ -133,7 +136,7 @@ test('can media asset (image)', function ($extension, array $properties = []) {
     ->with('image_extensions')
     ->with([
         'with mapped properties' => fn () => [
-            'width' => 120, 
+            'width' => 120,
             'height' => 130,
         ],
     ]);
@@ -190,11 +193,11 @@ test('can create media asset via', function ($via) {
             url: $this->dummyRandImageUrl,
         ),
     };
-    
+
     $mediaAsset->refresh();
-    
+
     expect($mediaAsset)->not->toBeNull();
-    
+
     $media = $mediaAsset->getFirstMedia();
     expect($media)->not->toBeNull();
 
@@ -238,7 +241,6 @@ test('can re-upload media without deleting old media', function ($via, $fromExte
     // File path should not change
     expect($mediaAsset->getFirstMedia()->getPathRelativeToRoot())->toBe($oldMedia->getPathRelativeToRoot());
 
-
 })
     ->with('upload_via')
     ->with([
@@ -273,5 +275,5 @@ test('throws exception when re-uploading media with different extension to non-i
             url: getDummyMediaUrl($toExtension),
         ),
     };
-    
+
 })->with('upload_via')->throws(\Exception::class);

@@ -264,10 +264,10 @@ class MediaAssetService
 
         $originalFile = $originalMediaAsset->getFirstMedia();
 
-        if (!$originalFile) {
+        if (! $originalFile) {
             throw new Exception('Media asset does not have an associated file.');
         }
-        
+
         // Validate file type can be replace (e.g., image to image, video to video)
         if ($newFile instanceof UploadedFile) {
             $newFileType = $newFile->getMimeType();
@@ -279,12 +279,12 @@ class MediaAssetService
 
         // Check the new file can be convert to an image
         if ($originalMediaAsset->isImage()) {
-            if (!str_starts_with($newFileType, 'image/')) {
+            if (! str_starts_with($newFileType, 'image/')) {
                 throw new Exception('The new file must be an image type.');
-            } 
+            }
         }
         // Check if the new file type matches the original file type
-        else if ($newFileType !== $originalFile->mime_type) {
+        elseif ($newFileType !== $originalFile->mime_type) {
             throw new Exception('The new file type does not match the original file type.');
         }
     }
@@ -310,7 +310,7 @@ class MediaAssetService
                     $newFile,
                     $originalMedia->file_name
                 );
-            } 
+            }
             // Otherwise, try converting the new file to the original extension
             else {
                 $tempFilePath = static::convertImageAs($newFile, $originalExtension);
@@ -355,12 +355,15 @@ class MediaAssetService
             case 'jpg':
             case 'jpeg':
                 imagejpeg($image, $tempFilePath);
+
                 break;
             case 'png':
                 imagepng($image, $tempFilePath);
+
                 break;
             case 'gif':
                 imagegif($image, $tempFilePath);
+
                 break;
             default:
                 throw new Exception("Unsupported target extension: {$targetExtension}");
