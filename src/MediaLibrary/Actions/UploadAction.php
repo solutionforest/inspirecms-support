@@ -2,11 +2,14 @@
 
 namespace SolutionForest\InspireCms\Support\MediaLibrary\Actions;
 
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
 use Filament\Support\Facades\FilamentIcon;
-use Illuminate\Database\Eloquent\Model;
-use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
-use SolutionForest\InspireCms\Support\Facades\MediaLibraryRegistry;
-use SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset;
+use SolutionForest\InspireCms\Support\Helpers\MediaAssetHelper;
+use SolutionForest\InspireCms\Support\Services\MediaAssetService;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class UploadAction extends Action
 {
@@ -25,6 +28,8 @@ class UploadAction extends Action
 
         $this->successNotificationTitle(__('inspirecms-support::media-library.buttons.upload.messages.success.title'));
 
+        $this->failureNotificationTitle(__('inspirecms-support::media-library.buttons.upload.messages.error.title'));
+
         $this->authorize('create');
 
         $this->icon(FilamentIcon::resolve('inspirecms::upload'));
@@ -39,59 +44,114 @@ class UploadAction extends Action
 
         $this->form(function () {
 
-            $file = \Filament\Forms\Components\FileUpload::make('files')
+            $selectField = Select::make('upload_from')
+                ->label(__('inspirecms-support::media-library.forms.upload_from.label'))
+                ->validationAttribute(__('inspirecms-support::media-library.forms.upload_from.validation_attribute'))
+                ->options([
+                    'file' => __('inspirecms-support::media-library.forms.upload_from.options.file'),
+                    'url' => __('inspirecms-support::media-library.forms.upload_from.options.url'),
+                ])
+                ->live()
+                ->required()
+                ->default('file');
+
+            $fromUrlField = TextInput::make('url')
+                ->label(__('inspirecms-support::media-library.forms.url.label'))
+                ->validationAttribute(__('inspirecms-support::media-library.forms.url.validation_attribute'))
+                ->url()
+                ->required()
+                ->placeholder('https://example.com/image.jpg')
+                ->visible(function ($get) {
+                    return $get('upload_from') === 'url';
+                });
+
+            $fromFileField = FileUpload::make('files')
                 ->label(__('inspirecms-support::media-library.forms.files.label'))
                 ->validationAttribute(__('inspirecms-support::media-library.forms.files.validation_attribute'))
                 ->imageEditor()
                 ->multiple()
-                ->storeFiles(false);
+                ->storeFiles(false)
+                ->visible(function ($get) {
+                    return $get('upload_from') === 'file';
+                });
 
-            if (MediaLibraryRegistry::hasLimitedMimeTypes()) {
-                $file->acceptedFileTypes(MediaLibraryRegistry::getLimitedMimeTypes());
+            return [
+                $selectField,
+                MediaAssetHelper::configureFileUploadField($fromFileField),
+                $fromUrlField,
+            ];
+
+        })->action(function (array $data, self $action) {
+            try {
+
+                $target = $data['upload_from'] ?? 'file';
+
+                switch ($target) {
+                    case 'file':
+                        if (empty($data['files']) || ! is_array($data['files'])) {
+                            return;
+                        }
+                        $results = MediaAssetService::createMediaAssetFromFiles(
+                            files: $data['files'],
+                            parentKey: $this->getParentKey()
+                        );
+                        // $successCount = data_get($results, 'success', 0);
+                        // $totalCount = count($data['files']);
+                        $failMessages = collect($results['fails'] ?? [])
+                            ->map(function ($array) {
+                                $file = $array['file'] ?? 'Unknown file';
+                                if ($file instanceof UploadedFile) {
+                                    $file = $file->getClientOriginalName();
+                                }
+                                $reason = $array['error'] ?? 'Unknown error';
+
+                                return "<ul><li>File: {$file}</li><li>Error: {$reason}</li></ul>";
+                            })
+                            ->map(fn ($message) => "<li>{$message}</li>");
+
+                        if ($failMessages->isNotEmpty()) {
+                            $this
+                                ->failureNotification(
+                                    fn (Notification $notification) => $notification
+                                        ->title('Some files failed to upload')
+                                        ->body(str($failMessages->implode(''))->wrap('<ul>', '</ul>'))
+                                        ->warning()
+                                )
+                                ->failure();
+
+                            return;
+                        }
+
+                        break;
+
+                    case 'url':
+                        if (empty($data['url'])) {
+                            return;
+                        }
+                        MediaAssetService::createMediaAssetFromUrl(
+                            url: $data['url'],
+                            parentKey: $this->getParentKey()
+                        );
+
+                        break;
+
+                    default:
+                        throw new \InvalidArgumentException(
+                            'Invalid upload target specified: ' . $target
+                        );
+                }
+
+                $this->success();
+
+            } catch (\Throwable $th) {
+
+                $this
+                    ->failureNotification(
+                        fn (Notification $notification) => $notification
+                            ->body($th->getMessage())
+                    )
+                    ->failure();
             }
-
-            if (($maxSize = MediaLibraryRegistry::getMaxSize()) !== null) {
-                $file->maxSize($maxSize);
-            }
-            if (($minSize = MediaLibraryRegistry::getMinSize()) !== null) {
-                $file->minSize($minSize);
-            }
-
-            return [$file];
-
-        })->action(function (array $data) {
-            if (empty($data['files'])) {
-                return;
-            }
-
-            $this->uploadMedia($data['files']);
-            $this->success();
         });
-    }
-
-    protected function uploadMedia(array $files)
-    {
-        foreach ($files as $file) {
-            if (! $file instanceof TemporaryUploadedFile) {
-                continue;
-            }
-
-            $this->createMediaFromUploadedFile($file);
-        }
-    }
-
-    /**
-     * @return Model & MediaAsset
-     */
-    protected function createMediaFromUploadedFile(TemporaryUploadedFile $file)
-    {
-        $media = $this->getModel()::create([
-            'parent_id' => $this->getParentKey(),
-            'title' => $file->getClientOriginalName(),
-        ]);
-
-        $media->addMediaWithMappedProperties($file);
-
-        return $media;
     }
 }

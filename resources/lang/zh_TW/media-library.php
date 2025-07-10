@@ -128,13 +128,25 @@ return [
             'label' => '檔案名稱',
             'validation_attribute' => '檔案名稱',
         ],
+        'mime_type' => [
+            'label' => 'MIME 類型',
+            'validation_attribute' => 'MIME 類型',
+        ],
+        'upload_from' => [
+            'label' => '上傳來源',
+            'validation_attribute' => '上傳來源',
+            'options' => [
+                'file' => '從檔案上傳',
+                'url' => '從 URL 上傳',
+            ],
+        ],
         'files' => [
             'label' => '檔案',
             'validation_attribute' => '檔案',
         ],
-        'mime_type' => [
-            'label' => 'MIME 類型',
-            'validation_attribute' => 'MIME 類型',
+        'url' => [
+            'label' => 'URL',
+            'validation_attribute' => 'URL',
         ],
     ],
 
@@ -158,6 +170,7 @@ return [
             'messages' => [
                 'success' => [
                     'title' => '已保存',
+                    'body' => '如果您重新上傳了檔案，請刷新頁面以查看更改，例如媒體的縮略圖。',
                 ],
             ],
         ],
@@ -178,6 +191,9 @@ return [
             'messages' => [
                 'success' => [
                     'title' => '檔案已上傳',
+                ],
+                'error' => [
+                    'title' => '檔案上傳失敗',
                 ],
             ],
         ],

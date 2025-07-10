@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Storage;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
 use SolutionForest\InspireCms\Support\Facades\MediaLibraryRegistry;
 use SolutionForest\InspireCms\Support\Helpers\KeyHelper;
+use SolutionForest\InspireCms\Support\Helpers\MediaAssetHelper;
 use SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset as MediaAssetContract;
 use Spatie\Image\Enums\Fit;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -25,8 +26,6 @@ class MediaAsset extends BaseModel implements MediaAssetContract
     protected $casts = [
         'is_folder' => 'boolean',
     ];
-
-    const MEDIA_COLLECTION_NAME = 'default';
 
     /**
      * @return int|string|null
@@ -62,12 +61,12 @@ class MediaAsset extends BaseModel implements MediaAssetContract
             return null;
         }
 
-        $result = $this->getFirstMediaUrl(collectionName: self::MEDIA_COLLECTION_NAME, conversionName: $conversionName);
+        $result = $this->getFirstMediaUrl(collectionName: MediaAssetHelper::getDefaultCollectionName(), conversionName: $conversionName);
 
         // For spatie/laravel-medialibrary v11
         // Fallback to getLastMediaUrl if getFirstMediaUrl is not available
         if (blank($result) && method_exists($this, 'getLastMediaUrl')) {
-            $result = $this->getLastMediaUrl(collectionName: self::MEDIA_COLLECTION_NAME, conversionName: $conversionName);
+            $result = $this->getLastMediaUrl(collectionName: MediaAssetHelper::getDefaultCollectionName(), conversionName: $conversionName);
         }
 
         if (! $isAbsolute && filled($result)) {
@@ -175,53 +174,40 @@ class MediaAsset extends BaseModel implements MediaAssetContract
 
     public function getDisplayedColumns(): array
     {
-        $columns = [
-            'model_id',
-            'file_name',
-            'mime_type',
-            'size',
-        ];
-        $timestamps = [
-            'created_at',
-            'updated_at',
-            'uploaded_by',
-        ];
-
-        $imageColumns = [
-            'custom-property.dimensions',
-        ];
-
-        $videoColumns = [
-            'custom-property.duration',
-            'custom-property.resolution',
-            'custom-property.channels',
-            'custom-property.bit_rate',
-            'custom-property.frame_rate',
-        ];
-
-        $audioColumns = [
-            'custom-property.duration',
-            'custom-property.channels',
-            'custom-property.bit_rate',
-        ];
-
         if ($this->isFolder()) {
-            return [
-                'title',
-                'created_at',
-                'updated_at',
-                'created_by',
-            ];
+            return MediaAssetHelper::getMediaAssetDisplayedColumnsForFolder();
         } elseif ($this->isImage()) {
-            $columns = array_merge($columns, $imageColumns, $timestamps);
+            return MediaAssetHelper::getMediaAssetDisplayedColumnsForImage();
         } elseif ($this->isVideo()) {
-            $columns = array_merge($columns, $videoColumns, $timestamps);
+            return MediaAssetHelper::getMediaAssetDisplayedColumnsForVideo();
         } elseif ($this->isAudio()) {
-            $columns = array_merge($columns, $audioColumns, $timestamps);
+            return MediaAssetHelper::getMediaAssetDisplayedColumnsForAudio();
         }
 
-        return $columns;
+        return MediaAssetHelper::getMediaAssetDisplayedColumnsForNonFolder();
     }
+
+    // region Attributes
+
+    public function getUploadedByAttribute()
+    {
+        if (($author = $this->author)) {
+            ray($author, 'MediaAsset::getUploadedByAttribute');
+            if ($author instanceof \Filament\Models\Contracts\HasName) {
+                return $author->getFilamentName();
+            }
+            if (method_exists($author, 'getFullName')) {
+                return $author->getFullName();
+            }
+            if (method_exists($author, 'getName')) {
+                return $author->getName();
+            }
+        }
+
+        return null;
+    }
+
+    // endregion Attributes
 
     // region Scopes
     public function scopeFolders($query, bool $condition = true)
@@ -277,32 +263,7 @@ class MediaAsset extends BaseModel implements MediaAssetContract
     }
 
     /** {@inheritDoc} */
-    public function addMediaWithMappedProperties($file)
-    {
-        $fileAdder = $this->addMedia($file);
-
-        try {
-            $mediaItem = $fileAdder->toMediaCollection(
-                collectionName: static::MEDIA_COLLECTION_NAME,
-                diskName: MediaLibraryRegistry::getDisk()
-            );
-
-            $this->syncMediaProperties($mediaItem);
-        } catch (\Throwable $th) {
-            logger()->error('Failed to add media with mapped properties', [
-                'error' => $th->getMessage(),
-                'file' => $file,
-            ]);
-        }
-
-        return $fileAdder;
-    }
-
-    /**
-     * @param  \Spatie\MediaLibrary\MediaCollections\Models\Media  $media
-     * @return void
-     */
-    private function syncMediaProperties($media)
+    public function syncMediaProperties($media)
     {
         // Adjust properties
         $customProperties = [];

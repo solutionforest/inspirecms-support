@@ -128,13 +128,25 @@ return [
             'label' => 'File Name',
             'validation_attribute' => 'file name',
         ],
+        'mime_type' => [
+            'label' => 'Mime Type',
+            'validation_attribute' => 'mime type',
+        ],
+        'upload_from' => [
+            'label' => 'Upload From',
+            'validation_attribute' => 'upload from',
+            'options' => [
+                'file' => 'Upload from File',
+                'url' => 'Upload from URL',
+            ],
+        ],
         'files' => [
             'label' => 'Files',
             'validation_attribute' => 'files',
         ],
-        'mime_type' => [
-            'label' => 'Mime Type',
-            'validation_attribute' => 'mime type',
+        'url' => [
+            'label' => 'URL',
+            'validation_attribute' => 'URL',
         ],
     ],
 
@@ -159,6 +171,10 @@ return [
             'messages' => [
                 'success' => [
                     'title' => 'Saved',
+                    'body' => 'If you have re-uploaded the file, please refresh the page to see the changes, e.g., thumbnail of media.',
+                ],
+                'error' => [
+                    'title' => 'An error occurred while saving the media file.',
                 ],
             ],
         ],
@@ -179,6 +195,9 @@ return [
             'messages' => [
                 'success' => [
                     'title' => 'File Uploaded',
+                ],
+                'error' => [
+                    'title' => 'File Upload Failed',
                 ],
             ],
         ],

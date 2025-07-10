@@ -17,7 +17,11 @@
     $livewireKey = $this->getId();
 @endphp
 
-<div class="media-library"
+<div @class([
+        'media-library',
+        'media-library--picker' => $this->isMediaPickerModal(),
+        'media-library--detail-expanded' => $this->hasAnyMediaSelected(),
+    ])
     @if ($this->isMediaPickerModal())
         x-data="{selectedMediaId: $wire.entangle('selectedMediaId').live}"
         x-modelable="selectedMediaId" 
