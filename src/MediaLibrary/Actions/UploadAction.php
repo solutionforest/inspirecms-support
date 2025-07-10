@@ -107,17 +107,14 @@ class UploadAction extends Action
 
                                 return "<ul><li>File: {$file}</li><li>Error: {$reason}</li></ul>";
                             })
-                            ->map(fn ($message) => "<li>{$message}</li>")
-                            ->prepend('<ul>')
-                            ->push('</ul>')
-                            ->implode('');
+                            ->map(fn ($message) => "<li>{$message}</li>");
 
-                        if (! empty($failMessages)) {
+                        if ($failMessages->isNotEmpty()) {
                             $this
                                 ->failureNotification(
                                     fn (Notification $notification) => $notification
                                         ->title('Some files failed to upload')
-                                        ->body($failMessages)
+                                        ->body(str($failMessages->implode(''))->wrap('<ul>', '</ul>'))
                                         ->warning()
                                 )
                                 ->failure();
