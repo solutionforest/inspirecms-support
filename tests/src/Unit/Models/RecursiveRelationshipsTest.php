@@ -8,74 +8,71 @@ use SolutionForest\InspireCms\Support\Tests\Models\HasRecursiveRelationships\Tes
 use SolutionForest\InspireCms\Support\Tests\TestCase;
 
 uses(TestCase::class);
+pest()->group('unit');
 
-describe('recursice relationship unit', function () {
+it('creates and sets parent_id to null if blank', function () {
+    $model = TestNormal::create([
+        'name' => 'Parent is null',
+    ]);
 
-    it('creates and sets parent_id to null if blank', function () {
-        $model = TestNormal::create([
-            'name' => 'Parent is null',
-        ]);
+    expect($model->parent_id)->toBeNull();
+});
 
-        expect($model->parent_id)->toBeNull();
-    });
+it('deletes parent and children', function () {
+    $parent = TestNormal::create([
+        'name' => 'Parent',
+    ]);
 
-    it('deletes parent and children', function () {
-        $parent = TestNormal::create([
-            'name' => 'Parent',
-        ]);
+    $child = TestNormal::create([
+        'name' => 'Child',
+        'parent_id' => $parent->id,
+    ]);
 
-        $child = TestNormal::create([
-            'name' => 'Child',
-            'parent_id' => $parent->id,
-        ]);
+    $tableName = $parent->getTable();
 
-        $tableName = $parent->getTable();
+    $parent->delete();
 
-        $parent->delete();
+    expect(DB::table($tableName)->count())->toBe(0);
+});
 
-        expect(DB::table($tableName)->count())->toBe(0);
-    });
+it('force deletes parent and children', function () {
+    $parent = TestHasSoftDelete::create([
+        'name' => 'Parent',
+    ]);
 
-    it('force deletes parent and children', function () {
-        $parent = TestHasSoftDelete::create([
-            'name' => 'Parent',
-        ]);
+    $child = TestHasSoftDelete::create([
+        'name' => 'Child',
+        'parent_id' => $parent->id,
+    ]);
 
-        $child = TestHasSoftDelete::create([
-            'name' => 'Child',
-            'parent_id' => $parent->id,
-        ]);
+    $tableName = $parent->getTable();
 
-        $tableName = $parent->getTable();
+    $parent->forceDelete();
 
-        $parent->forceDelete();
+    expect(DB::table($tableName)->count())->toBe(0);
+});
 
-        expect(DB::table($tableName)->count())->toBe(0);
-    });
+it('restores parent and children', function () {
+    $parent = TestHasSoftDelete::create([
+        'name' => 'Parent',
+    ]);
 
-    it('restores parent and children', function () {
-        $parent = TestHasSoftDelete::create([
-            'name' => 'Parent',
-        ]);
+    $child = TestHasSoftDelete::create([
+        'name' => 'Child',
+        'parent_id' => $parent->id,
+    ]);
 
-        $child = TestHasSoftDelete::create([
-            'name' => 'Child',
-            'parent_id' => $parent->id,
-        ]);
+    $tableName = $parent->getTable();
+    $parentId = $parent->id;
+    $childId = $child->id;
 
-        $tableName = $parent->getTable();
-        $parentId = $parent->id;
-        $childId = $child->id;
+    $parent->delete();
 
-        $parent->delete();
+    expect(DB::table($tableName)->where('id', $parentId)->first()->deleted_at)->not->toBeNull();
+    expect(DB::table($tableName)->where('id', $childId)->first()->deleted_at)->not->toBeNull();
 
-        expect(DB::table($tableName)->where('id', $parentId)->first()->deleted_at)->not->toBeNull();
-        expect(DB::table($tableName)->where('id', $childId)->first()->deleted_at)->not->toBeNull();
+    $child->restore();
 
-        $child->restore();
-
-        expect(DB::table($tableName)->where('id', $parentId)->first()->deleted_at)->toBeNull();
-        expect(DB::table($tableName)->where('id', $childId)->first()->deleted_at)->toBeNull();
-    });
-
-})->group('unit');
+    expect(DB::table($tableName)->where('id', $parentId)->first()->deleted_at)->toBeNull();
+    expect(DB::table($tableName)->where('id', $childId)->first()->deleted_at)->toBeNull();
+});
