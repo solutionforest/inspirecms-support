@@ -10,6 +10,7 @@ use SolutionForest\InspireCms\Support\Facades\ModelRegistry;
 use SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset;
 use Spatie\MediaLibrary\MediaCollections\Exceptions\FileIsTooBig;
 use Spatie\MediaLibrary\MediaCollections\FileAdder;
+use Spatie\MediaLibrary\Support\File;
 
 class MediaAssetHelper
 {
@@ -137,5 +138,10 @@ class MediaAssetHelper
                 'custom-property.bit_rate',
             ]
         ));
+    }
+
+    public static function getHumanFileSize(int|float $size): string
+    {
+        return File::getHumanReadableSize($size);
     }
 }
