@@ -94,7 +94,7 @@ class MediaDetailComponent extends Component implements Contracts\HasItemActions
                     'created_at', 'updated_at' => ($asset->isFolder()
                         ? $asset?->{$key}->format('Y-m-d H:i:s')
                         : $media?->{$key}->format('Y-m-d H:i:s')) ?? $fallback,
-                    'uploaded_by', 'created_by' => $mediaItem->author?->name ?? $fallback,
+                    'uploaded_by', 'created_by' => $asset->uploaded_by ?? $fallback,
                     // Default for not custom properties
                     $customPropertyKey => ($asset->isFolder()
                         ? $asset?->{$key}

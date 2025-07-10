@@ -187,6 +187,28 @@ class MediaAsset extends BaseModel implements MediaAssetContract
         return MediaAssetHelper::getMediaAssetDisplayedColumnsForNonFolder();
     }
 
+    //region Attributes
+
+    public function getUploadedByAttribute()
+    {
+        if (($author = $this->author)) {
+            ray($author, 'MediaAsset::getUploadedByAttribute');
+            if ($author instanceof \Filament\Models\Contracts\HasName) {
+                return $author->getFilamentName();
+            }
+            if (method_exists($author, 'getFullName')) {
+                return $author->getFullName();
+            }
+            if (method_exists($author, 'getName')) {
+                return $author->getName();
+            }
+        }
+
+        return null;
+    }
+
+    //endregion Attributes
+
     // region Scopes
     public function scopeFolders($query, bool $condition = true)
     {
