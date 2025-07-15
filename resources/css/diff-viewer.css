@@ -1,0 +1,21 @@
+.diff-viewer {
+    .diff-line {
+        @apply leading-relaxed break-words whitespace-pre-wrap;
+    }
+    .deleted-text, .added-text {
+        padding: 1px 2px;
+        border-radius: 2px;
+    }
+    .deleted-text {
+        background-color: #fecaca;
+        text-decoration: line-through;
+        color: #dc2626;
+    }
+    .added-text {
+        background-color: #bbf7d0;
+        color: #059669;
+    }
+    .inline-diff {
+        line-height: 1.6;
+    }
+}

@@ -53,3 +53,8 @@ compile({
     entryPoints: ['./resources/js/tree-node.js'],
     outfile: './resources/dist/tree-node.js',
 })
+compile({
+    ...defaultOptions,
+    entryPoints: ['./resources/js/diff.js'],
+    outfile: './resources/dist/diff.js',
+})
