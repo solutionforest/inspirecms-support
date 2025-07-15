@@ -5,6 +5,7 @@ namespace SolutionForest\InspireCms\Support\Diff;
 class Diff
 {
     public $old;
+
     public $new;
 
     public function __construct($old, $new)
