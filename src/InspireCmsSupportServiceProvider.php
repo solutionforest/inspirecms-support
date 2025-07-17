@@ -102,6 +102,7 @@ class InspireCmsSupportServiceProvider extends PackageServiceProvider
                     // Skip rendering the media picker modal if the page implements MediaLibraryPage
                     return null;
                 }
+
                 return view('inspirecms-support::forms.components.media-picker.modal');
             },
         );
