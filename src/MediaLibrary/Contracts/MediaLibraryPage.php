@@ -2,6 +2,4 @@
 
 namespace SolutionForest\InspireCms\Support\MediaLibrary\Contracts;
 
-interface MediaLibraryPage
-{
-}
+interface MediaLibraryPage {}
