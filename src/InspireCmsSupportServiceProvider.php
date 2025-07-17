@@ -11,6 +11,7 @@ use Filament\View\PanelsRenderHook;
 use Illuminate\Database\Schema\Blueprint;
 use Livewire\Livewire;
 use SolutionForest\InspireCms\Support\Base\Manifests;
+use SolutionForest\InspireCms\Support\MediaLibrary\Contracts\MediaLibraryPage;
 use SolutionForest\InspireCms\Support\MediaLibrary\FolderBrowserComponent;
 use SolutionForest\InspireCms\Support\MediaLibrary\MediaDetailComponent;
 use SolutionForest\InspireCms\Support\MediaLibrary\MediaLibraryComponent;
@@ -92,7 +93,17 @@ class InspireCmsSupportServiceProvider extends PackageServiceProvider
 
         FilamentView::registerRenderHook(
             PanelsRenderHook::BODY_END,
-            fn () => view('inspirecms-support::forms.components.media-picker.modal')
+            function (array $scopes) {
+                // Sample scope
+                // 0: page
+                // 1: resouce (if any)
+                $pageToCheck = collect($scopes)->where(fn ($class) => is_string($class) && class_exists($class))->first();
+                if ($pageToCheck && in_array(MediaLibraryPage::class, class_implements($pageToCheck))) {
+                    // Skip rendering the media picker modal if the page implements MediaLibraryPage
+                    return null;
+                }
+                return view('inspirecms-support::forms.components.media-picker.modal');
+            },
         );
     }
 
