@@ -12,7 +12,15 @@
             'lg' => 4,
         ],
     ];
-    $loadingIndicatorTargets = implode(',', ['clearCache', 'updating', 'gotoPage', 'resetPage', 'nextPage', 'setPage']);
+    $loadingIndicatorTargets = implode(',', [
+        'assets', 
+        'clearCache', 
+        // 'updating', 
+        'gotoPage', 
+        'resetPage', 
+        'nextPage', 
+        'setPage',
+    ]);
 
     $livewireKey = $this->getId();
 @endphp
