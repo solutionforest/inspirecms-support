@@ -23,6 +23,13 @@
     ]);
 
     $livewireKey = $this->getId();
+    $alpineData = collect([
+        
+    ])->when($this->isMediaPickerModal(), function ($collection) {
+        return $collection->merge([
+            'selectedMediaId: $wire.entangle(\'selectedMediaId\').live',
+        ]);
+    })->implode(', ');
 @endphp
 
 <div @class([
@@ -30,8 +37,8 @@
         'media-library--picker' => $this->isMediaPickerModal(),
         'media-library--detail-expanded' => $this->hasAnyMediaSelected(),
     ])
+    x-data="{ {{ $alpineData }} }"
     @if ($this->isMediaPickerModal())
-        x-data="{selectedMediaId: $wire.entangle('selectedMediaId').live}"
         x-modelable="selectedMediaId" 
         x-model="selected"
     @endif
