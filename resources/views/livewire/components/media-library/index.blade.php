@@ -80,6 +80,13 @@
                 <form id="sortForm" method="post">
                     {{ $this->sortForm }}
                 </form>
+                <x-filament::icon-button 
+                    wire:click="resetAll"
+                    icon="heroicon-o-arrow-path"
+                    size="sm"
+                    color="gray"
+                    label="Refresh"
+                />
             </div>
             <div class="browser-items-ctn ctn">
                 <div class="browser-items-grid-ctn">
