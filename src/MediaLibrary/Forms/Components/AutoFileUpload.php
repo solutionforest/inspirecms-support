@@ -21,8 +21,8 @@ class AutoFileUpload extends FileUpload
             ->storeFiles(false)
             ->extraAlpineAttributes(function (AutoFileUpload $component): array {
                 return [
-                    'x-on:autoupload-file--upload-error.window' => <<<HTML
-                        const serverReturnError = \$event.detail.error ?? null;
+                    'x-on:autoupload-file--upload-error.window' => <<<'HTML'
+                        const serverReturnError = $event.detail.error ?? null;
                         // If is array, it means multiple files upload error
                         if (Array.isArray(serverReturnError)) {
                             for (const error of serverReturnError) {
@@ -34,8 +34,8 @@ class AutoFileUpload extends FileUpload
                             error = 'Some files failed to upload';
                         }
                     HTML,
-                    'x-on:autoupload-file--upload-success.window' => <<<HTML
-                        const serverId = \$event.detail.serverId ?? null;
+                    'x-on:autoupload-file--upload-success.window' => <<<'HTML'
+                        const serverId = $event.detail.serverId ?? null;
                         const fileId = pond?.getFiles().find(file => file.serverId === serverId)?.id ?? null;
                         //console.log('FilePond auto upload success fileId:', fileId);
                         if (fileId != null) {
@@ -84,7 +84,8 @@ class AutoFileUpload extends FileUpload
     public function dispatchUploadFailedEvent($serverId, $errorMessage)
     {
         // Tell to frontend that the upload failed
-        $this->getLivewire()->dispatch('autoupload-file--upload-error', 
+        $this->getLivewire()->dispatch(
+            'autoupload-file--upload-error',
             serverId: $serverId,
             error: is_array($errorMessage) ? array_values($errorMessage) : $errorMessage,
         );
@@ -114,7 +115,8 @@ class AutoFileUpload extends FileUpload
 
     public function dispatchUploadSuccessEvent($serverId)
     {
-        $this->getLivewire()->dispatch('autoupload-file--upload-success', 
+        $this->getLivewire()->dispatch(
+            'autoupload-file--upload-success',
             serverId: $serverId,
         );
     }
@@ -126,10 +128,10 @@ class AutoFileUpload extends FileUpload
         $errors = [];
 
         foreach ($state as $key => $file) {
-            
+
             if (is_array($serverId)) {
                 // If serverId is an array, we check if the current key is in the serverId array.
-                if (!in_array($key, $serverId)) {
+                if (! in_array($key, $serverId)) {
                     continue;
                 }
             } else {
@@ -138,17 +140,18 @@ class AutoFileUpload extends FileUpload
                     continue;
                 }
             }
-            
-            if (!$file instanceof TemporaryUploadedFile) {
+
+            if (! $file instanceof TemporaryUploadedFile) {
                 // If the file is not a TemporaryUploadedFile, we cannot proceed.
                 $this->dispatchUploadFailedEvent($key, 'Invalid file type or file not found.');
+
                 continue;
             }
 
             $result = $this->saveAutoUploadFile($file);
 
             if (data_get($result, 'success', false) === false) {
-                
+
                 $errorMessage = data_get($result, 'errorMessage', 'File upload failed.');
                 // Multiply file upload error handling
                 if (! $serverId || is_array($serverId)) {
@@ -164,18 +167,18 @@ class AutoFileUpload extends FileUpload
             }
         }
 
-        if (!empty($errors)) {
-            if (!$serverId) {
+        if (! empty($errors)) {
+            if (! $serverId) {
                 $this->dispatchUploadFailedEvent(null, $errors);
             } else {
-                collect($errors)->each(fn ($error, $key) => 
-                    $this->dispatchUploadFailedEvent($key, $error)
+                collect($errors)->each(
+                    fn ($error, $key) => $this->dispatchUploadFailedEvent($key, $error)
                 );
             }
         }
 
         // Dispatch finished event
-        if (!$serverId) {
+        if (! $serverId) {
             $this->getLivewire()->dispatch('autoupload-file--processfiles');
         } else {
             $this->getLivewire()->dispatch('autoupload-file--processfile', [

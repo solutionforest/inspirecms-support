@@ -119,7 +119,7 @@ class MediaAssetHelper
                         'url' => '',
                     ])
                     ->form(function () {
-                        
+
                         $selectField = Select::make('upload_from')
                             ->label(__('inspirecms-support::media-library.forms.upload_from.label'))
                             ->validationAttribute(__('inspirecms-support::media-library.forms.upload_from.validation_attribute'))
@@ -200,11 +200,11 @@ class MediaAssetHelper
                                     break;
 
                                 case 'url':
-                                    
+
                                     if (empty($data['url'])) {
                                         throw new \InvalidArgumentException('URL cannot be empty.');
                                     }
-                                    
+
                                     MediaAssetService::createMediaAssetFromUrl(
                                         url: $data['url'] ?? '',
                                         parentKey: $parentKey,
@@ -239,6 +239,7 @@ class MediaAssetHelper
             ->saveAutoUploadFileUsing(function (TemporaryUploadedFile $file, \Livewire\Component $livewire) use ($parentKey, $handleFileUploaded) {
                 $error = null;
                 $isSuccess = false;
+
                 try {
                     $mediaAsset = MediaAssetService::createMediaAssetFromFile(
                         file: $file,
@@ -259,7 +260,8 @@ class MediaAssetHelper
                     ]);
                     $error = $e->getMessage();
                     $isSuccess = false;
-                } 
+                }
+
                 return [
                     'file' => $file,
                     'success' => $isSuccess,

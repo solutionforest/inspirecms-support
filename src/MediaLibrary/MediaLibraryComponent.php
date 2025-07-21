@@ -160,11 +160,11 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
     public function openFolder($mediaId = null)
     {
         $this->clearCache();
-        
+
         $this->resetUploadForm();
         // Tell FilePond on the frontend to reset the file input
         $this->dispatch('autoupload-file--filepond-reset');
-        
+
         $mediaId ??= $this->selectedMediaId;
         $this->changeParent($mediaId);
     }
@@ -406,7 +406,7 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
     }
     // endregion Actions
 
-    //region Form
+    // region Form
 
     public function uploadForm(Form $form): Form
     {
@@ -455,7 +455,7 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
 
         return $data;
     }
-    //endregion Form
+    // endregion Form
 
     // region Computed
 
@@ -608,7 +608,7 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
         if (is_null($record)) {
             return false;
         }
-        
+
         $isSuccess = $record->delete();
         if ($isSuccess) {
 

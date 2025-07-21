@@ -3,9 +3,7 @@
 namespace SolutionForest\InspireCms\Support\MediaLibrary;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Collection;
 use Livewire\Attributes\Lazy;
-use Livewire\Attributes\Reactive;
 use Livewire\Component;
 
 #[Lazy]
