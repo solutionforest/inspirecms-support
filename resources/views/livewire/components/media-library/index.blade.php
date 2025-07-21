@@ -18,6 +18,7 @@
         'sort',
         
         'clearCache', 
+        'resetAll', 
         //'updating', 
 
         'gotoPage', 
@@ -99,7 +100,7 @@
                         {{ $this->sortForm }}
                     </form>
                     <x-filament::icon-button 
-                        wire:click="resetAll"
+                        wire:click="clearCache"
                         icon="heroicon-o-arrow-path"
                         size="sm"
                         color="gray"
