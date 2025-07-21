@@ -54,6 +54,8 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
 
     protected $listeners = [
         'openFolder',
+        'deleteFolder',
+        'deleteMedia',
         'moveMediaItem',
         'resetMediaLibrary' => 'resetAll',
         'clearMediaLibraryCache' => 'clearCache',
@@ -152,6 +154,17 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
         $this->changeParent($mediaId);
     }
 
+    public function deleteFolder($mediaId)
+    {
+        $this->dispatch('openFolder', static::getRootLevelParentId())->self();
+        $this->dispatch('deleteMedia', $mediaId)->self();
+    }
+
+    public function deleteMedia($mediaId)
+    {
+        $this->handleMediaItemDelete($mediaId);
+    }
+
     public function toggleMedia($mediaId = null, $isFolder = true)
     {
         $this->toggleMediaId = $mediaId;
@@ -199,7 +212,10 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
 
     public function clearCache()
     {
-        unset($this->assets);
+        unset(
+            $this->assets,
+            $this->folders,
+        );
     }
 
     public function resetAll()
@@ -418,6 +434,28 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
             page: $this->page,
         );
     }
+
+    /**
+     * Get the folders from the parent.
+     *
+     * @return Collection<Model&MediaAsset>
+     */
+    #[Computed]
+    public function folders()
+    {
+        // From upper level
+        if (is_null($this->parentRecord) || ! $this->parentRecord->exists) {
+            return collect();
+        }
+
+        return $this->getEloquentQuery()
+            ->with([])
+            ->withCount('children')
+            ->whereParent($this->parentRecord->getParentId())
+            ->folders()
+            ->get()
+            ->collect();
+    }
     // endregion Computed
 
     public function render()
@@ -462,8 +500,11 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
         if (blank($key) || $key == $this->parentKey) {
             return;
         }
+
         if ($key == static::getRootLevelParentId()) {
             $this->parentKey = $key;
+            // Reset parent record
+            $this->parentRecord = null;
 
             return;
         }
@@ -502,6 +543,34 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
         }
 
         return $breadcrumbs;
+    }
+
+    protected function handleMediaItemDelete($mediaId)
+    {
+        $record = $this->resolveAssetRecord($mediaId);
+        if (is_null($record)) {
+            return false;
+        }
+        
+        $isSuccess = $record->delete();
+        if ($isSuccess) {
+
+            Notification::make()
+                ->title(__('inspirecms-support::media-library.messages.item_deleted'))
+                ->success()
+                ->send();
+
+            // Reset the upload form and clear cache
+            // (Avoid using 'resetAll' here to avoid resetting the toggle/select media)
+            $this->resetUploadForm();
+            $this->clearCache();
+            $this->dispatch('$refresh');
+        } else {
+            Notification::make()
+                ->title(__('inspirecms-support::media-library.messages.item_deletion_failed'))
+                ->danger()
+                ->send();
+        }
     }
     // endregion Helpers
 }

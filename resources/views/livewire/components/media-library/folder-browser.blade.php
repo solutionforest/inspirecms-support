@@ -7,7 +7,7 @@
     <div class="main">
         @foreach ($folders ?? [] as $mediaItem)
             @php
-                $isSeleted = $mediaItem->getKey() == $this->parentRecord?->getKey();
+                $isSeleted = $mediaItem->getKey() == $parentKey;
                 $childrenCount = $mediaItem->children_count ?? 0;
 
                 $actions = $this->getCachedMediaItemActions();

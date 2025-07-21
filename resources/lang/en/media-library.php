@@ -160,7 +160,10 @@ return [
             'heading' => 'Delete :name',
             'messages' => [
                 'success' => [
-                    'title' => 'File Deleted',
+                    'title' => 'Deleted',
+                ],
+                'error' => [
+                    'title' => 'Deletion Failed',
                 ],
             ],
 
@@ -219,5 +222,7 @@ return [
         'item_moved' => 'Item moved successfully.',
         'xxx_items_selected' => ':count items selected.',
         'total_xxx_items' => ':count items',
+        'item_deleted' => 'Deleted',
+        'item_deletion_failed' => 'Deletion failed',
     ],
 ];

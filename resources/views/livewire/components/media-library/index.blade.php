@@ -3,8 +3,6 @@
     use SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset;
     
     $paginator = $this->assets;
-    $folders = collect($paginator->items())->where(fn (Model | MediaAsset $item) => $item->isFolder());
-    $media = collect($paginator->items())->where(fn (Model | MediaAsset $item) => !$item->isFolder());
 
     $loadingIndicator = [
         'count' => 3,
@@ -14,8 +12,14 @@
     ];
     $loadingIndicatorTargets = implode(',', [
         'assets', 
+        'parentKey',
+
+        'filter',
+        'sort',
+        
         'clearCache', 
-        // 'updating', 
+        //'updating', 
+
         'gotoPage', 
         'resetPage', 
         'nextPage', 
@@ -74,7 +78,7 @@
                     </button>
                 </div>
                 <div class="folder-ctn__main">
-                    <livewire:inspirecms-support::media-library.folders :$parentRecord />
+                    <livewire:inspirecms-support::media-library.folders :folders="$this->folders" :$parentKey />
                 </div>
             </div>
         @endif
@@ -102,7 +106,7 @@
                         <x-inspirecms-support::media-library.loading-section :count="$loadingIndicator['count']" :columns="$loadingIndicator['columns']" />
                     </div>
                     <div class="browser-items-grid" wire:loading.remove wire:target="{{ $loadingIndicatorTargets }}">
-                        @foreach ($folders ?? [] as $item)
+                        @foreach (collect($paginator->items())->where(fn (Model | MediaAsset $item) => $item->isFolder()) ?? [] as $item)
                             <x-inspirecms-support::media-library.browser-item 
                                 :livewire-key="$livewireKey"
                                 :media-item="$item" 
@@ -119,7 +123,7 @@
                         <x-inspirecms-support::media-library.loading-section :count="$loadingIndicator['count']" :columns="$loadingIndicator['columns']" />
                     </div>
                     <div class="browser-items-grid" wire:loading.remove wire:target="{{ $loadingIndicatorTargets }}">
-                        @foreach ($media ?? [] as $item)
+                        @foreach (collect($paginator->items())->where(fn (Model | MediaAsset $item) => !$item->isFolder()) ?? [] as $item)
                             <x-inspirecms-support::media-library.browser-item 
                                 :livewire-key="$livewireKey"
                                 :media-item="$item" 

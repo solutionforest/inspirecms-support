@@ -160,7 +160,10 @@ return [
             'heading' => '刪除 :name',
             'messages' => [
                 'success' => [
-                    'title' => '檔案已刪除',
+                    'title' => '已刪除',
+                ],
+                'error' => [
+                    'title' => '刪除失敗',
                 ],
             ],
         ],
@@ -215,5 +218,7 @@ return [
         'item_moved' => '項目已成功移動。',
         'xxx_items_selected' => ':count 項目已選擇。',
         'total_xxx_items' => ':count 項目',
+        'item_deleted' => '已刪除',
+        'item_deletion_failed' => '刪除失敗',
     ],
 ];
