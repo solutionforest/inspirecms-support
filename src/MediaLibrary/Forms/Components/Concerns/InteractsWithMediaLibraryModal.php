@@ -21,7 +21,7 @@ trait InteractsWithMediaLibraryModal
             'forms' => [
                 'filter' => [
                     'd' => ['type' => $filterTypes],
-                    'invisibleColumns' => count($filterTypes) === 1 ? ['type'] : [],
+                    'disabledColumns' => !empty($filterTypes) ? ['type'] : [],
                 ],
                 'sort' => [],
             ],

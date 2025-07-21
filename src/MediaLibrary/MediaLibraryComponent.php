@@ -119,11 +119,11 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
             if (isset($config['page']) && is_numeric($config['page'])) {
                 $this->page = intval($config['page']);
             }
-            if (isset($config['forms']['filter']['invisibleColumns']) && is_array($config['forms']['filter']['invisibleColumns'])) {
-                $this->formConfig['filter']['invisible_columns'] = $config['forms']['filter']['invisibleColumns'];
+            if (isset($config['forms']['filter']['disabledColumns']) && is_array($config['forms']['filter']['disabledColumns'])) {
+                $this->formConfig['filter']['disabled_columns'] = $config['forms']['filter']['disabledColumns'];
             }
-            if (isset($config['forms']['sort']['invisibleColumns']) && is_array($config['forms']['sort']['invisibleColumns'])) {
-                $this->formConfig['sort']['invisible_columns'] = $config['forms']['sort']['invisibleColumns'];
+            if (isset($config['forms']['sort']['disabledColumns']) && is_array($config['forms']['sort']['disabledColumns'])) {
+                $this->formConfig['sort']['disabled_columns'] = $config['forms']['sort']['disabledColumns'];
             }
 
             if (isset($config['forms']['filter']['d']) && is_array($config['forms']['filter']['d'])) {

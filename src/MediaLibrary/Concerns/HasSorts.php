@@ -44,7 +44,7 @@ trait HasSorts
                     ->options(__('inspirecms-support::media-library.sort.type.options'))
                     ->selectablePlaceholder(false)
                     ->live()
-                    ->hidden(fn ($component) => $this->isSortColumnInvisible($component->getName()))
+                    ->disabled(fn ($component) => $this->isSortColumnDisabled($component->getName()))
                     ->dehydratedWhenHidden(),
 
                 Forms\Components\Select::make('direction')
@@ -53,7 +53,7 @@ trait HasSorts
                     ->options(__('inspirecms-support::media-library.sort.direction.options'))
                     ->selectablePlaceholder(false)
                     ->live()
-                    ->hidden(fn ($component) => $this->isSortColumnInvisible($component->getName()))
+                    ->disabled(fn ($component) => $this->isSortColumnDisabled($component->getName()))
                     ->dehydratedWhenHidden(),
             ])
             ->statePath($this->getSortFormStatePath());
