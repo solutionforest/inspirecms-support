@@ -49,6 +49,8 @@
                 @else
                     <x-inspirecms-support::media-library.thumbnail-icon 
                         :icon="$toggleMedia->getThumbnail()"
+                        @class(['folder-icon' => $toggleMedia->isFolder()])
+                        @style([\Filament\Support\get_color_css_variables('warning', [400, 500, 600])])
                     />
                 @endif
             </div>

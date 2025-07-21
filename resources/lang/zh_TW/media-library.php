@@ -190,7 +190,10 @@ return [
         ],
         'upload' => [
             'label' => '上傳',
-            'heading' => '上傳檔案',
+        ],
+        'upload_by_type' => [
+            'label' => '按類型上傳',
+            'heading' => '上傳',
             'messages' => [
                 'success' => [
                     'title' => '檔案已上傳',
@@ -220,5 +223,6 @@ return [
         'total_xxx_items' => ':count 項目',
         'item_deleted' => '已刪除',
         'item_deletion_failed' => '刪除失敗',
+        'uploaded' => '已上傳',
     ],
 ];

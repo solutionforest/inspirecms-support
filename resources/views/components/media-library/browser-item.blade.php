@@ -36,7 +36,7 @@
         ></div>
     @endif
     
-    <div class="flex items-center justify-between">
+    <div class="pb-2 flex items-center justify-between">
         <!-- Selection Checkbox -->
         <input 
             type="checkbox" 
@@ -57,7 +57,7 @@
     </div>
 
     <!-- Item Content -->
-    <div class="item-content rounded-lg shadow-sm hover:shadow-md transition-shadow p-3"
+    <div class="item-content"
     >
         <!-- Thumbnail -->
         <div wire:click="toggleMedia('{{ $mediaItem->getKey() }}', '{{ $isFolder }}')"

@@ -14,7 +14,7 @@
 
     $imgStyles = "height: $height; width: $width; object-fit: cover;";
     $remainingTextCtnStyles = "padding: 0 4rem;";
-    $itemCtnClasses = 'item-content bg-gray-100 dark:bg-gray-800 rounded-lg';
+    $itemCtnClasses = 'item-content';
     $itemCtnStyles = 'width: 10rem;';
 
     $filterTypes = $getFilterTypes();

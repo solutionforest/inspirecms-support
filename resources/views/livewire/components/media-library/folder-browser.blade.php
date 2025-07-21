@@ -22,7 +22,7 @@
                     :icon="$mediaItem->getThumbnail()" 
                     class="icon"
                     @style([
-                        \Filament\Support\get_color_css_variables('warning', [400, 500])
+                        \Filament\Support\get_color_css_variables('warning', [400, 500, 600])
                     ])
                 />
 

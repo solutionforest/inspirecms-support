@@ -194,7 +194,10 @@ return [
         ],
         'upload' => [
             'label' => 'Upload',
-            'heading' => 'Upload Files',
+        ],
+        'upload_by_type' => [
+            'label' => 'Upload by type',
+            'heading' => 'Upload',
             'messages' => [
                 'success' => [
                     'title' => 'File Uploaded',
@@ -224,5 +227,6 @@ return [
         'total_xxx_items' => ':count items',
         'item_deleted' => 'Deleted',
         'item_deletion_failed' => 'Deletion failed',
+        'uploaded' => 'Uploaded',
     ],
 ];

@@ -6,6 +6,7 @@ use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use SolutionForest\InspireCms\Support\Facades\MediaLibraryRegistry;
 use SolutionForest\InspireCms\Support\Helpers\KeyHelper;
 use SolutionForest\InspireCms\Support\Helpers\MediaAssetHelper;
@@ -78,7 +79,7 @@ class MediaAssetService
         $fails = [];
         foreach ($files as $file) {
             try {
-                if ($file instanceof UploadedFile || is_string($file)) {
+                if ($file instanceof TemporaryUploadedFile || $file instanceof UploadedFile || is_string($file)) {
                     static::createMediaAssetFromFile(
                         file: $file,
                         parentKey: $parentKey
@@ -106,7 +107,7 @@ class MediaAssetService
     /**
      * @return MediaAsset | Model
      */
-    public static function createMediaAssetFromFile(string | UploadedFile $file, ?string $parentKey = null)
+    public static function createMediaAssetFromFile(string | UploadedFile | TemporaryUploadedFile $file, ?string $parentKey = null)
     {
         try {
 
