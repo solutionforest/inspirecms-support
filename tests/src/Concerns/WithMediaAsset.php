@@ -21,6 +21,7 @@ trait WithMediaAsset
                     $content = $tmpResult['content'] ?? $content;
                 }
                 $file = UploadedFile::fake()->createWithContent($filename, $content);
+
                 break;
             case 'jpg':
             case 'jpeg':
@@ -34,6 +35,7 @@ trait WithMediaAsset
                     $height = $dimensions['height'] ?? $height;
                 }
                 $file = UploadedFile::fake()->image($filename, $width, $height);
+
                 break;
             default:
                 $mimeType = match ($extension) {

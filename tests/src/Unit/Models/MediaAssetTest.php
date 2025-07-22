@@ -96,7 +96,7 @@ test('can create media asset (image)', function ($extension, array $properties =
 
     $width = $properties['width'] ?? 10;
     $height = $properties['height'] ?? 10;
-    
+
     $mediaAsset = $this->createMediaAssetWithMediaFromFile("test-add-image.{$extension}", null, fn () => [
         'width' => $width,
         'height' => $height,
@@ -235,4 +235,3 @@ test('throws exception when re-uploading media with different extension to non-i
     };
 
 })->with('upload_via')->throws(\Exception::class);
-

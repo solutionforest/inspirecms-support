@@ -2,7 +2,6 @@
 
 namespace SolutionForest\InspireCms\Support\Testing;
 
-
 use Closure;
 use Filament\Forms\ComponentContainer;
 use Filament\Forms\Contracts\HasForms;
@@ -10,7 +9,7 @@ use Livewire\Features\SupportTesting\Testable;
 
 /**
  * @method HasForms instance()
- * 
+ *
  * @mixin Testable
  */
 class TestsForms
@@ -31,7 +30,7 @@ class TestsForms
             }
 
             $this->call('dispatchFormEvent', $event, ...$args);
-            
+
             return $this;
         };
     }

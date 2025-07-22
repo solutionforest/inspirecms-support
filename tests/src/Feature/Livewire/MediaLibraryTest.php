@@ -3,7 +3,6 @@
 use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Gate;
-use Laravel\Prompts\Key;
 use Livewire\Livewire;
 use SolutionForest\InspireCms\Support\Helpers\KeyHelper;
 use SolutionForest\InspireCms\Support\MediaLibrary\FilterType;
@@ -26,7 +25,7 @@ test('renders media library component', function () {
 });
 
 test('can upload media', function () {
-    $uuid = '123e4567-e89b-12d3-a456-426614174000'; 
+    $uuid = '123e4567-e89b-12d3-a456-426614174000';
     Livewire::test(LIVEWIRE_MEDIA_LIBRARY)
         ->assertFormFieldExists('files', FORM_NAMES_UPLOAD)
         ->fillForm([
@@ -37,11 +36,11 @@ test('can upload media', function () {
             ],
         ], FORM_NAMES_UPLOAD)
         ->dispatchFormFieldEvent(
-            'autoupload-file--start-upload', 
+            'autoupload-file--start-upload',
             fn ($form, $state) => [
                 collect($form->getComponents())->firstWhere(fn ($c) => $c->getName() == 'files')?->getStatePath(),
                 $uuid,
-            ], 
+            ],
             FORM_NAMES_UPLOAD
         )
         ->assertHasNoErrors();
@@ -77,6 +76,7 @@ test('can filtering media library', function () {
             'title' => $title,
         ]);
         $record->refresh();
+
         return $record;
     });
 
@@ -120,7 +120,7 @@ test('can filtering media library', function () {
 });
 
 test('can create a media with folder', function () {
-    
+
     // Preset to allow the action
     Gate::before(fn () => true);
 
@@ -151,7 +151,7 @@ test('can create a media with folder', function () {
         ->assertSet('parentKey', $targetFolder->getKey());
 
     // Action: create media in folder
-    $uuid = '123e4567-e89b-12d3-a456-426614174000'; 
+    $uuid = '123e4567-e89b-12d3-a456-426614174000';
     $livewire
         ->assertFormFieldExists('files', FORM_NAMES_UPLOAD)
         ->fillForm([
@@ -162,11 +162,11 @@ test('can create a media with folder', function () {
             ],
         ], FORM_NAMES_UPLOAD)
         ->dispatchFormFieldEvent(
-            'autoupload-file--start-upload', 
+            'autoupload-file--start-upload',
             fn ($form, $state) => [
                 collect($form->getComponents())->firstWhere(fn ($c) => $c->getName() == 'files')?->getStatePath(),
                 $uuid,
-            ], 
+            ],
             FORM_NAMES_UPLOAD
         )
         ->assertHasNoErrors();

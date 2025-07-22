@@ -27,8 +27,8 @@ use SolutionForest\InspireCms\Support\Tests\Models\User;
 
 class TestCase extends Orchestra
 {
-    use WithWorkbench;
     use WithMediaAsset;
+    use WithWorkbench;
 
     protected function setUp(): void
     {
