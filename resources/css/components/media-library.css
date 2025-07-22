@@ -87,17 +87,17 @@
 
     /* Browser Item */
     .media-library__content .browser-ctn .browser-item .item-content {
-        @apply p-3 min-h-[120px] relative rounded-lg shadow-sm hover:shadow-md transition-shadow select-none;
+        @apply p-3 min-h-[120px] relative ;
     }
     .media-library__content .browser-ctn .browser-item:not(:has(:disabled)) .item-content, .folder-item {
         @apply cursor-pointer;
     }
     .media-library__content .browser-ctn .browser-item {
-        @apply p-2 gap-3;
-        &:has(:checked) .item-content {
+        @apply p-2 gap-3 rounded-lg shadow-sm hover:shadow-md transition-shadow select-none;
+        &:has(:checked) {
             background-color: rgba(var(--primary-200), 1);
         }
-        &:has(:checked):is(.dark *) .item-content {
+        &:has(:checked):is(.dark *) {
             background-color: rgba(var(--primary-600), 0.4);
         }
         &:not(:has(:disabled)) .main {
