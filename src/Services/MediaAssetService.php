@@ -6,6 +6,7 @@ use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use SolutionForest\InspireCms\Support\Facades\MediaLibraryRegistry;
 use SolutionForest\InspireCms\Support\Helpers\KeyHelper;
@@ -36,7 +37,7 @@ class MediaAssetService
              */
             $mediaAsset = MediaAssetHelper::getMediaAssetModel()::create([
                 'parent_id' => static::ensureParentKeyBeforeCreate($parentKey),
-                'title' => str(basename($url))->before('?')->toString(),
+                'title' => static::getMediaNameFromUrl($url),
             ]);
 
             [$mediaAsset, $media, $fileAdder] = static::createMediaFromUrl($mediaAsset, $url);
@@ -54,13 +55,27 @@ class MediaAssetService
         }
     }
 
+    protected static function getMediaNameFromUrl(string $url): string
+    {
+        $filename = basename(parse_url($url, PHP_URL_PATH));
+        $filename = urldecode($filename);
+
+        if ($filename === '') {
+            $filename = 'file';
+        }
+
+        return pathinfo($filename, PATHINFO_FILENAME);
+    }
+
     /**
      * @throws \Throwable
      */
-    protected static function createMediaFromUrl(MediaAsset | Model $mediaAsset, string $url)
+    protected static function createMediaFromUrl(MediaAsset | Model $mediaAsset, string $url, ?string $name = null)
     {
         $limitedMimeTypes = MediaLibraryRegistry::hasLimitedMimeTypes() ? MediaLibraryRegistry::getLimitedMimeTypes() : [];
-        $fileAdder = $mediaAsset->addMediaFromUrl($url, $limitedMimeTypes);
+        $fileAdder = $mediaAsset
+            ->addMediaFromUrl($url, $limitedMimeTypes)
+            ->usingName($name ?? static::getMediaNameFromUrl($url));
 
         MediaAssetHelper::validateMediaBeforeAddFromUrl($fileAdder);
 
@@ -118,7 +133,7 @@ class MediaAssetService
              */
             $mediaAsset = MediaAssetHelper::getMediaAssetModel()::create([
                 'parent_id' => static::ensureParentKeyBeforeCreate($parentKey),
-                'title' => $file->getClientOriginalName(),
+                'title' => static::getMediaNameFromFile($file),
             ]);
 
             [$mediaAsset, $media, $fileAdder] = static::createMediaFromFile($mediaAsset, $file);
@@ -136,9 +151,18 @@ class MediaAssetService
         }
     }
 
-    protected static function createMediaFromFile(MediaAsset | Model $mediaAsset, string | UploadedFile $file)
+    protected static function getMediaNameFromFile(UploadedFile | TemporaryUploadedFile $file): string
     {
-        $fileAdder = $mediaAsset->addMedia($file);
+        $filename = $file->getClientOriginalName();
+
+        return pathinfo($filename, PATHINFO_FILENAME);
+    }
+
+    protected static function createMediaFromFile(MediaAsset | Model $mediaAsset, string | UploadedFile $file, ?string $name = null)
+    {
+        $fileAdder = $mediaAsset
+            ->addMedia($file)
+            ->usingName($name ?? static::getMediaNameFromFile($file));
 
         $media = $fileAdder
             ->toMediaCollection(
