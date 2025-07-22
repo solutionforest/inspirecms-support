@@ -25,24 +25,6 @@ dataset('upload_via', [
     'via_url' => ['via_url'],
 ]);
 
-function getDummyMediaUrl($extension)
-{
-    return match ($extension) {
-        // Images
-        'png' => 'https://placehold.co/600x400.png',
-        'jpg', 'webp' => "https://picsum.photos/200/300.{$extension}",
-        'gif' => 'https://www.sample-videos.com/gif/3.gif',
-        'bmp' => 'https://www.filesampleshub.com/download/image/bmp/sample1.bmp',
-        'svg' => 'https://upload.wikimedia.org/wikipedia/commons/0/02/SVG_logo.svg',
-        'tiff' => 'https://examplefiles.org/files/images/tiff-example-file-download-500x500.tiff',
-        // Non-images
-        'pdf' => 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
-        'mp4' => 'https://www.w3schools.com/html/mov_bbb.mp4',
-        'mp3' => 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
-        default => throw new InvalidArgumentException("Unsupported media extension: {$extension}"),
-    };
-}
-
 function validateConvertions($mediaAsset)
 {
     $media = $mediaAsset->getFirstMedia();
@@ -110,17 +92,15 @@ it('can convert to dto', function () {
     expect(array_keys($media->responsive_images ?? []))->toBe($dto->responsive);
 });
 
-test('can media asset (image)', function ($extension, array $properties = []) {
-
-    $testFileName = "test-add-image.{$extension}";
+test('can create media asset (image)', function ($extension, array $properties = []) {
 
     $width = $properties['width'] ?? 10;
     $height = $properties['height'] ?? 10;
-    $file = UploadedFile::fake()->image($testFileName, $width, $height);
-
-    $mediaAsset = MediaAssetService::createMediaAssetFromFile(
-        file: $file,
-    );
+    
+    $mediaAsset = $this->createMediaAssetWithMediaFromFile("test-add-image.{$extension}", null, fn () => [
+        'width' => $width,
+        'height' => $height,
+    ]);
 
     $mediaAsset->refresh();
 
@@ -143,17 +123,7 @@ test('can media asset (image)', function ($extension, array $properties = []) {
 
 test('can create media asset (non-image)', function ($extension) {
 
-    $testFileName = "test-add-file.{$extension}";
-    $file = match ($extension) {
-        'mp4' => UploadedFile::fake()->create($testFileName, 1000, 'video/mp4'),
-        'mp3' => UploadedFile::fake()->create($testFileName, 1000, 'audio/mpeg'),
-        'pdf' => UploadedFile::fake()->createWithContent($testFileName, str_repeat('A', 1000)),
-        default => UploadedFile::fake()->create($testFileName, 1000),
-    };
-
-    $mediaAsset = MediaAssetService::createMediaAssetFromFile(
-        file: $file,
-    );
+    $mediaAsset = $this->createMediaAssetWithMediaFromFile("test-add-file.{$extension}");
 
     $mediaAsset->refresh();
 
@@ -186,12 +156,8 @@ test('create media asset (folder)', function () {
 test('can create media asset via', function ($via) {
 
     $mediaAsset = match ($via) {
-        'via_upload_file' => MediaAssetService::createMediaAssetFromFile(
-            file: UploadedFile::fake()->image('test-image.jpg'),
-        ),
-        'via_url' => MediaAssetService::createMediaAssetFromUrl(
-            url: $this->dummyRandImageUrl,
-        ),
+        'via_upload_file' => $this->createMediaAssetWithMediaFromFile('test-image.jpg'),
+        'via_url' => $this->createMediaAssetWithMediaViaUrlByExtension('jpg'),
     };
 
     $mediaAsset->refresh();
@@ -203,7 +169,7 @@ test('can create media asset via', function ($via) {
 
     $extension = $media->extension;
 
-    validateConvertions($mediaAsset);
+    validateConvertions(mediaAsset: $mediaAsset);
     validateDisplayedColumns($mediaAsset, getExpectedDisplayedColumnsByExtension($extension));
 
 })->with('upload_via');
@@ -211,12 +177,8 @@ test('can create media asset via', function ($via) {
 test('can re-upload media without deleting old media', function ($via, $fromExtension, $toExtension) {
 
     $mediaAsset = match ($via) {
-        'via_upload_file' => MediaAssetService::createMediaAssetFromFile(
-            file: UploadedFile::fake()->image("test-media.{$fromExtension}"),
-        ),
-        'via_url' => MediaAssetService::createMediaAssetFromUrl(
-            url: getDummyMediaUrl($fromExtension),
-        ),
+        'via_upload_file' => $this->createMediaAssetWithMediaFromFile("test-media.{$fromExtension}"),
+        'via_url' => $this->createMediaAssetWithMediaViaUrlByExtension($fromExtension),
     };
 
     $mediaAsset->refresh();
@@ -230,7 +192,7 @@ test('can re-upload media without deleting old media', function ($via, $fromExte
         ),
         'via_url' => MediaAssetService::uploadMediaFromUrlWithoutDelete(
             mediaAsset: $mediaAsset,
-            url: getDummyMediaUrl($toExtension),
+            url: $this->getDummyMediaUrlByExtension($toExtension),
         ),
     };
 
@@ -253,12 +215,8 @@ test('throws exception when re-uploading media with different extension to non-i
     $toExtension = 'pdf';
 
     $mediaAsset = match ($via) {
-        'via_upload_file' => MediaAssetService::createMediaAssetFromFile(
-            file: UploadedFile::fake()->image("test-media.{$fromExtension}"),
-        ),
-        'via_url' => MediaAssetService::createMediaAssetFromUrl(
-            url: getDummyMediaUrl($fromExtension),
-        ),
+        'via_upload_file' => $this->createMediaAssetWithMediaFromFile("test-media.{$fromExtension}"),
+        'via_url' => $this->createMediaAssetWithMediaViaUrlByExtension($fromExtension),
     };
 
     $mediaAsset->refresh();
@@ -272,8 +230,9 @@ test('throws exception when re-uploading media with different extension to non-i
         ),
         'via_url' => MediaAssetService::uploadMediaFromUrlWithoutDelete(
             mediaAsset: $mediaAsset,
-            url: getDummyMediaUrl($toExtension),
+            url: $this->getDummyMediaUrlByExtension($toExtension),
         ),
     };
 
 })->with('upload_via')->throws(\Exception::class);
+

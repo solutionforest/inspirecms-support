@@ -5,10 +5,13 @@ namespace SolutionForest\InspireCms\Support\Tests;
 use BladeUI\Heroicons\BladeHeroiconsServiceProvider;
 use BladeUI\Icons\BladeIconsServiceProvider;
 use Filament\Actions\ActionsServiceProvider;
+use Filament\FilamentServiceProvider;
 use Filament\Forms\FormsServiceProvider;
 use Filament\Infolists\InfolistsServiceProvider;
 use Filament\Notifications\NotificationsServiceProvider;
 use Filament\Support\SupportServiceProvider;
+use Filament\Tables\TablesServiceProvider;
+use Filament\Widgets\WidgetsServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Livewire\LivewireServiceProvider;
 use Orchestra\Testbench\Concerns\WithWorkbench;
@@ -19,10 +22,13 @@ use SolutionForest\InspireCms\Support\Facades\ModelRegistry;
 use SolutionForest\InspireCms\Support\Facades\ResolverRegistry;
 use SolutionForest\InspireCms\Support\InspireCmsSupportServiceProvider;
 use SolutionForest\InspireCms\Support\Resolvers\UserResolver;
+use SolutionForest\InspireCms\Support\Tests\Concerns\WithMediaAsset;
+use SolutionForest\InspireCms\Support\Tests\Models\User;
 
 class TestCase extends Orchestra
 {
     use WithWorkbench;
+    use WithMediaAsset;
 
     protected function setUp(): void
     {
@@ -34,6 +40,10 @@ class TestCase extends Orchestra
         Factory::guessModelNamesUsing(
             fn ($factory) => 'SolutionForest\\InspireCms\\Support\\Tests\\Models\\' . str_replace('Factory', '', class_basename($factory))
         );
+
+        $this->actingAs(
+            User::factory()->create()
+        );
     }
 
     protected function getPackageProviders($app)
@@ -43,23 +53,31 @@ class TestCase extends Orchestra
             BladeCaptureDirectiveServiceProvider::class,
             BladeHeroiconsServiceProvider::class,
             BladeIconsServiceProvider::class,
+
+            FilamentServiceProvider::class,
             FormsServiceProvider::class,
             InfolistsServiceProvider::class,
             LivewireServiceProvider::class,
             NotificationsServiceProvider::class,
             SupportServiceProvider::class,
+            TablesServiceProvider::class,
+            WidgetsServiceProvider::class,
 
             \Kalnoy\Nestedset\NestedSetServiceProvider::class,
 
             \Spatie\MediaLibrary\MediaLibraryServiceProvider::class,
 
             InspireCmsSupportServiceProvider::class,
+
+            AdminPanelProvider::class,
         ];
     }
 
     public function getEnvironmentSetUp($app)
     {
         config()->set('database.default', 'testing');
+
+        $app['config']->set('auth.providers.users.model', User::class);
 
         // Avoid migration for 'cache', 'sessions', to avoid migration error
         $app['config']->set('session.driver', 'array');
@@ -111,7 +129,7 @@ class TestCase extends Orchestra
 
     protected function defineDatabaseMigrations()
     {
-        // $this->loadLaravelMigrations();
+        $this->loadLaravelMigrations();
 
         $this->loadMigrationsFrom([
             // __DIR__ . '/../../vendor/spatie/laravel-medialibrary/database/migrations',

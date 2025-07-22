@@ -9,12 +9,14 @@ use Filament\Support\Facades\FilamentIcon;
 use Filament\Support\Facades\FilamentView;
 use Filament\View\PanelsRenderHook;
 use Illuminate\Database\Schema\Blueprint;
+use Livewire\Features\SupportTesting\Testable;
 use Livewire\Livewire;
 use SolutionForest\InspireCms\Support\Base\Manifests;
 use SolutionForest\InspireCms\Support\MediaLibrary\Contracts\MediaLibraryPage;
 use SolutionForest\InspireCms\Support\MediaLibrary\FolderBrowserComponent;
 use SolutionForest\InspireCms\Support\MediaLibrary\MediaDetailComponent;
 use SolutionForest\InspireCms\Support\MediaLibrary\MediaLibraryComponent;
+use SolutionForest\InspireCms\Support\Testing\TestsForms;
 use SolutionForest\InspireCms\Support\TreeNode\ModelExplorerComponent;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
@@ -106,6 +108,8 @@ class InspireCmsSupportServiceProvider extends PackageServiceProvider
                 return view('inspirecms-support::forms.components.media-picker.modal');
             },
         );
+
+        Testable::mixin(new TestsForms);
     }
 
     /**
