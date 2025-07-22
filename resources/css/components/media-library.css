@@ -151,6 +151,14 @@
         /* Smooth transitions for folder icons */
         transition: all 0.2s ease-in-out;
     }
+    .thumbnail-ctn .img-placeholder {
+        @apply w-12 h-12;
+        @apply rounded-lg animate-pulse;
+        background-color: rgba(var(--gray-200), 1);
+        &:is(.dark *) {
+            background-color: rgba(var(--gray-600), 1);
+        }
+    }
     .thumbnail-ctn svg {
         color: rgba(var(--gray-500), 1);
     }

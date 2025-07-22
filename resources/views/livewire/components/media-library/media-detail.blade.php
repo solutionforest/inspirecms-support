@@ -34,17 +34,12 @@
             <div class="thumbnail-ctn">
                 @if($toggleMedia->isImage() || $toggleMedia->isSvg())
                     <img loading="lazy" 
-                        x-data="{ src: '{{ $toggleMedia->getThumbnailUrl() }}?' + Date.now() }"
+                        x-data="dynamicImage({
+                            baseUrl: @js($toggleMedia->getThumbnailUrl()),
+                            mediaId: @js($toggleMedia->getKey()),
+                            refreshWindowEvents: ['media-thumb-updated'],
+                        })"
                         :src="src"
-                        x-on:media-thumb-updated.window="(event) => {
-                            const updatedId = (Array.isArray(event.detail) ? event.detail[0]?.id : event.detail?.id) || null;
-                            if (!updatedId) {
-                                return;
-                            }
-                            if (updatedId === '{{ $toggleMedia->getKey() }}') {
-                                src = '{{ $toggleMedia->getThumbnailUrl() }}?' + Date.now()
-                            }
-                        }"
                     />
                 @else
                     <x-inspirecms-support::media-library.thumbnail-icon 

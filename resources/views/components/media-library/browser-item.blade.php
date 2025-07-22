@@ -4,10 +4,11 @@
 @endphp
     
 <div
+    x-data="mediaItem({
+        livewireKey: @js($livewireKey),
+        isDraggable: @js($isDraggable),
+    })"
     @if ($isDraggable) 
-        x-data="mediaItem({
-            livewireKey: @js($livewireKey),
-        })"
         draggable="true"
         data-draggable-id=@js($mediaItem->getKey())
         data-draggable-type="{{ ($isFolder ? 'folder' : 'media') }}"
@@ -24,6 +25,9 @@
     {{ $attributes
         ->class([
             'browser-item relative cursor-pointer group',
+        ])
+        ->merge([
+            'wire:key' => "{$livewireKey}.browseritem.{$mediaItem->getKey()}",
         ])
     }}
 >
@@ -57,8 +61,7 @@
     </div>
 
     <!-- Item Content -->
-    <div class="item-content"
-    >
+    <div class="item-content">
         <!-- Thumbnail -->
         <div wire:click="toggleMedia('{{ $mediaItem->getKey() }}', '{{ $isFolder }}')"
             class="thumbnail-ctn mb-2 flex justify-center"
@@ -78,27 +81,29 @@
                     @else
                         <svg class="folder-icon" fill="currentColor" viewBox="0 0 20 20">
                             <path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"></path>
-                        </svg>
-                    @endif
+                        </svg>                    @endif
                 </div>
 
             @elseif ($mediaItem->isImage())
-                <img loading="lazy" 
-                    alt="{{ $mediaItem->getKey() }}" 
-                    class="object-cover rounded"
-                    x-data="{ src: '{{ $mediaItem->getThumbnailUrl() }}?' + Date.now() }"
-                    :src="src" 
-                    src="{{ $mediaItem->getThumbnailUrl() }}"
-                    x-on:media-thumb-updated.window="(event) => {
-                        const updatedId = (Array.isArray(event.detail) ? event.detail[0]?.id : event.detail?.id) || null;
-                        if (!updatedId) {
-                            return;
-                        }
-                        if (updatedId === '{{ $mediaItem->getKey() }}') {
-                            src = '{{ $mediaItem->getThumbnailUrl() }}?' + Date.now()
-                        }
-                    }"
-                />
+                <div x-data="dynamicImage({
+                        baseUrl: @js($mediaItem->getThumbnailUrl()),
+                        mediaId: @js($mediaItem->getKey()),
+                        refreshLivewireEvents: ['openFolder'],
+                        refreshWindowEvents: ['media-thumb-updated'],
+                        cacheBuster: true,
+                        retryAttempts: 3,
+                        retryDelay: 1000,
+                        defaultLoadingState: true,
+                    })">
+                    <div class="img-placeholder" x-show="isLoading"></div>
+                    <img loading="lazy"
+                        alt="{{ $mediaItem->getKey() }}" 
+                        class="object-cover rounded"
+                        :src="src"
+                        x-show="!isLoading"
+                        x-cloak
+                    />
+                </div>
             @else
                 <x-inspirecms-support::media-library.thumbnail-icon 
                     :icon="$mediaItem->getThumbnail()" 
