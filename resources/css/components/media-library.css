@@ -372,6 +372,6 @@
         @apply select-none;
     }
 }
-.media-library .fi-fo-select .choices__inner {
-    @apply flex items-center gap-2;
+.media-library .fi-fo-select .choices__inner:has(.choices__list .choices__item--selectable) > .choices__input {
+    display: none; /* Hide the input field */
 }
