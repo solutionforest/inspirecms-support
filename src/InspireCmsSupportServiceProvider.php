@@ -87,6 +87,7 @@ class InspireCmsSupportServiceProvider extends PackageServiceProvider
             Css::make('media-library', __DIR__ . '/../resources/dist/components/media-library.css'),
             Js::make('media-library', __DIR__ . '/../resources/dist/media-library.js'),
             Js::make('tree-node', __DIR__ . '/../resources/dist/tree-node.js'),
+            Js::make('diff', __DIR__ . '/../resources/dist/diff.js'),
         ], 'solution-forest/inspirecms-support');
 
         FilamentIcon::register($this->getIcons());
