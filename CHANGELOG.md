@@ -2,6 +2,29 @@
 
 All notable changes to `inspirecms-support` will be documented in this file.
 
+## 1.1.0 - 2025-07-23
+
+<!-- Release notes generated using configuration in .github/release.yml at 1.x -->
+### 🚀 New features
+
+- Add `Diff` and its scripts for version diff
+
+### 🐛 Bug fixes
+
+- Media library: thumbanil not refresh on livewire updating/events dispatch
+- Media library: 404 error while deleting folder
+
+### Other Changes
+
+- Media library: performance tunning
+- Media library: update layout
+- Media library: add "refresh" button
+- Adding test cases
+- Add "zh_CN" translation
+- Update translations
+
+**Full Changelog**: https://github.com/solutionforest/inspirecms-support/compare/1.0.4...1.1.0
+
 ## 1.0.4 - 2025-07-15
 
 <!-- Release notes generated using configuration in .github/release.yml at 1.x -->
