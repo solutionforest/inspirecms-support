@@ -210,6 +210,13 @@ return [
         'clear' => [
             'label' => 'Clear',
         ],
+        'select' => [
+            'label' => 'Select',
+            'heading' => 'Select',
+        ],
+        'cancel' => [
+            'label' => 'Cancel',
+        ],
         'rename' => [
             'label' => 'Rename',
             'heading' => 'Rename :name',

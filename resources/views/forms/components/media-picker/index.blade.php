@@ -116,10 +116,10 @@
         <div class="flex gap-2">
             @if (! $isDisabled)
                 <x-filament::button color="gray" x-on:click="$wire.dispatchFormEvent('mediaPicker::clearSelected', '{{ $statePath }}')">
-                    {{ __('inspirecms-support::buttons.clear.label') }}
+                    {{ __('inspirecms-support::media-library.buttons.clear.label') }}
                 </x-filament::button>
                 <x-filament::button x-on:click="$dispatch('open-modal', { id: '{{ $modalId }}', statePath: '{{ $statePath }}' })">
-                    {{ __('inspirecms-support::buttons.select.label') }}
+                    {{ __('inspirecms-support::media-library.buttons.select.label') }}
                 </x-filament::button>
             @endif
         </div>

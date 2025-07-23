@@ -206,6 +206,13 @@ return [
         'clear' => [
             'label' => '清除',
         ],
+        'select' => [
+            'label' => '選擇',
+            'heading' => '選擇',
+        ],
+        'cancel' => [
+            'label' => '取消',
+        ],
         'rename' => [
             'label' => '重命名',
             'heading' => '重命名 :name',

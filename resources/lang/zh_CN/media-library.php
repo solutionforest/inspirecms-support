@@ -3,95 +3,95 @@
 return [
 
     'media' => [
-        'singular' => '媒體',
-        'plural' => '媒體',
+        'singular' => '媒体',
+        'plural' => '媒体',
     ],
 
     'folder' => [
-        'singular' => '資料夾',
-        'plural' => '資料夾',
+        'singular' => '文件夹',
+        'plural' => '文件夹',
     ],
 
     'detail_info' => [
 
-        'heading' => '資訊',
+        'heading' => '信息',
 
         'model_id' => [
             'label' => 'ID',
         ],
         'file_name' => [
-            'label' => '檔案名稱',
+            'label' => '文件名称',
         ],
         'mime_type' => [
-            'label' => 'MIME 類型',
+            'label' => 'MIME 类型',
         ],
         'size' => [
             'label' => '大小',
         ],
         'created_at' => [
-            'label' => '創建於',
-            'empty' => '從未',
+            'label' => '创建于',
+            'empty' => '从未',
         ],
         'updated_at' => [
-            'label' => '更新於',
-            'empty' => '從未',
+            'label' => '更新于',
+            'empty' => '从未',
         ],
         'uploaded_by' => [
-            'label' => '上傳者',
+            'label' => '上传者',
         ],
         'created_by' => [
-            'label' => '創建者',
+            'label' => '创建者',
         ],
         'title' => [
-            'label' => '標題',
+            'label' => '标题',
         ],
         'custom-property' => [
             'dimensions' => [
                 'label' => '尺寸',
             ],
             'duration' => [
-                'label' => '時長',
+                'label' => '时长',
             ],
             'resolution' => [
-                'label' => '解析度',
+                'label' => '分辨率',
             ],
             'channels' => [
-                'label' => '聲道',
+                'label' => '声道',
             ],
             'bit_rate' => [
                 'label' => '比特率',
             ],
             'frame_rate' => [
-                'label' => '幀率',
+                'label' => '帧率',
             ],
         ],
     ],
 
     'filter' => [
         'title' => [
-            'placeholder' => '按標題搜索',
+            'placeholder' => '按标题搜索',
         ],
         'type' => [
-            'placeholder' => '所有類型',
+            'placeholder' => '所有类型',
             'options' => [
-                'image' => '圖片',
-                'video' => '視頻',
-                'audio' => '音頻',
+                'image' => '图片',
+                'video' => '视频',
+                'audio' => '音频',
                 'document' => '文件',
-                'archive' => '壓縮檔案',
+                'archive' => '压缩文件',
             ],
         ],
     ],
 
     'sort' => [
         'type' => [
-            'placeholder' => '排序類型',
+            'placeholder' => '排序类型',
             'options' => [
-                'default' => '默認',
-                'name' => '名稱',
+                'default' => '默认',
+                'name' => '名称',
                 'size' => '大小',
-                'created_at' => '創建於',
-                'updated_at' => '更新於',
+                'created_at' => '创建于',
+                'updated_at' => '更新于',
             ],
         ],
         'direction' => [
@@ -109,40 +109,40 @@ return [
             'validation_attribute' => 'ID',
         ],
         'title' => [
-            'label' => '標題',
-            'validation_attribute' => '標題',
+            'label' => '标题',
+            'validation_attribute' => '标题',
         ],
         'description' => [
             'label' => '描述',
             'validation_attribute' => '描述',
         ],
         'file' => [
-            'label' => '檔案',
-            'validation_attribute' => '檔案',
+            'label' => '文件',
+            'validation_attribute' => '文件',
         ],
         'caption' => [
-            'label' => '說明文字',
-            'validation_attribute' => '說明文字',
+            'label' => '说明文字',
+            'validation_attribute' => '说明文字',
         ],
         'file_name' => [
-            'label' => '檔案名稱',
-            'validation_attribute' => '檔案名稱',
+            'label' => '文件名称',
+            'validation_attribute' => '文件名称',
         ],
         'mime_type' => [
-            'label' => 'MIME 類型',
-            'validation_attribute' => 'MIME 類型',
+            'label' => 'MIME 类型',
+            'validation_attribute' => 'MIME 类型',
         ],
         'upload_from' => [
-            'label' => '上傳來源',
-            'validation_attribute' => '上傳來源',
+            'label' => '上传来源',
+            'validation_attribute' => '上传来源',
             'options' => [
-                'file' => '從檔案上傳',
-                'url' => '從 URL 上傳',
+                'file' => '从文件上传',
+                'url' => '从 URL 上传',
             ],
         ],
         'files' => [
-            'label' => '檔案',
-            'validation_attribute' => '檔案',
+            'label' => '文件',
+            'validation_attribute' => '文件',
         ],
         'url' => [
             'label' => 'URL',
@@ -156,73 +156,80 @@ return [
             'heading' => '查看:name',
         ],
         'delete' => [
-            'label' => '刪除',
-            'heading' => '刪除 :name',
+            'label' => '删除',
+            'heading' => '删除 :name',
             'messages' => [
                 'success' => [
-                    'title' => '已刪除',
+                    'title' => '已删除',
                 ],
                 'error' => [
-                    'title' => '刪除失敗',
+                    'title' => '删除失败',
                 ],
             ],
         ],
         'edit' => [
-            'label' => '編輯',
-            'heading' => '編輯:name',
+            'label' => '编辑',
+            'heading' => '编辑:name',
             'messages' => [
                 'success' => [
                     'title' => '已保存',
-                    'body' => '如果您重新上傳了檔案，請刷新頁面以查看更改，例如媒體的縮略圖。',
+                    'body' => '如果您重新上传了文件，请刷新页面以查看更改，例如媒体的缩略图。',
                 ],
             ],
         ],
         'open_folder' => [
-            'label' => '打開資料夾',
+            'label' => '打开文件夹',
         ],
         'create_folder' => [
-            'label' => '創建資料夾',
+            'label' => '创建文件夹',
             'messages' => [
                 'success' => [
-                    'title' => '資料夾已創建',
+                    'title' => '文件夹已创建',
                 ],
             ],
         ],
         'upload' => [
-            'label' => '上傳',
+            'label' => '上传',
         ],
         'upload_by_type' => [
-            'label' => '按類型上傳',
-            'heading' => '上傳',
+            'label' => '按类型上传',
+            'heading' => '上传',
             'messages' => [
                 'success' => [
-                    'title' => '檔案已上傳',
+                    'title' => '文件已上传',
                 ],
                 'error' => [
-                    'title' => '檔案上傳失敗',
+                    'title' => '文件上传失败',
                 ],
             ],
         ],
         'clear' => [
             'label' => '清除',
         ],
+        'select' => [
+            'label' => '选择',
+            'heading' => '选择',
+        ],
+        'cancel' => [
+            'label' => '取消',
+        ],
         'rename' => [
             'label' => '重命名',
             'heading' => '重命名 :name',
             'messages' => [
                 'success' => [
-                    'title' => '檔案已重命名',
+                    'title' => '文件已重命名',
                 ],
             ],
         ],
     ],
 
     'messages' => [
-        'item_moved' => '項目已成功移動。',
-        'xxx_items_selected' => ':count 項目已選擇。',
-        'total_xxx_items' => ':count 項目',
-        'item_deleted' => '已刪除',
-        'item_deletion_failed' => '刪除失敗',
-        'uploaded' => '已上傳',
+        'item_moved' => '项目已成功移动。',
+        'xxx_items_selected' => ':count 项目已选择。',
+        'total_xxx_items' => ':count 项目',
+        'item_deleted' => '已删除',
+        'item_deletion_failed' => '删除失败',
+        'uploaded' => '已上传',
     ],
 ];
