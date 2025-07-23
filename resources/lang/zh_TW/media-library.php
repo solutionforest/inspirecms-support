@@ -222,6 +222,9 @@ return [
                 ],
             ],
         ],
+        'refresh' => [
+            'label' => '刷新',
+        ],
     ],
 
     'messages' => [

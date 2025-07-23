@@ -104,7 +104,7 @@
                         icon="heroicon-o-arrow-path"
                         size="sm"
                         color="gray"
-                        label="Refresh"
+                        :label="__('inspirecms-support::media-library.buttons.refresh.label')"
                         class="reset-btn"
                     />
                 </div>

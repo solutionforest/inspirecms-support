@@ -226,6 +226,9 @@ return [
                 ],
             ],
         ],
+        'refresh' => [
+            'label' => 'Refresh',
+        ],
     ],
 
     'messages' => [
