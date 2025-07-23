@@ -4,7 +4,6 @@ namespace SolutionForest\InspireCms\Support\MediaLibrary;
 
 use Illuminate\Database\Eloquent\Model;
 use Livewire\Attributes\Lazy;
-use Livewire\Attributes\Reactive;
 use Livewire\Component;
 
 #[Lazy]
@@ -13,8 +12,9 @@ class FolderBrowserComponent extends Component implements Contracts\HasItemActio
     use Concerns\HasItemActions;
     use Concerns\WithMediaAssets;
 
-    #[Reactive]
-    public ?Model $parentRecord = null;
+    public $folders;
+
+    public $parentKey;
 
     public function placeholder()
     {
@@ -26,22 +26,7 @@ class FolderBrowserComponent extends Component implements Contracts\HasItemActio
 
     public function render()
     {
-        return view('inspirecms-support::livewire.components.media-library.folder-browser', [
-            'folders' => is_null($this->parentRecord) ? [] : $this->getFoldersFromUpperLevel(),
-        ]);
-    }
-
-    protected function getFoldersFromUpperLevel()
-    {
-        if (is_null($this->parentRecord)) {
-            return collect();
-        }
-
-        return $this->getEloquentQuery()
-            ->withCount('children')
-            ->whereParent($this->parentRecord->getParentId())
-            ->folders()
-            ->get();
+        return view('inspirecms-support::livewire.components.media-library.folder-browser');
     }
 
     // region Actions
@@ -49,11 +34,10 @@ class FolderBrowserComponent extends Component implements Contracts\HasItemActio
     {
         return [
             Actions\RenameAction::make(),
-            Actions\ActionGroup::make([
-                Actions\DeleteAction::make()
-                    // Back to root level after delete
-                    ->after(fn () => $this->dispatch('openFolder', $this->getRootLevelParentId())),
-            ])->dropdown(false),
+            Actions\DeleteAction::make()
+                ->action(function (Model $record) {
+                    $this->dispatch('deleteFolder', $record->getKey());
+                }),
         ];
     }
     // endregion Actions

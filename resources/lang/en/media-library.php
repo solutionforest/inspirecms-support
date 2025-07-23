@@ -160,7 +160,10 @@ return [
             'heading' => 'Delete :name',
             'messages' => [
                 'success' => [
-                    'title' => 'File Deleted',
+                    'title' => 'Deleted',
+                ],
+                'error' => [
+                    'title' => 'Deletion Failed',
                 ],
             ],
 
@@ -191,7 +194,10 @@ return [
         ],
         'upload' => [
             'label' => 'Upload',
-            'heading' => 'Upload Files',
+        ],
+        'upload_by_type' => [
+            'label' => 'Upload by type',
+            'heading' => 'Upload',
             'messages' => [
                 'success' => [
                     'title' => 'File Uploaded',
@@ -219,5 +225,8 @@ return [
         'item_moved' => 'Item moved successfully.',
         'xxx_items_selected' => ':count items selected.',
         'total_xxx_items' => ':count items',
+        'item_deleted' => 'Deleted',
+        'item_deletion_failed' => 'Deletion failed',
+        'uploaded' => 'Uploaded',
     ],
 ];

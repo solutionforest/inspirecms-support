@@ -43,7 +43,7 @@ trait HasFilters
                     ->hiddenLabel()
                     ->placeholder(__('inspirecms-support::media-library.filter.title.placeholder'))
                     ->live(false)
-                    ->hidden(fn ($component) => $this->isFilterColumnInvisible($component->getName()))
+                    ->disabled(fn ($component) => $this->isFilterColumnDisabled($component->getName()))
                     ->dehydratedWhenHidden()
                     ->extraAttributes(['class' => 'w-full'])
                     ->suffixAction(
@@ -60,7 +60,7 @@ trait HasFilters
                     ->options(FilterType::class)
                     ->multiple()
                     ->live(true)
-                    ->hidden(fn ($component) => $this->isFilterColumnInvisible($component->getName()))
+                    ->disabled(fn ($component) => $this->isFilterColumnDisabled($component->getName()))
                     ->dehydratedWhenHidden(),
             ])
             ->statePath($this->getFilterFormStatePath());

@@ -5,8 +5,10 @@ namespace SolutionForest\InspireCms\Support\MediaLibrary;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Forms;
+use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Support\Facades\FilamentIcon;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
@@ -14,8 +16,12 @@ use Livewire\Attributes\Computed;
 use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Livewire\WithPagination;
+use SolutionForest\InspireCms\Support\Helpers\MediaAssetHelper;
 use SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset;
 
+/**
+ * @property Form $uploadForm
+ */
 class MediaLibraryComponent extends Component implements Contracts\HasItemActions
 {
     use Concerns\HasFilters;
@@ -47,6 +53,8 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
 
     public array $formConfig = [];
 
+    public array $uploadData = [];
+
     /**
      * @var Collection
      */
@@ -54,10 +62,13 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
 
     protected $listeners = [
         'openFolder',
+        'deleteFolder',
+        'deleteMedia',
         'moveMediaItem',
         'resetMediaLibrary' => 'resetAll',
         'clearMediaLibraryCache' => 'clearCache',
         'media-picker-modal:init' => 'initializeMediaLibraryPickerModal',
+        'autoupload-file--upload-success' => 'notifyAutoUploadSuccess',
     ];
 
     protected function queryString()
@@ -81,6 +92,7 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
         if ($this->parentKey != null) {
             $this->parentRecord = $this->resolveAssetRecord($this->parentKey);
         }
+        $this->resetUploadForm();
     }
 
     public function updatedPaginators($page, $pageName)
@@ -117,11 +129,11 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
             if (isset($config['page']) && is_numeric($config['page'])) {
                 $this->page = intval($config['page']);
             }
-            if (isset($config['forms']['filter']['invisibleColumns']) && is_array($config['forms']['filter']['invisibleColumns'])) {
-                $this->formConfig['filter']['invisible_columns'] = $config['forms']['filter']['invisibleColumns'];
+            if (isset($config['forms']['filter']['disabledColumns']) && is_array($config['forms']['filter']['disabledColumns'])) {
+                $this->formConfig['filter']['disabled_columns'] = $config['forms']['filter']['disabledColumns'];
             }
-            if (isset($config['forms']['sort']['invisibleColumns']) && is_array($config['forms']['sort']['invisibleColumns'])) {
-                $this->formConfig['sort']['invisible_columns'] = $config['forms']['sort']['invisibleColumns'];
+            if (isset($config['forms']['sort']['disabledColumns']) && is_array($config['forms']['sort']['disabledColumns'])) {
+                $this->formConfig['sort']['disabled_columns'] = $config['forms']['sort']['disabledColumns'];
             }
 
             if (isset($config['forms']['filter']['d']) && is_array($config['forms']['filter']['d'])) {
@@ -148,8 +160,24 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
     public function openFolder($mediaId = null)
     {
         $this->clearCache();
+
+        $this->resetUploadForm();
+        // Tell FilePond on the frontend to reset the file input
+        $this->dispatch('autoupload-file--filepond-reset');
+
         $mediaId ??= $this->selectedMediaId;
         $this->changeParent($mediaId);
+    }
+
+    public function deleteFolder($mediaId)
+    {
+        $this->dispatch('openFolder', static::getRootLevelParentId())->self();
+        $this->dispatch('deleteMedia', $mediaId)->self();
+    }
+
+    public function deleteMedia($mediaId)
+    {
+        $this->handleMediaItemDelete($mediaId);
     }
 
     public function toggleMedia($mediaId = null, $isFolder = true)
@@ -199,14 +227,29 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
 
     public function clearCache()
     {
-        unset($this->assets);
+        unset(
+            $this->assets,
+            $this->folders,
+        );
     }
 
     public function resetAll()
     {
         $this->resetSelectedMedia();
         $this->resetToggleMediaId();
+        $this->resetUploadForm();
         $this->clearCache();
+    }
+
+    public function notifyAutoUploadSuccess()
+    {
+        Notification::make()
+            ->title(__('inspirecms-support::media-library.messages.uploaded'))
+            ->success()
+            ->send();
+
+        $this->clearCache();
+        $this->dispatch('$refresh');
     }
 
     public function isMediaPickerModal(): bool
@@ -217,6 +260,15 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
     public function canDragAndDrop(): bool
     {
         return ! $this->isMediaPickerModal();
+    }
+
+    public function canUpload(): bool
+    {
+        try {
+            return \Filament\authorize('create', $this->getMediaAssetModel())->allowed();
+        } catch (AuthorizationException $exception) {
+            return $exception->toResponse()->allowed();
+        }
     }
 
     /**
@@ -291,7 +343,9 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
                     ]);
                     $action->success();
                 }),
-            Actions\UploadAction::make(),
+            Actions\Action::make('upload')
+                ->label(__('inspirecms-support::media-library.buttons.upload.label'))
+                ->alpineClickHandler('() => showUploadForm = ! showUploadForm'),
         ];
     }
 
@@ -354,9 +408,27 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
 
     // region Form
 
+    public function uploadForm(Form $form): Form
+    {
+        return $form
+            ->columns(1)
+            ->statePath('uploadData')
+            ->schema([
+                MediaAssetHelper::getFileAutoUploadField($this->getParentRecord()?->getKey() ?? $this->getRootLevelParentId()),
+            ]);
+    }
+
+    protected function resetUploadForm(): void
+    {
+        $this->uploadForm->fill([
+            'files' => [],
+        ]);
+    }
+
     public function getFormStatePathFor(string $formName): ?string
     {
         return match ($formName) {
+            'uploadForm' => 'uploadData',
             'filterForm' => $this->getFilterFormStatePath(),
             'sortForm' => $this->getSortFormStatePath(),
             default => $this->getFormStatePath(),
@@ -366,6 +438,7 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
     protected function getForms(): array
     {
         return [
+            'uploadForm',
             'filterForm',
             'sortForm',
         ];
@@ -418,6 +491,28 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
             page: $this->page,
         );
     }
+
+    /**
+     * Get the folders from the parent.
+     *
+     * @return Collection<Model&MediaAsset>
+     */
+    #[Computed]
+    public function folders()
+    {
+        // From upper level
+        if (is_null($this->parentRecord) || ! $this->parentRecord->exists) {
+            return collect();
+        }
+
+        return $this->getEloquentQuery()
+            ->with([])
+            ->withCount('children')
+            ->whereParent($this->parentRecord->getParentId())
+            ->folders()
+            ->get()
+            ->collect();
+    }
     // endregion Computed
 
     public function render()
@@ -430,14 +525,14 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
 
     // region Helpers
 
-    protected function isFilterColumnInvisible(string $column): bool
+    protected function isFilterColumnDisabled(string $column): bool
     {
-        return in_array($column, $this->formConfig['filter']['invisible_columns'] ?? []);
+        return in_array($column, $this->formConfig['filter']['disabled_columns'] ?? []);
     }
 
-    protected function isSortColumnInvisible(string $column): bool
+    protected function isSortColumnDisabled(string $column): bool
     {
-        return in_array($column, $this->formConfig['sort']['invisible_columns'] ?? []);
+        return in_array($column, $this->formConfig['sort']['disabled_columns'] ?? []);
     }
 
     protected static function getPageName(): string
@@ -462,8 +557,11 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
         if (blank($key) || $key == $this->parentKey) {
             return;
         }
+
         if ($key == static::getRootLevelParentId()) {
             $this->parentKey = $key;
+            // Reset parent record
+            $this->parentRecord = null;
 
             return;
         }
@@ -502,6 +600,34 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
         }
 
         return $breadcrumbs;
+    }
+
+    protected function handleMediaItemDelete($mediaId)
+    {
+        $record = $this->resolveAssetRecord($mediaId);
+        if (is_null($record)) {
+            return false;
+        }
+
+        $isSuccess = $record->delete();
+        if ($isSuccess) {
+
+            Notification::make()
+                ->title(__('inspirecms-support::media-library.messages.item_deleted'))
+                ->success()
+                ->send();
+
+            // Reset the upload form and clear cache
+            // (Avoid using 'resetAll' here to avoid resetting the toggle/select media)
+            $this->resetUploadForm();
+            $this->clearCache();
+            $this->dispatch('$refresh');
+        } else {
+            Notification::make()
+                ->title(__('inspirecms-support::media-library.messages.item_deletion_failed'))
+                ->danger()
+                ->send();
+        }
     }
     // endregion Helpers
 }

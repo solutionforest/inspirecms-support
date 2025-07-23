@@ -160,7 +160,10 @@ return [
             'heading' => '刪除 :name',
             'messages' => [
                 'success' => [
-                    'title' => '檔案已刪除',
+                    'title' => '已刪除',
+                ],
+                'error' => [
+                    'title' => '刪除失敗',
                 ],
             ],
         ],
@@ -187,7 +190,10 @@ return [
         ],
         'upload' => [
             'label' => '上傳',
-            'heading' => '上傳檔案',
+        ],
+        'upload_by_type' => [
+            'label' => '按類型上傳',
+            'heading' => '上傳',
             'messages' => [
                 'success' => [
                     'title' => '檔案已上傳',
@@ -215,5 +221,8 @@ return [
         'item_moved' => '項目已成功移動。',
         'xxx_items_selected' => ':count 項目已選擇。',
         'total_xxx_items' => ':count 項目',
+        'item_deleted' => '已刪除',
+        'item_deletion_failed' => '刪除失敗',
+        'uploaded' => '已上傳',
     ],
 ];

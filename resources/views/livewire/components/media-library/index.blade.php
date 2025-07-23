@@ -3,8 +3,6 @@
     use SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset;
     
     $paginator = $this->assets;
-    $folders = collect($paginator->items())->where(fn (Model | MediaAsset $item) => $item->isFolder());
-    $media = collect($paginator->items())->where(fn (Model | MediaAsset $item) => !$item->isFolder());
 
     $loadingIndicator = [
         'count' => 3,
@@ -14,8 +12,15 @@
     ];
     $loadingIndicatorTargets = implode(',', [
         'assets', 
+        'parentKey',
+
+        'filter',
+        'sort',
+        
         'clearCache', 
-        // 'updating', 
+        'resetAll', 
+        //'updating', 
+
         'gotoPage', 
         'resetPage', 
         'nextPage', 
@@ -23,6 +28,13 @@
     ]);
 
     $livewireKey = $this->getId();
+    $alpineData = collect([
+        'showUploadForm: false',
+    ])->when($this->isMediaPickerModal(), function ($collection) {
+        return $collection->merge([
+            'selectedMediaId: $wire.entangle(\'selectedMediaId\').live',
+        ]);
+    })->implode(', ');
 @endphp
 
 <div @class([
@@ -30,8 +42,8 @@
         'media-library--picker' => $this->isMediaPickerModal(),
         'media-library--detail-expanded' => $this->hasAnyMediaSelected(),
     ])
+    x-data="{ {{ $alpineData }} }"
     @if ($this->isMediaPickerModal())
-        x-data="{selectedMediaId: $wire.entangle('selectedMediaId').live}"
         x-modelable="selectedMediaId" 
         x-model="selected"
     @endif
@@ -57,7 +69,6 @@
                 <div class="trigger" 
                     x-on:click="expanded = !expanded">
                     <button type="button" 
-                        class="p-4 rounded-full shadow-md bg-white ring-1 ring-gray-300 hover:bg-gray-100 dark:bg-gray-600 dark:ring-gray-400/20 dark:hover:text-gray-400" 
                         label="Expand folder"
                     >
                         <x-filament::icon 
@@ -67,52 +78,71 @@
                     </button>
                 </div>
                 <div class="folder-ctn__main">
-                    <livewire:inspirecms-support::media-library.folders :$parentRecord />
+                    <livewire:inspirecms-support::media-library.folders :folders="$this->folders" :$parentKey />
                 </div>
             </div>
         @endif
 
         <div class="ctn browser-ctn">
-            <div class="filter-ctn ctn">
-                <form id="filterForm" method="post">
-                    {{ $this->filterForm }}
-                </form>
-                <form id="sortForm" method="post">
-                    {{ $this->sortForm }}
-                </form>
-            </div>
-            <div class="browser-items-ctn ctn">
-                <div class="browser-items-grid-ctn">
-                    <h4>{{ __('inspirecms-support::media-library.folder.plural') }}</h4>
-                    <div class="w-full" wire:loading wire:target="{{ $loadingIndicatorTargets }}">
-                        <x-inspirecms-support::media-library.loading-section :count="$loadingIndicator['count']" :columns="$loadingIndicator['columns']" />
+            <div class="browser__header">
+                @if ($this->canUpload())
+                    <div class="upload-ctn ctn" x-show="showUploadForm" x-cloak>
+                        <form id="uploadForm" method="post">
+                            {{ $this->uploadForm }}
+                        </form>
                     </div>
-                    <div class="browser-items-grid" wire:loading.remove wire:target="{{ $loadingIndicatorTargets }}">
-                        @foreach ($folders ?? [] as $item)
-                            <x-inspirecms-support::media-library.browser-item 
-                                :livewire-key="$livewireKey"
-                                :media-item="$item" 
-                                :actions="$this->getCachedMediaItemActions()" 
-                                :selectable="!$this->isMediaPickerModal()"
-                                :is-draggable="$this->canDragAndDrop()"
-                            />
-                        @endforeach
-                    </div>
+                @endif
+                <div class="filter-ctn ctn">
+                    <form id="filterForm" method="post">
+                        {{ $this->filterForm }}
+                    </form>
+                    <form id="sortForm" method="post">
+                        {{ $this->sortForm }}
+                    </form>
+                    <x-filament::icon-button 
+                        wire:click="clearCache"
+                        icon="heroicon-o-arrow-path"
+                        size="sm"
+                        color="gray"
+                        label="Refresh"
+                        class="reset-btn"
+                    />
                 </div>
-                <div class="browser-items-grid-ctn">
-                    <h4>{{ __('inspirecms-support::media-library.media.plural') }}</h4>
-                    <div class="w-full" wire:loading wire:target="{{ $loadingIndicatorTargets }}">
-                        <x-inspirecms-support::media-library.loading-section :count="$loadingIndicator['count']" :columns="$loadingIndicator['columns']" />
+            </div>
+            <div class="browser-items-ctn">
+                <div class="browser-items-groups">
+                    <div class="browser-items-group">
+                        <h4>{{ __('inspirecms-support::media-library.folder.plural') }}</h4>
+                        <div class="w-full" wire:loading wire:target="{{ $loadingIndicatorTargets }}">
+                            <x-inspirecms-support::media-library.loading-section :count="$loadingIndicator['count']" :columns="$loadingIndicator['columns']" />
+                        </div>
+                        <div class="browser-items" wire:loading.remove wire:target="{{ $loadingIndicatorTargets }}">
+                            @foreach (collect($paginator->items())->where(fn (Model | MediaAsset $item) => $item->isFolder()) ?? [] as $item)
+                                <x-inspirecms-support::media-library.browser-item 
+                                    :livewire-key="$livewireKey"
+                                    :media-item="$item" 
+                                    :actions="$this->getCachedMediaItemActions()" 
+                                    :selectable="!$this->isMediaPickerModal()"
+                                    :is-draggable="$this->canDragAndDrop()"
+                                />
+                            @endforeach
+                        </div>
                     </div>
-                    <div class="browser-items-grid" wire:loading.remove wire:target="{{ $loadingIndicatorTargets }}">
-                        @foreach ($media ?? [] as $item)
-                            <x-inspirecms-support::media-library.browser-item 
-                                :livewire-key="$livewireKey"
-                                :media-item="$item" 
-                                :actions="$this->getCachedMediaItemActions()" 
-                                :is-draggable="$this->canDragAndDrop()"
-                            />
-                        @endforeach
+                    <div class="browser-items-group">
+                        <h4>{{ __('inspirecms-support::media-library.media.plural') }}</h4>
+                        <div class="w-full" wire:loading wire:target="{{ $loadingIndicatorTargets }}">
+                            <x-inspirecms-support::media-library.loading-section :count="$loadingIndicator['count']" :columns="$loadingIndicator['columns']" />
+                        </div>
+                        <div class="browser-items" wire:loading.remove wire:target="{{ $loadingIndicatorTargets }}">
+                            @foreach (collect($paginator->items())->where(fn (Model | MediaAsset $item) => !$item->isFolder()) ?? [] as $item)
+                                <x-inspirecms-support::media-library.browser-item 
+                                    :livewire-key="$livewireKey"
+                                    :media-item="$item" 
+                                    :actions="$this->getCachedMediaItemActions()" 
+                                    :is-draggable="$this->canDragAndDrop()"
+                                />
+                            @endforeach
+                        </div>
                     </div>
                 </div>
             </div>

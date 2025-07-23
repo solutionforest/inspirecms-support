@@ -14,7 +14,7 @@
 
     $imgStyles = "height: $height; width: $width; object-fit: cover;";
     $remainingTextCtnStyles = "padding: 0 4rem;";
-    $itemCtnClasses = 'item-content bg-gray-100 dark:bg-gray-800 rounded-lg';
+    $itemCtnClasses = 'item-content';
     $itemCtnStyles = 'width: 10rem;';
 
     $filterTypes = $getFilterTypes();
@@ -67,6 +67,7 @@
                         $itemCtnClasses,
                     ])
                     @style([$itemCtnStyles])
+                    wire:key="{{ $id }}.previewitem.{{ $asset->getKey() }}"
                 >
                     <!-- Thumbnail -->
                     <div class="flex flex-col items-center justify-center gap-3">
@@ -74,17 +75,14 @@
                             <img loading="lazy" 
                                 alt="{{ $asset->getKey() }}" 
                                 style="{{ $imgStyles }}"
-                                x-data="{ src: '{{ $asset->getThumbnailUrl() }}?' + Date.now() }"
-                                :src="src" 
-                                x-on:media-thumb-updated.window="(event) => {
-                                    const updatedId = (Array.isArray(event.detail) ? event.detail[0]?.id : event.detail?.id) || null;
-                                    if (!updatedId) {
-                                        return;
-                                    }
-                                    if (updatedId === '{{ $asset->getKey() }}') {
-                                        src = '{{ $asset->getThumbnailUrl() }}?' + Date.now()
-                                    }
-                                }"
+                                :src="src"
+                                x-data="dynamicImage({
+                                    baseUrl: @js($asset->getThumbnailUrl()),
+                                    mediaId: @js($asset->getKey()),
+                                    cacheBuster: true,
+                                    retryAttempts: 3,
+                                    retryDelay: 1000,
+                                })"
                             />
                         @else
                             <x-inspirecms-support::media-library.thumbnail-icon 

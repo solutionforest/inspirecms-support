@@ -2,11 +2,14 @@
 
 namespace SolutionForest\InspireCms\Support\MediaLibrary\Actions;
 
+use Filament\Actions\Concerns\CanCustomizeProcess;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Database\Eloquent\Model;
 
 class DeleteAction extends ItemAction
 {
+    use CanCustomizeProcess;
+
     public static function getDefaultName(): ?string
     {
         return 'delete';
@@ -24,6 +27,8 @@ class DeleteAction extends ItemAction
 
         $this->successNotificationTitle(__('inspirecms-support::media-library.buttons.delete.messages.success.title'));
 
+        $this->failureNotificationTitle(__('inspirecms-support::media-library.buttons.delete.messages.error.title'));
+
         $this->authorize('delete');
 
         $this->color('danger');
@@ -32,11 +37,16 @@ class DeleteAction extends ItemAction
 
         $this->modalIcon(FilamentIcon::resolve('inspirecms::delete'));
 
-        $this->action(function (?Model $record) {
-            if ($record) {
-                $record->delete();
-                $this->success();
+        $this->action(function (): void {
+            $result = $this->process(static fn (Model $record) => $record->delete());
+
+            if (! $result) {
+                $this->failure();
+
+                return;
             }
+
+            $this->success();
         });
     }
 }
