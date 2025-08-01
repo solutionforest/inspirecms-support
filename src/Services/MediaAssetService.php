@@ -34,7 +34,7 @@ class MediaAssetService
             /**
              * @var MediaAsset | Model
              */
-            $mediaAsset = MediaAssetHelper::getMediaAssetModel()::create([ /** @phpstan-ignore-line */
+            $mediaAsset = MediaAssetHelper::getMediaAssetModel()::create([/** @phpstan-ignore-line */
                 'parent_id' => static::ensureParentKeyBeforeCreate($parentKey),
                 'title' => static::getMediaNameFromUrl($url),
             ]);
@@ -74,7 +74,7 @@ class MediaAssetService
         $limitedMimeTypes = MediaLibraryRegistry::hasLimitedMimeTypes() ? MediaLibraryRegistry::getLimitedMimeTypes() : [];
         /** @phpstan-ignore-next-line */
         $fileAdder = $mediaAsset
-            ->addMediaFromUrl($url, $limitedMimeTypes) 
+            ->addMediaFromUrl($url, $limitedMimeTypes)
             ->usingName($name ?? static::getMediaNameFromUrl($url));
 
         if (! $fileAdder instanceof \Spatie\MediaLibrary\MediaCollections\FileAdder) {
@@ -136,7 +136,7 @@ class MediaAssetService
             /**
              * @var MediaAsset | Model
              */
-            $mediaAsset = MediaAssetHelper::getMediaAssetModel()::create([ /** @phpstan-ignore-line */
+            $mediaAsset = MediaAssetHelper::getMediaAssetModel()::create([/** @phpstan-ignore-line */
                 'parent_id' => static::ensureParentKeyBeforeCreate($parentKey),
                 'title' => static::getMediaNameFromFile($file),
             ]);

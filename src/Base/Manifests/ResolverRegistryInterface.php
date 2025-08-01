@@ -10,7 +10,6 @@ interface ResolverRegistryInterface
     public function set(string $interface, string $resolver): void;
 
     /**
-     * @param  string  $interface
      * @return null | T
      */
     public function get(string $interface);

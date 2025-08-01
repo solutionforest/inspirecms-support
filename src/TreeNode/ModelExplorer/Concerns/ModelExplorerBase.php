@@ -58,9 +58,8 @@ trait ModelExplorerBase
     }
 
     /**
-     * @param string | int $parentKey
-     * @param array<string,mixed> $items
-     * @param array<string,mixed> $nodes
+     * @param  array<string,mixed>  $items
+     * @param  array<string,mixed>  $nodes
      * @return void
      */
     public function attachItemsToNodes(string | int $parentKey, array $items, array &$nodes)
@@ -75,7 +74,7 @@ trait ModelExplorerBase
 
         // search deeper
         foreach ($nodes as &$node) {
-            if (!is_array($node['children']) || empty($node['children'])) {
+            if (! is_array($node['children']) || empty($node['children'])) {
                 continue;
             }
 

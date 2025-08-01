@@ -54,7 +54,6 @@ trait HasModelItems
     }
 
     /**
-     * @param string|int $parentKey
      * @return Collection<int, Model>
      */
     public function getChildren(string | int $parentKey)
@@ -70,6 +69,7 @@ trait HasModelItems
 
     /**
      * @phpstan-ignore-next-line missingType.generic
+     *
      * @return Builder
      *
      * @throws \Exception
@@ -194,7 +194,7 @@ trait HasModelItems
     }
 
     /**
-     * @param array<string, mixed> $items
+     * @param  array<string, mixed>  $items
      * @return array<string, mixed>
      */
     public function mutuateRootNodeItems(array $items): array
@@ -285,8 +285,7 @@ trait HasModelItems
     }
 
     /**
-     * @param array<string,mixed> $item
-     * @return mixed
+     * @param  array<string,mixed>  $item
      */
     public function getNodeItemKey(array $item): mixed
     {
@@ -303,7 +302,7 @@ trait HasModelItems
     }
 
     /**
-     * @param array<string, mixed> $item
+     * @param  array<string, mixed>  $item
      * @return array<string, mixed>
      */
     public function getNodeItemArguments(array $item): array
@@ -312,9 +311,7 @@ trait HasModelItems
     }
 
     /**
-     * @param array<string,mixed> $item
-     * @param ?string $locale
-     * @return ?string
+     * @param  array<string,mixed>  $item
      */
     public function getTitleForItem(array $item, ?string $locale = null): ?string
     {
