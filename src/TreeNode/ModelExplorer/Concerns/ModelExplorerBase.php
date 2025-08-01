@@ -57,6 +57,12 @@ trait ModelExplorerBase
         return $this->rootLevelKey;
     }
 
+    /**
+     * @param string | int $parentKey
+     * @param array<string,mixed> $items
+     * @param array<string,mixed> $nodes
+     * @return void
+     */
     public function attachItemsToNodes(string | int $parentKey, array $items, array &$nodes)
     {
         foreach ($nodes as &$node) {
@@ -69,7 +75,7 @@ trait ModelExplorerBase
 
         // search deeper
         foreach ($nodes as &$node) {
-            if (empty($node['children'])) {
+            if (!is_array($node['children']) || empty($node['children'])) {
                 continue;
             }
 

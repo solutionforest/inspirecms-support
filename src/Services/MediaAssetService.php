@@ -34,7 +34,7 @@ class MediaAssetService
             /**
              * @var MediaAsset | Model
              */
-            $mediaAsset = MediaAssetHelper::getMediaAssetModel()::create([
+            $mediaAsset = MediaAssetHelper::getMediaAssetModel()::create([ /** @phpstan-ignore-line */
                 'parent_id' => static::ensureParentKeyBeforeCreate($parentKey),
                 'title' => static::getMediaNameFromUrl($url),
             ]);
@@ -72,12 +72,18 @@ class MediaAssetService
     protected static function createMediaFromUrl(MediaAsset | Model $mediaAsset, string $url, ?string $name = null)
     {
         $limitedMimeTypes = MediaLibraryRegistry::hasLimitedMimeTypes() ? MediaLibraryRegistry::getLimitedMimeTypes() : [];
+        /** @phpstan-ignore-next-line */
         $fileAdder = $mediaAsset
-            ->addMediaFromUrl($url, $limitedMimeTypes)
+            ->addMediaFromUrl($url, $limitedMimeTypes) 
             ->usingName($name ?? static::getMediaNameFromUrl($url));
+
+        if (! $fileAdder instanceof \Spatie\MediaLibrary\MediaCollections\FileAdder) {
+            throw new \RuntimeException('Failed to create FileAdder from URL.');
+        }
 
         MediaAssetHelper::validateMediaBeforeAddFromUrl($fileAdder);
 
+        /** @phpstan-ignore-next-line */
         $mediaAsset->title = $fileAdder->getFileName();
 
         $media = $fileAdder->toMediaCollection(
@@ -130,7 +136,7 @@ class MediaAssetService
             /**
              * @var MediaAsset | Model
              */
-            $mediaAsset = MediaAssetHelper::getMediaAssetModel()::create([
+            $mediaAsset = MediaAssetHelper::getMediaAssetModel()::create([ /** @phpstan-ignore-line */
                 'parent_id' => static::ensureParentKeyBeforeCreate($parentKey),
                 'title' => static::getMediaNameFromFile($file),
             ]);
@@ -270,7 +276,7 @@ class MediaAssetService
 
     protected static function ensureParentKeyBeforeCreate($parentKey)
     {
-        if (empty($parentKey) || is_null($parentKey)) {
+        if (empty($parentKey)) {
             return KeyHelper::generateMinUuid();
         }
 

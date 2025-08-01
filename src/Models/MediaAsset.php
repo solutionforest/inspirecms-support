@@ -65,6 +65,7 @@ class MediaAsset extends BaseModel implements MediaAssetContract
 
         // For spatie/laravel-medialibrary v11
         // Fallback to getLastMediaUrl if getFirstMediaUrl is not available
+        /** @phpstan-ignore-next-line */
         if (blank($result) && method_exists($this, 'getLastMediaUrl')) {
             $result = $this->getLastMediaUrl(collectionName: MediaAssetHelper::getDefaultCollectionName(), conversionName: $conversionName);
         }

@@ -21,7 +21,7 @@ class Action extends BaseAction
         return $this->generateJavaScriptClickHandler('mountTreeNodeItemAction') ?? parent::getLivewireClickHandler();
     }
 
-    protected function generateJavaScriptClickHandler(string $method): string
+    protected function generateJavaScriptClickHandler(string $method): ?string
     {
         $itemKey = $this->getItemKey();
 

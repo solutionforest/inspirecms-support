@@ -17,7 +17,6 @@ class TestsForms
     public function dispatchFormFieldEvent()
     {
         return function (string $event, Closure | array $args = [], string $formName = 'form') {
-            /** @phpstan-ignore-next-line  */
             $this->assertFormExists($formName);
 
             $livewire = $this->instance();

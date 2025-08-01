@@ -9,6 +9,7 @@ use Filament\Support\Exceptions\Halt;
 use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\Url;
 use SolutionForest\InspireCms\Support\TreeNode\Actions\Action as TreeNodeAction;
+use SolutionForest\InspireCms\Support\TreeNode\Contracts\HasTreeNode;
 use Throwable;
 
 use function Livewire\store;
@@ -288,7 +289,10 @@ trait HasTreeNodeItemActions
             return null;
         }
 
-        if (($treeNode = $this->getTreeNode()) instanceof \SolutionForest\InspireCms\Support\TreeNode\ModelExplorer) {
+        if (
+            $this instanceof HasTreeNode &&
+            ($treeNode = $this->getTreeNode()) instanceof \SolutionForest\InspireCms\Support\TreeNode\ModelExplorer
+        ) {
             return $treeNode->getAction($this->mountedTreeNodeItemActions);
         }
 
@@ -397,7 +401,7 @@ trait HasTreeNodeItemActions
 
     // region Forms
     /**
-     * @return array<string, Forms\Form>
+     * @return array<string, ?Form>
      */
     protected function getHasTreeNodeItemActionsForms(): array
     {

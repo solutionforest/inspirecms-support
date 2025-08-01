@@ -22,7 +22,7 @@ class ModelExplorer extends ViewComponent implements TreeNode
     /**
      * @var view-string
      */
-    protected string $view = 'inspirecms-support::tree-node.model-explorer';
+    protected string $view = 'inspirecms-support::tree-node.model-explorer'; /** @phpstan-ignore-line */
 
     protected string $viewIdentifier = 'modelExplorer';
 

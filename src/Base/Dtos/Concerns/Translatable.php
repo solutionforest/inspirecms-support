@@ -16,7 +16,7 @@ trait Translatable
     protected array $availableLocales = [];
 
     /**
-     * @param string
+     * @param string $locale
      * @return self
      */
     public function setLocale(string $locale)

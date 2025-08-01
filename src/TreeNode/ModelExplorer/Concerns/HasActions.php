@@ -198,6 +198,7 @@ trait HasActions
             }
         }
 
+        /** @phpstan-ignore-next-line */
         if (! ($action instanceof Action || $action instanceof TreeNodeAction)) {
             return null;
         }

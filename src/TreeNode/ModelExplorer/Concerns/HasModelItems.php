@@ -34,6 +34,9 @@ trait HasModelItems
 
     protected ?Closure $mutuateNodeItemsUsing = null;
 
+    /**
+     * @return Collection<int, Model>
+     */
     public function getRootItems()
     {
         $query = $this->getModelExplorerQuery();
@@ -50,6 +53,10 @@ trait HasModelItems
         return $query->get();
     }
 
+    /**
+     * @param string|int $parentKey
+     * @return Collection<int, Model>
+     */
     public function getChildren(string | int $parentKey)
     {
         $query = $this->getModelExplorerQuery();
@@ -62,6 +69,7 @@ trait HasModelItems
     }
 
     /**
+     * @phpstan-ignore-next-line missingType.generic
      * @return Builder
      *
      * @throws \Exception
@@ -178,13 +186,17 @@ trait HasModelItems
     }
 
     /**
-     * @return Collection<Model>
+     * @return Collection<int, Model>
      */
     public function getRecordsFrom(string | int | null $parentKey)
     {
         return $parentKey === null ? $this->getRootItems() : $this->getChildren($parentKey);
     }
 
+    /**
+     * @param array<string, mixed> $items
+     * @return array<string, mixed>
+     */
     public function mutuateRootNodeItems(array $items): array
     {
         if ($this->mutuateRootNodeItemsUsing) {
@@ -198,7 +210,7 @@ trait HasModelItems
 
     /**
      * @param  string|int|array  $key
-     * @return null|Model|Collection<Model>
+     * @return null|Model|Collection<int, Model>
      */
     public function findRecord($key)
     {
@@ -215,7 +227,8 @@ trait HasModelItems
     }
 
     /**
-     * @param  Collection<Model>  $records
+     * @param  Collection<int, Model>  $records
+     * @return Collection<int, array>
      */
     public function parseAsItems($records, string | int $parentKey): Collection
     {
@@ -271,6 +284,10 @@ trait HasModelItems
         });
     }
 
+    /**
+     * @param array<string,mixed> $item
+     * @return mixed
+     */
     public function getNodeItemKey(array $item): mixed
     {
         $result = data_get($item, 'key');
@@ -285,11 +302,20 @@ trait HasModelItems
         return $result;
     }
 
+    /**
+     * @param array<string, mixed> $item
+     * @return array<string, mixed>
+     */
     public function getNodeItemArguments(array $item): array
     {
         return Arr::only($item, ['key', 'parentKey', 'hasChildren', 'depth']);
     }
 
+    /**
+     * @param array<string,mixed> $item
+     * @param ?string $locale
+     * @return ?string
+     */
     public function getTitleForItem(array $item, ?string $locale = null): ?string
     {
         $title = $item['title'] ?? null;
