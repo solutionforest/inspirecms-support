@@ -150,7 +150,10 @@
 
         @if ($this->hasAnyMediaSelected())
             <div class="ctn detail-info-ctn">
-                <livewire:inspirecms-support::media-library.detail-info :$selectedMediaId :$toggleMediaId :$isModalPicker />
+                <livewire:inspirecms-support::media-library.detail-info 
+                    :$selectedMediaId 
+                    :$toggleMediaId 
+                    :$isModalPicker />
             </div>
         @endif
     </div>

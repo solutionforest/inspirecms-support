@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Support\Models\Contracts;
 
+use DateTimeInterface;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
@@ -10,8 +11,8 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property string|int $nestable_id
  * @property int $order
  * @property string|int $parent_id
- * @property-read ?\DateTimeInterface $created_at
- * @property-read ?\DateTimeInterface $updated_at
+ * @property-read ?DateTimeInterface $created_at
+ * @property-read ?DateTimeInterface $updated_at
  */
 interface NestableTree
 {

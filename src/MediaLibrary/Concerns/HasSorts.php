@@ -2,11 +2,12 @@
 
 namespace SolutionForest\InspireCms\Support\MediaLibrary\Concerns;
 
-use Filament\Forms;
-use Filament\Forms\Form;
+use Filament\Forms\Components\Select;
+use Filament\Schemas\Schema;
+use Illuminate\Database\Eloquent\Builder;
 
 /**
- * @property Form $sortForm
+ * @property \Filament\Schemas\Schema $sortForm
  */
 trait HasSorts
 {
@@ -32,13 +33,13 @@ trait HasSorts
         return 'sort';
     }
 
-    public function sortForm(Form $form): Form
+    public function sortForm(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->columns(['default' => 2])
             ->extraAttributes(['class' => 'gap-y-2 lg:gap-x-2'])
-            ->schema([
-                Forms\Components\Select::make('type')
+            ->components([
+                Select::make('type')
                     ->hiddenLabel()
                     ->placeholder(__('inspirecms-support::media-library.sort.type.placeholder'))
                     ->options(__('inspirecms-support::media-library.sort.type.options'))
@@ -47,7 +48,7 @@ trait HasSorts
                     ->disabled(fn ($component) => $this->isSortColumnDisabled($component->getName()))
                     ->dehydratedWhenHidden(),
 
-                Forms\Components\Select::make('direction')
+                Select::make('direction')
                     ->hiddenLabel()
                     ->placeholder(__('inspirecms-support::media-library.sort.direction.placeholder'))
                     ->options(__('inspirecms-support::media-library.sort.direction.options'))
@@ -71,8 +72,8 @@ trait HasSorts
     /**
      * Apply sorting to the given query.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query  The query builder instance.
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param  Builder  $query  The query builder instance.
+     * @return Builder
      */
     protected function applySortCriteria($query)
     {

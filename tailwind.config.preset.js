@@ -1,4 +1,4 @@
-import defaultPreset from './vendor/filament/support/tailwind.config.preset'
+import defaultPreset from './vendor/filament/support/tailwind.config.preset.js'
 import defaultTheme from 'tailwindcss/defaultTheme'
 
 defaultPreset.theme.extend.fontFamily = {

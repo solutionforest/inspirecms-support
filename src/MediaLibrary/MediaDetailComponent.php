@@ -8,13 +8,17 @@ use Illuminate\Support\Collection;
 use Livewire\Attributes\Lazy;
 use Livewire\Attributes\Reactive;
 use Livewire\Component;
+use SolutionForest\InspireCms\Support\MediaLibrary\Actions\BulkDeleteAction;
+use SolutionForest\InspireCms\Support\MediaLibrary\Concerns\HasItemBulkActions;
+use SolutionForest\InspireCms\Support\MediaLibrary\Concerns\WithMediaAssets;
+use SolutionForest\InspireCms\Support\MediaLibrary\Contracts\HasItemActions;
 use SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset;
 
 #[Lazy]
-class MediaDetailComponent extends Component implements Contracts\HasItemActions
+class MediaDetailComponent extends Component implements HasItemActions, HasItemBulkActions
 {
     use Concerns\HasItemActions;
-    use Concerns\WithMediaAssets;
+    use WithMediaAssets;
 
     #[Reactive]
     public array $selectedMediaId = [];
@@ -35,6 +39,11 @@ class MediaDetailComponent extends Component implements Contracts\HasItemActions
 
     public function render()
     {
+        // Ensure that the actions are cached before rendering
+        if (empty($this->cachedMediaItemActions)) {
+            $this->cacheHasItemActions();
+        }
+
         return view('inspirecms-support::livewire.components.media-library.media-detail', [
             'toggleMedia' => $this->resolveToggleMedia(),
         ]);
@@ -51,7 +60,7 @@ class MediaDetailComponent extends Component implements Contracts\HasItemActions
             return $asset != null;
         }
 
-        return count($this->selectedMediaId) == 1 && $asset != null;
+        return count($this->getSelectedMediaAssetIds()) == 1 && $asset != null;
     }
 
     protected function resolveToggleMedia()
@@ -65,11 +74,21 @@ class MediaDetailComponent extends Component implements Contracts\HasItemActions
 
     protected function getFirstSelectedMedia()
     {
-        if (count($this->selectedMediaId) != 1) {
+        if (count($this->getSelectedMediaAssetIds()) != 1) {
             return null;
         }
 
-        return $this->resolveAssetRecord(Arr::first($this->selectedMediaId));
+        return $this->resolveAssetRecord(Arr::first($this->getSelectedMediaAssetIds()));
+    }
+
+    public function getSelectedMediaAssets(): Collection
+    {
+        return $this->resolveAssetRecords($this->getSelectedMediaAssetIds());
+    }
+
+    public function getSelectedMediaAssetIds(): array
+    {
+        return $this->selectedMediaId;
     }
 
     /**
@@ -115,7 +134,7 @@ class MediaDetailComponent extends Component implements Contracts\HasItemActions
     protected function getMediaItemActions(): array
     {
         return [
-            Actions\BulkDeleteAction::make()
+            BulkDeleteAction::make()
                 ->after(fn () => $this->dispatch('resetMediaLibrary')),
         ];
     }

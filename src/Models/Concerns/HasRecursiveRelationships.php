@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms\Support\Models\Concerns;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Support\Observers\HasRecursiveRelationshipsObserver;
 use Staudenmeir\LaravelAdjacencyList\Eloquent\HasRecursiveRelationships as BaseHasRecursiveRelationships;
 
@@ -50,12 +51,12 @@ trait HasRecursiveRelationships
     }
 
     /**
-     * @param  \Illuminate\Database\Eloquent\Model|string|int|null  $parent  The parent node to set.
+     * @param  Model|string|int|null  $parent  The parent node to set.
      * @param  bool  $save  Whether to save the changes immediately. Default is true.
      */
     public function setParentNode($parent, $save = true)
     {
-        $parentKey = $parent instanceof \Illuminate\Database\Eloquent\Model ? $parent?->getKey() : $parent;
+        $parentKey = $parent instanceof Model ? $parent?->getKey() : $parent;
         $this->{$this->getParentKeyName()} = $parentKey ?? $this->getRootLevelParentId();
 
         if ($save) {

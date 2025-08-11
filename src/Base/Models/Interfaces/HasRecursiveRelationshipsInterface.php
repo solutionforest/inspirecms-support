@@ -2,7 +2,13 @@
 
 namespace SolutionForest\InspireCms\Support\Base\Models\Interfaces;
 
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
+use Staudenmeir\LaravelAdjacencyList\Eloquent\Relations\Ancestors;
+use Staudenmeir\LaravelAdjacencyList\Eloquent\Relations\Bloodline;
+use Staudenmeir\LaravelAdjacencyList\Eloquent\Relations\Descendants;
 
 /**
  * @template TModel of \Illuminate\Database\Eloquent\Model
@@ -23,63 +29,63 @@ interface HasRecursiveRelationshipsInterface
     /**
      * Get the model's ancestors.
      *
-     * @return \Staudenmeir\LaravelAdjacencyList\Eloquent\Relations\Ancestors<TModel>
+     * @return Ancestors<TModel>
      */
     public function ancestors();
 
     /**
      * Get the model's ancestors and itself.
      *
-     * @return \Staudenmeir\LaravelAdjacencyList\Eloquent\Relations\Ancestors<TModel>
+     * @return Ancestors<TModel>
      */
     public function ancestorsAndSelf();
 
     /**
      * Get the model's bloodline.
      *
-     * @return \Staudenmeir\LaravelAdjacencyList\Eloquent\Relations\Bloodline<TModel>
+     * @return Bloodline<TModel>
      */
     public function bloodline();
 
     /**
      * Get the model's children.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany<TModel>
+     * @return HasMany<TModel>
      */
     public function children();
 
     /**
      * Get the model's children and itself.
      *
-     * @return \Staudenmeir\LaravelAdjacencyList\Eloquent\Relations\Descendants<TModel>
+     * @return Descendants<TModel>
      */
     public function childrenAndSelf();
 
     /**
      * Get the model's descendants.
      *
-     * @return \Staudenmeir\LaravelAdjacencyList\Eloquent\Relations\Descendants<TModel>
+     * @return Descendants<TModel>
      */
     public function descendants();
 
     /**
      * Get the model's descendants and itself.
      *
-     * @return \Staudenmeir\LaravelAdjacencyList\Eloquent\Relations\Descendants<TModel>
+     * @return Descendants<TModel>
      */
     public function descendantsAndSelf();
 
     /**
      * Get the model's parent.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<TModel,TModel>
+     * @return BelongsTo<TModel, TModel>
      */
     public function parent();
 
     /**
      * Get the model's parent and itself.
      *
-     * @return \Staudenmeir\LaravelAdjacencyList\Eloquent\Relations\Ancestors<TModel>
+     * @return Ancestors<TModel>
      */
     public function parentAndSelf();
 
@@ -119,7 +125,7 @@ interface HasRecursiveRelationshipsInterface
     /**
      * Sets the parent node for the current node.
      *
-     * @param  \Illuminate\Database\Eloquent\Model|string|int|null  $parent  The parent node to set.
+     * @param  Model|string|int|null  $parent  The parent node to set.
      * @param  bool  $save  Whether to save the changes immediately. Default is true.
      */
     public function setParentNode($parent, $save = true);

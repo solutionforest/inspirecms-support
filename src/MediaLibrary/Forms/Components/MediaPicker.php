@@ -4,17 +4,21 @@ namespace SolutionForest\InspireCms\Support\MediaLibrary\Forms\Components;
 
 use Closure;
 use Filament\Forms\Components\Field;
+use Filament\Support\Components\Attributes\ExposedLivewireMethod;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use SolutionForest\InspireCms\Support\Dtos\MediaAssetDto;
 use SolutionForest\InspireCms\Support\Facades\ModelRegistry;
+use SolutionForest\InspireCms\Support\MediaLibrary\Forms\Components\Concerns\HasMediaFilterTypes;
+use SolutionForest\InspireCms\Support\MediaLibrary\Forms\Components\Concerns\InteractsWithMediaLibraryModal;
 use SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset;
+use Throwable;
 
 class MediaPicker extends Field
 {
-    use Concerns\HasMediaFilterTypes;
-    use Concerns\InteractsWithMediaLibraryModal;
+    use HasMediaFilterTypes;
+    use InteractsWithMediaLibraryModal;
 
     /**
      * @var view-string
@@ -60,14 +64,16 @@ class MediaPicker extends Field
 
                 $state = $component->getCachedSelectedAssets($ids)->keys()->all();
 
-            } catch (\Throwable $th) {
+            } catch (Throwable $th) {
                 $state = [];
             }
             $component->state($state);
         });
+
         $this->afterStateUpdated(function (MediaPicker $component) {
             $component->clearCachedSelectedAssets();
         });
+
         // Ensure stored state as specified array format
         $this->mutateDehydratedStateUsing(function (MediaPicker $component, $state) {
             // Ensure the state is always an array
@@ -87,24 +93,20 @@ class MediaPicker extends Field
 
             return $result;
         });
+    }
 
-        $this->registerListeners([
-            'mediaPicker::clearSelected' => [
-                function (MediaPicker $component, string $statePath) {
-                    if ($statePath === $component->getStatePath()) {
-                        $component->state([]);
-                    }
-                },
-            ],
-            'mediaPicker::select' => [
-                function (MediaPicker $component, string $statePath, $assetIds) {
-                    if ($statePath === $component->getStatePath()) {
-                        $state = $component->getCachedSelectedAssets($assetIds)->keys()->all();
-                        $component->state($state);
-                    }
-                },
-            ],
-        ]);
+    #[ExposedLivewireMethod]
+    public function clearSelected()
+    {
+        $this->state([]);
+    }
+
+    #[ExposedLivewireMethod]
+    public function updateSelected($assetIds)
+    {
+        $state = $this->getCachedSelectedAssets($assetIds)->keys()->all();
+
+        $this->state($state);
     }
 
     public function max(int | Closure | null $max): static
@@ -162,7 +164,7 @@ class MediaPicker extends Field
     }
 
     /**
-     * @return \Illuminate\Support\Collection<Model>
+     * @return Collection<Model>
      */
     public function getCachedSelectedAssets($ids = null): Collection
     {

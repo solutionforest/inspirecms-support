@@ -3,40 +3,21 @@
 namespace SolutionForest\InspireCms\Support\TreeNode\Concerns;
 
 use Filament\Actions\Action;
-use Filament\Forms\Form;
-use Filament\Support\Exceptions\Cancel;
-use Filament\Support\Exceptions\Halt;
-use Illuminate\Validation\ValidationException;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\Exceptions\ActionNotResolvableException;
+use Filament\Schemas\Schema;
+use Illuminate\Support\Arr;
 use Livewire\Attributes\Url;
 use SolutionForest\InspireCms\Support\TreeNode\Actions\Action as TreeNodeAction;
+use SolutionForest\InspireCms\Support\TreeNode\Actions\ActionGroup as TreeNodeActionGroup;
 use SolutionForest\InspireCms\Support\TreeNode\Contracts\HasTreeNode;
-use Throwable;
+use SolutionForest\InspireCms\Support\TreeNode\ModelExplorer\Concerns\HasActions;
 
-use function Livewire\store;
-
-/**
- * @property Form $mountedTreeNodeItemActionForm
- */
 trait HasTreeNodeItemActions
 {
-    /**
-     * @var array<string> | null
-     */
-    public ?array $mountedTreeNodeItemActions = [];
-
-    /**
-     * @var array<string, array<string, mixed>> | null
-     */
-    public ?array $mountedTreeNodeItemActionsArguments = [];
-
-    /**
-     * @var array<string, array<string, mixed>> | null
-     */
-    public ?array $mountedTreeNodeItemActionsData = [];
-
-    public int | string | null $mountedTreeNodeItemActionRecord = null;
-
-    protected bool $hasTreeNodeItemActionModalRendered = false;
+    use InteractsWithActions {
+        resolveAction as baseResolveAction;
+    }
 
     /**
      * @var mixed
@@ -56,6 +37,16 @@ trait HasTreeNodeItemActions
     #[Url(as: 'treeNodeItemActionRecord')]
     public $defaultTreeNodeItemActionRecord = null;
 
+    public function bootedHasTreeNodeItemActions(): void
+    {
+        if ($this instanceof HasTreeNode) {
+            foreach ($this->getTreeNode()?->getFlatActions() ?? [] as $action) {
+                $this->configureSelectedModelItemFormAction($action);
+                $this->cacheAction($action);
+            }
+        }
+    }
+
     protected function configureSelectedModelItemFormAction(Action | TreeNodeAction $action): void {}
 
     /**
@@ -63,95 +54,7 @@ trait HasTreeNodeItemActions
      */
     public function callMountedTreeNodeItemAction(array $arguments = []): mixed
     {
-        $action = $this->getMountedTreeNodeItemAction();
-
-        if (! $action) {
-            return null;
-        }
-
-        if (blank($this->mountedTreeNodeItemActionRecord)) {
-            return null;
-        }
-
-        if ($action->isDisabled()) {
-            return null;
-        }
-
-        $action->mergeArguments($arguments);
-
-        $form = $this->getMountedTreeNodeItemActionForm(mountedAction: $action);
-
-        $result = null;
-
-        $originallyMountedActions = $this->mountedTreeNodeItemActions;
-
-        try {
-            $action->beginDatabaseTransaction();
-
-            if ($this->mountedTreeNodeItemActionHasForm(mountedAction: $action)) {
-                $action->callBeforeFormValidated();
-
-                $form->getState(afterValidate: function (array $state) use ($action) {
-                    $action->callAfterFormValidated();
-
-                    $action->formData($state);
-
-                    $action->callBefore();
-                });
-            } else {
-                $action->callBefore();
-            }
-
-            $result = $action->call([
-                'form' => $form,
-            ]);
-
-            $result = $action->callAfter() ?? $result;
-
-            $action->commitDatabaseTransaction();
-        } catch (Halt $exception) {
-            $exception->shouldRollbackDatabaseTransaction() ?
-                $action->rollBackDatabaseTransaction() :
-                $action->commitDatabaseTransaction();
-
-            return null;
-        } catch (Cancel $exception) {
-            $exception->shouldRollbackDatabaseTransaction() ?
-                $action->rollBackDatabaseTransaction() :
-                $action->commitDatabaseTransaction();
-        } catch (ValidationException $exception) {
-            $action->rollBackDatabaseTransaction();
-
-            if (! $this->mountedTreeNodeItemActionShouldOpenModal(mountedAction: $action)) {
-                $action->resetArguments();
-                $action->resetFormData();
-
-                $this->unmountTreeNodeItemAction();
-            }
-
-            throw $exception;
-        } catch (Throwable $exception) {
-            $action->rollBackDatabaseTransaction();
-
-            throw $exception;
-        }
-
-        if (store($this)->has('redirect')) {
-            return $result;
-        }
-
-        $action->resetArguments();
-        $action->resetFormData();
-
-        // If the action was replaced while it was being called,
-        // we don't want to unmount it.
-        if ($originallyMountedActions !== $this->mountedTreeNodeItemActions) {
-            return null;
-        }
-
-        $this->unmountTreeNodeItemAction();
-
-        return $result;
+        return $this->callMountedAction($arguments);
     }
 
     /**
@@ -159,151 +62,28 @@ trait HasTreeNodeItemActions
      */
     public function mountTreeNodeItemAction(string $name, int | string | null $itemKey, array $arguments = []): mixed
     {
-        $this->mountedTreeNodeItemActions[] = $name;
-        $this->mountedTreeNodeItemActionsArguments[] = $arguments;
-        $this->mountedTreeNodeItemActionsData[] = [];
-
-        if (count($this->mountedTreeNodeItemActions) === 1) {
-            $this->mountedTreeNodeItemActionRecord($itemKey);
-        }
-
-        $action = $this->getMountedTreeNodeItemAction();
-
-        // Unmount the action if it is not found.
-        if (! $action) {
-            $this->unmountTreeNodeItemAction();
-
-            return null;
-        }
-
-        // Unmount the action if the item key is not set.
-        if (filled($itemKey) &&
-            (
-                ($action instanceof TreeNodeAction && blank($action->getItemKey())) ||
-                ($action instanceof Action && ! ($action instanceof TreeNodeAction) && $action->getRecord() === null)
-            )
-        ) {
-            $this->unmountTreeNodeItemAction();
-
-            return null;
-        }
-
-        // Unmount the action if it is disabled.
-        if ($action->isDisabled()) {
-            $this->unmountTreeNodeItemAction();
-
-            return null;
-        }
-
-        $this->cacheMountedTreeNodeItemActionForm(mountedAction: $action);
-
-        try {
-            $hasForm = $this->mountedTreeNodeItemActionHasForm(mountedAction: $action);
-
-            if ($hasForm) {
-                $action->callBeforeFormFilled();
-            }
-
-            $action->mount([
-                'form' => $this->getMountedTreeNodeItemActionForm(mountedAction: $action),
-            ]);
-
-            if ($hasForm) {
-                $action->callAfterFormFilled();
-            }
-        } catch (Halt $exception) {
-            return null;
-        } catch (Cancel $exception) {
-            $this->unmountTreeNodeItemAction(shouldCancelParentActions: false);
-
-            return null;
-        }
-
-        if (! $this->mountedTreeNodeItemActionShouldOpenModal(mountedAction: $action)) {
-            return $this->callMountedTreeNodeItemAction();
-        }
-
-        $this->resetErrorBag();
-
-        $this->openTreeNodeItemActionModal();
-
-        return null;
+        return $this->mountAction($name, $arguments, context: [
+            'treeNode' => true,
+            'recordKey' => $itemKey,
+        ]);
     }
 
     public function unmountTreeNodeItemAction(bool $shouldCancelParentActions = true, bool $shouldCloseModal = true): void
     {
-        $action = $this->getMountedTreeNodeItemAction();
-
-        if (! ($shouldCancelParentActions && $action)) {
-            $this->popMountedTreeNodeItemAction();
-        } elseif ($action->shouldCancelAllParentActions()) {
-            $this->resetMountedTreeNodeItemActionProperties();
-        } else {
-            $parentActionToCancelTo = $action->getParentActionToCancelTo();
-
-            while (true) {
-                $recentlyClosedParentAction = $this->popMountedTreeNodeItemAction();
-
-                if (
-                    blank($parentActionToCancelTo) ||
-                    ($recentlyClosedParentAction === $parentActionToCancelTo)
-                ) {
-                    break;
-                }
-            }
-        }
-
-        if (! count($this->mountedTreeNodeItemActions)) {
-            if ($shouldCloseModal) {
-                $this->closeTreeNodeItemActionModal();
-            }
-
-            // Reset the action record if the action is being unmounted.
-            if ($action instanceof TreeNodeAction) {
-                $action->itemKey(null);
-            } else {
-                $action?->record(null);
-            }
-            // Reset the action record if the action is being unmounted.
-            $this->mountedTreeNodeItemActionRecord(null);
-
-            // Setting these to `null` creates a bug where the properties are
-            // actually set to `'null'` strings and remain in the URL.
-            $this->defaultTreeNodeItemAction = [];
-            $this->defaultTreeNodeItemActionArguments = [];
-            $this->defaultTreeNodeItemActionRecord = [];
-
-            return;
-        }
-
-        $this->cacheMountedTreeNodeItemActionForm();
-
-        $this->resetErrorBag();
-
-        $this->openTreeNodeItemActionModal();
+        $this->unmountAction(
+            $shouldCancelParentActions,
+            $shouldCloseModal,
+        );
     }
 
     public function getMountedTreeNodeItemAction(): null | Action | TreeNodeAction
     {
-        if (! count($this->mountedTreeNodeItemActions ?? [])) {
-            return null;
-        }
-
-        if (
-            $this instanceof HasTreeNode &&
-            ($treeNode = $this->getTreeNode()) instanceof \SolutionForest\InspireCms\Support\TreeNode\ModelExplorer
-        ) {
-            return $treeNode->getAction($this->mountedTreeNodeItemActions);
-        }
-
-        return null;
+        return $this->getMountedAction();
     }
 
     public function mountedTreeNodeItemActionShouldOpenModal(null | Action | TreeNodeAction $mountedAction = null): bool
     {
-        return ($mountedAction ?? $this->getMountedTreeNodeItemAction())->shouldOpenModal(
-            checkForFormUsing: $this->mountedTreeNodeItemActionHasForm(...),
-        );
+        return $this->mountedActionShouldOpenModal($mountedAction);
     }
 
     public function mountedTreeNodeItemActionRecord(int | string | null $itemKey): void
@@ -316,98 +96,69 @@ trait HasTreeNodeItemActions
         return $this->mountedTreeNodeItemActionRecord;
     }
 
-    protected function cacheMountedTreeNodeItemActionForm(null | Action | TreeNodeAction $mountedAction = null): void
-    {
-        $this->cacheForm(
-            'mountedTreeNodeItemActionForm',
-            fn () => $this->getMountedTreeNodeItemActionForm($mountedAction),
-        );
-    }
-
+    /**
+     * @deprecated Use `mountedActionHasSchema()` instead.
+     */
     public function mountedTreeNodeItemActionHasForm(null | Action | TreeNodeAction $mountedAction = null): bool
     {
-        return (bool) count($this->getMountedTreeNodeItemActionForm(mountedAction: $mountedAction)?->getComponents() ?? []);
+        return $this->mountedActionHasSchema($mountedAction);
     }
 
-    public function getMountedTreeNodeItemActionForm(null | Action | TreeNodeAction $mountedAction = null): ?Form
+    /**
+     * @deprecated Use `getMountedActionSchema()` instead.
+     */
+    public function getMountedTreeNodeItemActionForm(null | Action | TreeNodeAction $mountedAction = null): ?Schema
     {
-        $mountedAction ??= $this->getMountedTreeNodeItemAction();
+        return $this->getMountedActionSchema(0, $mountedAction);
+    }
 
-        if (! $mountedAction) {
-            return null;
+    /**
+     * @param  array<string, mixed>  $action
+     * @param  array<Action>  $parentActions
+     */
+    protected function resolveAction(array $action, array $parentActions): ?Action
+    {
+        if ($this instanceof HasTreeNode && ($action['context']['treeNode'] ?? null)) {
+            return $this->resolveTreeNodeAction($action, $parentActions);
         }
 
-        if ((! $this->isCachingForms) && $this->hasCachedForm('mountedTreeNodeItemActionForm')) {
-            return $this->getForm('mountedTreeNodeItemActionForm');
+        return $this->baseResolveAction($action, $parentActions);
+    }
+
+    /**
+     * @param  array<string, mixed>  $action
+     * @param  array<Action>  $parentActions
+     */
+    protected function resolveTreeNodeAction(array $action, array $parentActions): ?Action
+    {
+        if (! ($this instanceof HasTreeNode)) {
+            throw new ActionNotResolvableException('Failed to resolve tree node action for Livewire component without the [' . HasTreeNode::class . '] trait.');
         }
 
-        return $mountedAction->getForm(
-            $this->makeForm()
-                ->statePath('mountedTreeNodeItemActionsData.' . array_key_last($this->mountedTreeNodeItemActionsData))
-                ->operation(implode('.', $this->mountedTreeNodeItemActions)),
-        );
-    }
+        $resolvedAction = null;
 
-    // region Helpers
-    /**
-     * Remove the last the mounted tree node item action.
-     *
-     * @return string|null The name of the mounted tree node item action, or null if none is mounted.
-     */
-    protected function popMountedTreeNodeItemAction(): ?string
-    {
-        try {
-            return array_pop($this->mountedTreeNodeItemActions);
-        } finally {
-            array_pop($this->mountedTreeNodeItemActionsData);
+        if (count($parentActions)) {
+            $parentAction = Arr::last($parentActions);
+            $resolvedAction = $parentAction->getModalAction($action['name']) ?? throw new ActionNotResolvableException("Action [{$action['name']}] was not found for action [{$parentAction->getName()}].");
+        } else {
+            $treeNode = $this->getTreeNode();
+            if (! in_array(HasActions::class, class_uses_recursive($treeNode))) {
+                throw new ActionNotResolvableException("Action [{$action['name']}] not found on tree node.");
+            }
+            $resolvedAction = $treeNode->getAction($action['name']) ?? throw new ActionNotResolvableException("Action [{$action['name']}] not found on tree node.");
         }
-    }
 
-    /**
-     * Resets the properties related to the mounted tree node item action.
-     *
-     * This method is used to clear or reset any properties that are associated
-     * with the currently mounted tree node item action, ensuring that the state
-     * is clean and ready for the next action.
-     */
-    protected function resetMountedTreeNodeItemActionProperties(): void
-    {
-        $this->mountedTreeNodeItemActions = [];
-        $this->mountedTreeNodeItemActionsArguments = [];
-        $this->mountedTreeNodeItemActionsData = [];
-    }
+        if (filled($action['context']['recordKey'] ?? null)) {
+            $record = $action['context']['recordKey'];
 
-    protected function closeTreeNodeItemActionModal(): void
-    {
-        $this->dispatch('close-modal', id: $this->getTreeNodeItemModalId());
-    }
+            $targetAction = $resolvedAction->getRootGroup() ?? $resolvedAction;
+            if ($targetAction instanceof TreeNodeAction || $targetAction instanceof TreeNodeActionGroup) {
+                $targetAction->itemKey($record);
+            } elseif ($targetAction instanceof Action) {
+                $targetAction->record($record);
+            }
+        }
 
-    /**
-     * Opens the modal for tree node item actions.
-     *
-     * This method is responsible for displaying the modal that allows users
-     * to perform actions on a tree node item within the application.
-     */
-    protected function openTreeNodeItemActionModal(): void
-    {
-        $this->dispatch('open-modal', id: $this->getTreeNodeItemModalId());
+        return $resolvedAction;
     }
-
-    protected function getTreeNodeItemModalId(): string
-    {
-        return "{$this->getId()}-treenodeitem-action";
-    }
-    // endregion Modal
-
-    // region Forms
-    /**
-     * @return array<string, ?Form>
-     */
-    protected function getHasTreeNodeItemActionsForms(): array
-    {
-        return [
-            'mountedTreeNodeItemActionForm' => $this->getMountedTreeNodeItemActionForm(),
-        ];
-    }
-    // endregion Forms
 }

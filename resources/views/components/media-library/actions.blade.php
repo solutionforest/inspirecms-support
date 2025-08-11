@@ -16,7 +16,9 @@
                 } 
                 // Bulk action
                 elseif ($action instanceof MediaLibraryItemBulkAction || $action instanceof MediaLibraryActionGroup) {
-                    $action = $action->records($mediaItem);
+                    // $action = $action->arguments([
+                    //     'records' => collect($mediaItem)->map(fn ($key) => ['__key' => $key])->all(),
+                    // ]);
                 }
                 return $action;
             },

@@ -10,7 +10,6 @@ trait HasFallbackLocale
     protected $fallbackLocale = null;
 
     /**
-     * @param string $locale
      * @return self
      */
     public function setFallbackLocale(string $locale)

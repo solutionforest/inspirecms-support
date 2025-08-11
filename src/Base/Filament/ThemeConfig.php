@@ -14,13 +14,13 @@ class ThemeConfig
     public static function colors()
     {
         return [
-            'danger' => Color::hex('#f44336'),
-            'gray' => Color::hex('#5e5e5e'),
-            'info' => Color::hex('#88B0BA'),
-            'primary' => Color::hex('#B5834A'),
-            'secondary' => Color::hex('#bfa15a'),
-            'success' => Color::hex('#76ae51'),
-            'warning' => Color::hex('#f39e19'),
+            'danger' => Color::generateV3Palette('#f44336'),
+            'gray' => Color::generateV3Palette('#5e5e5e'),
+            'info' => Color::generateV3Palette('#88B0BA'),
+            'primary' => Color::generateV3Palette('#B5834A'),
+            'secondary' => Color::generateV3Palette('#bfa15a'),
+            'success' => Color::generateV3Palette('#76ae51'),
+            'warning' => Color::generateV3Palette('#f39e19'),
         ];
     }
 }

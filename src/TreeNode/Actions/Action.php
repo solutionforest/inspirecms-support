@@ -4,12 +4,14 @@ namespace SolutionForest\InspireCms\Support\TreeNode\Actions;
 
 use Filament\Actions\Action as BaseAction;
 use Illuminate\Support\Js;
+use SolutionForest\InspireCms\Support\TreeNode\Actions\Concerns\BelongsToTreeNode;
+use SolutionForest\InspireCms\Support\TreeNode\Actions\Concerns\BelongsToTreeNodeItem;
 use SolutionForest\InspireCms\Support\TreeNode\Contracts\TreeNode;
 
 class Action extends BaseAction
 {
-    use Concerns\BelongsToTreeNode;
-    use Concerns\BelongsToTreeNodeItem;
+    use BelongsToTreeNode;
+    use BelongsToTreeNodeItem;
 
     public function getLivewireCallMountedActionName(): string
     {

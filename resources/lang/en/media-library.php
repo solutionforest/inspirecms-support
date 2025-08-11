@@ -165,6 +165,12 @@ return [
                 'error' => [
                     'title' => 'Deletion Failed',
                 ],
+                'deleted_partial' => [
+                    'title' => 'Deleted :count of :total',
+                ],
+                'deleted_none' => [
+                    'title' => 'Deletion Failed',
+                ],
             ],
 
         ],

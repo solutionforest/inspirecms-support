@@ -3,13 +3,15 @@
 namespace SolutionForest\InspireCms\Support\Helpers;
 
 use Exception;
-use Filament\Forms\Components\Actions\Action as FormComponentAction;
+use Filament\Actions\Action;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Database\Eloquent\Model;
+use InvalidArgumentException;
+use Livewire\Component;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use SolutionForest\InspireCms\Support\Facades\MediaLibraryRegistry;
 use SolutionForest\InspireCms\Support\Facades\ModelRegistry;
@@ -21,6 +23,7 @@ use Spatie\MediaLibrary\MediaCollections\Exceptions\FileIsTooBig;
 use Spatie\MediaLibrary\MediaCollections\FileAdder;
 use Spatie\MediaLibrary\Support\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Throwable;
 
 class MediaAssetHelper
 {
@@ -44,7 +47,7 @@ class MediaAssetHelper
     ];
 
     /**
-     * @throws \Throwable
+     * @throws Throwable
      */
     public static function validateMediaBeforeAddFromUrl(FileAdder $fileAdder)
     {
@@ -90,7 +93,7 @@ class MediaAssetHelper
 
     public static function getFileAutoUploadField($parentKey, $name = 'files'): FileUpload
     {
-        $handleFileUploaded = function (\Livewire\Component $livewire) {
+        $handleFileUploaded = function (Component $livewire) {
             if ($livewire instanceof MediaLibraryComponent) {
                 // Refresh the asset on media library
                 $livewire->clearCache();
@@ -101,7 +104,7 @@ class MediaAssetHelper
             ->validationAttribute(__('inspirecms-support::media-library.forms.files.validation_attribute'))
             ->multiple()
             ->hintActions([
-                FormComponentAction::make('uploadByType')
+                Action::make('uploadByType')
                     ->button()->outlined()
                     ->label(__('inspirecms-support::media-library.buttons.upload_by_type.label'))
                     ->modalHeading(__('inspirecms-support::media-library.buttons.upload_by_type.heading'))
@@ -112,13 +115,13 @@ class MediaAssetHelper
                     ->stickyModalHeader()
                     ->stickyModalFooter()
                     ->modalSubmitActionLabel(__('inspirecms-support::media-library.buttons.upload.label'))
-                    ->after(fn (\Livewire\Component $livewire) => $handleFileUploaded($livewire))
+                    ->after(fn (Component $livewire) => $handleFileUploaded($livewire))
                     ->fillForm([
                         'upload_from' => 'url',
                         'files' => [],
                         'url' => '',
                     ])
-                    ->form(function () {
+                    ->schema(function () {
 
                         $selectField = Select::make('upload_from')
                             ->label(__('inspirecms-support::media-library.forms.upload_from.label'))
@@ -156,7 +159,7 @@ class MediaAssetHelper
                             $fromUrlField,
                         ];
                     })
-                    ->action(function (array $data, FormComponentAction $action) use ($parentKey) {
+                    ->action(function (array $data, Action $action) use ($parentKey) {
                         try {
 
                             $target = $data['upload_from'] ?? 'file';
@@ -202,7 +205,7 @@ class MediaAssetHelper
                                 case 'url':
 
                                     if (empty($data['url'])) {
-                                        throw new \InvalidArgumentException('URL cannot be empty.');
+                                        throw new InvalidArgumentException('URL cannot be empty.');
                                     }
 
                                     MediaAssetService::createMediaAssetFromUrl(
@@ -213,14 +216,14 @@ class MediaAssetHelper
                                     break;
 
                                 default:
-                                    throw new \InvalidArgumentException(
+                                    throw new InvalidArgumentException(
                                         'Invalid upload target specified: ' . $target
                                     );
                             }
 
                             $action->success();
 
-                        } catch (\Throwable $th) {
+                        } catch (Throwable $th) {
                             logger()->error('Failed to upload file by type: ' . $th->getMessage(), [
                                 'data' => $data,
                                 'exception' => $th,
@@ -236,7 +239,7 @@ class MediaAssetHelper
                     }),
             ])
             ->storeFiles(false)
-            ->saveAutoUploadFileUsing(function (TemporaryUploadedFile $file, \Livewire\Component $livewire) use ($parentKey, $handleFileUploaded) {
+            ->saveAutoUploadFileUsing(function (TemporaryUploadedFile $file, Component $livewire) use ($parentKey, $handleFileUploaded) {
                 $error = null;
                 $isSuccess = false;
 

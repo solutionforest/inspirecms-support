@@ -5,13 +5,15 @@ namespace SolutionForest\InspireCms\Support\Observers;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use SolutionForest\InspireCms\Support\Base\Models\Interfaces\BelongsToNestableTree;
+use SolutionForest\InspireCms\Support\Facades\ModelRegistry;
+use SolutionForest\InspireCms\Support\Models\Contracts\NestableTree;
 
 class BelongsToNestableTreeObserver
 {
     /**
      * Handle the created event.
      *
-     * @param  \SolutionForest\InspireCms\Support\Base\Models\Interfaces\BelongsToNestableTree  $model
+     * @param  BelongsToNestableTree  $model
      * @return void
      */
     public function created(BelongsToNestableTree | Model $model)
@@ -22,7 +24,7 @@ class BelongsToNestableTreeObserver
     /**
      * Handle the updated event.
      *
-     * @param  \SolutionForest\InspireCms\Support\Base\Models\Interfaces\BelongsToNestableTree  $model
+     * @param  BelongsToNestableTree  $model
      * @return void
      */
     public function updated(BelongsToNestableTree | Model $model)
@@ -33,7 +35,7 @@ class BelongsToNestableTreeObserver
     /**
      * Handle the deleting event.
      *
-     * @param  \SolutionForest\InspireCms\Support\Base\Models\Interfaces\BelongsToNestableTree  $model
+     * @param  BelongsToNestableTree  $model
      * @return void
      */
     public function deleting(BelongsToNestableTree | Model $model)
@@ -48,7 +50,7 @@ class BelongsToNestableTreeObserver
     /**
      * Handle the forceDeleting event.
      *
-     * @param  \SolutionForest\InspireCms\Support\Base\Models\Interfaces\BelongsToNestableTree  $model
+     * @param  BelongsToNestableTree  $model
      * @return void
      */
     public function forceDeleting(BelongsToNestableTree | Model $model)
@@ -71,10 +73,10 @@ class BelongsToNestableTreeObserver
     protected function reorderNestableTreeIfRoot(BelongsToNestableTree | Model $model)
     {
         /**
-         * @var \SolutionForest\InspireCms\Support\Models\Contracts\NestableTree | Model
+         * @var NestableTree|Model
          */
         $nestableTreeModel = app(
-            \SolutionForest\InspireCms\Support\Facades\ModelRegistry::get(\SolutionForest\InspireCms\Support\Models\Contracts\NestableTree::class)
+            ModelRegistry::get(NestableTree::class)
         );
 
         $parentId = $model->nestableTree?->getParentId();

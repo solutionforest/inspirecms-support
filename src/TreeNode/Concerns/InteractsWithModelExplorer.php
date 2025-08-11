@@ -2,12 +2,10 @@
 
 namespace SolutionForest\InspireCms\Support\TreeNode\Concerns;
 
-use Filament\Actions\Action;
-use Filament\Forms;
 use SolutionForest\InspireCms\Support\TreeNode\ModelExplorer;
 
 /**
- * @property Forms\Form $mountedTreeNodeItemActionForm
+ * @property \Filament\Schemas\Schema $mountedTreeNodeItemActionSchema
  */
 trait InteractsWithModelExplorer
 {
@@ -17,10 +15,7 @@ trait InteractsWithModelExplorer
 
     public function bootInteractsWithModelExplorer()
     {
-        $this->modelExplorer = Action::configureUsing(
-            \Closure::fromCallable([$this, 'configureSelectedModelItemFormAction']),
-            fn () => $this->modelExplorer($this->makeModelExplorer())
-        );
+        $this->modelExplorer = $this->modelExplorer($this->makeModelExplorer());
     }
 
     public function modelExplorer(ModelExplorer $modelExplorer): ModelExplorer

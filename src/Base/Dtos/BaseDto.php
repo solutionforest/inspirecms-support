@@ -2,6 +2,8 @@
 
 namespace SolutionForest\InspireCms\Support\Base\Dtos;
 
+use ReflectionClass;
+
 /**
  * Class BaseDto
  *
@@ -16,7 +18,7 @@ abstract class BaseDto
      */
     public static function fromArray(array $parameters)
     {
-        $reflection = new \ReflectionClass(static::class);
+        $reflection = new ReflectionClass(static::class);
         /**
          * @var BaseDto
          */

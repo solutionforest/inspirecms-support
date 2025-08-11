@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Support\MediaLibrary\Concerns;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Support\Helpers\MediaAssetHelper;
@@ -27,7 +28,7 @@ trait WithMediaAssets
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @return Builder
      */
     protected function getEloquentQuery()
     {

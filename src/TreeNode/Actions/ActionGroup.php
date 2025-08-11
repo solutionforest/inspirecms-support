@@ -3,12 +3,14 @@
 namespace SolutionForest\InspireCms\Support\TreeNode\Actions;
 
 use Filament\Actions\ActionGroup as BaseAction;
+use SolutionForest\InspireCms\Support\TreeNode\Actions\Concerns\BelongsToTreeNode;
+use SolutionForest\InspireCms\Support\TreeNode\Actions\Concerns\BelongsToTreeNodeItem;
 use SolutionForest\InspireCms\Support\TreeNode\Contracts\TreeNode;
 
 class ActionGroup extends BaseAction
 {
-    use Concerns\BelongsToTreeNode;
-    use Concerns\BelongsToTreeNodeItem;
+    use BelongsToTreeNode;
+    use BelongsToTreeNodeItem;
 
     /**
      * @return array<mixed>

@@ -1,3 +1,10 @@
+@reference 'tailwindcss' source(none);
+
+@import '../filament-base-theme.css';
+
+@source "../../views/components/tree-node/**/*.blade.php";
+@source "../../views/tree-node/**/*.blade.php";
+
 .tree-node-layout {
     @apply flex flex-col max-h-full gap-2;
 
@@ -19,7 +26,7 @@
     @apply grow overflow-auto p-1;
 }
 
-@media screen(lg) {
+@variant lg {
     .tree-node-layout {
         @apply flex-row;
     }
@@ -39,27 +46,29 @@
 .tree-node {
     padding: 6px 8px;
     margin: 2px 0;
-    border: 1px solid rgb(var(--gray-300));
     border-radius: 4px;
     cursor: pointer;
     transition: all 0.2s;
     position: relative;
     outline: none;
-    &:is(.dark *) {
-        border-color: rgb(var(--gray-500));
+    @apply border border-(--gray-300);
+    @variant dark {
+        @apply border-(--gray-500);
     }
 }
 
 .tree-node:hover {
-    background-color: rgba(var(--gray-500), 0.1);
-    &:is(.dark *) {
-        background-color: rgba(var(--gray-700), 0.5);
+    @apply bg-(--gray-200);
+    @variant dark { 
+        @apply bg-(--gray-700);
     }
 }
 
 .tree-node.active {
-    background-color: rgba(var(--primary-700),0.2);
-    border-color: rgba(var(--primary-400), 1);
+    @apply bg-(--primary-300) opacity-90 border-(--primary-400);
+    @variant dark {
+        @apply bg-(--primary-800);
+    }
 }
 
 .tree-children {
@@ -72,7 +81,7 @@
 
 .drop-indicator {
     height: 2px;
-    background-color: rgb(var(--primary-500));
+    /* background-color: var(--primary-500); */
     margin: 2px 0;
 }
 
@@ -90,16 +99,15 @@
 
 /* Drag and drop indicators */
 .dragover {
-    background-color: rgba(var(--primary-700),0.2);
-    border: 1px dashed rgb(var(--primary-700));
+    @apply bg-(--primary-300) border-dashed border-(--primary-700);
 }
 
 .dragover-before {
-    border-top: 2px solid rgb(var(--primary-700));
+    @apply border-t-2 border-(--primary-700);
 }
 
 .dragover-after {
-    border-bottom: 2px solid rgb(var(--primary-700));
+    @apply border-b-2 border-(--primary-700);
 }
 
 /* Search highlighting */
@@ -111,12 +119,11 @@
 }
 
 .tree-node.search-match {
-    border-color: rgb(var(--primary-700));
-    background-color: rgba(var(--primary-700), 0.1);
+    @apply bg-(--primary-300) border-(--primary-700);
 }
 
 .tree-node:focus {
-    outline: 2px solid rgb(var(--primary-700));
+    outline: 2px solid var(--primary-700);
     outline-offset: -1px;
     z-index: 1;
 }
@@ -126,7 +133,7 @@
 }
 
 .tree-node:focus-visible {
-    outline: 2px solid rgb(var(--primary-700));
+    outline: 2px solid var(--primary-700);
     outline-offset: -1px;
     z-index: 1;
 }
@@ -142,7 +149,8 @@
     inset: -1px;
     border-radius: inherit;
     pointer-events: none;
-    box-shadow: 0 0 0 2px rgba(var(--primary-700), 0.2);
+    box-shadow: 0 0 0 2px var(--primary-300);
+    
     opacity: 0;
     transition: opacity 0.2s;
 }

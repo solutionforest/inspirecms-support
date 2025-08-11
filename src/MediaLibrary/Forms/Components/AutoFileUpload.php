@@ -5,6 +5,7 @@ namespace SolutionForest\InspireCms\Support\MediaLibrary\Forms\Components;
 use Closure;
 use Filament\Forms\Components\FileUpload;
 use Filament\Notifications\Notification;
+use Filament\Support\Components\Attributes\ExposedLivewireMethod;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
 class AutoFileUpload extends FileUpload
@@ -21,7 +22,7 @@ class AutoFileUpload extends FileUpload
             ->storeFiles(false)
             ->extraAlpineAttributes(function (AutoFileUpload $component): array {
                 return [
-                    'x-on:autoupload-file--upload-error.window' => <<<'HTML'
+                    'x-on:autoupload-file--upload-error.window' => <<<'JS'
                         const serverReturnError = $event.detail.error ?? null;
                         // If is array, it means multiple files upload error
                         if (Array.isArray(serverReturnError)) {
@@ -33,38 +34,32 @@ class AutoFileUpload extends FileUpload
                             console.error('FilePond auto upload error:', serverReturnError ?? 'Unknown error');
                             error = 'Some files failed to upload';
                         }
-                    HTML,
-                    'x-on:autoupload-file--upload-success.window' => <<<'HTML'
+                    JS,
+                    'x-on:autoupload-file--upload-success.window' => <<<'JS'
                         const serverId = $event.detail.serverId ?? null;
                         const fileId = pond?.getFiles().find(file => file.serverId === serverId)?.id ?? null;
                         //console.log('FilePond auto upload success fileId:', fileId);
                         if (fileId != null) {
                             pond?.removeFile(fileId);
                         }
-                    HTML,
+                    JS,
                 ];
-            })
-            ->registerListeners([
-                'autoupload-file--start-multiple-upload' => [
-                    function (AutoFileUpload $component, $statePath) {
-                        if ($statePath !== $component->getStatePath()) {
-                            return;
-                        }
-                        $component->handleAutoFilesUpload();
-                    },
-                ],
-                'autoupload-file--start-upload' => [
-                    function (AutoFileUpload $component, $statePath, $serverId = null) {
-                        if ($statePath !== $component->getStatePath()) {
-                            return;
-                        }
-                        if ($serverId) {
-                            $serverId = array_map('trim', explode(',', $serverId));
-                        }
-                        $component->handleAutoFilesUpload($serverId);
-                    },
-                ],
-            ]);
+            });
+    }
+
+    #[ExposedLivewireMethod]
+    public function startMultipleUpload()
+    {
+        $this->handleAutoFilesUpload();
+    }
+
+    #[ExposedLivewireMethod]
+    public function startUpload($fileKey)
+    {
+        if ($fileKey) {
+            $fileKey = array_map('trim', explode(',', $fileKey));
+        }
+        $this->handleAutoFilesUpload($fileKey);
     }
 
     public function saveAutoUploadFileUsing(Closure $callback): static
@@ -123,7 +118,7 @@ class AutoFileUpload extends FileUpload
 
     public function handleAutoFilesUpload($serverId = null)
     {
-        $state = $this->getState();
+        $state = $this->getRawState();
 
         $errors = [];
 

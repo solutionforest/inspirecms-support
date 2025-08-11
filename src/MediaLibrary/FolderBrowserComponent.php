@@ -4,16 +4,22 @@ namespace SolutionForest\InspireCms\Support\MediaLibrary;
 
 use Illuminate\Database\Eloquent\Model;
 use Livewire\Attributes\Lazy;
+use Livewire\Attributes\Reactive;
 use Livewire\Component;
+use SolutionForest\InspireCms\Support\MediaLibrary\Actions\DeleteAction;
+use SolutionForest\InspireCms\Support\MediaLibrary\Actions\RenameAction;
+use SolutionForest\InspireCms\Support\MediaLibrary\Concerns\WithMediaAssets;
+use SolutionForest\InspireCms\Support\MediaLibrary\Contracts\HasItemActions;
 
 #[Lazy]
-class FolderBrowserComponent extends Component implements Contracts\HasItemActions
+class FolderBrowserComponent extends Component implements HasItemActions
 {
     use Concerns\HasItemActions;
-    use Concerns\WithMediaAssets;
+    use WithMediaAssets;
 
     public $folders;
 
+    #[Reactive]
     public $parentKey;
 
     public function placeholder()
@@ -33,8 +39,8 @@ class FolderBrowserComponent extends Component implements Contracts\HasItemActio
     protected function getMediaItemActions(): array
     {
         return [
-            Actions\RenameAction::make(),
-            Actions\DeleteAction::make()
+            RenameAction::make(),
+            DeleteAction::make()
                 ->action(function (Model $record) {
                     $this->dispatch('deleteFolder', $record->getKey());
                 }),

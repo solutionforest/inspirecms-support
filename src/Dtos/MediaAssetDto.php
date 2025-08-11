@@ -7,6 +7,7 @@ use Illuminate\Support\Arr;
 use SolutionForest\InspireCms\Support\Base\Dtos\BaseModelDto;
 use SolutionForest\InspireCms\Support\Facades\ModelRegistry;
 use SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset;
+use Throwable;
 
 /**
  * @extends BaseModelDto<MediaAsset|Model,MediaAssetDto>
@@ -57,7 +58,7 @@ class MediaAssetDto extends BaseModelDto
                 ->mapWithKeys(function ($condition, $conversion) use ($model) {
                     try {
                         $url = $model->getUrl($conversion, false);
-                    } catch (\Throwable $e) {
+                    } catch (Throwable $e) {
                         $url = null;
                     }
 

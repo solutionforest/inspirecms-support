@@ -12,11 +12,14 @@ use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use League\Flysystem\UnableToCheckFileExistence;
+use Livewire\Component;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
+use Livewire\Livewire;
 use SolutionForest\InspireCms\Support\Facades\MediaLibraryRegistry;
 use SolutionForest\InspireCms\Support\Helpers\MediaAssetHelper;
 use SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset;
 use SolutionForest\InspireCms\Support\Services\MediaAssetService;
+use Throwable;
 
 class EditAction extends ItemAction
 {
@@ -59,7 +62,7 @@ class EditAction extends ItemAction
 
                 return $data;
             })
-            ->form(function () {
+            ->schema(function () {
 
                 $selectField = Select::make('upload_from')
                     ->label(__('inspirecms-support::media-library.forms.upload_from.label'))
@@ -132,7 +135,7 @@ class EditAction extends ItemAction
                         ->validationAttribute(__('inspirecms-support::media-library.forms.description.caption')),
                 ];
             })
-            ->action(function (array $data, ?Model $record, \Livewire\Livewire | \Livewire\Component $livewire) {
+            ->action(function (array $data, ?Model $record, Livewire | Component $livewire) {
                 if (empty($data) || ! $record) {
                     return;
                 }
@@ -153,7 +156,7 @@ class EditAction extends ItemAction
 
                         $mediaAsset->update($data);
 
-                    } catch (\Throwable $th) {
+                    } catch (Throwable $th) {
                         $this
                             ->failureNotification(
                                 fn (Notification $notification) => $notification
@@ -183,7 +186,7 @@ class EditAction extends ItemAction
 
             $mediaAsset = MediaAssetService::updateMediaFromFileWithoutDelete($record, $file);
 
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             Notification::make()
                 ->title($this->getFailureNotificationTitle() ?? __('inspirecms-support::media-library.buttons.edit.messages.error.title'))
                 ->body($th->getMessage())

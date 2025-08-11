@@ -3,7 +3,7 @@
 namespace SolutionForest\InspireCms\Support\TreeNode\Contracts;
 
 use Filament\Actions\Action;
-use Filament\Forms\Form;
+use Filament\Schemas\Schema;
 use SolutionForest\InspireCms\Support\TreeNode\Actions\Action as TreeNodeAction;
 
 interface HasTreeNodeActions
@@ -24,5 +24,5 @@ interface HasTreeNodeActions
 
     public function mountedTreeNodeItemActionHasForm(null | Action | TreeNodeAction $mountedAction = null): bool;
 
-    public function getMountedTreeNodeItemActionForm(null | Action | TreeNodeAction $mountedAction = null): ?Form;
+    public function getMountedTreeNodeItemActionForm(null | Action | TreeNodeAction $mountedAction = null): ?Schema;
 }

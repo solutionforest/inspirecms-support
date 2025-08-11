@@ -6,21 +6,22 @@ use Closure;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\Exceptions\ActionNotResolvableException;
 use Filament\Forms\Concerns\InteractsWithForms;
-use Filament\Support\Exceptions\Cancel;
-use Filament\Support\Exceptions\Halt;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Collection;
+use Illuminate\Support\Arr;
 use InvalidArgumentException;
 use SolutionForest\InspireCms\Support\MediaLibrary\Actions;
+use SolutionForest\InspireCms\Support\MediaLibrary\Actions\ItemBulkAction;
 
 trait HasItemActions
 {
-    use InteractsWithActions;
+    use InteractsWithActions {
+        resolveAction as baseResolveAction;
+    }
     use InteractsWithForms;
 
     /**
-     * @var array<string, Actions\Action | Actions\ActionGroup>
+     * @var array<string, Actions\Action>
      */
     protected array $cachedFlatMediaItemActions = [];
 
@@ -29,211 +30,12 @@ trait HasItemActions
      */
     protected array $cachedMediaItemActions = [];
 
-    public int | string | array | null $mountedMediaItemActionRecord = null;
-
-    protected null | Model | Collection $cachedMountedMediaItemActionRecord = null;
-
-    protected int | string | array | null $cachedMountedMediaItemActionRecordKey = null;
-
     public function bootedHasItemActions()
     {
-        $this->cacheMediaItemActions();
+        $this->cacheHasItemActions();
     }
 
-    /**
-     * @param  Actions\Action | Actions\ActionGroup  $action
-     */
-    protected function configureMediaItemAction($action): void {}
-
-    protected function getMediaItemActions(): array
-    {
-        return [];
-    }
-
-    public function getMountedAction(): ?Action
-    {
-        if (! count($this->mountedActions ?? [])) {
-            return null;
-        }
-
-        $action = $this->getAction($this->mountedActions);
-
-        if (($action instanceof Actions\Action || $action instanceof Actions\ActionGroup) && ($mountedRecord = $this->getMountedMediaItemActionRecord())) {
-            if ($mountedRecord instanceof Model) {
-                $action->record($mountedRecord);
-            } elseif ($mountedRecord instanceof Collection) {
-                $action->records($mountedRecord);
-            }
-        }
-
-        return $action;
-    }
-
-    public function mountedMediaLibraryItemActionRecord(int | string | array | null $record): void
-    {
-        $this->mountedMediaItemActionRecord = $record;
-    }
-
-    /**
-     * @param  string  $name
-     * @param  null | string | array  $record
-     * @return mixed
-     */
-    public function mountMediaLibraryItemAction($name, $record = null, array $arguments = [])
-    {
-        $this->mountedActions[] = $name;
-        $this->mountedActionsArguments[] = $arguments;
-        $this->mountedActionsData[] = [];
-
-        if (count($this->mountedActions) === 1) {
-            $this->mountedMediaLibraryItemActionRecord($record);
-        }
-
-        $action = $this->getMountedAction();
-
-        if (! $action) {
-            $this->unmountMediaItemAction();
-
-            return null;
-        }
-
-        if (filled($record)) {
-
-            if ($action instanceof Actions\ItemAction && ($action->getRecord() === null)) {
-                $this->unmountMediaItemAction();
-
-                return null;
-
-            } elseif ($action instanceof Actions\ItemBulkAction && ($action->getRecords() === null)) {
-                $this->unmountMediaItemAction();
-
-                return null;
-
-            } elseif (! ($action instanceof Actions\ItemAction || $action instanceof Actions\ItemBulkAction) && $action instanceof Actions\Action && ($action->getRecord() === null)) {
-                $this->unmountMediaItemAction();
-
-                return null;
-
-            }
-        }
-
-        if ($action->isDisabled()) {
-            $this->unmountMediaItemAction();
-
-            return null;
-        }
-
-        $this->cacheMountedActionForm(mountedAction: $action);
-
-        try {
-            $hasForm = $this->mountedActionHasForm(mountedAction: $action);
-
-            if ($hasForm) {
-                $action->callBeforeFormFilled();
-            }
-
-            $action->mount([
-                'form' => $this->getMountedActionForm(mountedAction: $action),
-            ]);
-
-            if ($hasForm) {
-                $action->callAfterFormFilled();
-            }
-        } catch (Halt $exception) {
-            return null;
-        } catch (Cancel $exception) {
-            $this->unmountMediaItemAction(shouldCancelParentActions: false);
-
-            return null;
-        }
-
-        if (! $this->mountedActionShouldOpenModal(mountedAction: $action)) {
-            return $this->callMountedAction();
-        }
-
-        $this->resetErrorBag();
-
-        $this->openActionModal();
-
-        return null;
-    }
-
-    protected function resetMountedMediaItemActionProperties(): void
-    {
-        $this->resetMountedActionProperties();
-        $this->mountedMediaItemActionRecord = null;
-    }
-
-    public function unmountMediaItemAction(bool $shouldCancelParentActions = true, bool $shouldCloseModal = true): void
-    {
-        $action = $this->getMountedAction();
-
-        if (! ($shouldCancelParentActions && $action)) {
-            $this->popMountedAction();
-        } elseif ($action->shouldCancelAllParentActions()) {
-            $this->resetMountedMediaItemActionProperties();
-        } else {
-            $parentActionToCancelTo = $action->getParentActionToCancelTo();
-
-            while (true) {
-                $recentlyClosedParentAction = $this->popMountedAction();
-
-                if (
-                    blank($parentActionToCancelTo) ||
-                    ($recentlyClosedParentAction === $parentActionToCancelTo)
-                ) {
-                    break;
-                }
-            }
-        }
-
-        if (! count($this->mountedActions)) {
-            if ($shouldCloseModal) {
-                $this->closeActionModal();
-            }
-
-            $action?->clearRecordAfter();
-
-            // Setting these to `null` creates a bug where the properties are
-            // actually set to `'null'` strings and remain in the URL.
-            $this->defaultAction = [];
-            $this->defaultActionArguments = [];
-
-            return;
-        }
-
-        $this->cacheMountedActionForm();
-
-        $this->resetErrorBag();
-
-        $this->openActionModal();
-    }
-
-    public function getMountedMediaItemActionRecordKey(): int | string | array | null
-    {
-        return $this->mountedMediaItemActionRecord;
-    }
-
-    public function getMountedMediaItemActionRecord(): null | Model | Collection
-    {
-        $recordKey = $this->getMountedMediaItemActionRecordKey();
-
-        if ($this->cachedMountedMediaItemActionRecord && ($this->cachedMountedMediaItemActionRecordKey === $recordKey)) {
-            return $this->cachedMountedMediaItemActionRecord;
-        }
-
-        $this->cachedMountedMediaItemActionRecordKey = $recordKey;
-
-        if (is_null($recordKey)) {
-            return $this->cachedMountedMediaItemActionRecord = null;
-        }
-
-        return $this->cachedMountedMediaItemActionRecord = is_array($recordKey)
-            ? $this->resolveAssetRecords($recordKey)
-            : $this->resolveAssetRecord($recordKey);
-    }
-
-    protected function cacheMediaItemActions(): void
+    public function cacheHasItemActions()
     {
         /** @var array<string, Actions\Action | Actions\ActionGroup> */
         $actions = Action::configureUsing(
@@ -256,7 +58,7 @@ trait HasItemActions
 
                 $this->cachedMediaItemActions[] = $action;
 
-                return;
+                continue;
             }
 
             if (! $action instanceof Action) {
@@ -264,9 +66,42 @@ trait HasItemActions
             }
 
             $action = $this->cacheAction($action);
+            if (! isset($this->cachedFlatMediaItemActions[$action->getName()])) {
+                $this->cachedMediaItemActions[] = $action;
+            }
             $this->cacheMediaItemAction($action);
-            $this->cachedMediaItemActions[] = $action;
         }
+    }
+
+    /**
+     * @param  Actions\Action | Actions\ActionGroup  $action
+     */
+    protected function configureMediaItemAction($action): void {}
+
+    protected function getMediaItemActions(): array
+    {
+        return [];
+    }
+
+    /**
+     * @param  string  $name
+     * @param  null | string | array  $record
+     * @return mixed
+     */
+    public function mountMediaLibraryItemAction($name, $record = null, array $arguments = [])
+    {
+        return $this->mountAction($name, $arguments, context: [
+            'mediaLibrary' => true,
+            'recordKey' => $record,
+        ]);
+    }
+
+    public function unmountMediaItemAction(bool $shouldCancelParentActions = true, bool $shouldCloseModal = true): void
+    {
+        $this->unmountAction(
+            $shouldCancelParentActions,
+            $shouldCloseModal,
+        );
     }
 
     protected function cacheMediaItemAction($action)
@@ -278,5 +113,54 @@ trait HasItemActions
     public function getCachedMediaItemActions(): array
     {
         return $this->cachedMediaItemActions;
+    }
+
+    /**
+     * @param  array<string, mixed>  $action
+     * @param  array<Action>  $parentActions
+     */
+    protected function resolveAction(array $action, array $parentActions): ?Action
+    {
+        if (($action['context']['mediaLibrary'] ?? null)) {
+            return $this->resolveMediaLibraryAction($action, $parentActions);
+        }
+
+        return $this->baseResolveAction($action, $parentActions);
+    }
+
+    /**
+     * @param  array<string, mixed>  $action
+     * @param  array<Action>  $parentActions
+     */
+    protected function resolveMediaLibraryAction(array $action, array $parentActions): ?Action
+    {
+        if (! in_array(WithMediaAssets::class, class_uses_recursive($this))) {
+            throw new ActionNotResolvableException('The action [' . $action['name'] . '] cannot be resolved on the current model, because it does not use the ' . WithMediaAssets::class . ' trait.');
+        }
+
+        $resolvedAction = null;
+
+        if (count($parentActions)) {
+            $parentAction = Arr::last($parentActions);
+            $resolvedAction = $parentAction->getModalAction($action['name']) ?? throw new ActionNotResolvableException("Action [{$action['name']}] was not found for action [{$parentAction->getName()}].");
+        } else {
+            $resolvedAction = $this->cachedFlatMediaItemActions[$action['name']] ?? throw new ActionNotResolvableException("Action [{$action['name']}] not found on media library.");
+        }
+
+        if (filled($action['context']['recordKey'] ?? null)) {
+
+            $isBulk = is_array($action['context']['recordKey']);
+
+            $targetAction = $resolvedAction->getRootGroup() ?? $resolvedAction;
+
+            if ($isBulk && $targetAction instanceof ItemBulkAction) {
+                // Skip, resolveAssetRecords is handled in the action itself.
+            } else {
+                $targetAction->record($this->resolveAssetRecord($action['context']['recordKey']));
+            }
+
+        }
+
+        return $resolvedAction;
     }
 }

@@ -10,7 +10,7 @@ class HasRecursiveRelationshipsObserver
     /**
      * Handle the creating event.
      *
-     * @param  \SolutionForest\InspireCms\Support\Base\Models\Interfaces\HasRecursiveRelationshipsInterface  $model
+     * @param  HasRecursiveRelationshipsInterface  $model
      * @return void
      */
     public function creating(HasRecursiveRelationshipsInterface | Model $model)
@@ -25,7 +25,7 @@ class HasRecursiveRelationshipsObserver
     /**
      * Handle the deleting event.
      *
-     * @param  \SolutionForest\InspireCms\Support\Base\Models\Interfaces\HasRecursiveRelationshipsInterface  $model
+     * @param  HasRecursiveRelationshipsInterface  $model
      * @return void
      */
     public function deleting(HasRecursiveRelationshipsInterface | Model $model)
@@ -38,7 +38,7 @@ class HasRecursiveRelationshipsObserver
     /**
      * Handle the forceDeleting event.
      *
-     * @param  \SolutionForest\InspireCms\Support\Base\Models\Interfaces\HasRecursiveRelationshipsInterface  $model
+     * @param  HasRecursiveRelationshipsInterface  $model
      * @return void
      */
     public function forceDeleting(HasRecursiveRelationshipsInterface | Model $model)
@@ -51,7 +51,7 @@ class HasRecursiveRelationshipsObserver
     /**
      * Handle the restoring event.
      *
-     * @param  \SolutionForest\InspireCms\Support\Base\Models\Interfaces\HasRecursiveRelationshipsInterface  $model
+     * @param  HasRecursiveRelationshipsInterface  $model
      * @return void
      */
     public function restoring(HasRecursiveRelationshipsInterface | Model $model)

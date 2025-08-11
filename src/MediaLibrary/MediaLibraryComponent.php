@@ -4,12 +4,15 @@ namespace SolutionForest\InspireCms\Support\MediaLibrary;
 
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
-use Filament\Forms;
-use Filament\Forms\Form;
+use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
+use Filament\Schemas\Schema;
+use Filament\Support\Colors\Color;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Computed;
@@ -17,18 +20,32 @@ use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Livewire\WithPagination;
 use SolutionForest\InspireCms\Support\Helpers\MediaAssetHelper;
+use SolutionForest\InspireCms\Support\MediaLibrary\Actions\DeleteAction;
+use SolutionForest\InspireCms\Support\MediaLibrary\Actions\EditAction;
+use SolutionForest\InspireCms\Support\MediaLibrary\Actions\OpenFolderAction;
+use SolutionForest\InspireCms\Support\MediaLibrary\Actions\RenameAction;
+use SolutionForest\InspireCms\Support\MediaLibrary\Actions\ViewAction;
+use SolutionForest\InspireCms\Support\MediaLibrary\Concerns\HasFilters;
+use SolutionForest\InspireCms\Support\MediaLibrary\Concerns\HasItemBulkActions;
+use SolutionForest\InspireCms\Support\MediaLibrary\Concerns\HasSorts;
+use SolutionForest\InspireCms\Support\MediaLibrary\Concerns\InteractsWithHeaderActions;
+use SolutionForest\InspireCms\Support\MediaLibrary\Concerns\WithMediaAssets;
+use SolutionForest\InspireCms\Support\MediaLibrary\Contracts\HasItemActions;
 use SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset;
+use Throwable;
+
+use function Filament\authorize;
 
 /**
- * @property Form $uploadForm
+ * @property \Filament\Schemas\Schema $uploadForm
  */
-class MediaLibraryComponent extends Component implements Contracts\HasItemActions
+class MediaLibraryComponent extends Component implements HasItemActions, HasItemBulkActions
 {
-    use Concerns\HasFilters;
     use Concerns\HasItemActions;
-    use Concerns\HasSorts;
-    use Concerns\InteractsWithHeaderActions;
-    use Concerns\WithMediaAssets;
+    use HasFilters;
+    use HasSorts;
+    use InteractsWithHeaderActions;
+    use WithMediaAssets;
     use WithPagination;
 
     public array $selectedMediaId = [];
@@ -203,9 +220,19 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
         return $this->parentKey == $folderId;
     }
 
+    public function getSelectedMediaAssets(): Collection
+    {
+        return $this->resolveAssetRecords($this->getSelectedMediaAssetIds());
+    }
+
+    public function getSelectedMediaAssetIds(): array
+    {
+        return $this->selectedMediaId;
+    }
+
     public function hasAnyMediaSelected(): bool
     {
-        return count($this->selectedMediaId) > 0 || $this->toggleMediaId != null;
+        return count($this->getSelectedMediaAssetIds()) > 0 || $this->toggleMediaId != null;
     }
 
     public function resetSelectedMedia(): void
@@ -265,7 +292,7 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
     public function canUpload(): bool
     {
         try {
-            return \Filament\authorize('create', $this->getMediaAssetModel())->allowed();
+            return authorize('create', $this->getMediaAssetModel())->allowed();
         } catch (AuthorizationException $exception) {
             return $exception->toResponse()->allowed();
         }
@@ -306,7 +333,7 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
                 $this->dispatch('$refresh');
             }
 
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             // Skip
         }
     }
@@ -323,10 +350,10 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
                 ->icon(FilamentIcon::resolve('inspirecms::create_folder'))
                 ->modalIcon(FilamentIcon::resolve('inspirecms::create_folder'))
                 ->modalWidth('sm')
-                ->color(\Filament\Support\Colors\Color::Neutral)
+                ->color(Color::Neutral)
                 ->outlined()
-                ->form([
-                    Forms\Components\TextInput::make('title')
+                ->schema([
+                    TextInput::make('title')
                         ->label(__('inspirecms-support::media-library.forms.title.label'))
                         ->validationAttribute(__('inspirecms-support::media-library.forms.title.validation_attribute'))
                         ->required()
@@ -359,14 +386,14 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
     protected function getMediaItemActions(): array
     {
         return [
-            Actions\OpenFolderAction::make()
+            OpenFolderAction::make()
                 ->dispatch('openFolder', fn (?Model $record) => ['mediaId' => $record?->getKey()]),
 
-            Actions\EditAction::make(),
-            Actions\ViewAction::make(),
+            EditAction::make(),
+            ViewAction::make(),
 
-            Actions\RenameAction::make(),
-            Actions\DeleteAction::make(),
+            RenameAction::make(),
+            DeleteAction::make(),
         ];
     }
 
@@ -384,18 +411,18 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
         $action->parentKey(fn () => $this->parentKey);
 
         switch (true) {
-            case $action instanceof Actions\OpenFolderAction:
+            case $action instanceof OpenFolderAction:
                 $action
                     ->visible(fn (?Model $record): bool => $record !== null && $record instanceof MediaAsset && $record->isFolder());
 
                 break;
-            case $action instanceof Actions\RenameAction:
-            case $action instanceof Actions\DeleteAction:
+            case $action instanceof RenameAction:
+            case $action instanceof DeleteAction:
                 $action->after(fn () => $this->clearCache());
 
                 break;
-            case $action instanceof Actions\EditAction:
-            case $action instanceof Actions\ViewAction:
+            case $action instanceof EditAction:
+            case $action instanceof ViewAction:
                 $action
                     ->visible(function (?Model $record): bool {
                         return $record !== null && $record instanceof MediaAsset && ! $record->isFolder();
@@ -408,12 +435,12 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
 
     // region Form
 
-    public function uploadForm(Form $form): Form
+    public function uploadForm(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->columns(1)
             ->statePath('uploadData')
-            ->schema([
+            ->components([
                 MediaAssetHelper::getFileAutoUploadField($this->getParentRecord()?->getKey() ?? $this->getRootLevelParentId()),
             ]);
     }
@@ -468,7 +495,7 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
     public function assets()
     {
         if ($this->isMediaPickerModal() && ! $this->mountedMediaPickerModal) {
-            return new \Illuminate\Pagination\LengthAwarePaginator(
+            return new LengthAwarePaginator(
                 items: collect(),
                 total: 0,
                 perPage: $this->perPage,
@@ -476,7 +503,7 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
         }
 
         /**
-         * @var \Illuminate\Database\Eloquent\Builder $query
+         * @var Builder $query
          */
         $query = $this->getEloquentQuery()
             ->whereParent($this->parentKey)

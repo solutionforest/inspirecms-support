@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Support\Facades;
 
+use Closure;
 use Illuminate\Support\Facades\Facade;
 use SolutionForest\InspireCms\Support\Base\Manifests\MediaLibraryRegistryInterface;
 
@@ -10,7 +11,7 @@ use SolutionForest\InspireCms\Support\Base\Manifests\MediaLibraryRegistryInterfa
  * @method static void setThumbnailCrop(int $width, int $height)
  * @method static void setShouldMapVideoPropertiesWithFfmpeg(bool $condition)
  * @method static void setLimitedMimeTypes(array $limitedMimeTypes)
- * @method static void registerConversionUsing(\Closure $callback, bool $merge = true)
+ * @method static void registerConversionUsing(Closure $callback, bool $merge = true)
  * @method static void setMaxSize(?int $maxSize)
  * @method static void setMinSize(?int $minSize)
  * @method static string getDisk()

@@ -2,12 +2,15 @@
 
 namespace SolutionForest\InspireCms\Support\MediaLibrary\Concerns;
 
-use Filament\Forms;
-use Filament\Forms\Form;
+use Filament\Actions\Action;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Schema;
+use Illuminate\Database\Eloquent\Builder;
 use SolutionForest\InspireCms\Support\MediaLibrary\FilterType;
 
 /**
- * @property Form $filterForm
+ * @property \Filament\Schemas\Schema $filterForm
  */
 trait HasFilters
 {
@@ -33,13 +36,13 @@ trait HasFilters
         return 'filter';
     }
 
-    public function filterForm(Form $form): Form
+    public function filterForm(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->columns(['default' => 1, 'lg' => 2])
             ->extraAttributes(['class' => 'gap-y-2 lg:gap-x-2'])
-            ->schema([
-                Forms\Components\TextInput::make('title')
+            ->components([
+                TextInput::make('title')
                     ->hiddenLabel()
                     ->placeholder(__('inspirecms-support::media-library.filter.title.placeholder'))
                     ->live(false)
@@ -47,14 +50,14 @@ trait HasFilters
                     ->dehydratedWhenHidden()
                     ->extraAttributes(['class' => 'w-full'])
                     ->suffixAction(
-                        Forms\Components\Actions\Action::make('clear')
+                        Action::make('clear')
                             ->label(__('inspirecms-support::media-library.actions.clear.label'))
                             ->color('gray')
                             ->icon('heroicon-o-x-mark')
                             ->action(fn ($component) => $component->state(''))
                             ->after(fn () => $this->clearCache())
                     ),
-                Forms\Components\Select::make('type')
+                Select::make('type')
                     ->hiddenLabel()
                     ->placeholder(__('inspirecms-support::media-library.filter.type.placeholder'))
                     ->options(FilterType::class)
@@ -78,8 +81,8 @@ trait HasFilters
     /**
      * Apply a filter to the given query.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query  The query builder instance.
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param  Builder  $query  The query builder instance.
+     * @return Builder
      */
     protected function applyFilterCriteria($query)
     {

@@ -6,27 +6,31 @@ use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use InvalidArgumentException;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
+use RuntimeException;
 use SolutionForest\InspireCms\Support\Facades\MediaLibraryRegistry;
 use SolutionForest\InspireCms\Support\Helpers\KeyHelper;
 use SolutionForest\InspireCms\Support\Helpers\MediaAssetHelper;
 use SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset;
 use Spatie\MediaLibrary\Conversions\FileManipulator;
+use Spatie\MediaLibrary\MediaCollections\FileAdder;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Throwable;
 
 class MediaAssetService
 {
     /**
      * @return MediaAsset | Model
      *
-     * @throws \Throwable
+     * @throws Throwable
      */
     public static function createMediaAssetFromUrl($url, ?string $parentKey = null)
     {
         try {
             if (! is_string($url) || empty($url)) {
-                throw new \InvalidArgumentException('The URL must be a non-empty string.');
+                throw new InvalidArgumentException('The URL must be a non-empty string.');
             }
 
             DB::beginTransaction();
@@ -34,7 +38,7 @@ class MediaAssetService
             /**
              * @var MediaAsset | Model
              */
-            $mediaAsset = MediaAssetHelper::getMediaAssetModel()::create([ /** @phpstan-ignore-line */
+            $mediaAsset = MediaAssetHelper::getMediaAssetModel()::create([/** @phpstan-ignore-line */
                 'parent_id' => static::ensureParentKeyBeforeCreate($parentKey),
                 'title' => static::getMediaNameFromUrl($url),
             ]);
@@ -47,7 +51,7 @@ class MediaAssetService
 
             return $mediaAsset;
 
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             DB::rollBack();
 
             throw $th;
@@ -67,18 +71,18 @@ class MediaAssetService
     }
 
     /**
-     * @throws \Throwable
+     * @throws Throwable
      */
     protected static function createMediaFromUrl(MediaAsset | Model $mediaAsset, string $url, ?string $name = null)
     {
         $limitedMimeTypes = MediaLibraryRegistry::hasLimitedMimeTypes() ? MediaLibraryRegistry::getLimitedMimeTypes() : [];
         /** @phpstan-ignore-next-line */
         $fileAdder = $mediaAsset
-            ->addMediaFromUrl($url, $limitedMimeTypes) 
+            ->addMediaFromUrl($url, $limitedMimeTypes)
             ->usingName($name ?? static::getMediaNameFromUrl($url));
 
-        if (! $fileAdder instanceof \Spatie\MediaLibrary\MediaCollections\FileAdder) {
-            throw new \RuntimeException('Failed to create FileAdder from URL.');
+        if (! $fileAdder instanceof FileAdder) {
+            throw new RuntimeException('Failed to create FileAdder from URL.');
         }
 
         MediaAssetHelper::validateMediaBeforeAddFromUrl($fileAdder);
@@ -110,7 +114,7 @@ class MediaAssetService
                         'error' => 'Invalid file type. Expected UploadedFile or string (file path).',
                     ];
                 }
-            } catch (\Throwable $th) {
+            } catch (Throwable $th) {
                 $fails[] = [
                     'file' => $file,
                     'error' => $th->getMessage(),
@@ -136,7 +140,7 @@ class MediaAssetService
             /**
              * @var MediaAsset | Model
              */
-            $mediaAsset = MediaAssetHelper::getMediaAssetModel()::create([ /** @phpstan-ignore-line */
+            $mediaAsset = MediaAssetHelper::getMediaAssetModel()::create([/** @phpstan-ignore-line */
                 'parent_id' => static::ensureParentKeyBeforeCreate($parentKey),
                 'title' => static::getMediaNameFromFile($file),
             ]);
@@ -149,7 +153,7 @@ class MediaAssetService
 
             return $mediaAsset;
 
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             DB::rollBack();
 
             throw $th;
@@ -214,7 +218,7 @@ class MediaAssetService
 
             return $mediaAsset;
 
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             DB::rollBack();
 
             throw $th;
@@ -229,7 +233,7 @@ class MediaAssetService
      *
      * @return MediaAsset|Model
      *
-     * @throws \Throwable
+     * @throws Throwable
      */
     public static function updateMediaFromFileWithoutDelete(MediaAsset | Model $mediaAsset, string | UploadedFile $file)
     {
@@ -259,7 +263,7 @@ class MediaAssetService
 
             return $mediaAsset;
 
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             DB::rollBack();
 
             throw $th;
@@ -284,7 +288,7 @@ class MediaAssetService
     }
 
     /**
-     * @throws \Throwable
+     * @throws Throwable
      */
     protected static function validateMediaUpdateWithoutDelete(MediaAsset $originalMediaAsset, $newFile)
     {

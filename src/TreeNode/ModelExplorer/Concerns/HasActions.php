@@ -3,8 +3,9 @@
 namespace SolutionForest\InspireCms\Support\TreeNode\ModelExplorer\Concerns;
 
 use Filament\Actions\Action;
-use Filament\Support\Enums\ActionSize;
+use Filament\Support\Enums\Size;
 use Illuminate\Support\Arr;
+use InvalidArgumentException;
 use SolutionForest\InspireCms\Support\TreeNode\Actions\Action as TreeNodeAction;
 use SolutionForest\InspireCms\Support\TreeNode\Actions\ActionGroup;
 
@@ -54,12 +55,12 @@ trait HasActions
                 $this->mergeCachedFlatActions($flatActions);
 
             } elseif ($action instanceof Action) {
-                $action->defaultSize(ActionSize::Small);
+                $action->defaultSize(Size::Small);
                 $action->defaultView($action::LINK_VIEW);
 
                 $this->cacheAction($action);
             } else {
-                throw new \InvalidArgumentException('The actions must be an instance of ' . Action::class . ' or ' . ActionGroup::class . '.');
+                throw new InvalidArgumentException('The actions must be an instance of ' . Action::class . ' or ' . ActionGroup::class . '.');
             }
 
             $this->actions[] = $action;
@@ -98,30 +99,7 @@ trait HasActions
      */
     public function getAction(string | array $name): null | Action | TreeNodeAction
     {
-        if (is_string($name) && str($name)->contains('.')) {
-            $name = explode('.', $name);
-        }
-
-        if (is_array($name)) {
-            $firstName = array_shift($name);
-            $modalActionNames = $name;
-
-            $name = $firstName;
-        }
-
-        $mountedItemKey = $this->getLivewire()->getMountedTreeNodeItemActionRecord();
-
-        $action = $this->getFlatActions()[$name] ?? null;
-
-        if (! $action) {
-            return null;
-        }
-
-        return $this->getMountableModalActionFromAction(
-            ($action instanceof TreeNodeAction) ? $action->itemKey($mountedItemKey) : $action,
-            modalActionNames: $modalActionNames ?? [],
-            mountedItemKey: $mountedItemKey,
-        );
+        return $this->getFlatActions()[$name] ?? null;
     }
 
     /**
@@ -162,47 +140,5 @@ trait HasActions
                 ...$this->flatActions,
             ];
         }
-    }
-
-    /**
-     * @param  array<string>  $modalActionNames
-     */
-    protected function getMountableModalActionFromAction(Action | TreeNodeAction $action, array $modalActionNames, null | string | int $mountedItemKey = null): null | Action | TreeNodeAction
-    {
-        $arguments = $this->getLivewire()->mountedTreeNodeItemActionsArguments ?? [];
-
-        if (
-            (($actionArguments = array_shift($arguments)) !== null) &&
-            (! $action->hasArguments())
-        ) {
-            $action->arguments($actionArguments);
-        }
-
-        foreach ($modalActionNames as $modalActionName) {
-
-            $action = $action->getMountableModalAction($modalActionName);
-
-            if (! $action) {
-                return null;
-            }
-
-            if ($action instanceof TreeNodeAction) {
-                $action->itemKey($mountedItemKey);
-            }
-
-            if (
-                (($actionArguments = array_shift($arguments)) !== null) &&
-                (! $action->hasArguments())
-            ) {
-                $action->arguments($actionArguments);
-            }
-        }
-
-        /** @phpstan-ignore-next-line */
-        if (! ($action instanceof Action || $action instanceof TreeNodeAction)) {
-            return null;
-        }
-
-        return $action;
     }
 }

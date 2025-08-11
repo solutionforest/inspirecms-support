@@ -2,10 +2,13 @@
 
 namespace SolutionForest\InspireCms\Support\Models\Contracts;
 
+use Carbon\CarbonInterface;
+use Illuminate\Database\Eloquent\Builder;
 use SolutionForest\InspireCms\Support\Base\Models\Interfaces\BelongsToNestableTree;
 use SolutionForest\InspireCms\Support\Base\Models\Interfaces\HasDtoModel;
 use SolutionForest\InspireCms\Support\Base\Models\Interfaces\HasRecursiveRelationshipsInterface;
 use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 /**
  * @property string $id
@@ -17,8 +20,8 @@ use Spatie\MediaLibrary\HasMedia;
  * @property ?string $description
  * @property ?string $author_type
  * @property ?string $author_id
- * @property ?\Carbon\CarbonInterface $created_at
- * @property ?\Carbon\CarbonInterface $updated_at
+ * @property ?CarbonInterface $created_at
+ * @property ?CarbonInterface $updated_at
  *
  * @template TMedia of \Spatie\MediaLibrary\MediaCollections\Models\Media = \Spatie\MediaLibrary\MediaCollections\Models\Media
  */
@@ -101,7 +104,7 @@ interface MediaAsset extends BelongsToNestableTree, HasAuthor, HasDtoModel, HasM
      * This method is used to adjust the properties of the media asset
      * based on the model's attributes and custom properties.
      *
-     * @param  \Spatie\MediaLibrary\MediaCollections\Models\Media  $media
+     * @param  Media  $media
      * @return void
      */
     public function syncMediaProperties($media);
@@ -116,8 +119,8 @@ interface MediaAsset extends BelongsToNestableTree, HasAuthor, HasDtoModel, HasM
     /**
      * Scope a query to only include folders.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param  Builder  $query
+     * @return Builder
      */
     public function scopeFolders($query, bool $condition = true);
 }

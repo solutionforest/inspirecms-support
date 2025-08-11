@@ -2,6 +2,8 @@
 
 namespace SolutionForest\InspireCms\Support\Base\Manifests;
 
+use Closure;
+
 interface MediaLibraryRegistryInterface
 {
     public function setDisk(string $disk): void;
@@ -12,7 +14,7 @@ interface MediaLibraryRegistryInterface
 
     public function setLimitedMimeTypes(array $limitedMimeTypes): void;
 
-    public function registerConversionUsing(\Closure $callback, bool $merge = true): void;
+    public function registerConversionUsing(Closure $callback, bool $merge = true): void;
 
     public function setMaxSize(?int $maxSize): void;
 

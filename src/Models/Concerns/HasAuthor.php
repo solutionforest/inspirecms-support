@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Support\Models\Concerns;
 
+use Exception;
 use SolutionForest\InspireCms\Support\Facades\ResolverRegistry;
 use SolutionForest\InspireCms\Support\Resolvers\UserResolverInterface;
 
@@ -30,7 +31,7 @@ trait HasAuthor
         $resolver = ResolverRegistry::get(UserResolverInterface::class);
 
         if (! $resolver instanceof UserResolverInterface) {
-            throw new \Exception('User resolver must implement ' . UserResolverInterface::class);
+            throw new Exception('User resolver must implement ' . UserResolverInterface::class);
         }
 
         return $resolver->resolve($this);

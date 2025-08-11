@@ -165,6 +165,12 @@ return [
                 'error' => [
                     'title' => '删除失败',
                 ],
+                'deleted_partial' => [
+                    'title' => '已删除 :count 项中的 :total',
+                ],
+                'deleted_none' => [
+                    'title' => '删除失败',
+                ],
             ],
         ],
         'edit' => [

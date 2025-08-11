@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms\Support\TreeNode\ModelExplorer\Concerns;
 
 use Closure;
+use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
@@ -54,7 +55,6 @@ trait HasModelItems
     }
 
     /**
-     * @param string|int $parentKey
      * @return Collection<int, Model>
      */
     public function getChildren(string | int $parentKey)
@@ -70,24 +70,25 @@ trait HasModelItems
 
     /**
      * @phpstan-ignore-next-line missingType.generic
+     *
      * @return Builder
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function getModelExplorerQuery()
     {
         $model = $this->getModel();
 
         if (empty($model)) {
-            throw new \Exception('Model not configured: Please set up the model for the ModelExplorer.');
+            throw new Exception('Model not configured: Please set up the model for the ModelExplorer.');
         }
 
         if (is_null($this->determineItemTitleUsing)) {
-            throw new \Exception('Record label not configured: Please set up the record label for the ModelExplorer.');
+            throw new Exception('Record label not configured: Please set up the record label for the ModelExplorer.');
         }
 
         if (is_null($this->determineItemHasChildrenUsing)) {
-            throw new \Exception('Record has children not configured: Please set up the record has children for the ModelExplorer.');
+            throw new Exception('Record has children not configured: Please set up the record has children for the ModelExplorer.');
         }
 
         $query = $model::query();
@@ -194,7 +195,7 @@ trait HasModelItems
     }
 
     /**
-     * @param array<string, mixed> $items
+     * @param  array<string, mixed>  $items
      * @return array<string, mixed>
      */
     public function mutuateRootNodeItems(array $items): array
@@ -285,8 +286,7 @@ trait HasModelItems
     }
 
     /**
-     * @param array<string,mixed> $item
-     * @return mixed
+     * @param  array<string,mixed>  $item
      */
     public function getNodeItemKey(array $item): mixed
     {
@@ -303,7 +303,7 @@ trait HasModelItems
     }
 
     /**
-     * @param array<string, mixed> $item
+     * @param  array<string, mixed>  $item
      * @return array<string, mixed>
      */
     public function getNodeItemArguments(array $item): array
@@ -312,9 +312,7 @@ trait HasModelItems
     }
 
     /**
-     * @param array<string,mixed> $item
-     * @param ?string $locale
-     * @return ?string
+     * @param  array<string,mixed>  $item
      */
     public function getTitleForItem(array $item, ?string $locale = null): ?string
     {

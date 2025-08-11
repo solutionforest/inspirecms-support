@@ -11,7 +11,13 @@ use Filament\View\PanelsRenderHook;
 use Illuminate\Database\Schema\Blueprint;
 use Livewire\Features\SupportTesting\Testable;
 use Livewire\Livewire;
-use SolutionForest\InspireCms\Support\Base\Manifests;
+use SolutionForest\InspireCms\Support\Base\Manifests\MediaLibraryRegistry;
+use SolutionForest\InspireCms\Support\Base\Manifests\MediaLibraryRegistryInterface;
+use SolutionForest\InspireCms\Support\Base\Manifests\ModelRegistry;
+use SolutionForest\InspireCms\Support\Base\Manifests\ModelRegistryInterface;
+use SolutionForest\InspireCms\Support\Base\Manifests\ResolverRegistry;
+use SolutionForest\InspireCms\Support\Base\Manifests\ResolverRegistryInterface;
+use SolutionForest\InspireCms\Support\Macros\BlueprintMarcos;
 use SolutionForest\InspireCms\Support\MediaLibrary\Contracts\MediaLibraryPage;
 use SolutionForest\InspireCms\Support\MediaLibrary\FolderBrowserComponent;
 use SolutionForest\InspireCms\Support\MediaLibrary\MediaDetailComponent;
@@ -57,11 +63,11 @@ class InspireCmsSupportServiceProvider extends PackageServiceProvider
 
     public function packageRegistered(): void
     {
-        $this->app->singleton(Manifests\ModelRegistryInterface::class, fn () => $this->app->make(Manifests\ModelRegistry::class));
-        $this->app->singleton(Manifests\MediaLibraryRegistryInterface::class, fn () => $this->app->make(Manifests\MediaLibraryRegistry::class));
-        $this->app->singleton(Manifests\ResolverRegistryInterface::class, fn () => $this->app->make(Manifests\ResolverRegistry::class));
+        $this->app->singleton(ModelRegistryInterface::class, fn () => $this->app->make(ModelRegistry::class));
+        $this->app->singleton(MediaLibraryRegistryInterface::class, fn () => $this->app->make(MediaLibraryRegistry::class));
+        $this->app->singleton(ResolverRegistryInterface::class, fn () => $this->app->make(ResolverRegistry::class));
 
-        Blueprint::mixin(new \SolutionForest\InspireCms\Support\Macros\BlueprintMarcos);
+        Blueprint::mixin(new BlueprintMarcos);
 
         // Media library config START
         FileAdder::macro('getFile', function () {

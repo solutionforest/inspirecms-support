@@ -2,8 +2,8 @@
 
 namespace SolutionForest\InspireCms\Support\MediaLibrary\Actions;
 
-use Filament\Infolists\Components\Grid;
 use Filament\Infolists\Components\TextEntry;
+use Filament\Schemas\Components\Grid;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Support\Helpers\MediaAssetHelper;
@@ -33,7 +33,7 @@ class ViewAction extends ItemAction
         $this->groupedIcon(FilamentIcon::resolve('inspirecms::view'));
 
         $this
-            ->infolist([
+            ->schema([
                 TextEntry::make('file')
                     ->label(__('inspirecms-support::media-library.forms.file.label'))
                     ->inlineLabel()

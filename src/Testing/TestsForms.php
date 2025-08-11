@@ -3,7 +3,6 @@
 namespace SolutionForest\InspireCms\Support\Testing;
 
 use Closure;
-use Filament\Forms\ComponentContainer;
 use Filament\Forms\Contracts\HasForms;
 use Livewire\Features\SupportTesting\Testable;
 
@@ -21,7 +20,7 @@ class TestsForms
 
             $livewire = $this->instance();
 
-            /** @var ComponentContainer $form */
+            /** @var \Filament\Schemas\Schema $form */
             $form = $livewire->{$formName};
 
             if ($args instanceof Closure) {

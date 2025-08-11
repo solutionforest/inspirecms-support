@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Support\TreeNode\Actions\Concerns;
 
+use Exception;
 use SolutionForest\InspireCms\Support\TreeNode\Actions\ActionGroup;
 use SolutionForest\InspireCms\Support\TreeNode\Contracts\TreeNode;
 
@@ -25,7 +26,7 @@ trait BelongsToTreeNode
         $group = $this->getGroup();
 
         if ($group && ! ($group instanceof ActionGroup)) {
-            throw new \Exception('This action does not belong to a tree node.');
+            throw new Exception('This action does not belong to a tree node.');
         }
 
         return $group?->getTreeNode();

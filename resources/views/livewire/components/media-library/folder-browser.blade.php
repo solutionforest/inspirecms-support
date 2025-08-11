@@ -12,12 +12,10 @@
 
                 $actions = $this->getCachedMediaItemActions();
             @endphp
-            <div 
-                @class([
-                    'folder-item',
-                    'selected' => $isSeleted,
-                ])
-            >
+            <div @class([
+                'folder-item',
+                'selected' => $isSeleted,
+            ])>
                 <x-inspirecms-support::media-library.thumbnail-icon 
                     :icon="$mediaItem->getThumbnail()" 
                     class="icon"

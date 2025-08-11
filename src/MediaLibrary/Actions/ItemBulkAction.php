@@ -2,15 +2,21 @@
 
 namespace SolutionForest\InspireCms\Support\MediaLibrary\Actions;
 
-use Closure;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Js;
+use Illuminate\Support\LazyCollection;
+use SolutionForest\InspireCms\Support\MediaLibrary\Concerns\HasItemBulkActions;
 
 class ItemBulkAction extends Action
 {
-    protected EloquentCollection | Collection | array | Closure | null $records = null;
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->bulk();
+        $this->accessSelectedRecords();
+    }
 
     public function getLivewireClickHandler(): ?string
     {
@@ -31,8 +37,8 @@ class ItemBulkAction extends Action
 
     protected function generateJavaScriptClickHandler(string $method): ?string
     {
-        if ($selectedRecords = $this->getRecords()) {
-            $recordKeys = Js::from(collect($selectedRecords)->map(fn ($record) => $record instanceof Model ? $record->getKey() : $record)->all());
+        if ($this->canAccessSelectedRecords() && ($livewire = $this->getLivewire()) && $livewire instanceof HasItemBulkActions) {
+            $recordKeys = Js::from(collect($livewire->getSelectedMediaAssetIds()));
 
             return "{$method}('{$this->getName()}', {$recordKeys})";
         }
@@ -40,37 +46,13 @@ class ItemBulkAction extends Action
         return null;
     }
 
-    /**
-     * @return array<mixed>
-     */
-    protected function resolveDefaultClosureDependencyForEvaluationByName(string $parameterName): array
+    public function getSelectedRecords(): EloquentCollection | Collection | LazyCollection
     {
-        return match ($parameterName) {
-            'records' => [$this->getRecords()],
-            default => parent::resolveDefaultClosureDependencyForEvaluationByName($parameterName),
-        };
-    }
+        $livewire = $this->getLivewire();
+        if ($this->canAccessSelectedRecords() && $livewire instanceof HasItemBulkActions) {
+            return $livewire->getSelectedMediaAssets();
+        }
 
-    /**
-     * @return array<mixed>
-     */
-    protected function resolveDefaultClosureDependencyForEvaluationByType(string $parameterType): array
-    {
-        return match ($parameterType) {
-            EloquentCollection::class, Collection::class => [$this->getRecords()],
-            default => parent::resolveDefaultClosureDependencyForEvaluationByType($parameterType),
-        };
-    }
-
-    public function records(EloquentCollection | Collection | array | Closure | null $records): static
-    {
-        $this->records = $records;
-
-        return $this;
-    }
-
-    public function getRecords(): EloquentCollection | Collection | array | null
-    {
-        return $this->records = $this->evaluate($this->records);
+        return parent::getSelectedRecords();
     }
 }

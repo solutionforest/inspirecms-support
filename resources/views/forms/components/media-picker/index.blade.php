@@ -1,6 +1,7 @@
 @php
     $statePath = $getStatePath();
     $id = $getId();
+    $key = $getKey();
     $isDisabled = $isDisabled();
 
     $limitedStateCount = $getLimitDisplay();
@@ -38,7 +39,7 @@
         let isSave = $event.detail?.save ?? false;
 
         if (isSave === true) {
-            $wire.dispatchFormEvent('mediaPicker::select', '{{ $statePath }}', $event.detail?.data?.selected)
+            $wire.callSchemaComponentMethod(@js($getKey()), 'updateSelected', $event.detail?.data?.selected)
         }
     "
     x-on:open-modal.window="
@@ -115,7 +116,7 @@
 
         <div class="flex gap-2">
             @if (! $isDisabled)
-                <x-filament::button color="gray" x-on:click="$wire.dispatchFormEvent('mediaPicker::clearSelected', '{{ $statePath }}')">
+                <x-filament::button color="gray" x-on:click="$wire.callSchemaComponentMethod('{{ $key }}', 'clearSelected')">
                     {{ __('inspirecms-support::media-library.buttons.clear.label') }}
                 </x-filament::button>
                 <x-filament::button x-on:click="$dispatch('open-modal', { id: '{{ $modalId }}', statePath: '{{ $statePath }}' })">

@@ -2,22 +2,28 @@
 
 namespace SolutionForest\InspireCms\Support\Models;
 
+use Exception;
 use FFMpeg\FFMpeg;
+use Filament\Models\Contracts\HasName;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Support\Facades\Storage;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
+use SolutionForest\InspireCms\Support\Dtos\MediaAssetDto;
 use SolutionForest\InspireCms\Support\Facades\MediaLibraryRegistry;
 use SolutionForest\InspireCms\Support\Helpers\KeyHelper;
 use SolutionForest\InspireCms\Support\Helpers\MediaAssetHelper;
+use SolutionForest\InspireCms\Support\Models\Concerns\BelongsToNestableTree;
+use SolutionForest\InspireCms\Support\Models\Concerns\HasAuthor;
+use SolutionForest\InspireCms\Support\Models\Concerns\HasRecursiveRelationships;
 use SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset as MediaAssetContract;
 use Spatie\Image\Enums\Fit;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
 class MediaAsset extends BaseModel implements MediaAssetContract
 {
-    use Concerns\BelongsToNestableTree;
-    use Concerns\HasAuthor;
-    use Concerns\HasRecursiveRelationships;
+    use BelongsToNestableTree;
+    use HasAuthor;
+    use HasRecursiveRelationships;
     use HasUuids;
     use InteractsWithMedia;
 
@@ -193,7 +199,7 @@ class MediaAsset extends BaseModel implements MediaAssetContract
     public function getUploadedByAttribute()
     {
         if (($author = $this->author)) {
-            if ($author instanceof \Filament\Models\Contracts\HasName) {
+            if ($author instanceof HasName) {
                 return $author->getFilamentName();
             }
             if (method_exists($author, 'getFullName')) {
@@ -219,7 +225,7 @@ class MediaAsset extends BaseModel implements MediaAssetContract
     // region Dto
     public static function getDtoClass()
     {
-        return \SolutionForest\InspireCms\Support\Dtos\MediaAssetDto::class;
+        return MediaAssetDto::class;
     }
 
     public function toDto(...$args)
@@ -277,7 +283,7 @@ class MediaAsset extends BaseModel implements MediaAssetContract
                 $videoPath = $media->getPath();
                 $customProperties = static::getPropertiesForVideo($videoPath, $customProperties);
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $shouldRetry = true;
         }
 
@@ -296,7 +302,7 @@ class MediaAsset extends BaseModel implements MediaAssetContract
                 $customProperties['height'] = imagesy($im) ?? null;
                 $customProperties['dimensions'] = "{$customProperties['width']}x{$customProperties['height']}";
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw $e;
         }
 
