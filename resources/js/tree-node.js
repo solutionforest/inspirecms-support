@@ -13,11 +13,19 @@ const TreeNode = ({
             this.selected = this.selected || [];
             this.$watch('expanded', (value) => {
                 // Ensure expanded is always an array
-                this.expanded = Array.isArray(value) ? value : (Array.from(value) || []);
+                if (value) {
+                    this.expanded = Array.isArray(value) ? value : (Array.from(value) || []);
+                } else {
+                    this.expanded = [];
+                }
             });
             this.$watch('selected', (value) => {
                 // Ensure selected is always an array
-                this.selected = Array.isArray(value) ? value : (Array.from(value) || []);
+                if (value) {
+                    this.selected = Array.isArray(value) ? value : (Array.from(value) || []);
+                } else {
+                    this.selected = [];
+                }
             });
         },
 
