@@ -2,6 +2,11 @@
 
 All notable changes to `inspirecms-support` will be documented in this file.
 
+## Sync version with core - 2025-08-19
+
+<!-- Release notes generated using configuration in .github/release.yml at 1.x -->
+**Full Changelog**: https://github.com/solutionforest/inspirecms-support/compare/1.2.0...1.2.1
+
 ## 1.2.0 - 2025-08-13
 
 ### Sync version with core
@@ -20,6 +25,7 @@ All notable changes to `inspirecms-support` will be documented in this file.
 
 ```bash
 composer require solution-forest/inspirecms-support:^1.1.3
+
 
 
 ```
