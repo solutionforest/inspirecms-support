@@ -510,8 +510,7 @@ class MediaLibraryComponent extends Component implements Contracts\HasItemAction
             ->withCount('children')
             ->whereParent($this->parentRecord->getParentId())
             ->folders()
-            ->get()
-            ->collect();
+            ->get();
     }
     // endregion Computed
 
