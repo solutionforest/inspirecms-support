@@ -2,6 +2,20 @@
 
 All notable changes to `inspirecms-support` will be documented in this file.
 
+## 1.2.2 - 2025-08-20
+
+### What's Changed in 1.2.2
+
+#### 🐛 Bug Fixes
+
+- [fix](fix: Missing "children count" on Folder Browser section)
+
+### Installation
+
+```bash
+composer require solution-forest/inspirecms-support:^1.2.2
+
+```
 ## Sync version with core - 2025-08-19
 
 <!-- Release notes generated using configuration in .github/release.yml at 1.x -->
@@ -25,6 +39,7 @@ All notable changes to `inspirecms-support` will be documented in this file.
 
 ```bash
 composer require solution-forest/inspirecms-support:^1.1.3
+
 
 
 
