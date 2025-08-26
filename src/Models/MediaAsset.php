@@ -27,7 +27,7 @@ class MediaAsset extends BaseModel implements MediaAssetContract
     use HasUuids;
     use InteractsWithMedia;
 
-    protected $guarded = ['id'];
+    protected $guarded = [];
 
     protected $casts = [
         'is_folder' => 'boolean',
