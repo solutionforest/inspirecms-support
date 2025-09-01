@@ -74,7 +74,7 @@ trait ModelExplorerBase
 
         // search deeper
         foreach ($nodes as &$node) {
-            if (! isset($node['children']) || ! is_array($node['children']) || empty($node['children'])) {
+            if (! is_array($node['children']) || empty($node['children'])) {
                 continue;
             }
 

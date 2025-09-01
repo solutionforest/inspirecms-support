@@ -2,6 +2,75 @@
 
 All notable changes to `inspirecms-support` will be documented in this file.
 
+## 1.2.3 - 2025-08-20
+
+<!-- Release notes generated using configuration in .github/release.yml at 1.x -->
+**Full Changelog**: https://github.com/solutionforest/inspirecms-support/compare/1.2.2...1.2.3
+
+## 1.2.2 - 2025-08-20
+
+### What's Changed in 1.2.2
+
+#### 🐛 Bug Fixes
+
+- [fix](fix: Missing "children count" on Folder Browser section)
+
+### Installation
+
+```bash
+composer require solution-forest/inspirecms-support:^1.2.2
+
+
+```
+## Sync version with core - 2025-08-19
+
+<!-- Release notes generated using configuration in .github/release.yml at 1.x -->
+**Full Changelog**: https://github.com/solutionforest/inspirecms-support/compare/1.2.0...1.2.1
+
+## 1.2.0 - 2025-08-13
+
+### Sync version with core
+
+**Full Changelog**: https://github.com/solutionforest/inspirecms-support/compare/1.1.3...1.2.0
+
+## 1.1.3 - 2025-08-12
+
+### What's Changed in 1.1.3
+
+#### 🐛 Bug Fixes
+
+- Fix tree-node javascript
+
+### Installation
+
+```bash
+composer require solution-forest/inspirecms-support:^1.1.3
+
+
+
+
+
+```
+## 1.1.2 - 2025-08-11
+
+<!-- Release notes generated using configuration in .github/release.yml at 1.x -->
+### Sync version with core
+
+**Full Changelog**: https://github.com/solutionforest/inspirecms-support/compare/1.1.1...1.1.2
+
+## 1.1.1 - 2025-08-06
+
+<!-- Release notes generated using configuration in .github/release.yml at 1.x -->
+### Sync version with core
+
+### What's Changed
+
+#### Other Changes
+
+* Bump aglipanci/laravel-pint-action from 2.5 to 2.6 by @dependabot[bot] in https://github.com/solutionforest/inspirecms-support/pull/7
+
+**Full Changelog**: https://github.com/solutionforest/inspirecms-support/compare/1.1.0...1.1.1
+
 ## 1.1.0 - 2025-07-23
 
 <!-- Release notes generated using configuration in .github/release.yml at 1.x -->

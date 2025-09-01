@@ -22,6 +22,13 @@ class FolderBrowserComponent extends Component implements HasItemActions
     #[Reactive]
     public $parentKey;
 
+    public function boot()
+    {
+        if ($this->folders && $this->folders instanceof \Illuminate\Database\Eloquent\Collection) {
+            $this->folders->loadCount('children');
+        }
+    }
+
     public function placeholder()
     {
         return view('inspirecms-support::components.media-library.loading-section', [
