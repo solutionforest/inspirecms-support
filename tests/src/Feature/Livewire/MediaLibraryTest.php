@@ -36,9 +36,9 @@ test('can upload media', function () {
             ],
         ], FORM_NAMES_UPLOAD)
         ->dispatchFormFieldEvent(
-            'autoupload-file--start-upload',
-            fn ($form, $state) => [
-                collect($form->getComponents())->firstWhere(fn ($c) => $c->getName() == 'files')?->getStatePath(),
+            'startUpload',
+            fn ($schema, $state) => [
+                collect($schema->getComponents())->firstWhere(fn ($c) => $c->getName() == 'files')?->getKey(),
                 $uuid,
             ],
             FORM_NAMES_UPLOAD
@@ -162,9 +162,9 @@ test('can create a media with folder', function () {
             ],
         ], FORM_NAMES_UPLOAD)
         ->dispatchFormFieldEvent(
-            'autoupload-file--start-upload',
+            'startUpload',
             fn ($form, $state) => [
-                collect($form->getComponents())->firstWhere(fn ($c) => $c->getName() == 'files')?->getStatePath(),
+                collect($form->getComponents())->firstWhere(fn ($c) => $c->getName() == 'files')?->getKey(),
                 $uuid,
             ],
             FORM_NAMES_UPLOAD

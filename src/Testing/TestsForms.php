@@ -4,6 +4,7 @@ namespace SolutionForest\InspireCms\Support\Testing;
 
 use Closure;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Schemas\Schema;
 use Livewire\Features\SupportTesting\Testable;
 
 /**
@@ -13,21 +14,26 @@ use Livewire\Features\SupportTesting\Testable;
  */
 class TestsForms
 {
-    public function dispatchFormFieldEvent()
+    public function dispatchFormFieldEvent(): Closure
     {
-        return function (string $event, Closure | array $args = [], string $formName = 'form') {
-            $this->assertFormExists($formName);
+        return function (string $event, Closure | array $args = [], ?string $schema = null): static {
 
-            $livewire = $this->instance();
+            $schema ??= $this->instance()->getDefaultTestingSchemaName();
 
-            /** @var \Filament\Schemas\Schema $form */
-            $form = $livewire->{$formName};
+            /** @phpstan-ignore-next-line */
+            $this->assertSchemaExists($schema);
+
+            /** @var Schema $schemaInstance */
+            $schemaInstance = $this->instance()->{$schema};
 
             if ($args instanceof Closure) {
-                $args = $args($form, $form->getRawState());
+                $args = $args($schemaInstance, $schemaInstance->getRawState());
             }
 
-            $this->call('dispatchFormEvent', $event, ...$args);
+            $fieldKey = $args[0];
+            array_shift($args);
+            
+            $this->call('callSchemaComponentMethod', $fieldKey, $event, $args);
 
             return $this;
         };
