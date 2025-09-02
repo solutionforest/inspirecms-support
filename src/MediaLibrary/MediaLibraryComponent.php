@@ -458,7 +458,7 @@ class MediaLibraryComponent extends Component implements HasItemActions, HasItem
             'uploadForm' => 'uploadData',
             'filterForm' => $this->getFilterFormStatePath(),
             'sortForm' => $this->getSortFormStatePath(),
-            default => $this->getFormStatePath(),
+            default => 'form',
         };
     }
 
