@@ -3,6 +3,6 @@
 namespace SolutionForest\InspireCms\Support\MediaLibrary\Contracts;
 
 use Filament\Actions\Contracts\HasActions;
-use Filament\Forms\Contracts\HasForms;
+use Filament\Schemas\Contracts\HasSchemas;
 
-interface HasItemActions extends HasActions, HasForms {}
+interface HasItemActions extends HasActions, HasSchemas {}

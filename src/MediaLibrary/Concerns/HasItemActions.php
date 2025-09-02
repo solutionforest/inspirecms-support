@@ -8,6 +8,7 @@ use Filament\Actions\ActionGroup;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Exceptions\ActionNotResolvableException;
 use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Illuminate\Support\Arr;
 use InvalidArgumentException;
 use SolutionForest\InspireCms\Support\MediaLibrary\Actions;
@@ -18,7 +19,7 @@ trait HasItemActions
     use InteractsWithActions {
         resolveAction as baseResolveAction;
     }
-    use InteractsWithForms;
+    use InteractsWithSchemas;
 
     /**
      * @var array<string, Actions\Action>
