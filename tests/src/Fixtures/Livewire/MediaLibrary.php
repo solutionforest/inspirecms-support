@@ -10,7 +10,7 @@ class MediaLibrary extends MediaLibraryComponent
     {
         parent::mount();
 
-        $this->setErrorBag(new \Illuminate\Support\MessageBag());
+        $this->setErrorBag(new \Illuminate\Support\MessageBag);
     }
 
     public function getErrorBag()
@@ -18,7 +18,7 @@ class MediaLibrary extends MediaLibraryComponent
         $bag = parent::getErrorBag();
 
         if (is_null($bag)) {
-            $bag = new \Illuminate\Support\MessageBag();
+            $bag = new \Illuminate\Support\MessageBag;
             $this->setErrorBag($bag);
         }
 

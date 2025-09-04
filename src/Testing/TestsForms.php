@@ -32,7 +32,7 @@ class TestsForms
 
             $fieldKey = $args[0];
             array_shift($args);
-            
+
             $this->call('callSchemaComponentMethod', $fieldKey, $event, $args);
 
             return $this;
