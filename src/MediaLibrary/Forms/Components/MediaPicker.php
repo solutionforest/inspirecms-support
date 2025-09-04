@@ -67,7 +67,7 @@ class MediaPicker extends Field
             } catch (Throwable $th) {
                 $state = [];
             }
-            $component->state($state);
+            $component->rawState($state);
         });
 
         $this->afterStateUpdated(function (MediaPicker $component) {
@@ -98,7 +98,7 @@ class MediaPicker extends Field
     #[ExposedLivewireMethod]
     public function clearSelected()
     {
-        $this->state([]);
+        $this->rawState([]);
     }
 
     #[ExposedLivewireMethod]
@@ -106,7 +106,7 @@ class MediaPicker extends Field
     {
         $state = $this->getCachedSelectedAssets($assetIds)->keys()->all();
 
-        $this->state($state);
+        $this->rawState($state);
     }
 
     public function max(int | Closure | null $max): static

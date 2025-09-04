@@ -31,16 +31,13 @@
     x-data="{ 
         state: $wire.{{ $applyStateBindingModifiers("\$entangle('{$getStatePath()}')") }} 
     }"
-    x-on:close-modal.window="
-        if ($event.detail.id !== @js($modalId) || $event.detail.statePath != @js($statePath)) {
-            return;
-        }
+    x-on:update-media-picker-selection.window="
+            
+        $wire.callSchemaComponentMethod(@js($key), 'updateSelected', { assetIds: $event.detail?.data?.selected || [] })
 
-        let isSave = $event.detail?.save ?? false;
-
-        if (isSave === true) {
-            $wire.callSchemaComponentMethod(@js($getKey()), 'updateSelected', $event.detail?.data?.selected)
-        }
+        $dispatch('close-modal', { 
+            id: @js($modalId),
+        });
     "
     x-on:open-modal.window="
         if ($event.detail.id !== @js($modalId) || $event.detail.statePath !== @js($statePath)) {
@@ -50,6 +47,7 @@
         $dispatch('media-picker-setup', { 
             selected: state,
             statePath: @js($statePath),
+            key: @js($key),
             config: @js($mediaPickerModalConfig),
         });
     "
@@ -119,7 +117,7 @@
                 <x-filament::button color="gray" x-on:click="$wire.callSchemaComponentMethod('{{ $key }}', 'clearSelected')">
                     {{ __('inspirecms-support::media-library.buttons.clear.label') }}
                 </x-filament::button>
-                <x-filament::button x-on:click="$dispatch('open-modal', { id: '{{ $modalId }}', statePath: '{{ $statePath }}' })">
+                <x-filament::button x-on:click="$dispatch('open-modal', { id: '{{ $modalId }}', key: '{{ $key }}', statePath: '{{ $statePath }}' })">
                     {{ __('inspirecms-support::media-library.buttons.select.label') }}
                 </x-filament::button>
             @endif

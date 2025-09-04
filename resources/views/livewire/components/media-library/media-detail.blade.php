@@ -1,6 +1,5 @@
 @php
     $actions = $this->getCachedMediaItemActions();
-    ray($actions)->label('Media Item Actions');
     $mediaItemForActions = collect($this->selectedMediaId);
 @endphp
 

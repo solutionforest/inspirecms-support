@@ -16,12 +16,14 @@
     x-init="() => {
         this.selected = [];
         this.formStatePath = false;
+        this.formKey = false;
         this.modalInitialized = false;
     }"
     x-on:media-picker-setup.window="(event) => {
 
         this.selected = event.detail.selected ?? [];
         this.formStatePath = event.detail.statePath ?? '';
+        this.formKey = event.detail.key ?? null;
         this.modalInitialized = false;
 
         $dispatch('media-picker-modal:init', { config: event.detail?.config ?? [] });
@@ -39,10 +41,10 @@
     />
 
     <x-slot name="footerActions">
-        <x-filament::button x-on:click="$dispatch('close-modal', { id: '{{ $modalId }}', save: true, statePath: this.formStatePath, data: { selected: this.selected } })">
+        <x-filament::button x-on:click="$dispatch('update-media-picker-selection', { id: '{{ $modalId }}', save: true, key: this.formKey, statePath: this.formStatePath, data: { selected: this.selected } })">
             {{ __('inspirecms-support::media-library.buttons.select.label') }}
         </x-filament::button>
-        <x-filament::button color="gray" x-on:click="$dispatch('close-modal', { id: '{{ $modalId }}', save: false, statePath: this.formStatePath })">
+        <x-filament::button color="gray" x-on:click="$dispatch('close-modal', { id: '{{ $modalId }}', save: false, key: this.formKey, statePath: this.formStatePath })">
             {{ __('inspirecms-support::media-library.buttons.cancel.label') }}
         </x-filament::button>
     </x-slot>
