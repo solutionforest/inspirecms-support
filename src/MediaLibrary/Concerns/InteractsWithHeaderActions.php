@@ -35,7 +35,6 @@ trait InteractsWithHeaderActions
                 $flatActions = $action->getFlatActions();
 
                 $this->mergeCachedActions($flatActions);
-                $this->cachedHeaderActions[] = $action;
 
                 continue;
             }
@@ -45,16 +44,7 @@ trait InteractsWithHeaderActions
             }
 
             $this->cacheAction($action);
-            $this->cachedHeaderActions[] = $action;
         }
-    }
-
-    /**
-     * @return array<Action | ActionGroup>
-     */
-    public function getCachedHeaderActions(): array
-    {
-        return $this->cachedHeaderActions;
     }
 
     /**

@@ -378,7 +378,7 @@ class MediaLibraryComponent extends Component implements HasItemActions, HasItem
 
     public function getVisibleHeaderActions(): array
     {
-        return collect($this->getCachedHeaderActions())
+        return collect($this->getHeaderActions())
             ->filter(fn (Action | ActionGroup $action) => $action->isVisible())
             ->all();
     }
