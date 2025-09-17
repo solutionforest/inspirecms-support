@@ -14,37 +14,50 @@
     class="media-library-browser-modal-content"
     display-classes="block"
     x-init="() => {
-        this.selected = [];
-        this.formStatePath = false;
+        this.selectedMediaAssets = [];
         this.formKey = false;
-        this.modalInitialized = false;
     }"
-    x-on:media-picker-setup.window="(event) => {
+    x-on:x-media-picker-modal-setup.window="
+        if ($event?.detail?.modalId == '{{ $modalId }}') {
 
-        this.selected = event.detail.selected ?? [];
-        this.formStatePath = event.detail.statePath ?? '';
-        this.formKey = event.detail.key ?? null;
-        this.modalInitialized = false;
+            this.selectedMediaAssets = $event?.detail?.selected ?? [];
+            this.formKey = $event?.detail?.key ?? null;
 
-        $dispatch('media-picker-modal:init', { config: event.detail?.config ?? [] });
-    }"
-    x-on:media-picker-modal-setup-complete="() => {
-        this.modalInitialized = true;
-    }"
+            // Update setting on livewire component
+            $dispatch('media-library:modal-setup', { 
+                config: $event?.detail?.config ?? [],
+            });
+
+            if ($event.detail?.openModal ?? false) {
+                open();
+            }
+        }
+    "
 >
     <x-slot name="heading">
         {{ __('inspirecms-support::media-library.buttons.select.heading') }}
     </x-slot>
 
     <livewire:inspirecms-support::media-library
-        is-modal-picker="true"
+        lazy
+        :isModalPicker="true"
     />
 
     <x-slot name="footerActions">
-        <x-filament::button x-on:click="$dispatch('update-media-picker-selection', { id: '{{ $modalId }}', save: true, key: this.formKey, statePath: this.formStatePath, data: { selected: this.selected } })">
+        <x-filament::button x-on:click="
+            $dispatch(
+                'update-media-picker-selection', 
+                { 
+                    id: '{{ $modalId }}', 
+                    key: this.formKey, 
+                    data: this.selectedMediaAssets 
+                }
+            );
+            close();
+        ">
             {{ __('inspirecms-support::media-library.buttons.select.label') }}
         </x-filament::button>
-        <x-filament::button color="gray" x-on:click="$dispatch('close-modal', { id: '{{ $modalId }}', save: false, key: this.formKey, statePath: this.formStatePath })">
+        <x-filament::button color="gray" x-on:click="close()">
             {{ __('inspirecms-support::media-library.buttons.cancel.label') }}
         </x-filament::button>
     </x-slot>

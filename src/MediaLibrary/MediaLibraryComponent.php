@@ -13,10 +13,13 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Locked;
+use Livewire\Attributes\On;
+use Livewire\Attributes\Renderless;
 use Livewire\Component;
 use Livewire\WithPagination;
 use SolutionForest\InspireCms\Support\Helpers\MediaAssetHelper;
@@ -66,11 +69,11 @@ class MediaLibraryComponent extends Component implements HasItemActions, HasItem
     #[Locked]
     public bool $isModalPicker = false;
 
-    public bool $mountedMediaPickerModal = false;
-
     public array $formConfig = [];
 
     public array $uploadData = [];
+
+    public array $modalConfig = [];
 
     /**
      * @var Collection
@@ -84,7 +87,7 @@ class MediaLibraryComponent extends Component implements HasItemActions, HasItem
         'moveMediaItem',
         'resetMediaLibrary' => 'resetAll',
         'clearMediaLibraryCache' => 'clearCache',
-        'media-picker-modal:init' => 'initializeMediaLibraryPickerModal',
+        // 'media-picker-modal:init' => 'setUpModalConfig',
         'autoupload-file--upload-success' => 'notifyAutoUploadSuccess',
     ];
 
@@ -128,7 +131,7 @@ class MediaLibraryComponent extends Component implements HasItemActions, HasItem
             if (! $this->isMediaPickerModal()) {
                 $this->resetSelectedMedia();
             }
-        }
+        } 
     }
 
     public function updated($key, $value)
@@ -139,39 +142,81 @@ class MediaLibraryComponent extends Component implements HasItemActions, HasItem
         }
     }
 
-    public function initializeMediaLibraryPickerModal(array $config = [])
+    #[On('media-library:modal-setup')]
+    // #[Renderless] // need to re-render to update the assets/folders
+    public function setUpModalConfig(array $selected = [], array $config = [])
     {
+        if (! $this->isMediaPickerModal()) {
+            return;
+        }
+
+        $this->modalConfig = $config;
+        $this->selectedMediaId = is_array($selected) ? $selected : [];
         try {
 
             if (isset($config['page']) && is_numeric($config['page'])) {
                 $this->page = intval($config['page']);
             }
-            if (isset($config['forms']['filter']['disabledColumns']) && is_array($config['forms']['filter']['disabledColumns'])) {
-                $this->formConfig['filter']['disabled_columns'] = $config['forms']['filter']['disabledColumns'];
-            }
-            if (isset($config['forms']['sort']['disabledColumns']) && is_array($config['forms']['sort']['disabledColumns'])) {
-                $this->formConfig['sort']['disabled_columns'] = $config['forms']['sort']['disabledColumns'];
-            }
 
-            if (isset($config['forms']['filter']['d']) && is_array($config['forms']['filter']['d'])) {
-                foreach ($config['forms']['filter']['d'] as $key => $value) {
-                    $this->filter[$key] = $value;
+            if (isset($config['forms']['filter']) && is_array($config['forms']['filter'])) {
+                foreach ($config['forms']['filter'] as $key => $value) {
+                    switch ($key) {
+                        case 'disabledColumns':
+                            $formConfigKey = Str::snake($key);
+                            $this->formConfig['filter'][$formConfigKey] = is_array($value) ? $value : [];
+                            break;
+                        case 'd':
+                            if (is_array($value)) {
+                                foreach ($value as $k => $v) {
+                                    $this->filter[$k] = $v;
+                                }
+                            }
+                            break;
+                    }
                 }
             }
-            if (isset($config['forms']['sort']['d']) && is_array($config['forms']['sort']['d'])) {
-                foreach ($config['forms']['sort']['d'] as $key => $value) {
-                    $this->sort[$key] = $value;
+
+            if (isset($config['forms']['sort']) && is_array($config['forms']['sort'])) {
+                foreach ($config['forms']['sort'] as $key => $value) {
+                    switch ($key) {
+                        case 'disabledColumns':
+                            $formConfigKey = Str::snake($key);
+                            $this->formConfig['sort'][$formConfigKey] = is_array($value) ? $value : [];
+                            break;
+                        case 'd':
+                            if (is_array($value)) {
+                                foreach ($value as $k => $v) {
+                                    $this->sort[$k] = $v;
+                                }
+                            }
+                            break;
+                    }
                 }
             }
 
         } finally {
 
-            $this->mountedMediaPickerModal = true;
+            // Reload assets and folders
             $this->clearCache();
 
-            // Finish the setup, and hide the loading spinner
-            $this->dispatch('media-picker-modal-setup-complete');
+            // Force a complete re-render
+            // $this->dispatch('$refresh');
         }
+    }
+
+    public function getExtraAlpineAttributes()
+    {
+        $attributes = [];
+
+        if ($this->isMediaPickerModal()) {
+            if (isset($this->modalConfig['modelable']) && is_array($this->modalConfig['modelable'])) {
+
+                $attributes['x-modelable'] = array_key_first($this->modalConfig['modelable']);
+                $attributes['x-model'] = Arr::first($this->modalConfig['modelable']);
+            }
+        }
+
+        return new \Illuminate\View\ComponentAttributeBag($attributes);
     }
 
     public function openFolder($mediaId = null)
@@ -494,14 +539,6 @@ class MediaLibraryComponent extends Component implements HasItemActions, HasItem
     #[Computed(persist: true, seconds: 120)]
     public function assets()
     {
-        if ($this->isMediaPickerModal() && ! $this->mountedMediaPickerModal) {
-            return new LengthAwarePaginator(
-                items: collect(),
-                total: 0,
-                perPage: $this->perPage,
-            );
-        }
-
         /**
          * @var Builder $query
          */

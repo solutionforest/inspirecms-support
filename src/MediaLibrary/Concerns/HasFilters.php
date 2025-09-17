@@ -18,7 +18,7 @@ trait HasFilters
 
     public function mountHasFilters(): void
     {
-        $this->fillFilterForm();
+        $this->fillFilterForm($this->filter);
     }
 
     protected function fillFilterForm(array $data = []): void
@@ -129,7 +129,7 @@ trait HasFilters
                         }
                     });
 
-                if ($this->isModalPicker) {
+                if ($this->isMediaPickerModal()) {
                     $query->orWhereDoesntHave('media');
                 }
             }

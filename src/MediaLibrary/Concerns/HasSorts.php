@@ -15,7 +15,7 @@ trait HasSorts
 
     public function mountHasSorts(): void
     {
-        $this->fillSortForm();
+        $this->fillSortForm($this->sort);
     }
 
     protected function fillSortForm(array $data = []): void

@@ -102,9 +102,9 @@ class MediaPicker extends Field
     }
 
     #[ExposedLivewireMethod]
-    public function updateSelected($assetIds)
+    public function updateSelected($ids)
     {
-        $state = $this->getCachedSelectedAssets($assetIds)->keys()->all();
+        $state = $this->getCachedSelectedAssets($ids)->keys()->all();
 
         $this->rawState($state);
     }

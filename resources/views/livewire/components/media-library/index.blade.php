@@ -1,8 +1,9 @@
 @php
     use Illuminate\Database\Eloquent\Model;
+    use Illuminate\Support\Arr;
     use SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset;
     
-    $paginator = $this->assets;
+    $paginator = $this->assets();
 
     $loadingIndicator = [
         'count' => 3,
@@ -16,6 +17,9 @@
 
         'filter',
         'sort',
+
+        'formConfig',
+        'modalConfig',
         
         'clearCache', 
         'resetAll', 
@@ -28,27 +32,21 @@
     ]);
 
     $livewireKey = $this->getId();
-    $alpineData = collect([
-        'showUploadForm: false',
-    ])->when($this->isMediaPickerModal(), function ($collection) {
-        return $collection->merge([
-            'selectedMediaId: $wire.entangle(\'selectedMediaId\').live',
-        ]);
-    })->implode(', ');
+
 @endphp
 
-<div @class([
+<div 
+    @class([
         'media-library',
         'media-library--picker' => $this->isMediaPickerModal(),
         'media-library--detail-expanded' => $this->hasAnyMediaSelected(),
     ])
-    x-data="{ {{ $alpineData }} }"
-    @if ($this->isMediaPickerModal())
-        x-modelable="selectedMediaId" 
-        x-model="selected"
-    @endif
+    x-data="{
+        showUploadForm: false,
+        selectedMediaId: $wire.entangle('selectedMediaId').live,
+    }"
+    {{ $this->getExtraAlpineAttributes() }}
 >
-
     <div class="media-library__header">
         <x-inspirecms-support::media-library.breadcrumbs :breadcrumbs="$breadcrumbs" />
         <div class="media-library__header__actions">

@@ -19,8 +19,9 @@
     $itemCtnStyles = 'width: 10rem;';
 
     $filterTypes = $getFilterTypes();
-    $modalId = $getMediaLibraryModalId();
+    $mediaPickerModalId = $getMediaLibraryModalId();
     $mediaPickerModalConfig = $getMediaLibraryModalConfig($filterTypes);
+    $mediaPickerModalConfig['modelable'] = ['selectedMediaId' => 'selectedMediaAssets'];
 @endphp
 <div 
     {{
@@ -29,27 +30,36 @@
             ->class(['fi-fo-media-picker'])
     }}
     x-data="{ 
-        state: $wire.{{ $applyStateBindingModifiers("\$entangle('{$getStatePath()}')") }} 
+        state: $wire.{{ $applyStateBindingModifiers("\$entangle('{$getStatePath()}')") }},
+        openModal() {
+            $dispatch('x-media-picker-modal-setup', { 
+                selected: this.state,
+                key: @js($key),
+                config: @js($mediaPickerModalConfig),
+                modalId: @js($mediaPickerModalId),
+                openModal: true,
+            });
+        },
+        clear() {
+            $wire
+                .callSchemaComponentMethod(
+                    @js($key),
+                    'clearSelected',
+                    {}
+                );
+        }
     }"
     x-on:update-media-picker-selection.window="
-            
-        $wire.callSchemaComponentMethod(@js($key), 'updateSelected', { assetIds: $event.detail?.data?.selected || [] })
-
-        $dispatch('close-modal', { 
-            id: @js($modalId),
-        });
-    "
-    x-on:open-modal.window="
-        if ($event.detail.id !== @js($modalId) || $event.detail.statePath !== @js($statePath)) {
+        if ($event.detail.key !== @js($key) || $event.detail.id !== @js($mediaPickerModalId)) {
             return;
         }
 
-        $dispatch('media-picker-setup', { 
-            selected: state,
-            statePath: @js($statePath),
-            key: @js($key),
-            config: @js($mediaPickerModalConfig),
-        });
+        $wire
+            .callSchemaComponentMethod(
+                @js($key),
+                'updateSelected',
+                { ids: $event.detail?.data || [] },
+            );
     "
 >
 
@@ -114,10 +124,10 @@
 
         <div class="flex gap-2">
             @if (! $isDisabled)
-                <x-filament::button color="gray" x-on:click="$wire.callSchemaComponentMethod('{{ $key }}', 'clearSelected')">
+                <x-filament::button color="gray" x-on:click="clear()">
                     {{ __('inspirecms-support::media-library.buttons.clear.label') }}
                 </x-filament::button>
-                <x-filament::button x-on:click="$dispatch('open-modal', { id: '{{ $modalId }}', key: '{{ $key }}', statePath: '{{ $statePath }}' })">
+                <x-filament::button x-on:click="openModal()">
                     {{ __('inspirecms-support::media-library.buttons.select.label') }}
                 </x-filament::button>
             @endif

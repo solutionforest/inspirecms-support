@@ -115,7 +115,7 @@ class InspireCmsSupportServiceProvider extends PackageServiceProvider
                 return view('inspirecms-support::forms.components.media-picker.modal');
             },
         );
-
+        
         Testable::mixin(new TestsForms);
     }
 
