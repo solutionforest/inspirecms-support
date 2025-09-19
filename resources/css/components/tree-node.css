@@ -4,6 +4,7 @@
 
 @source "../../views/components/tree-node/**/*.blade.php";
 @source "../../views/tree-node/**/*.blade.php";
+@source "../../views/livewire/components/tree-node/**/*.blade.php";
 
 .tree-node-layout {
     @apply flex flex-col max-h-full gap-2;
@@ -157,4 +158,14 @@
 
 .tree-node[tabindex="0"]:focus::after {
     opacity: 1;
+}
+
+.tree-view-ctn {
+    @apply flex flex-col gap-2;
+}
+.tree-view-ctn .search-ctn {
+    @apply mb-2;
+}
+.tree-view-ctn .tree-ctn {
+    @apply relative;
 }

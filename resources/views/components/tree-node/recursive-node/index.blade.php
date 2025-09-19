@@ -7,19 +7,6 @@
     'maxDepth' => -1, // -1 means unlimited
 ])
 
-@php
-    // Configure tree node actions
-    // Use pass actions to display, but change click action with Alpine nodeId
-    $treeNodeActions = collect($actions)
-        ->flatten()
-        ->whereInstanceOf(\Filament\Actions\Action::class)
-        ->where(fn ($action) => $action->isVisible())
-        ->map(fn ($action) => $action
-            ->alpineClickHandler("\$wire.{$action->getName()}TreeNode({$nodeVariable}.id)")
-        )
-        ->all();
-@endphp
-
 <div>
     <!-- Drop indicator before node -->
     <template x-if="dropTargetIndex === {{ $indexVariable }} && dropTargetParent === {{ $parentId }} && dropPosition === 'before'">
@@ -50,7 +37,8 @@
         :aria-selected="selectedNode === {{ $nodeVariable }}.id"
         :aria-level="{{ $level }}"
         @focus="lastFocusedNode = {{ $nodeVariable }}.id"
-        {{ $attributes }}>
+        {{ $attributes }}
+    >
         
         <div class="flex items-center justify-between">
             <div class="flex items-center">
@@ -73,11 +61,24 @@
             </div>
 
             <!-- Node actions -->
-            <div class="flex items-center gap-x-2">
+            {{-- <div class="flex items-center gap-x-2">
+                @foreach ($actions as $action)
+                    {{ $action }}
+                @endforeach
+            </div> --}}
+            {{-- <div x-bind:wire:key="'node-actions-' + {{ $nodeVariable }}.id">
                 @foreach ($treeNodeActions as $action)
                     {{ $action }}
                 @endforeach
-            </div>
+            </div> --}}
+            {{-- <x-filament::actions 
+                :actions="$actions" 
+                x-bind:wire:key="'node-actions-' + {{ $nodeVariable }}.id"
+            /> --}}
+            <x-inspirecms-support::tree-node.recursive-node.actions 
+                :actions="$actions" 
+                :alpineNodeIdVariable="$nodeVariable.'.id'"
+            />
         </div>
     </div>
 
@@ -105,7 +106,7 @@
         @endphp
         @if($shouldRender)
             <template x-for="({{ $childNodeVar }}, {{ $childIndexVar }}) in {{ $nodeVariable }}.children" :key="{{ $childNodeVar }}.id + '-' + {{ $childIndexVar }}">
-                <x-inspirecms-support::tree-node.recursive-node 
+                <x-inspirecms-support::tree-node.recursive-node
                     :level="$childLevel"
                     :nodeVariable="$childNodeVar"
                     :indexVariable="$childIndexVar"
