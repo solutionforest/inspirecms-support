@@ -21,17 +21,29 @@ class ServerSideTreeComponent extends Component implements HasActions, HasForms
     use WithSortableTreeActions;
 
     public array $nodes = [];
+
     public array $expandedNodes = [];
+
     public array $loadedChildrenCache = []; // Cache loaded children by parent ID
+
     public array $visibleNodes = []; // Currently visible nodes in the tree
+
     public array $selectedNodes = []; // Selected node IDs
+
     public ?string $startNodeId = null;
+
     public int $maxDepth = -1;
+
     public bool $showNodeActions = true;
+
     public bool $showToolbarActions = true;
+
     public bool $enableSelection = false;
+
     public bool $multipleSelection = true;
+
     public bool $enableNodeUrls = false;
+
     public ?int $maxSelections = null; // Maximum number of selections allowed (null = unlimited)
 
     public function mount()
@@ -58,7 +70,7 @@ class ServerSideTreeComponent extends Component implements HasActions, HasForms
         $this->expandedNodes[] = $nodeId;
 
         // Load children if not already cached
-        if (!isset($this->loadedChildrenCache[$nodeId])) {
+        if (! isset($this->loadedChildrenCache[$nodeId])) {
             $children = $this->getChildNodes($nodeId);
             $this->loadedChildrenCache[$nodeId] = $children;
         }
@@ -73,10 +85,10 @@ class ServerSideTreeComponent extends Component implements HasActions, HasForms
         if ($key !== false) {
             unset($this->expandedNodes[$key]);
             $this->expandedNodes = array_values($this->expandedNodes);
-            
+
             // Also collapse all descendant nodes
             $this->collapseDescendants($nodeId);
-            
+
             // Rebuild visible nodes tree
             $this->rebuildVisibleNodes();
         }
@@ -123,7 +135,7 @@ class ServerSideTreeComponent extends Component implements HasActions, HasForms
             // Add current node
             $node['depth'] = $depth;
             $this->visibleNodes[] = $node;
-            
+
             // Add children if node is expanded and has cached children
             if ($this->isNodeExpanded($node['id']) && isset($this->loadedChildrenCache[$node['id']])) {
                 $this->addNodesToVisible($this->loadedChildrenCache[$node['id']], $depth + 1);
@@ -161,7 +173,7 @@ class ServerSideTreeComponent extends Component implements HasActions, HasForms
         $actions = $this->getNodeItemActions();
 
         return collect($actions)
-            ->map(fn (Action|ActionGroup $action) => $action->toHtml())
+            ->map(fn (Action | ActionGroup $action) => $action->toHtml())
             ->all();
     }
 
@@ -193,7 +205,7 @@ class ServerSideTreeComponent extends Component implements HasActions, HasForms
         foreach ($nodes as $node) {
             if ($node['has_children'] ?? false) {
                 $this->expandNode($node['id']);
-                
+
                 // Recursively expand children
                 $children = $this->getChildrenForNode($node['id']);
                 $this->expandAllNodes($children);
@@ -210,12 +222,12 @@ class ServerSideTreeComponent extends Component implements HasActions, HasForms
     // Selection methods
     public function selectNode(string $nodeId): void
     {
-        if (!$this->enableSelection) {
+        if (! $this->enableSelection) {
             return;
         }
 
         if ($this->multipleSelection) {
-            if (!in_array($nodeId, $this->selectedNodes)) {
+            if (! in_array($nodeId, $this->selectedNodes)) {
                 // Check if we've reached the selection limit
                 if ($this->maxSelections !== null && count($this->selectedNodes) >= $this->maxSelections) {
                     // Don't add if limit is reached
@@ -230,7 +242,7 @@ class ServerSideTreeComponent extends Component implements HasActions, HasForms
 
     public function deselectNode(string $nodeId): void
     {
-        if (!$this->enableSelection) {
+        if (! $this->enableSelection) {
             return;
         }
 
@@ -267,14 +279,14 @@ class ServerSideTreeComponent extends Component implements HasActions, HasForms
 
     public function canSelectMoreNodes(): bool
     {
-        if (!$this->enableSelection || !$this->multipleSelection) {
+        if (! $this->enableSelection || ! $this->multipleSelection) {
             return false;
         }
-        
+
         if ($this->maxSelections === null) {
             return true; // No limit
         }
-        
+
         return count($this->selectedNodes) < $this->maxSelections;
     }
 
@@ -293,30 +305,30 @@ class ServerSideTreeComponent extends Component implements HasActions, HasForms
         if ($this->maxSelections === null) {
             return null; // Unlimited
         }
-        
+
         return max(0, $this->maxSelections - count($this->selectedNodes));
     }
 
     public function getSelectedNodeData(): array
     {
         $selectedData = [];
-        
+
         // Search in visible nodes
         foreach ($this->visibleNodes as $node) {
             if (in_array($node['id'], $this->selectedNodes)) {
                 $selectedData[] = $node;
             }
         }
-        
+
         // Search in cached children for any missing nodes
         foreach ($this->loadedChildrenCache as $children) {
             foreach ($children as $node) {
-                if (in_array($node['id'], $this->selectedNodes) && !in_array($node, $selectedData)) {
+                if (in_array($node['id'], $this->selectedNodes) && ! in_array($node, $selectedData)) {
                     $selectedData[] = $node;
                 }
             }
         }
-        
+
         return $selectedData;
     }
 
@@ -328,25 +340,25 @@ class ServerSideTreeComponent extends Component implements HasActions, HasForms
 
     public function shouldRenderNodeAsLink(array $node): bool
     {
-        return $this->enableNodeUrls && !empty($this->getNodeUrl($node));
+        return $this->enableNodeUrls && ! empty($this->getNodeUrl($node));
     }
 
     public function canSelectNode(string $nodeId): bool
     {
-        if (!$this->enableSelection) {
+        if (! $this->enableSelection) {
             return false;
         }
-        
+
         // If already selected, we can always deselect
         if ($this->isNodeSelected($nodeId)) {
             return true;
         }
-        
+
         // For single selection, we can always select (it will replace current)
-        if (!$this->multipleSelection) {
+        if (! $this->multipleSelection) {
             return true;
         }
-        
+
         // For multiple selection, check the limit
         return $this->canSelectMoreNodes();
     }
@@ -356,44 +368,46 @@ class ServerSideTreeComponent extends Component implements HasActions, HasForms
     {
         dd($name, $nodeId, $arguments, $context);
         $node = null;
-        
+
         // Search in visible nodes first
         foreach ($this->visibleNodes as $n) {
             if ($n['id'] === $nodeId) {
                 $node = $n;
+
                 break;
             }
         }
-        
+
         // If not found, search in root nodes
-        if (!$node) {
+        if (! $node) {
             foreach ($this->nodes as $n) {
                 if ($n['id'] === $nodeId) {
                     $node = $n;
+
                     break;
                 }
             }
         }
-        
+
         // If still not found, search in cached children
-        if (!$node) {
+        if (! $node) {
             foreach ($this->loadedChildrenCache as $children) {
                 foreach ($children as $n) {
                     if ($n['id'] === $nodeId) {
                         $node = $n;
+
                         break 2;
                     }
                 }
             }
         }
-        
-        if (!$node) {
+
+        if (! $node) {
             return null;
         }
 
         $arguments['node'] = $node;
 
-        
         return $this->mountAction($name, $arguments);
     }
 
@@ -417,7 +431,7 @@ class ServerSideTreeComponent extends Component implements HasActions, HasForms
         $rootNodes = array_filter($this->visibleNodes, function ($node) {
             return empty($node['parent_id']);
         });
-        
+
         return [
             'nodes' => array_values($rootNodes),
             'toolbarActions' => $this->getToolbarActions(),

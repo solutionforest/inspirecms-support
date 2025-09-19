@@ -85,8 +85,8 @@ class InspireCmsSupportServiceProvider extends PackageServiceProvider
 
     public function bootingPackage()
     {
-        Action::mixin(new \SolutionForest\InspireCms\Support\Base\Filament\Actions\TreeNodeActionMixin());
-        ActionGroup::mixin(new \SolutionForest\InspireCms\Support\Base\Filament\Actions\TreeNodeActionGroupMixin());
+        Action::mixin(new \SolutionForest\InspireCms\Support\Base\Filament\Actions\TreeNodeActionMixin);
+        ActionGroup::mixin(new \SolutionForest\InspireCms\Support\Base\Filament\Actions\TreeNodeActionGroupMixin);
     }
 
     public function packageBooted(): void
@@ -123,7 +123,7 @@ class InspireCmsSupportServiceProvider extends PackageServiceProvider
                 return view('inspirecms-support::forms.components.media-picker.modal');
             },
         );
-        
+
         Testable::mixin(new TestsForms);
     }
 

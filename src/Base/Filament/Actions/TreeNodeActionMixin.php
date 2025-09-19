@@ -2,15 +2,13 @@
 
 namespace SolutionForest\InspireCms\Support\Base\Filament\Actions;
 
-use Illuminate\Support\Js;
-
 /**
  * Mixin class that provides tree node action functionality for Filament components.
- * 
+ *
  * This mixin adds tree node-specific action capabilities to Filament actions,
  * enabling hierarchical data operations and tree structure management within
  * the Filament admin panel interface.
- * 
+ *
  * @mixin \Filament\Actions\Action
  */
 class TreeNodeActionMixin
@@ -18,7 +16,7 @@ class TreeNodeActionMixin
     public function recursiveTreeNodeAlpineId()
     {
         return function ($alpineNodeIdVariable) {
-            
+
             if ($alpineNodeIdVariable && filled($alpineNodeIdVariable) && is_string($alpineNodeIdVariable)) {
 
                 if ($this->isLivewireClickHandlerEnabled()) {
@@ -28,11 +26,11 @@ class TreeNodeActionMixin
                             'treeNodeIdVariable' => $alpineNodeIdVariable,
                         ])
                         ->alpineClickHandler(function () use ($alpineNodeIdVariable) {
-                    
+
                             $jsClickHandler = $this->getJsClickHandler();
 
                             if (
-                                ($jsClickHandler = $this->getJsClickHandler()) 
+                                ($jsClickHandler = $this->getJsClickHandler())
                                 && is_string($jsClickHandler)
                             ) {
 
@@ -44,7 +42,7 @@ class TreeNodeActionMixin
                             return null;
                         });
                 }
-                
+
             }
 
             return $this;
@@ -59,7 +57,7 @@ class TreeNodeActionMixin
                 $this->record($record);
             }
 
-            if (!empty($node) && is_array($node)) {
+            if (! empty($node) && is_array($node)) {
                 $this->mergeArguments([
                     'treeNodeData' => $node,
                     'treeNode' => true,
