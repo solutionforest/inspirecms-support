@@ -30,4 +30,18 @@ class TreeNodeActionGroupMixin
             return $this;
         };
     }
+
+    public function applyTreeNodeRecord()
+    {
+        return function ($record, $node = []) {
+            
+            $actions = collect($this->getActions())->map(function ($action) use ($record, $node) {
+                return $action->applyTreeNodeRecord($record, $node);
+            })->all();
+            
+            $this->actions($actions);
+
+            return $this;
+        };
+    }
 }

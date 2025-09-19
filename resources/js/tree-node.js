@@ -1,12 +1,10 @@
 const TreeNode = ({
-    expanded,
-    selected,
-}) => {
+    expanded = [],
+    selected = [],
+} = {}) => {
     return {
-        
-        expanded,
-
-        selected,
+        expanded: expanded || [],
+        selected: selected || [],
 
         init () {
             this.expanded = this.expanded || [];

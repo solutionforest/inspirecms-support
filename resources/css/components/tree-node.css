@@ -169,3 +169,7 @@
 .tree-view-ctn .tree-ctn {
     @apply relative;
 }
+
+.server-side-tree .tree-toolbar {
+    @apply w-full flex items-center gap-2 mb-2;
+}

@@ -50,4 +50,23 @@ class TreeNodeActionMixin
             return $this;
         };
     }
+
+    public function applyTreeNodeRecord()
+    {
+        return function ($record, $node = []) {
+
+            if (! is_null($record)) {
+                $this->record($record);
+            }
+
+            if (!empty($node) && is_array($node)) {
+                $this->mergeArguments([
+                    'treeNodeData' => $node,
+                    'treeNode' => true,
+                ]);
+            }
+
+            return $this;
+        };
+    }
 }
