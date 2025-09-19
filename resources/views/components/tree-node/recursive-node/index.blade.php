@@ -61,20 +61,6 @@
             </div>
 
             <!-- Node actions -->
-            {{-- <div class="flex items-center gap-x-2">
-                @foreach ($actions as $action)
-                    {{ $action }}
-                @endforeach
-            </div> --}}
-            {{-- <div x-bind:wire:key="'node-actions-' + {{ $nodeVariable }}.id">
-                @foreach ($treeNodeActions as $action)
-                    {{ $action }}
-                @endforeach
-            </div> --}}
-            {{-- <x-filament::actions 
-                :actions="$actions" 
-                x-bind:wire:key="'node-actions-' + {{ $nodeVariable }}.id"
-            /> --}}
             <x-inspirecms-support::tree-node.recursive-node.actions 
                 :actions="$actions" 
                 :alpineNodeIdVariable="$nodeVariable.'.id'"
