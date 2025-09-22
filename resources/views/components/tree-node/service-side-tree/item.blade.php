@@ -139,11 +139,15 @@
                 </template>
             </x-filament::actions>
         @endif
-    </div>
 
-    {{-- Loading Indicator --}}
-    <div wire:loading wire:target="toggleNode('{{ $nodeId }}')" class="absolute inset-0 flex items-center justify-center bg-white/75 dark:bg-gray-900/75">
-        <x-filament::loading-indicator class="h-4 w-4" />
+        {{-- Loading Indicator --}}
+        <div 
+            wire:loading 
+            wire:target="toggleNode('{{ $nodeId }}')" 
+            class="absolute left-50 flex items-center justify-center bg-white/75 dark:bg-gray-900/75"
+        >
+            <x-filament::loading-indicator class="h-4 w-4" />
+        </div>
     </div>
 </div>
 
