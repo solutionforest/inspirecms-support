@@ -24,8 +24,7 @@ trait WithSortableTreeActions
                     foreach ($action->getFlatActions() as $subAction) {
                         $this->cacheAction($subAction);
                     }
-                }
-                else if ($action instanceof Action) {
+                } elseif ($action instanceof Action) {
                     $this->cacheAction($action);
                 }
             }

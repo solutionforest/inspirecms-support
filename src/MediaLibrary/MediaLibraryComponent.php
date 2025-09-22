@@ -129,7 +129,7 @@ class MediaLibraryComponent extends Component implements HasItemActions, HasItem
             if (! $this->isMediaPickerModal()) {
                 $this->resetSelectedMedia();
             }
-        } 
+        }
     }
 
     public function updated($key, $value)
@@ -150,6 +150,7 @@ class MediaLibraryComponent extends Component implements HasItemActions, HasItem
 
         $this->modalConfig = $config;
         $this->selectedMediaId = is_array($selected) ? $selected : [];
+
         try {
 
             if (isset($config['page']) && is_numeric($config['page'])) {
@@ -162,6 +163,7 @@ class MediaLibraryComponent extends Component implements HasItemActions, HasItem
                         case 'disabledColumns':
                             $formConfigKey = Str::snake($key);
                             $this->formConfig['filter'][$formConfigKey] = is_array($value) ? $value : [];
+
                             break;
                         case 'd':
                             if (is_array($value)) {
@@ -169,6 +171,7 @@ class MediaLibraryComponent extends Component implements HasItemActions, HasItem
                                     $this->filter[$k] = $v;
                                 }
                             }
+
                             break;
                     }
                 }
@@ -180,6 +183,7 @@ class MediaLibraryComponent extends Component implements HasItemActions, HasItem
                         case 'disabledColumns':
                             $formConfigKey = Str::snake($key);
                             $this->formConfig['sort'][$formConfigKey] = is_array($value) ? $value : [];
+
                             break;
                         case 'd':
                             if (is_array($value)) {
@@ -187,6 +191,7 @@ class MediaLibraryComponent extends Component implements HasItemActions, HasItem
                                     $this->sort[$k] = $v;
                                 }
                             }
+
                             break;
                     }
                 }

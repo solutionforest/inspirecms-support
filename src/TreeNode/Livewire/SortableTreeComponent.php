@@ -83,6 +83,7 @@ class SortableTreeComponent extends Component implements HasActions, HasForms
         // $this->nodes = ...;
     }
 
+<<<<<<< HEAD
     #[Renderless]
     public function getNodeItemActionsHtml($id)
     {
@@ -94,13 +95,16 @@ class SortableTreeComponent extends Component implements HasActions, HasForms
     }
 
     //region Action Handling
+=======
+    // region Action Handling
+>>>>>>> origin/2.x
     public function mountRecursiveTreeNodeAction(string $name, $treeNodeId, array $arguments = [], array $context = []): mixed
     {
         $context['recordKey'] = $treeNodeId;
         $context['recursiveTreeNode'] = true;
 
         return $this->mountAction($name, $arguments, $context);
-    } 
+    }
 
     protected function resolveAction(array $action, array $parentActions): ?Action
     {
@@ -115,7 +119,7 @@ class SortableTreeComponent extends Component implements HasActions, HasForms
     {
         return $this->resolveBaseAction($action, $parentActions);
     }
-    //endregion Action Handling
+    // endregion Action Handling
 
     protected function viewData()
     {
