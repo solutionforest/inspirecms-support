@@ -1,12 +1,14 @@
 @php
-    $maxDepth = $this->maxDepth ?? -1;
+    $maxDepth ??= -1;
+    $maxVisibleDepth ??= 20;
+    $allowDragDrop ??= false;
     $isSearchable ??= false;
 
-    $haveToolbarActions ??= false;
     $toolbarActions ??= [];
     $toolbarActions = array_filter($toolbarActions, fn ($action) => $action->isVisible());
 
-    $nodeItemActions ??= [];
+    $hasToolbarActions = ($showToolbarActions ?? false) && count($toolbarActions) > 0;
+    $hasNodeActions = ($showNodeActions ?? false);
 @endphp
 <div class="tree-view-ctn"
     x-data="TreeView({
@@ -19,7 +21,7 @@
         highlightSearch: true,
         onSearch: (query, results, tree) => {
             tree.expandSearchResults();
-        }
+        },
     })"
 >
     @if ($isSearchable)
@@ -40,8 +42,8 @@
             />
         </x-filament::input.wrapper>
     @endif
-    
-    @if ($haveToolbarActions)
+
+    @if ($hasToolbarActions)
         <x-filament::actions :actions="$toolbarActions"/>
     @endif
 
@@ -52,8 +54,9 @@
                 nodeVariable="node"
                 indexVariable="index"
                 parentId="null"
-                :actions="$nodeItemActions"
                 :maxDepth="$maxDepth"
+                :hasActions="$hasNodeActions"
+                :livewire="$this"
             />
         </template>
     </div>

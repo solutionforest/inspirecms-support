@@ -9,6 +9,7 @@ use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Support\Icons\Heroicon;
+use Livewire\Attributes\Renderless;
 use Livewire\Component;
 use SolutionForest\InspireCms\Support\TreeNode\Concerns\WithSortableTreeActions;
 
@@ -19,12 +20,12 @@ class SortableTreeComponent extends Component implements HasActions, HasForms
     }
     use InteractsWithForms;
     use WithSortableTreeActions;
-    
+    protected static bool $showToolbarActions = false;
+    protected static bool $showNodeActions = true;
     protected static bool $searchable = false;
-    protected static bool $haveToolbarActions = false;
     protected static bool $allowDragDrop = false;
-    public int $maxDepth = -1;
-    public int $maxVisibleDepth = 20;
+    protected static int $maxDepth = -1;
+    protected static int $maxVisibleDepth = 20;
 
     public array $nodes = [];
 
@@ -82,6 +83,16 @@ class SortableTreeComponent extends Component implements HasActions, HasForms
         // $this->nodes = ...;
     }
 
+    #[Renderless]
+    public function getNodeItemActionsHtml($id)
+    {
+        $actions = $this->getNodeItemActions();
+
+        return collect($actions)
+            ->map(fn (Action|ActionGroup $action) => $action->toHtml())
+            ->all();
+    }
+
     //region Action Handling
     public function mountRecursiveTreeNodeAction(string $name, $treeNodeId, array $arguments = [], array $context = []): mixed
     {
@@ -106,17 +117,21 @@ class SortableTreeComponent extends Component implements HasActions, HasForms
     }
     //endregion Action Handling
 
+    protected function viewData()
+    {
+        return [
+            'toolbarActions' => $this->getToolbarActions(),
+            'showToolbarActions' => static::$showToolbarActions ?? false,
+            'showNodeActions' => static::$showNodeActions ?? false,
+            'searchable' => static::$searchable ?? false,
+            'allowDragDrop' => static::$allowDragDrop ?? false,
+            'maxDepth' => static::$maxDepth ?? false,
+            'maxVisibleDepth' => static::$maxVisibleDepth ?? false,
+        ];
+    }
+
     public function render()
     {
-        $toolbarActions = $this->getToolbarActions();
-        $nodeItemActions = $this->getNodeItemActions();
-
-        return view('inspirecms-support::livewire.components.tree-node.sortable-tree', [
-            'allowDragDrop' => static::$allowDragDrop,
-            'isSearchable' => static::$searchable,
-            'haveToolbarActions' => static::$haveToolbarActions && count($toolbarActions) > 0,
-            'toolbarActions' => $toolbarActions,
-            'nodeItemActions' => $nodeItemActions,
-        ]);
+        return view('inspirecms-support::livewire.components.tree-node.sortable-tree', $this->viewData());
     }
 }

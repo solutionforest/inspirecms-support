@@ -3,9 +3,15 @@
     'nodeVariable' => 'node',
     'indexVariable' => 'index',
     'parentId' => 'null',
-    'actions' => [],
     'maxDepth' => -1, // -1 means unlimited
+    'hasActions' => false,
+    'livewire' => null,
 ])
+
+@php
+    $livewireId = $livewire ? $livewire->getId() : 'no-livewire';
+    $treeNodeActionsLivewireId = "{$livewireId}-tree-node-{$nodeVariable}-actions";
+@endphp
 
 <div>
     <!-- Drop indicator before node -->
@@ -60,11 +66,32 @@
                 
             </div>
 
-            <!-- Node actions -->
-            <x-inspirecms-support::tree-node.recursive-node.actions 
-                :actions="$actions" 
-                :alpineNodeIdVariable="$nodeVariable.'.id'"
-            />
+            {{-- Node Actions --}}
+            @if ($hasActions)
+                @php
+                    $alpineNodeIdVar = $nodeVariable . '.id';
+                @endphp
+                <x-filament::actions 
+                    class="tree-node-actions"
+                    wire:key={{ $treeNodeActionsLivewireId }}
+                    x-bind:wire:target="getNodeItemActionsHtml({{ $alpineNodeIdVar }})"
+                    x-data="{
+                        actions: [],
+                        init() {
+                            $nextTick(async () => {
+                                this.actions = await $wire.getNodeItemActionsHtml({{ $alpineNodeIdVar }});
+                            });
+                        }
+                    }"
+                >
+                    <div wire:loading x-bind:wire:target="getNodeItemActionsHtml({{ $alpineNodeIdVar }})" class="animate-spin">
+                        <x-filament::loading-indicator class="h-4 w-4" />
+                    </div>
+                    <template x-for="action in actions">
+                        <div x-html="action"></div>
+                    </template>
+                </x-filament::actio>
+            @endif
         </div>
     </div>
 
@@ -97,8 +124,9 @@
                     :nodeVariable="$childNodeVar"
                     :indexVariable="$childIndexVar"
                     :parentId="$parentIdVar"
-                    :actions="$actions"
                     :maxDepth="$maxDepth"
+                    :hasActions="$hasActions"
+                    :livewire="$livewire"
                 />
             </template>
         @endif
