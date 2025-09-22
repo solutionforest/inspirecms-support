@@ -16,7 +16,7 @@ use SolutionForest\InspireCms\Support\TreeNode\Concerns\WithSortableTreeActions;
 class SortableTreeComponent extends Component implements HasActions, HasForms
 {
     use InteractsWithActions {
-        InteractsWithActions::resolveAction as protected traitResolveAction;
+        InteractsWithActions::resolveAction as protected resolveBaseAction;
     }
     use InteractsWithForms;
     use WithSortableTreeActions;
@@ -108,12 +108,12 @@ class SortableTreeComponent extends Component implements HasActions, HasForms
             return $this->resolveRecursiveTreeNodeAction($action, $parentActions);
         }
 
-        return $this->traitResolveAction($action, $parentActions);
+        return $this->resolveBaseAction($action, $parentActions);
     }
 
     protected function resolveRecursiveTreeNodeAction(array $action, array $parentActions): ?Action
     {
-        return $this->traitResolveAction($action, $parentActions);
+        return $this->resolveBaseAction($action, $parentActions);
     }
     //endregion Action Handling
 

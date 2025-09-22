@@ -16,7 +16,7 @@ use SolutionForest\InspireCms\Support\TreeNode\Concerns\WithServerSideTreeAction
 class ServerSideTreeComponent extends Component implements HasActions, HasForms
 {
     use InteractsWithActions {
-        InteractsWithActions::resolveAction as protected traitResolveAction;
+        InteractsWithActions::resolveAction as protected resolveBaseAction;
     }
     use InteractsWithForms;
     use WithServerSideTreeActions;
@@ -218,7 +218,7 @@ class ServerSideTreeComponent extends Component implements HasActions, HasForms
     // Selection methods
     public function selectNode(string $nodeId): void
     {
-        if (!$this->enableSelection) {
+        if (!static::$enableSelection) {
             return;
         }
 
@@ -238,7 +238,7 @@ class ServerSideTreeComponent extends Component implements HasActions, HasForms
 
     public function deselectNode(string $nodeId): void
     {
-        if (!$this->enableSelection) {
+        if (!static::$enableSelection) {
             return;
         }
 
@@ -275,7 +275,7 @@ class ServerSideTreeComponent extends Component implements HasActions, HasForms
 
     public function canSelectMoreNodes(): bool
     {
-        if (!$this->enableSelection || !$this->multipleSelection) {
+        if (!static::$enableSelection || !$this->multipleSelection) {
             return false;
         }
         
@@ -341,7 +341,7 @@ class ServerSideTreeComponent extends Component implements HasActions, HasForms
 
     public function canSelectNode(string $nodeId): bool
     {
-        if (!$this->enableSelection) {
+        if (!static::$enableSelection) {
             return false;
         }
         
@@ -359,51 +359,7 @@ class ServerSideTreeComponent extends Component implements HasActions, HasForms
         return $this->canSelectMoreNodes();
     }
 
-    // Action handling for tree nodes
-    public function mountTreeNodeAction(string $name, string $nodeId, array $arguments = [], array $context = []): mixed
-    {
-        dd($name, $nodeId, $arguments, $context);
-        $node = null;
-        
-        // Search in visible nodes first
-        foreach ($this->visibleNodes as $n) {
-            if ($n['id'] === $nodeId) {
-                $node = $n;
-                break;
-            }
-        }
-        
-        // If not found, search in root nodes
-        if (!$node) {
-            foreach ($this->nodes as $n) {
-                if ($n['id'] === $nodeId) {
-                    $node = $n;
-                    break;
-                }
-            }
-        }
-        
-        // If still not found, search in cached children
-        if (!$node) {
-            foreach ($this->loadedChildrenCache as $children) {
-                foreach ($children as $n) {
-                    if ($n['id'] === $nodeId) {
-                        $node = $n;
-                        break 2;
-                    }
-                }
-            }
-        }
-        
-        if (!$node) {
-            return null;
-        }
-
-        $arguments['node'] = $node;
-
-        
-        return $this->mountAction($name, $arguments);
-    }
+    // Action handling for tree nodesx
 
     protected function resolveAction(array $action, array $parentActions): ?Action
     {
@@ -411,12 +367,12 @@ class ServerSideTreeComponent extends Component implements HasActions, HasForms
             return $this->resolveTreeNodeAction($action, $parentActions);
         }
 
-        return $this->traitResolveAction($action, $parentActions);
+        return $this->resolveBaseAction($action, $parentActions);
     }
 
     protected function resolveTreeNodeAction(array $action, array $parentActions): ?Action
     {
-        return $this->traitResolveAction($action, $parentActions);
+        return $this->resolveBaseAction($action, $parentActions);
     }
 
     protected function getHomeButtonText(): string|Htmlable
