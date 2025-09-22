@@ -1,5 +1,7 @@
 @php
     $toolbarActions ??= [];
+    $navigationHeaderActions ??= [];
+    
     $nodes ??= [];
     $enableSelection ??= false;
     $multipleSelection ??= true;
@@ -11,12 +13,16 @@
     <x-inspirecms-support::tree-node.service-side-tree
         :nodes="$nodes"
         :livewire="$this"
-        :toolbarActions="$this->showToolbarActions ? $toolbarActions : []"
-        :hasNodeActions="$this->showNodeActions"
+        :hasNodeActions="$showNodeActions"
+        :toolbarActions="$toolbarActions"
+        :navigationHeaderActions="$navigationHeaderActions"
+        :showNavigationHeader="$showNavigationHeader"
         :enableSelection="$enableSelection"
         :multipleSelection="$multipleSelection"
         :enableNodeUrls="$enableNodeUrls"
         :maxSelections="$maxSelections"
+        :homeButtonText="$homeButtonText"
+        :indexUrl="$indexUrl"
     />
     
     <x-filament-actions::modals />

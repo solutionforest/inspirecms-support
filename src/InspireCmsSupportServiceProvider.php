@@ -2,8 +2,6 @@
 
 namespace SolutionForest\InspireCms\Support;
 
-use Filament\Actions\Action;
-use Filament\Actions\ActionGroup;
 use Filament\Support\Assets\Css;
 use Filament\Support\Assets\Js;
 use Filament\Support\Facades\FilamentAsset;
@@ -81,12 +79,6 @@ class InspireCmsSupportServiceProvider extends PackageServiceProvider
         // Media library config END
 
         \SolutionForest\InspireCms\Support\Facades\ResolverRegistry::register($this->app);
-    }
-
-    public function bootingPackage()
-    {
-        Action::mixin(new \SolutionForest\InspireCms\Support\Base\Filament\Actions\TreeNodeActionMixin());
-        ActionGroup::mixin(new \SolutionForest\InspireCms\Support\Base\Filament\Actions\TreeNodeActionGroupMixin());
     }
 
     public function packageBooted(): void

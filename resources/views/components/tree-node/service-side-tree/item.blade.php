@@ -121,17 +121,17 @@
             <x-filament::actions 
                 class="tree-node-actions"
                 wire:key={{ $treeNodeActionsLivewireId }}
-                wire:target="loadNodeItemActionsHtml('{{ $nodeId }}')"
+                wire:target="getNodeItemActionsHtml('{{ $nodeId }}')"
                 x-data="{
                     actions: [],
                     init() {
                         $nextTick(async () => {
-                            this.actions = await $wire.loadNodeItemActionsHtml('{{ $nodeId }}');
+                            this.actions = await $wire.getNodeItemActionsHtml('{{ $nodeId }}');
                         });
                     }
                 }"
             >
-                <div wire:loading wire:target="loadNodeItemActionsHtml('{{ $nodeId }}')" class="animate-spin">
+                <div wire:loading wire:target="getNodeItemActionsHtml('{{ $nodeId }}')" class="animate-spin">
                     <x-filament::loading-indicator class="h-4 w-4" />
                 </div>
                 <template x-for="action in actions">

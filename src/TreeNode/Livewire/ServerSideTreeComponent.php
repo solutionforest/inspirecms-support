@@ -8,9 +8,10 @@ use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Illuminate\Contracts\Support\Htmlable;
 use Livewire\Attributes\Renderless;
 use Livewire\Component;
-use SolutionForest\InspireCms\Support\TreeNode\Concerns\WithSortableTreeActions;
+use SolutionForest\InspireCms\Support\TreeNode\Concerns\WithServerSideTreeActions;
 
 class ServerSideTreeComponent extends Component implements HasActions, HasForms
 {
@@ -18,7 +19,14 @@ class ServerSideTreeComponent extends Component implements HasActions, HasForms
         InteractsWithActions::resolveAction as protected traitResolveAction;
     }
     use InteractsWithForms;
-    use WithSortableTreeActions;
+    use WithServerSideTreeActions;
+
+    protected static int $maxDepth = -1;
+    protected static bool $showNodeActions = true;
+    protected static bool $showToolbarActions = true;
+    protected static bool $showNavigationHeader = true;
+    protected static bool $enableNodeUrls = false;
+    protected static bool $enableSelection = false;
 
     public array $nodes = [];
     public array $expandedNodes = [];
@@ -26,12 +34,8 @@ class ServerSideTreeComponent extends Component implements HasActions, HasForms
     public array $visibleNodes = []; // Currently visible nodes in the tree
     public array $selectedNodes = []; // Selected node IDs
     public ?string $startNodeId = null;
-    public int $maxDepth = -1;
-    public bool $showNodeActions = true;
-    public bool $showToolbarActions = true;
-    public bool $enableSelection = false;
     public bool $multipleSelection = true;
-    public bool $enableNodeUrls = false;
+    public bool $showOnlyRootItems = false; // New property for filtering
     public ?int $maxSelections = null; // Maximum number of selections allowed (null = unlimited)
 
     public function mount()
@@ -131,7 +135,6 @@ class ServerSideTreeComponent extends Component implements HasActions, HasForms
         }
     }
 
-    // Override these methods in your implementation
     protected function getRootNodes(): array
     {
         // Return array of root nodes
@@ -155,8 +158,13 @@ class ServerSideTreeComponent extends Component implements HasActions, HasForms
         return [];
     }
 
+    protected function getNavigationHeaderActions(): array
+    {
+        return [];
+    }
+
     #[Renderless]
-    public function loadNodeItemActionsHtml($id)
+    public function getNodeItemActionsHtml($id)
     {
         $actions = $this->getNodeItemActions();
 
@@ -328,7 +336,7 @@ class ServerSideTreeComponent extends Component implements HasActions, HasForms
 
     public function shouldRenderNodeAsLink(array $node): bool
     {
-        return $this->enableNodeUrls && !empty($this->getNodeUrl($node));
+        return static::$enableNodeUrls && !empty($this->getNodeUrl($node));
     }
 
     public function canSelectNode(string $nodeId): bool
@@ -411,6 +419,17 @@ class ServerSideTreeComponent extends Component implements HasActions, HasForms
         return $this->traitResolveAction($action, $parentActions);
     }
 
+    protected function getHomeButtonText(): string|Htmlable
+    {
+        return 'Root';
+    }
+
+    protected function getIndexUrl(): string
+    {
+        // Override this method to return the appropriate index URL
+        return '/';
+    }
+
     protected function viewData()
     {
         // Only show root nodes - children are handled recursively by the template
@@ -420,11 +439,21 @@ class ServerSideTreeComponent extends Component implements HasActions, HasForms
         
         return [
             'nodes' => array_values($rootNodes),
-            'toolbarActions' => $this->getToolbarActions(),
-            'enableSelection' => $this->enableSelection,
+            'rootNodesCount' => count($rootNodes),
             'multipleSelection' => $this->multipleSelection,
-            'enableNodeUrls' => $this->enableNodeUrls,
             'maxSelections' => $this->maxSelections,
+
+            'homeButtonText' => $this->getHomeButtonText(),
+            'indexUrl' => $this->getIndexUrl(),
+
+            'toolbarActions' => static::$showToolbarActions ? $this->getToolbarActions() : [],
+            'navigationHeaderActions' => static::$showNavigationHeader ? $this->getNavigationHeaderActions() : [],
+            
+            'enableNodeUrls' => static::$enableNodeUrls,
+            'enableSelection' => static::$enableSelection,
+            'showNodeActions' => static::$showNodeActions,
+            'showToolbarActions' => static::$showToolbarActions,
+            'showNavigationHeader' => static::$showNavigationHeader,
         ];
     }
 
