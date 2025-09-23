@@ -41,18 +41,16 @@
         {{-- Expand/Collapse Button --}}
         <div class="tree-node-toggle flex-shrink-0">
             @if($node['has_children'] ?? false)
-                <button
-                    type="button"
+                <x-filament::icon-button
+                    color="gray"
+                    :icon="\Filament\Support\Icons\Heroicon::ChevronRight"
                     wire:click="toggleNode('{{ $nodeId }}')"
-                    class="tree-toggle-btn flex h-5 w-5 items-center justify-center rounded text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
-                    aria-label="{{ $isExpanded ? 'Collapse' : 'Expand' }}"
-                >
-                    @if($isExpanded)
-                        <x-heroicon-s-chevron-down class="h-4 w-4" />
-                    @else
-                        <x-heroicon-s-chevron-right class="h-4 w-4" />
-                    @endif
-                </button>
+                    :label="$isExpanded ? 'Collapse' : 'Expand'"
+                    class="tree-toggle-btn"
+                    x-bind:class="{
+                        'rotate-90': {{ $isExpanded ? 'true' : 'false' }},
+                    }"
+                />
             @else
                 <div class="h-5 w-5"></div>
             @endif

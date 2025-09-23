@@ -223,11 +223,7 @@ class ServerSideTreeComponent extends Component implements HasActions, HasForms
     // Selection methods
     public function selectNode(string $nodeId): void
     {
-<<<<<<< HEAD
-        if (!static::$enableSelection) {
-=======
         if (! $this->enableSelection) {
->>>>>>> origin/2.x
             return;
         }
 
@@ -247,11 +243,7 @@ class ServerSideTreeComponent extends Component implements HasActions, HasForms
 
     public function deselectNode(string $nodeId): void
     {
-<<<<<<< HEAD
-        if (!static::$enableSelection) {
-=======
         if (! $this->enableSelection) {
->>>>>>> origin/2.x
             return;
         }
 
@@ -288,11 +280,7 @@ class ServerSideTreeComponent extends Component implements HasActions, HasForms
 
     public function canSelectMoreNodes(): bool
     {
-<<<<<<< HEAD
-        if (!static::$enableSelection || !$this->multipleSelection) {
-=======
         if (! $this->enableSelection || ! $this->multipleSelection) {
->>>>>>> origin/2.x
             return false;
         }
 
@@ -353,20 +341,12 @@ class ServerSideTreeComponent extends Component implements HasActions, HasForms
 
     public function shouldRenderNodeAsLink(array $node): bool
     {
-<<<<<<< HEAD
-        return static::$enableNodeUrls && !empty($this->getNodeUrl($node));
-=======
         return $this->enableNodeUrls && ! empty($this->getNodeUrl($node));
->>>>>>> origin/2.x
     }
 
     public function canSelectNode(string $nodeId): bool
     {
-<<<<<<< HEAD
-        if (!static::$enableSelection) {
-=======
         if (! $this->enableSelection) {
->>>>>>> origin/2.x
             return false;
         }
 
@@ -384,57 +364,7 @@ class ServerSideTreeComponent extends Component implements HasActions, HasForms
         return $this->canSelectMoreNodes();
     }
 
-<<<<<<< HEAD
     // Action handling for tree nodesx
-=======
-    // Action handling for tree nodes
-    public function mountTreeNodeAction(string $name, string $nodeId, array $arguments = [], array $context = []): mixed
-    {
-        dd($name, $nodeId, $arguments, $context);
-        $node = null;
-
-        // Search in visible nodes first
-        foreach ($this->visibleNodes as $n) {
-            if ($n['id'] === $nodeId) {
-                $node = $n;
-
-                break;
-            }
-        }
-
-        // If not found, search in root nodes
-        if (! $node) {
-            foreach ($this->nodes as $n) {
-                if ($n['id'] === $nodeId) {
-                    $node = $n;
-
-                    break;
-                }
-            }
-        }
-
-        // If still not found, search in cached children
-        if (! $node) {
-            foreach ($this->loadedChildrenCache as $children) {
-                foreach ($children as $n) {
-                    if ($n['id'] === $nodeId) {
-                        $node = $n;
-
-                        break 2;
-                    }
-                }
-            }
-        }
-
-        if (! $node) {
-            return null;
-        }
-
-        $arguments['node'] = $node;
-
-        return $this->mountAction($name, $arguments);
-    }
->>>>>>> origin/2.x
 
     protected function resolveAction(array $action, array $parentActions): ?Action
     {
