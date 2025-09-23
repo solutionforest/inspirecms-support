@@ -152,6 +152,8 @@ class ServerSideTreeComponent extends Component implements HasActions, HasForms
     {
         $this->visibleNodes = [];
         $this->addNodesToVisible($this->nodes, 0);
+
+        $this->refreshMountedActions();
     }
 
     protected function addNodesToVisible(array $nodes, int $depth): void
@@ -220,6 +222,12 @@ class ServerSideTreeComponent extends Component implements HasActions, HasForms
         $this->loadedChildrenCache = [];
         $this->loadRootNodes();
         $this->rebuildVisibleNodes();
+    }
+
+    protected function refreshMountedActions(): void
+    {
+        $this->mountedActions = [];
+        $this->cachedMountedActions = [];
     }
 
     public function expandAll(): void

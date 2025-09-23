@@ -36,7 +36,7 @@
             > .tree-node-item {
 
                 &.is-active >.tree-node-content {
-                    @apply bg-gray-100 dark:bg-white/10 font-semibold;
+                    @apply bg-gray-100 dark:bg-white/10;
                 }
                 
                 >.tree-node-content {
