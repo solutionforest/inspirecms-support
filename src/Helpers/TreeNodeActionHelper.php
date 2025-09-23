@@ -12,9 +12,12 @@ class TreeNodeActionHelper
     /**
      * @param array $node
      * @param array<Action|ActionGroup> $livewireActions
+     * @param Closure(Model|string|int|null):Model|null $resolveRecordUsing
+     * @param null | Model | string $model
+     * @param ?\Livewire\Component $livewire
      * @return array<Action|ActionGroup>
      */
-    public static function getNodeActions(array $node, array $livewireActions, ?Closure $resolveRecordUsing = null, string | Model | null $model = null, string $idName = 'id', string $actionName = '__visibleActions'): array
+    public static function getNodeActions(array $node, array $livewireActions, ?Closure $resolveRecordUsing = null, string | Model | null $model = null, ?\Livewire\Component $livewire = null, string $idName = 'id', string $actionName = '__visibleActions'): array
     {
         $actionNames = $node[$actionName] ?? [];
 
@@ -47,6 +50,10 @@ class TreeNodeActionHelper
                             ->record($nodeId)
                             ->resolveRecordUsing($resolveRecordUsing);
                             
+                    }
+
+                    if ($livewire) {
+                        $action = $action->livewire($livewire);
                     }
 
                     $filteredActions[] = $action;

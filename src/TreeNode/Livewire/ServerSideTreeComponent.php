@@ -39,13 +39,16 @@ class ServerSideTreeComponent extends Component implements HasActions, HasForms
     public array $selectedNodes = []; // Selected node IDs
 
     public ?string $startNodeId = null;
-    public bool $multipleSelection = true;
-    public bool $showOnlyRootItems = false; // New property for filtering
+
     public ?int $maxSelections = null; // Maximum number of selections allowed (null = unlimited)
 
     public function mount()
     {
         $this->loadRootNodes();
+
+        // Pre-expand nodes if any
+        $this->preExpandNodes();
+
         // Initialize visible nodes with root nodes only
         $this->rebuildVisibleNodes();
     }
@@ -55,6 +58,31 @@ class ServerSideTreeComponent extends Component implements HasActions, HasForms
         // Override this method in your implementation
         // Load root level nodes or nodes from the start node
         $this->nodes = $this->getRootNodes();
+    }
+
+    /**
+     * Pre-expand nodes that are marked as expanded or selected
+     */
+    protected function preExpandNodes(): void
+    {
+        $preloadNodes = collect($this->expandedNodes)
+            ->merge(collect($this->selectedNodes))
+            ->unique()
+            ->filter()
+            ->values()
+            ->all();
+
+        foreach ($preloadNodes as $nodeId) {
+            if (!in_array($nodeId, $this->expandedNodes)) {
+                $this->expandedNodes[] = $nodeId;
+            }
+            
+            // Load children if not already cached
+            if (!isset($this->loadedChildrenCache[$nodeId])) {
+                $children = $this->getChildNodes($nodeId);
+                $this->loadedChildrenCache[$nodeId] = $children;
+            }
+        }
     }
 
     public function expandNode(string $nodeId): void
@@ -221,13 +249,27 @@ class ServerSideTreeComponent extends Component implements HasActions, HasForms
     }
 
     // Selection methods
+    protected function isMultipleSelection(): bool
+    {
+        if (is_null($this->maxSelections)) {
+            return true; // Unlimited selections allowed
+        }
+
+        return $this->maxSelections > 1;
+    }
+
+    protected function isEnabledSelection(): bool
+    {
+        return static::$enableSelection;
+    }
+
     public function selectNode(string $nodeId): void
     {
-        if (! $this->enableSelection) {
+        if (! $this->isEnabledSelection()) {
             return;
         }
 
-        if ($this->multipleSelection) {
+        if ($this->isMultipleSelection()) {
             if (! in_array($nodeId, $this->selectedNodes)) {
                 // Check if we've reached the selection limit
                 if ($this->maxSelections !== null && count($this->selectedNodes) >= $this->maxSelections) {
@@ -243,7 +285,7 @@ class ServerSideTreeComponent extends Component implements HasActions, HasForms
 
     public function deselectNode(string $nodeId): void
     {
-        if (! $this->enableSelection) {
+        if (! $this->isEnabledSelection()) {
             return;
         }
 
@@ -280,7 +322,7 @@ class ServerSideTreeComponent extends Component implements HasActions, HasForms
 
     public function canSelectMoreNodes(): bool
     {
-        if (! $this->enableSelection || ! $this->multipleSelection) {
+        if (! $this->isEnabledSelection() || ! $this->isMultipleSelection()) {
             return false;
         }
 
@@ -334,6 +376,11 @@ class ServerSideTreeComponent extends Component implements HasActions, HasForms
     }
 
     // URL handling
+    protected function isEnableNodeUrls(): bool
+    {
+        return static::$enableNodeUrls;
+    }
+
     public function getNodeUrl(array $node): ?string
     {
         return $node['url'] ?? null;
@@ -341,12 +388,12 @@ class ServerSideTreeComponent extends Component implements HasActions, HasForms
 
     public function shouldRenderNodeAsLink(array $node): bool
     {
-        return $this->enableNodeUrls && ! empty($this->getNodeUrl($node));
+        return $this->isEnableNodeUrls() && ! empty($this->getNodeUrl($node));
     }
 
     public function canSelectNode(string $nodeId): bool
     {
-        if (! $this->enableSelection) {
+        if (! $this->isEnabledSelection()) {
             return false;
         }
 
@@ -356,7 +403,7 @@ class ServerSideTreeComponent extends Component implements HasActions, HasForms
         }
 
         // For single selection, we can always select (it will replace current)
-        if (! $this->multipleSelection) {
+        if (! $this->isMultipleSelection()) {
             return true;
         }
 
@@ -364,7 +411,7 @@ class ServerSideTreeComponent extends Component implements HasActions, HasForms
         return $this->canSelectMoreNodes();
     }
 
-    // Action handling for tree nodesx
+    // Action handling for tree nodes
 
     protected function resolveAction(array $action, array $parentActions): ?Action
     {
@@ -399,9 +446,9 @@ class ServerSideTreeComponent extends Component implements HasActions, HasForms
         });
 
         return [
-            'nodes' => array_values($rootNodes),
+            'nodes' => $rootNodes,
             'rootNodesCount' => count($rootNodes),
-            'multipleSelection' => $this->multipleSelection,
+            'multipleSelection' => $this->isMultipleSelection(),
             'maxSelections' => $this->maxSelections,
 
             'homeButtonText' => $this->getHomeButtonText(),
@@ -411,7 +458,7 @@ class ServerSideTreeComponent extends Component implements HasActions, HasForms
             'navigationHeaderActions' => static::$showNavigationHeader ? $this->getNavigationHeaderActions() : [],
             
             'enableNodeUrls' => static::$enableNodeUrls,
-            'enableSelection' => static::$enableSelection,
+            'enableSelection' => $this->isEnabledSelection(),
             'showNodeActions' => static::$showNodeActions,
             'showToolbarActions' => static::$showToolbarActions,
             'showNavigationHeader' => static::$showNavigationHeader,

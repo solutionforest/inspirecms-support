@@ -20,6 +20,7 @@ class SortableTreeComponent extends Component implements HasActions, HasForms
     }
     use InteractsWithForms;
     use WithSortableTreeActions;
+
     protected static bool $showToolbarActions = false;
     protected static bool $showNodeActions = true;
     protected static bool $searchable = false;
@@ -94,24 +95,17 @@ class SortableTreeComponent extends Component implements HasActions, HasForms
     }
 
     //region Action Handling
-    public function mountRecursiveTreeNodeAction(string $name, $treeNodeId, array $arguments = [], array $context = []): mixed
-    {
-        $context['recordKey'] = $treeNodeId;
-        $context['recursiveTreeNode'] = true;
-
-        return $this->mountAction($name, $arguments, $context);
-    }
 
     protected function resolveAction(array $action, array $parentActions): ?Action
     {
-        if (filled($action['context']['recursiveTreeNode'] ?? null)) {
-            return $this->resolveRecursiveTreeNodeAction($action, $parentActions);
+        if (isset($action['arguments']['node'])) {
+            return $this->resolveTreeNodeAction($action, $parentActions);
         }
 
         return $this->resolveBaseAction($action, $parentActions);
     }
 
-    protected function resolveRecursiveTreeNodeAction(array $action, array $parentActions): ?Action
+    protected function resolveTreeNodeAction(array $action, array $parentActions): ?Action
     {
         return $this->resolveBaseAction($action, $parentActions);
     }

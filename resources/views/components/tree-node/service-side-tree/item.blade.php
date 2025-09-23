@@ -32,14 +32,12 @@
                 'cursor-pointer' => $enableSelection && $canSelectNode,
                 'opacity-50 cursor-not-allowed' => $enableSelection && !$canSelectNode,
                 'is-expanded' => $isExpanded,
+                'is-active' => $isSelected,
             ])
     }}
 >
     <div 
-        @class([
-            'tree-node-content',
-            'bg-primary-50 dark:bg-primary-900/20' => $isSelected,
-        ])
+        class="tree-node-content"
     >
         {{-- Expand/Collapse Button --}}
         <div class="tree-node-toggle">
