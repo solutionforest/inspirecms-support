@@ -22,10 +22,15 @@ class SortableTreeComponent extends Component implements HasActions, HasForms
     use WithSortableTreeActions;
 
     protected static bool $showToolbarActions = false;
+
     protected static bool $showNodeActions = true;
+
     protected static bool $searchable = false;
+
     protected static bool $allowDragDrop = false;
+
     protected static int $maxDepth = -1;
+
     protected static int $maxVisibleDepth = 20;
 
     public array $nodes = [];
@@ -90,11 +95,11 @@ class SortableTreeComponent extends Component implements HasActions, HasForms
         $actions = $this->getNodeItemActions();
 
         return collect($actions)
-            ->map(fn (Action|ActionGroup $action) => $action->toHtml())
+            ->map(fn (Action | ActionGroup $action) => $action->toHtml())
             ->all();
     }
 
-    //region Action Handling
+    // region Action Handling
 
     protected function resolveAction(array $action, array $parentActions): ?Action
     {

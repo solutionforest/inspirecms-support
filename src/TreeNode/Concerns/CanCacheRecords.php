@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 trait CanCacheRecords
 {
     protected array $nodeRecordsCache = []; // Cache model records by node ID
-    
+
     protected static ?string $model = null;
 
     protected function cacheRecordAppend($record, $key = null)

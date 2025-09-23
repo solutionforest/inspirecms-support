@@ -22,10 +22,15 @@ class ServerSideTreeComponent extends Component implements HasActions, HasForms
     use WithServerSideTreeActions;
 
     protected static int $maxDepth = -1;
+
     protected static bool $showNodeActions = true;
+
     protected static bool $showToolbarActions = true;
+
     protected static bool $showNavigationHeader = true;
+
     protected static bool $enableNodeUrls = false;
+
     protected static bool $enableSelection = false;
 
     public array $nodes = [];
@@ -73,12 +78,12 @@ class ServerSideTreeComponent extends Component implements HasActions, HasForms
             ->all();
 
         foreach ($preloadNodes as $nodeId) {
-            if (!in_array($nodeId, $this->expandedNodes)) {
+            if (! in_array($nodeId, $this->expandedNodes)) {
                 $this->expandedNodes[] = $nodeId;
             }
-            
+
             // Load children if not already cached
-            if (!isset($this->loadedChildrenCache[$nodeId])) {
+            if (! isset($this->loadedChildrenCache[$nodeId])) {
                 $children = $this->getChildNodes($nodeId);
                 $this->loadedChildrenCache[$nodeId] = $children;
             }
@@ -435,7 +440,7 @@ class ServerSideTreeComponent extends Component implements HasActions, HasForms
         return $this->resolveBaseAction($action, $parentActions);
     }
 
-    protected function getHomeButtonText(): string|Htmlable
+    protected function getHomeButtonText(): string | Htmlable
     {
         return 'Root';
     }
@@ -464,7 +469,7 @@ class ServerSideTreeComponent extends Component implements HasActions, HasForms
 
             'toolbarActions' => static::$showToolbarActions ? $this->getToolbarActions() : [],
             'navigationHeaderActions' => static::$showNavigationHeader ? $this->getNavigationHeaderActions() : [],
-            
+
             'enableNodeUrls' => static::$enableNodeUrls,
             'enableSelection' => $this->isEnabledSelection(),
             'showNodeActions' => static::$showNodeActions,

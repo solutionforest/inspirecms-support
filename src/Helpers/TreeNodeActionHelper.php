@@ -10,11 +10,8 @@ use Illuminate\Database\Eloquent\Model;
 class TreeNodeActionHelper
 {
     /**
-     * @param array $node
-     * @param array<Action|ActionGroup> $livewireActions
-     * @param Closure(Model|string|int|null):Model|null $resolveRecordUsing
-     * @param null | Model | string $model
-     * @param ?\Livewire\Component $livewire
+     * @param  array<Action|ActionGroup>  $livewireActions
+     * @param  Closure(Model|string|int|null):Model|null  $resolveRecordUsing
      * @return array<Action|ActionGroup>
      */
     public static function getNodeActions(array $node, array $livewireActions, ?Closure $resolveRecordUsing = null, string | Model | null $model = null, ?\Livewire\Component $livewire = null, string $idName = 'id', string $actionName = '__visibleActions'): array
@@ -49,7 +46,7 @@ class TreeNodeActionHelper
                         $action = $action
                             ->record($nodeId)
                             ->resolveRecordUsing($resolveRecordUsing);
-                            
+
                     }
 
                     if ($livewire) {
@@ -69,7 +66,7 @@ class TreeNodeActionHelper
                     idName: $idName,
                     actionName: $actionName,
                 );
-                if (!empty($groupActions)) {
+                if (! empty($groupActions)) {
                     $filteredActions[] = $action->actions($groupActions);
                 }
             }
