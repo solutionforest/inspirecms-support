@@ -1,6 +1,7 @@
 @props([
     'livewire',
     'node' => [],
+    'indent' => 0,
     'hasActions' => false,
     'enableSelection' => false,
     'multipleSelection' => true,
@@ -21,35 +22,35 @@
 
 <div 
     wire:key={{ $treeNodeLivewireId }}
-    class=""
-    style="padding-left: {{ ($node['depth'] ?? 0) * 1.2 }}rem;"
     @if($enableSelection)
         wire:click="toggleNodeSelection('{{ $nodeId }}')"
     @endif
-    @class([
-        'tree-node-item group relative',
-        'cursor-pointer' => $canSelectNode,
-        'opacity-50 cursor-not-allowed' => !$canSelectNode,
-    ])
+    {{ 
+        $attributes 
+            ->class([
+                'tree-node-item group relative',
+                'cursor-pointer' => $enableSelection && $canSelectNode,
+                'opacity-50 cursor-not-allowed' => $enableSelection && !$canSelectNode,
+                'is-expanded' => $isExpanded,
+            ])
+    }}
 >
     <div 
         @class([
-            'tree-node-content flex items-center gap-x-2 rounded-lg px-3 py-2 hover:bg-gray-50 dark:hover:bg-white/5',
+            'tree-node-content',
             'bg-primary-50 dark:bg-primary-900/20' => $isSelected,
         ])
     >
         {{-- Expand/Collapse Button --}}
-        <div class="tree-node-toggle flex-shrink-0">
+        <div class="tree-node-toggle">
             @if($node['has_children'] ?? false)
                 <x-filament::icon-button
                     color="gray"
                     :icon="\Filament\Support\Icons\Heroicon::ChevronRight"
                     wire:click="toggleNode('{{ $nodeId }}')"
                     :label="$isExpanded ? 'Collapse' : 'Expand'"
-                    class="tree-toggle-btn"
-                    x-bind:class="{
-                        'rotate-90': {{ $isExpanded ? 'true' : 'false' }},
-                    }"
+                    class="tree-toggle-btn rtl:rotate-180 group-[.is-expanded]:rotate-90 group-[.is-expanded]:rtl:rotate-90"
+                    wire:loading.class="opacity-50"
                 />
             @else
                 <div class="h-5 w-5"></div>
@@ -58,23 +59,14 @@
 
         {{-- Node Icon --}}
         @if($node['icon'] ?? null)
-            <div class="tree-node-icon flex-shrink-0">
-                @if(str_starts_with($node['icon'], 'heroicon'))
-                    <x-dynamic-component 
-                        :component="$node['icon']" 
-                        class="h-5 w-5 text-gray-500 dark:text-gray-400" 
-                    />
-                @else
-                    <div class="h-5 w-5 text-gray-500 dark:text-gray-400">
-                        {!! $node['icon'] !!}
-                    </div>
-                @endif
+            <div class="tree-node-icon">
+                {{ \Filament\Support\generate_icon_html(icon: $node['icon'], size: \Filament\Support\Enums\IconSize::Small) }}
             </div>
         @endif
 
         {{-- Node Name --}}
         <div 
-            class="tree-node-label flex-1 min-w-0"
+            class="tree-node-label"
         >
             @php
                 $nodeLabelData = $livewire->getNodeLabel($node);
@@ -88,21 +80,21 @@
                     href="{{ $nodeUrl }}" 
                     class="block group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors duration-150"
                 >
-                    <span class="block truncate text-sm font-medium text-gray-950 dark:text-white group-hover:text-primary-600 dark:group-hover:text-primary-400">
+                    <span class="tree-node-label-title group-hover:text-primary-600 dark:group-hover:text-primary-400">
                         {{ $nodeTitle }}
                     </span>
                     @if($nodeDescription)
-                        <span class="block truncate text-xs text-gray-500 dark:text-gray-400">
+                        <span class="tree-node-label-description">
                             {{ $nodeDescription }}
                         </span>
                     @endif
                 </a>
             @else
-                <span class="block truncate text-sm font-medium text-gray-950 dark:text-white">
+                <span class="tree-node-label-title">
                     {{ $nodeTitle }}
                 </span>
                 @if($nodeDescription)
-                    <span class="block truncate text-xs text-gray-500 dark:text-gray-400">
+                    <span class="tree-node-label-description">
                         {{ $nodeDescription }}
                     </span>
                 @endif
@@ -132,24 +124,16 @@
                 </template>
             </x-filament::actions>
         @endif
-
-        {{-- Loading Indicator --}}
-        <div 
-            wire:loading 
-            wire:target="toggleNode('{{ $nodeId }}')" 
-            class="absolute left-50 flex items-center justify-center bg-white/75 dark:bg-gray-900/75"
-        >
-            <x-filament::loading-indicator class="h-4 w-4" />
-        </div>
     </div>
 </div>
 
 {{-- Render Children --}}
 @if($isExpanded && ($node['has_children'] ?? false))
-    <div class="tree-children">
+    <div class="tree-node-items tree-children" @style(['--tree-node-indent:' . $indent + 1])>
         @foreach($livewire?->getChildrenForNode($nodeId) ?? [] as $childNode)
             <x-inspirecms-support::tree-node.service-side-tree.item
                 :node="$childNode"
+                :indent="$indent + 1"
                 :livewire="$livewire"
                 :hasActions="$hasActions"
                 :enableSelection="$enableSelection"

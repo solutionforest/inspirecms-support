@@ -1,5 +1,1 @@
-@props([
-    'class' => 'drop-indicator'
-])
-
-<div class="{{ $class }}" {{ $attributes }}></div>
+<div {{ $attributes->class(['drop-indicator']) }}></div>

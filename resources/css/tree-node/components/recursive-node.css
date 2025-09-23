@@ -1,0 +1,75 @@
+.recursive-tree-node {
+    >.search-ctn {
+        @apply mb-2;
+    }
+
+    >.tree-toolbar {
+        @apply mb-2;
+    }
+
+    .tree-node-items {
+
+        .tree-node-item-ctn {
+
+            .drop-indicator {
+                @apply h-[2px];
+            }   
+                
+            .tree-node-item {
+                @apply relative p-2 my-[2px] flex items-center justify-between rounded-md transition border border-gray-300 hover:bg-gray-200 dark:border-gray-500 dark:hover:bg-gray-700/20;
+
+                &.active {
+                    @apply bg-(--primary-300) opacity-75 border-(--primary-400) dark:bg-(--primary-900) dark:border-(--primary-600);
+                }
+
+                &.search-match {
+                    @apply bg-(--primary-300) border-(--primary-700);
+                }
+
+                &.dragover {
+                    @apply bg-(--primary-300) border-dashed border-(--primary-700);
+                }
+                
+                &.dragover-before {
+                    @apply border-t-2 border-(--primary-700);
+                }
+
+                &.dragover-after {
+                    @apply border-b-2 border-(--primary-700);
+                }
+
+
+                >.tree-node-content {
+                    @apply flex-1 flex items-center gap-x-2;
+
+                    >.tree-node-toggle-btn {
+
+                    }
+
+                    >.tree-node-label {
+                        @apply flex-1 w-full grid gap-0.5 min-w-0;
+
+                        .tree-node-label-description {
+                            @apply text-xs text-gray-700 dark:text-gray-400 truncate max-w-[12rem] md:max-w-[7rem] lg:max-w-full;
+                        }
+                    }
+                }
+            }
+
+            .tree-children {
+                @apply ps-4;
+            }
+        }
+    }
+}
+
+.drag-drop-tree-node {
+    .tree-node-item > .tree-node-content-ctn {
+        @apply cursor-move;
+    }
+}
+.searchable-tree-node {
+    .search-highlight {
+        @apply px-[2px] bg-[#ffd700] rounded-md dark:bg-[#555500];
+    }
+}

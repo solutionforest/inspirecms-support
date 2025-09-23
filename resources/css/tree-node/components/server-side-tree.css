@@ -1,0 +1,58 @@
+.server-side-tree {
+    >.tree-toolbar {
+        @apply w-full flex items-center gap-2 mb-2 px-3;
+    }
+
+    >.tree-content-ctn {
+        @apply space-y-1;
+
+        >.tree-navigation-header {
+            @apply flex items-center justify-between px-3 py-2 bg-gray-50 rounded-lg border-b border-gray-200 dark:border-gray-700 dark:bg-gray-800;
+
+            >.tree-navigation-header-text-ctn {
+                @apply flex-1;
+                
+                >a, >span {
+                    @apply w-full inline-flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300;
+
+                    > svg {
+                        @apply h-4 w-4;
+                    }
+                }
+            }
+        }
+
+        >.tree-empty {
+            @apply text-sm text-gray-500 dark:text-gray-400 py-4 text-center;
+        }
+
+        .tree-node-items {
+            @apply flex flex-col space-y-1;
+            
+            &.tree-children {
+                @apply ms-[calc(1.25rem*var(--tree-node-indent,0))];
+            }
+
+            > .tree-node-item {
+                >.tree-node-content {
+                    @apply flex items-center gap-x-1 rounded-lg px-3 py-2 hover:bg-gray-50 dark:hover:bg-white/5;
+
+                    >.tree-node-toggle, >.tree-node-icon {
+                        @apply flex-shrink-0;
+                    }
+                    >.tree-node-label {
+                        @apply flex-1 min-w-0;
+
+                        .tree-node-label-title {
+                            @apply block truncate text-sm font-medium text-gray-950 dark:text-white;
+                        }
+
+                        .tree-node-label-description {
+                            @apply block truncate text-xs text-gray-500 dark:text-gray-400;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

@@ -23,7 +23,6 @@ use SolutionForest\InspireCms\Support\MediaLibrary\FolderBrowserComponent;
 use SolutionForest\InspireCms\Support\MediaLibrary\MediaDetailComponent;
 use SolutionForest\InspireCms\Support\MediaLibrary\MediaLibraryComponent;
 use SolutionForest\InspireCms\Support\Testing\TestsForms;
-use SolutionForest\InspireCms\Support\TreeNode\ModelExplorerComponent;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 use Spatie\MediaLibrary\MediaCollections\FileAdder;
@@ -83,15 +82,13 @@ class InspireCmsSupportServiceProvider extends PackageServiceProvider
 
     public function packageBooted(): void
     {
-        Livewire::component('inspirecms-support::model-explorer', ModelExplorerComponent::class);
-
         Livewire::component('inspirecms-support::media-library', MediaLibraryComponent::class);
         Livewire::component('inspirecms-support::media-library.folders', FolderBrowserComponent::class);
         Livewire::component('inspirecms-support::media-library.detail-info', MediaDetailComponent::class);
 
         // Asset Registration
         FilamentAsset::register([
-            Css::make('tree-node', __DIR__ . '/../resources/dist/components/tree-node.css'),
+            Css::make('tree-node', __DIR__ . '/../resources/dist/components/tree-node.css')->loadedOnRequest(),
             Css::make('media-library', __DIR__ . '/../resources/dist/components/media-library.css'),
             Js::make('media-library', __DIR__ . '/../resources/dist/media-library.js'),
             Js::make('tree-node', __DIR__ . '/../resources/dist/tree-node.js'),
