@@ -424,6 +424,30 @@ class ServerSideTreeComponent extends Component implements HasActions, HasForms
         return $this->canSelectMoreNodes();
     }
 
+    /**
+     * Handle node selection without affecting expand/collapse state
+     */
+    public function selectNodeOnly(string $nodeId): void
+    {
+        $this->selectNode($nodeId);
+    }
+
+    /**
+     * Handle node deselection without affecting expand/collapse state  
+     */
+    public function deselectNodeOnly(string $nodeId): void
+    {
+        $this->deselectNode($nodeId);
+    }
+
+    /**
+     * Handle node selection toggle without affecting expand/collapse state
+     */
+    public function toggleNodeSelectionOnly(string $nodeId): void
+    {
+        $this->toggleNodeSelection($nodeId);
+    }
+
     // Action handling for tree nodes
 
     protected function resolveAction(array $action, array $parentActions): ?Action

@@ -53,7 +53,7 @@
                         }
 
                         .tree-node-label-description {
-                            @apply block truncate text-xs text-gray-500 dark:text-gray-400;
+                            @apply block truncate font-mono text-xs text-gray-500 dark:text-gray-400;
                         }
                     }
                 }

@@ -45,7 +45,7 @@
                 <x-filament::icon-button
                     color="gray"
                     :icon="\Filament\Support\Icons\Heroicon::ChevronRight"
-                    wire:click="toggleNode('{{ $nodeId }}')"
+                    wire:click.stop="toggleNode('{{ $nodeId }}')"
                     :label="$isExpanded ? 'Collapse' : 'Expand'"
                     class="tree-toggle-btn rtl:rotate-180 group-[.is-expanded]:rotate-90 group-[.is-expanded]:rtl:rotate-90"
                     wire:loading.class="opacity-50"
@@ -77,6 +77,7 @@
                 <a 
                     href="{{ $nodeUrl }}" 
                     class="block group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors duration-150"
+                    onclick="event.stopPropagation()"
                 >
                     <span class="tree-node-label-title group-hover:text-primary-600 dark:group-hover:text-primary-400">
                         {{ $nodeTitle }}
@@ -105,6 +106,7 @@
                 class="tree-node-actions"
                 wire:key={{ $treeNodeActionsLivewireId }}
                 wire:target="getNodeItemActionsHtml('{{ $nodeId }}')"
+                x-on:click.stop=""
                 x-data="{
                     actions: [],
                     init() {
