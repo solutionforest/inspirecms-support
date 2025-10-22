@@ -30,10 +30,6 @@ trait HasItemActions
      */
     protected array $cachedMediaItemActions = [];
 
-    public function bootedHasItemActions()
-    {
-        $this->cacheHasItemActions();
-    }
 
     public function cacheHasItemActions()
     {

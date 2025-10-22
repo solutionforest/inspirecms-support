@@ -14,7 +14,7 @@
         @apply h-14 px-4 py-2 backdrop-blur-sm ring-1 ring-slate-900/10 bg-(--gray-50)/50 dark:ring-black/10 dark:bg-(--gray-700)/50;
     }
     .media-library__header {
-        @apply top-16 sticky z-10 flex items-center justify-between;
+        @apply top-14 sticky z-10 flex items-center justify-between;
     }
 
     /* Media Library Contents */
@@ -23,7 +23,7 @@
         height: 70svh; /* 70% of the viewport height */
     }
     .media-library__content .folder-ctn {
-        @apply flex-auto absolute lg:static w-64 max-w-[300px];
+        @apply flex-auto absolute lg:static w-64 max-w-[250px];
     }
     .media-library__content .browser-ctn {
         @apply flex-1 grow p-4 min-w-[300px];

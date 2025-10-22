@@ -145,14 +145,12 @@
             </div>
         </div>
 
-        @if ($this->hasAnyMediaSelected())
-            <div class="ctn detail-info-ctn">
-                <livewire:inspirecms-support::media-library.detail-info 
-                    :$selectedMediaId 
-                    :$toggleMediaId 
-                    :$isModalPicker />
-            </div>
-        @endif
+        <div class="ctn detail-info-ctn">
+            <livewire:inspirecms-support::media-library.detail-info 
+                :$selectedMediaId 
+                :$toggleMediaId 
+                :$isModalPicker />
+        </div>
     </div>
 
     <div class="media-library__footer">

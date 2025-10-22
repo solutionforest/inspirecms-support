@@ -40,11 +40,6 @@ class MediaDetailComponent extends Component implements HasItemActions, HasItemB
 
     public function render()
     {
-        // Ensure that the actions are cached before rendering
-        if (empty($this->cachedMediaItemActions)) {
-            $this->cacheHasItemActions();
-        }
-
         return view('inspirecms-support::livewire.components.media-library.media-detail', [
             'toggleMedia' => $this->resolveToggleMedia(),
         ]);
