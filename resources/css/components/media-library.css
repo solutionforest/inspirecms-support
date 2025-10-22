@@ -125,15 +125,6 @@
         /* Grid adjustments for media library browser items */
         @apply grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4;
     }
-    &.media-library--detail-expanded
-        .media-library__content
-        .browser-ctn
-        .browser-items-groups
-        .browser-items-group
-        .browser-items {
-        /* Grid adjustments for media library browser items */
-        @apply grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4;
-    }
 
     /* Thumbnail */
     .thumbnail-ctn svg,
