@@ -3,11 +3,12 @@
     $id = $getId();
     $key = $getKey();
     $isDisabled = $isDisabled();
-
-    $limitedStateCount = $getLimitDisplay();
+    
     $cachedSelectedAssets = collect($getCachedSelectedAssets());
+    $limitedStateCount = $getLimitDisplay();
     $limitedState = $limitedStateCount != null ? $cachedSelectedAssets->take($limitedStateCount) : $cachedSelectedAssets;
     $stateCount = $cachedSelectedAssets->count();
+    $hasLimitedRemainingText = $limitedStateCount != null && $limitedStateCount < $stateCount;
 
     $height = $width = '3rem';
 
@@ -17,55 +18,25 @@
     $remainingTextCtnStyles = "padding: 0 4rem;";
     $itemCtnClasses = 'item-content';
     $itemCtnStyles = 'width: 10rem;';
-
-    $filterTypes = $getFilterTypes();
-    $mediaPickerModalId = $getMediaLibraryModalId();
-    $mediaPickerModalConfig = $getMediaLibraryModalConfig($filterTypes);
-    $mediaPickerModalConfig['modelable'] = ['selectedMediaId' => 'selectedMediaAssets'];
 @endphp
-<div 
-    {{
-        $attributes
-            ->merge($getExtraAttributes(), escape: false)
-            ->class(['fi-fo-media-picker'])
-    }}
-    x-data="{ 
-        state: $wire.{{ $applyStateBindingModifiers("\$entangle('{$getStatePath()}')") }},
-        openModal() {
-            $dispatch('x-media-picker-modal-setup', { 
-                selected: this.state,
-                key: @js($key),
-                config: @js($mediaPickerModalConfig),
-                modalId: @js($mediaPickerModalId),
-                openModal: true,
-            });
-        },
-        clear() {
-            $wire
-                .callSchemaComponentMethod(
-                    @js($key),
-                    'clearSelected',
-                    {}
-                );
-        }
-    }"
-    x-on:update-media-picker-selection.window="
-        if ($event.detail.key !== @js($key) || $event.detail.id !== @js($mediaPickerModalId)) {
-            return;
-        }
 
-        $wire
-            .callSchemaComponentMethod(
-                @js($key),
-                'updateSelected',
-                { ids: $event.detail?.data || [] },
-            );
-    "
+<x-dynamic-component
+    :component="$getFieldWrapperView()"
+    :field="$field"
 >
-
-    <x-dynamic-component
-        :component="$getFieldWrapperView()"
-        :field="$field"
+    <div
+        {{
+            $attributes
+                ->merge([
+                    'id' => $id,
+                ], escape: false)
+                ->merge($getExtraAttributes(), escape: false)
+                ->class([
+                    'fi-fo-media-picker',
+                    'fi-fo-media-picker-disabled' => $isDisabled,
+                    // 'fi-fo-media-picker-multiple' => $isMultiple,
+                ])
+        }}
     >
         <div class="flex gap-x-2 overflow-x-auto">
             @foreach ($limitedState as $asset)
@@ -124,14 +95,10 @@
 
         <div class="flex gap-2">
             @if (! $isDisabled)
-                <x-filament::button color="gray" x-on:click="clear()">
-                    {{ __('inspirecms-support::media-library.buttons.clear.label') }}
-                </x-filament::button>
-                <x-filament::button x-on:click="openModal()">
-                    {{ __('inspirecms-support::media-library.buttons.select.label') }}
-                </x-filament::button>
+                {{ $getAction('clear') }}
+                {{ $getAction('select') }}
             @endif
         </div>
-
-    </x-dynamic-component>
-</div>
+    </div>
+    
+</x-dynamic-component>

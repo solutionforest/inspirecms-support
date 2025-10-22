@@ -6,8 +6,6 @@ use Filament\Support\Assets\Css;
 use Filament\Support\Assets\Js;
 use Filament\Support\Facades\FilamentAsset;
 use Filament\Support\Facades\FilamentIcon;
-use Filament\Support\Facades\FilamentView;
-use Filament\View\PanelsRenderHook;
 use Illuminate\Database\Schema\Blueprint;
 use Livewire\Features\SupportTesting\Testable;
 use Livewire\Livewire;
@@ -18,10 +16,10 @@ use SolutionForest\InspireCms\Support\Base\Manifests\ModelRegistryInterface;
 use SolutionForest\InspireCms\Support\Base\Manifests\ResolverRegistry;
 use SolutionForest\InspireCms\Support\Base\Manifests\ResolverRegistryInterface;
 use SolutionForest\InspireCms\Support\Macros\BlueprintMarcos;
-use SolutionForest\InspireCms\Support\MediaLibrary\Contracts\MediaLibraryPage;
-use SolutionForest\InspireCms\Support\MediaLibrary\FolderBrowserComponent;
-use SolutionForest\InspireCms\Support\MediaLibrary\MediaDetailComponent;
-use SolutionForest\InspireCms\Support\MediaLibrary\MediaLibraryComponent;
+use SolutionForest\InspireCms\Support\MediaLibrary\Livewire\FolderBrowserComponent;
+use SolutionForest\InspireCms\Support\MediaLibrary\Livewire\MediaDetailComponent;
+use SolutionForest\InspireCms\Support\MediaLibrary\Livewire\MediaLibraryComponent;
+use SolutionForest\InspireCms\Support\MediaLibrary\Livewire\MediaSelectLivewireComponent;
 use SolutionForest\InspireCms\Support\Testing\TestsForms;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
@@ -85,6 +83,7 @@ class InspireCmsSupportServiceProvider extends PackageServiceProvider
         Livewire::component('inspirecms-support::media-library', MediaLibraryComponent::class);
         Livewire::component('inspirecms-support::media-library.folders', FolderBrowserComponent::class);
         Livewire::component('inspirecms-support::media-library.detail-info', MediaDetailComponent::class);
+        Livewire::component('inspirecms-support::media-library.select', MediaSelectLivewireComponent::class);
 
         // Asset Registration
         FilamentAsset::register([
@@ -97,21 +96,6 @@ class InspireCmsSupportServiceProvider extends PackageServiceProvider
 
         FilamentIcon::register($this->getIcons());
 
-        FilamentView::registerRenderHook(
-            PanelsRenderHook::BODY_END,
-            function (array $scopes) {
-                // Sample scope
-                // 0: page
-                // 1: resouce (if any)
-                $pageToCheck = collect($scopes)->where(fn ($class) => is_string($class) && class_exists($class))->first();
-                if ($pageToCheck && in_array(MediaLibraryPage::class, class_implements($pageToCheck))) {
-                    // Skip rendering the media picker modal if the page implements MediaLibraryPage
-                    return null;
-                }
-
-                return view('inspirecms-support::forms.components.media-picker.modal');
-            },
-        );
 
         Testable::mixin(new TestsForms);
     }

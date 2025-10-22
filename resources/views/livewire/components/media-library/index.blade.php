@@ -45,7 +45,6 @@
         showUploadForm: false,
         selectedMediaId: $wire.entangle('selectedMediaId').live,
     }"
-    {{ $this->getExtraAlpineAttributes() }}
 >
     <div class="media-library__header">
         <x-inspirecms-support::media-library.breadcrumbs :breadcrumbs="$breadcrumbs" />

@@ -3,31 +3,28 @@
 namespace SolutionForest\InspireCms\Support\MediaLibrary\Forms\Components;
 
 use Closure;
+use Filament\Actions\Action;
 use Filament\Forms\Components\Field;
-use Filament\Support\Components\Attributes\ExposedLivewireMethod;
+use Filament\Support\Enums\Width;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use SolutionForest\InspireCms\Support\Dtos\MediaAssetDto;
 use SolutionForest\InspireCms\Support\Facades\ModelRegistry;
 use SolutionForest\InspireCms\Support\MediaLibrary\Forms\Components\Concerns\HasMediaFilterTypes;
-use SolutionForest\InspireCms\Support\MediaLibrary\Forms\Components\Concerns\InteractsWithMediaLibraryModal;
+use SolutionForest\InspireCms\Support\MediaLibrary\Forms\Components\Concerns\LimitsMediaSelection;
 use SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset;
 use Throwable;
 
 class MediaPicker extends Field
 {
     use HasMediaFilterTypes;
-    use InteractsWithMediaLibraryModal;
+    use LimitsMediaSelection;
 
     /**
      * @var view-string
      */
-    protected string $view = 'inspirecms-support::forms.components.media-picker.index';
-
-    protected int | Closure | null $max = null;
-
-    protected int | Closure | null $min = null;
+    protected string $view = 'inspirecms-support::forms.components.media-picker';
 
     protected null | int | Closure $limitDisplay = null;
 
@@ -93,57 +90,11 @@ class MediaPicker extends Field
 
             return $result;
         });
-    }
 
-    #[ExposedLivewireMethod]
-    public function clearSelected()
-    {
-        $this->rawState([]);
-    }
-
-    #[ExposedLivewireMethod]
-    public function updateSelected($ids)
-    {
-        $state = $this->getCachedSelectedAssets($ids)->keys()->all();
-
-        $this->rawState($state);
-    }
-
-    public function max(int | Closure | null $max): static
-    {
-        $this->max = $max;
-
-        $this->rule('array');
-        $this->rule(static function (MediaPicker $component): string {
-            $max = $component->getMax();
-
-            return "max:{$max}";
-        });
-
-        return $this;
-    }
-
-    public function getMax(): ?int
-    {
-        return $this->evaluate($this->max);
-    }
-
-    public function min(int | Closure | null $min): static
-    {
-        $this->min = $min;
-        $this->rule('array');
-        $this->rule(static function (MediaPicker $component): string {
-            $min = $component->getMin();
-
-            return "min:{$min}";
-        });
-
-        return $this;
-    }
-
-    public function getMin(): ?int
-    {
-        return $this->evaluate($this->min);
+        $this->registerActions([
+            fn (self $component): Action => $component->getSelectAction(),
+            fn (self $component): Action => $component->getClearAction(),
+        ]);
     }
 
     public function limitDisplay(int | Closure $limit): static
@@ -189,6 +140,51 @@ class MediaPicker extends Field
         }
 
         return $this->cachedSelectedAssets = $this->getOrderedAssets($ids);
+    }
+
+    public function getSelectAction(): Action
+    {
+        return Action::make('select')
+            ->label(__('inspirecms-support::media-library.buttons.select.label'))
+            ->modalWidth(Width::Screen)
+            ->fillForm(fn () => [
+                'selection' => $this->getState() ?? [],
+            ])
+            ->extraModalWindowAttributes([
+                'class' => 'media-library-browser-modal-content',
+            ])
+            ->modalHeading(__('inspirecms-support::media-library.buttons.select.heading'))
+            ->modalSubmitActionLabel(__('inspirecms-support::media-library.buttons.select.label'))
+            ->modalCancelActionLabel(__('inspirecms-support::media-library.buttons.cancel.label'))
+            ->schema(function () {
+                $selector = MediaSelect::make('selection')
+                    ->hiddenLabel()
+                    ->columnSpanFull()
+                    ->max(fn () => $this->getMax())
+                    ->min(fn () => $this->getMin())
+                    ->when($this->getFilterTypes(), fn (MediaSelect $component) => $component->filterTypes($this->getFilterTypes()));
+
+                return [$selector];
+            })
+            ->action(function (array $arguments, array $data, MediaPicker $component) {
+                $ids = $data['selection'] ?? [];
+
+                $component->clearCachedSelectedAssets();
+
+                $component->rawState($ids);
+
+                $component->callAfterStateUpdatedHooks();
+            });
+    }
+
+    public function getClearAction(): Action
+    {
+        return Action::make('clear')
+            ->label(__('inspirecms-support::media-library.buttons.clear.label'))
+            ->color('gray')
+            ->action(function () {
+                $this->state([]);
+            });
     }
 
     // region Helpers
