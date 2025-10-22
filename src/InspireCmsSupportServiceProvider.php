@@ -96,7 +96,6 @@ class InspireCmsSupportServiceProvider extends PackageServiceProvider
 
         FilamentIcon::register($this->getIcons());
 
-
         Testable::mixin(new TestsForms);
     }
 

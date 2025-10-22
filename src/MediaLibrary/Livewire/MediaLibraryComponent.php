@@ -12,7 +12,6 @@ use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Computed;
@@ -28,8 +27,8 @@ use SolutionForest\InspireCms\Support\MediaLibrary\Actions\EditAction;
 use SolutionForest\InspireCms\Support\MediaLibrary\Actions\OpenFolderAction;
 use SolutionForest\InspireCms\Support\MediaLibrary\Actions\RenameAction;
 use SolutionForest\InspireCms\Support\MediaLibrary\Actions\ViewAction;
-use SolutionForest\InspireCms\Support\MediaLibrary\Concerns\HasItemActions as HasItemActionsTrait;
 use SolutionForest\InspireCms\Support\MediaLibrary\Concerns\HasFilters;
+use SolutionForest\InspireCms\Support\MediaLibrary\Concerns\HasItemActions as HasItemActionsTrait;
 use SolutionForest\InspireCms\Support\MediaLibrary\Concerns\HasItemBulkActions;
 use SolutionForest\InspireCms\Support\MediaLibrary\Concerns\HasSorts;
 use SolutionForest\InspireCms\Support\MediaLibrary\Concerns\InteractsWithHeaderActions;
@@ -45,8 +44,8 @@ use function Filament\authorize;
  */
 class MediaLibraryComponent extends Component implements HasItemActions, HasItemBulkActions
 {
-    use HasItemActionsTrait;
     use HasFilters;
+    use HasItemActionsTrait;
     use HasSorts;
     use InteractsWithHeaderActions;
     use WithMediaAssets;
@@ -138,7 +137,7 @@ class MediaLibraryComponent extends Component implements HasItemActions, HasItem
     public function updated($key, $value)
     {
         $checkKey = Str::before($key, '.');
-        if ($checkKey == 'selectedMediaId') { 
+        if ($checkKey == 'selectedMediaId') {
             // Remove media
             if (count($this->selectedMediaId) <= 0) {
                 $this->resetToggleMediaId();

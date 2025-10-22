@@ -7,7 +7,4 @@ use SolutionForest\InspireCms\Support\MediaLibrary\Livewire\FolderBrowserCompone
 /**
  * @deprecated Use \SolutionForest\InspireCms\Support\MediaLibrary\Livewire\FolderBrowserComponent instead.
  */
-class FolderBrowserComponent extends LivewireFolderBrowserComponent
-{
-
-}
+class FolderBrowserComponent extends LivewireFolderBrowserComponent {}

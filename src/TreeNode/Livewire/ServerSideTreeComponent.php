@@ -433,7 +433,7 @@ class ServerSideTreeComponent extends Component implements HasActions, HasForms
     }
 
     /**
-     * Handle node deselection without affecting expand/collapse state  
+     * Handle node deselection without affecting expand/collapse state
      */
     public function deselectNodeOnly(string $nodeId): void
     {

@@ -7,6 +7,4 @@ use SolutionForest\InspireCms\Support\MediaLibrary\Livewire\MediaDetailComponent
 /**
  * @deprecated Use \SolutionForest\InspireCms\Support\MediaLibrary\Livewire\MediaDetailComponent instead.
  */
-class MediaDetailComponent extends LivewireMediaDetailComponent
-{
-}
+class MediaDetailComponent extends LivewireMediaDetailComponent {}
