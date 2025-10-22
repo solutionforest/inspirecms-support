@@ -139,11 +139,13 @@ class MediaLibraryComponent extends Component implements HasItemActions, HasItem
         $checkKey = Str::before($key, '.');
         if ($checkKey == 'selectedMediaId') {
             // Remove media
-            if (count($this->selectedMediaId) <= 0) {
+            if (empty($this->selectedMediaId)) {
                 $this->resetToggleMediaId();
             }
+            
+            // Optimize single selection constraint
             if (! $this->isMultipleSelection() && count($this->selectedMediaId) > 1) {
-                $this->selectedMediaId = collect([])->wrap($value)->take(1)->all();
+                $this->selectedMediaId = collect($this->selectedMediaId)->reverse()->take(1)->values()->all();
             }
         }
     }
@@ -181,6 +183,22 @@ class MediaLibraryComponent extends Component implements HasItemActions, HasItem
             if ($mediaId != null) {
                 $this->selectedMediaId = [$mediaId];
             }
+        }
+    }
+
+    /**
+     * Debounced method for bulk selection changes to improve performance
+     */
+    public function updateSelection(array $selectedIds)
+    {
+        if (!$this->isMultipleSelection() && count($selectedIds) > 1) {
+            $selectedIds = array_slice($selectedIds, 0, 1);
+        }
+        
+        $this->selectedMediaId = $selectedIds;
+        
+        if (empty($selectedIds)) {
+            $this->resetToggleMediaId();
         }
     }
 
@@ -499,7 +517,7 @@ class MediaLibraryComponent extends Component implements HasItemActions, HasItem
      *
      * @return Collection<Model&MediaAsset>
      */
-    #[Computed]
+    #[Computed(persist: true, seconds: 60)]
     public function folders()
     {
         // From upper level

@@ -14,17 +14,10 @@
     $loadingIndicatorTargets = implode(',', [
         'assets', 
         'parentKey',
-
         'filter',
         'sort',
-
-        'formConfig',
-        'modalConfig',
-        
         'clearCache', 
         'resetAll', 
-        //'updating', 
-
         'gotoPage', 
         'resetPage', 
         'nextPage', 
@@ -43,7 +36,7 @@
     ])
     x-data="{
         showUploadForm: false,
-        selectedMediaId: $wire.entangle('selectedMediaId').live,
+        selectedMediaId: $wire.entangle('selectedMediaId').defer,
     }"
 >
     <div class="media-library__header">
