@@ -4,14 +4,11 @@ namespace SolutionForest\InspireCms\Support\MediaLibrary\Actions;
 
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Flex;
-use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Image;
 use Filament\Schemas\Components\Section;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Database\Eloquent\Model;
-use SolutionForest\InspireCms\Filament\Clusters\Media;
-use SolutionForest\InspireCms\Support\Helpers\MediaAssetHelper;
 use SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset;
 
 class ViewAction extends ItemAction
@@ -46,7 +43,7 @@ class ViewAction extends ItemAction
 
                         TextEntry::make('file')
                             ->label(__('inspirecms-support::media-library.forms.file.label'))
-                            ->aboveContent(fn (MediaAsset | Model $record) => ($record->isImage() || $record->isSvg()) 
+                            ->aboveContent(fn (MediaAsset | Model $record) => ($record->isImage() || $record->isSvg())
                                 ? Image::make($record->getThumbnailUrl(), $record->getKey())
                                     ->imageSize('14rem')
                                     ->url($record->getFirstMedia()->getUrl())
@@ -80,13 +77,13 @@ class ViewAction extends ItemAction
                                 ->compact()
                                 ->schema(function (MediaAsset | Model $record) {
                                     $components = [];
-        
+
                                     $media = $record?->getFirstMedia();
                                     $state = collect($record->getDisplayedColumns())
                                         ->mapWithKeys(function ($key) use ($media, $record) {
                                             $customPropertyKey = str_replace('custom-property.', '', $key);
                                             $value = match ($key) {
-                                                'size' => (!$record->isFolder() ? $media?->human_readable_size : null),
+                                                'size' => (! $record->isFolder() ? $media?->human_readable_size : null),
                                                 'uploaded_by', 'created_by' => $record->uploaded_by ?? null,
                                                 // Default for not custom properties
                                                 'created_at', 'updated_at', $customPropertyKey => ($record->isFolder()
@@ -99,7 +96,7 @@ class ViewAction extends ItemAction
                                             return [$key => $value];
                                         })
                                         ->all();
-                                   foreach ($state as $key => $value) {
+                                    foreach ($state as $key => $value) {
 
                                         if (in_array($key, ['model_id'])) {
                                             continue;
@@ -116,6 +113,7 @@ class ViewAction extends ItemAction
                                                     ->dateTime('Y-m-d H:i:s')
                                                     ->fontFamily('mono')
                                                     ->placeholder(__('inspirecms-support::media-library.detail_info.' . $key . '.empty'));
+
                                                 break;
                                             default:
                                                 $components[] = TextEntry::make($key)
@@ -130,6 +128,7 @@ class ViewAction extends ItemAction
                                                         'uploaded_by', 'created_by' => 'System',
                                                         default => null,
                                                     });
+
                                                 break;
                                         }
                                     }
@@ -138,7 +137,7 @@ class ViewAction extends ItemAction
                                 }),
                         ]),
 
-                    ])
+                    ]),
             ])
             ->disabledForm()
             ->modalSubmitAction(false)

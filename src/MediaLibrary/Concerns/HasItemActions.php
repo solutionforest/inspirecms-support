@@ -9,7 +9,6 @@ use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Exceptions\ActionNotResolvableException;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Illuminate\Support\Arr;
-use InvalidArgumentException;
 use SolutionForest\InspireCms\Support\MediaLibrary\Actions;
 use SolutionForest\InspireCms\Support\MediaLibrary\Actions\ItemBulkAction;
 

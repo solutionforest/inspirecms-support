@@ -23,8 +23,8 @@ use SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset;
 class MediaDetailComponent extends Component implements HasItemActions, HasItemBulkActions, HasSchemas
 {
     use HasItemActionsTrait;
-    use WithMediaAssets;
     use InteractsWithSchemas;
+    use WithMediaAssets;
 
     #[Reactive]
     public array $selectedMediaId = [];
@@ -91,6 +91,7 @@ class MediaDetailComponent extends Component implements HasItemActions, HasItemB
                                     ->dateTime('Y-m-d H:i:s')
                                     ->fontFamily('mono')
                                     ->placeholder(__('inspirecms-support::media-library.detail_info.' . $key . '.empty'));
+
                                 break;
                             default:
                                 $components[] = TextEntry::make($key)
@@ -105,6 +106,7 @@ class MediaDetailComponent extends Component implements HasItemActions, HasItemB
                                         'uploaded_by', 'created_by' => 'System',
                                         default => null,
                                     });
+
                                 break;
                         }
                     }
@@ -164,7 +166,7 @@ class MediaDetailComponent extends Component implements HasItemActions, HasItemB
             ->mapWithKeys(function ($key) use ($media, $asset) {
                 $customPropertyKey = str_replace('custom-property.', '', $key);
                 $value = match ($key) {
-                    'size' => (!$asset->isFolder() ? $media?->human_readable_size : null),
+                    'size' => (! $asset->isFolder() ? $media?->human_readable_size : null),
                     'uploaded_by', 'created_by' => $asset->uploaded_by ?? null,
                     // Default for not custom properties
                     'created_at', 'updated_at', $customPropertyKey => ($asset->isFolder()

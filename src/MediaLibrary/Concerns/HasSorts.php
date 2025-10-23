@@ -5,9 +5,6 @@ namespace SolutionForest\InspireCms\Support\MediaLibrary\Concerns;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\ToggleButtons;
-use Filament\Schemas\Components\Actions;
-use Filament\Schemas\Components\FusedGroup;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Database\Eloquent\Builder;
@@ -65,6 +62,7 @@ trait HasSorts
                                 if ($this->isSortColumnDisabled('direction')) {
                                     return false;
                                 }
+
                                 return $get('direction') !== 'asc';
                             })
                             ->action(fn ($set) => $set('direction', 'asc'))
@@ -81,6 +79,7 @@ trait HasSorts
                                 if ($this->isSortColumnDisabled('direction')) {
                                     return false;
                                 }
+
                                 return $get('direction') === 'asc';
                             })
                             ->action(fn ($set) => $set('direction', 'desc'))

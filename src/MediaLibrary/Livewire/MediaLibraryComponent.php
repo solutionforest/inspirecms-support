@@ -13,7 +13,6 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Str;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Locked;
 use Livewire\Attributes\Modelable;
@@ -125,7 +124,7 @@ class MediaLibraryComponent extends Component implements HasItemActions, HasItem
         }
     }
 
-    public function updatingFilter($value, $key) 
+    public function updatingFilter($value, $key)
     {
         $this->clearCache();
         if (! $this->isMediaPickerModal()) {
@@ -133,7 +132,7 @@ class MediaLibraryComponent extends Component implements HasItemActions, HasItem
         }
     }
 
-    public function updatingSort($value, $key) 
+    public function updatingSort($value, $key)
     {
         $this->clearCache();
         if (! $this->isMediaPickerModal()) {
@@ -147,7 +146,7 @@ class MediaLibraryComponent extends Component implements HasItemActions, HasItem
         if (empty($this->selectedMediaId)) {
             $this->resetToggleMediaId();
         }
-        
+
         // Optimize single selection constraint - keep the most recent selection
         if (! $this->isMultipleSelection() && count($this->selectedMediaId) > 1) {
             $this->selectedMediaId = array_filter([end($this->selectedMediaId)]);
@@ -211,11 +210,11 @@ class MediaLibraryComponent extends Component implements HasItemActions, HasItem
                 $this->selectedMediaId = [$mediaId];
             }
         }
-        
+
         if (empty($this->selectedMediaId)) {
             $this->resetToggleMediaId();
         }
-        
+
         // Skip full re-render, just update selection state
         $this->skipRender();
     }
