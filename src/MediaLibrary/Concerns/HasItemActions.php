@@ -30,7 +30,6 @@ trait HasItemActions
      */
     protected array $cachedMediaItemActions = [];
 
-
     public function cacheHasItemActions()
     {
         /** @var array<string, Actions\Action | Actions\ActionGroup> */
