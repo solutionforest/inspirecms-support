@@ -157,11 +157,12 @@ class MediaPicker extends Field
             ->modalSubmitActionLabel(__('inspirecms-support::media-library.buttons.select.label'))
             ->modalCancelActionLabel(__('inspirecms-support::media-library.buttons.cancel.label'))
             ->schema(function () {
+                [$min, $max] = [$this->getMin(), $this->getMax()];
                 $selector = MediaSelect::make('selection')
                     ->hiddenLabel()
                     ->columnSpanFull()
-                    ->max(fn () => $this->getMax())
-                    ->min(fn () => $this->getMin())
+                    ->when($max != null, fn (MediaSelect $component, $value) => $component->max($value))
+                    ->when($min != null, fn (MediaSelect $component, $value) => $component->min($value))
                     ->when($this->getFilterTypes(), fn (MediaSelect $component) => $component->filterTypes($this->getFilterTypes()));
 
                 return [$selector];
