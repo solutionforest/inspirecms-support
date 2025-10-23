@@ -120,7 +120,7 @@
                     <x-filament::loading-indicator class="h-4 w-4" />
                 </div>
                 <template x-for="action in actions">
-                    <div x-html="action"></div>
+                    <div x-html="action" class="tree-node-action"></div>
                 </template>
             </x-filament::actions>
         @endif
