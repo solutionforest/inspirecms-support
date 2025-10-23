@@ -167,8 +167,7 @@ class EditAction extends ItemAction
                         return;
                     }
                 } else {
-
-                    $record->update($data);
+                    $record->update(collect($data)->except(['file'])->toArray());
                 }
 
                 $this->success();

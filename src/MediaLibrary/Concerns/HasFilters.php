@@ -40,7 +40,7 @@ trait HasFilters
     {
         return $schema
             ->columns(['default' => 1, 'lg' => 2])
-            ->extraAttributes(['class' => 'gap-y-2 lg:gap-x-2'])
+            ->dense()
             ->components([
                 TextInput::make('title')
                     ->hiddenLabel()

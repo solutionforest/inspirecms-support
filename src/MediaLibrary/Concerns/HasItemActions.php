@@ -39,33 +39,17 @@ trait HasItemActions
             fn (): array => $this->getMediaItemActions(),
         );
 
+        $this->cachedMediaItemActions = $actions;
+
         foreach ($actions as $action) {
 
-            if ($action instanceof ActionGroup || $action instanceof Actions\ActionGroup) {
-                $action->livewire($this);
-
-                /** @var array<string, Action> $flatActions */
-                $flatActions = $action->getFlatActions();
-
-                $this->mergeCachedActions($flatActions);
-                foreach ($flatActions as $flatAction) {
-                    $this->cacheMediaItemAction($flatAction);
+            if ($action instanceof ActionGroup) {
+                foreach ($action->getFlatActions() as $subAction) {
+                    $this->cacheMediaItemAction($subAction);
                 }
-
-                $this->cachedMediaItemActions[] = $action;
-
-                continue;
+            } elseif ($action instanceof Action) {
+                $this->cacheMediaItemAction($action);
             }
-
-            if (! $action instanceof Action) {
-                throw new InvalidArgumentException('The actions must be an instance of ' . Action::class . ', or ' . ActionGroup::class . '.');
-            }
-
-            $action = $this->cacheAction($action);
-            if (! isset($this->cachedFlatMediaItemActions[$action->getName()])) {
-                $this->cachedMediaItemActions[] = $action;
-            }
-            $this->cacheMediaItemAction($action);
         }
     }
 
@@ -100,10 +84,11 @@ trait HasItemActions
         );
     }
 
-    protected function cacheMediaItemAction($action)
+    public function cacheMediaItemAction(Action $action): Action
     {
         $action->livewire($this);
-        $this->cachedFlatMediaItemActions[$action->getName()] = $action;
+
+        return $this->cachedFlatMediaItemActions[$action->getName()] = $action;
     }
 
     public function getCachedMediaItemActions(): array

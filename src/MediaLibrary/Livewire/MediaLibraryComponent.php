@@ -70,6 +70,9 @@ class MediaLibraryComponent extends Component implements HasItemActions, HasItem
     #[Locked]
     public bool $isModalPicker = false;
 
+    #[Locked]
+    public ?int $maxSelections = null; // Maximum number of selections allowed (null = unlimited)
+
     public array $formConfig = [];
 
     public array $uploadData = [];
@@ -78,8 +81,6 @@ class MediaLibraryComponent extends Component implements HasItemActions, HasItem
      * @var Collection
      */
     protected $cachedSelectedMedia = [];
-
-    public ?int $maxSelections = null; // Maximum number of selections allowed (null = unlimited)
 
     protected $listeners = [
         'openFolder',
@@ -115,6 +116,7 @@ class MediaLibraryComponent extends Component implements HasItemActions, HasItem
         $this->resetUploadForm();
     }
 
+    // #region Lifecycle Hooks
     public function updatedPaginators($page, $pageName)
     {
         if ($pageName == static::getPageName()) {
@@ -123,32 +125,37 @@ class MediaLibraryComponent extends Component implements HasItemActions, HasItem
         }
     }
 
-    public function updating($key, $value)
+    public function updatingFilter($value, $key) 
     {
-        $checkKey = Str::before($key, '.');
-        if (in_array($checkKey, ['filter', 'sort'])) {
-            $this->clearCache();
-            if (! $this->isMediaPickerModal()) {
-                $this->resetSelectedMedia();
-            }
+        $this->clearCache();
+        if (! $this->isMediaPickerModal()) {
+            $this->resetSelectedMedia();
         }
     }
 
-    public function updated($key, $value)
+    public function updatingSort($value, $key) 
     {
-        $checkKey = Str::before($key, '.');
-        if ($checkKey == 'selectedMediaId') {
-            // Remove media
-            if (empty($this->selectedMediaId)) {
-                $this->resetToggleMediaId();
-            }
-            
-            // Optimize single selection constraint
-            if (! $this->isMultipleSelection() && count($this->selectedMediaId) > 1) {
-                $this->selectedMediaId = collect($this->selectedMediaId)->reverse()->take(1)->values()->all();
-            }
+        $this->clearCache();
+        if (! $this->isMediaPickerModal()) {
+            $this->resetSelectedMedia();
         }
     }
+
+    public function updatedSelectedMediaId($value, $key)
+    {
+        // Remove media
+        if (empty($this->selectedMediaId)) {
+            $this->resetToggleMediaId();
+        }
+        
+        // Optimize single selection constraint - keep the most recent selection
+        if (! $this->isMultipleSelection() && count($this->selectedMediaId) > 1) {
+            $this->selectedMediaId = array_filter([end($this->selectedMediaId)]);
+        }
+
+        $this->skipRender();
+    }
+    // #endregion Lifecycle Hooks
 
     public function openFolder($mediaId = null)
     {
@@ -176,14 +183,41 @@ class MediaLibraryComponent extends Component implements HasItemActions, HasItem
     public function toggleMedia($mediaId = null, $isFolder = true)
     {
         $this->toggleMediaId = $mediaId;
+
         if ($this->isMediaPickerModal() && $isFolder == true) {
-            //
+            // Skip selection for folders in modal picker
         } else {
             $this->resetSelectedMedia();
+
             if ($mediaId != null) {
                 $this->selectedMediaId = [$mediaId];
             }
         }
+
+        $this->skipHydrate();
+    }
+
+    /**
+     * Optimized method for single selection toggle (bypasses Livewire lifecycle)
+     */
+    public function quickToggle($mediaId)
+    {
+        if (in_array($mediaId, $this->selectedMediaId)) {
+            $this->selectedMediaId = array_values(array_diff($this->selectedMediaId, [$mediaId]));
+        } else {
+            if ($this->isMultipleSelection()) {
+                $this->selectedMediaId[] = $mediaId;
+            } else {
+                $this->selectedMediaId = [$mediaId];
+            }
+        }
+        
+        if (empty($this->selectedMediaId)) {
+            $this->resetToggleMediaId();
+        }
+        
+        // Skip full re-render, just update selection state
+        $this->skipRender();
     }
 
     /**
@@ -244,12 +278,22 @@ class MediaLibraryComponent extends Component implements HasItemActions, HasItem
         $this->resetToggleMediaId();
     }
 
-    public function clearCache()
+    public function clearCache($clearAssets = true, $clearFolders = true)
     {
-        unset(
-            $this->assets,
-            $this->folders,
-        );
+        if ($clearAssets) {
+            unset($this->assets);
+        }
+        if ($clearFolders) {
+            unset($this->folders);
+        }
+    }
+
+    /**
+     * Clear only assets cache (for selection changes that don't affect folder structure)
+     */
+    public function clearAssetsCache()
+    {
+        $this->clearCache(clearAssets: true, clearFolders: false);
     }
 
     public function resetAll()
@@ -500,11 +544,13 @@ class MediaLibraryComponent extends Component implements HasItemActions, HasItem
          */
         $query = $this->getEloquentQuery()
             ->whereParent($this->parentKey)
+            ->select(['*']) // Only select needed columns
             ->withCount('children');
 
         $query = $this->applySortCriteria($query);
         $query = $this->applyFilterCriteria($query);
 
+        // Use simplePaginate for better performance if possible
         return $query->paginate(
             perPage: $this->perPage,
             pageName: static::getPageName(),
@@ -540,6 +586,36 @@ class MediaLibraryComponent extends Component implements HasItemActions, HasItem
             'pageOptions' => static::getPageOptions(),
             'breadcrumbs' => $this->getBreadcrumbs(),
         ]);
+    }
+
+    public function placeholder()
+    {
+        return <<<'Blade'
+        <div class="media-library">
+            <div class="media-library__header"></div>
+            <div class="media-library__content">
+                <div class="ctn browser-ctn">
+                    <div class="browser-items-ctn">
+                        <div class="browser-items-groups">
+                            <div class="browser-items-group">
+                                <div class="browser-items">
+                                    <x-inspirecms-support::media-library.loading-browser-item />
+                                    <x-inspirecms-support::media-library.loading-browser-item />
+                                    <x-inspirecms-support::media-library.loading-browser-item />
+                                    <x-inspirecms-support::media-library.loading-browser-item />
+                                    <x-inspirecms-support::media-library.loading-browser-item />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ctn detail-info-ctn">
+                    <x-inspirecms-support::media-library.loading-section height="100dvh" />
+                </div>
+            </div>
+        </div>
+        Blade;
     }
 
     // region Helpers

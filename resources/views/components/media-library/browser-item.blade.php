@@ -25,6 +25,7 @@
     {{ $attributes
         ->class([
             'browser-item relative cursor-pointer group',
+            'browser-item-selectable' => $selectable,
         ])
         ->merge([
             'wire:key' => "{$livewireKey}.browseritem.{$mediaItem->getKey()}",
@@ -64,7 +65,7 @@
     <div class="item-content">
         <!-- Thumbnail -->
         <div wire:click="toggleMedia('{{ $mediaItem->getKey() }}', '{{ $isFolder }}')"
-            class="thumbnail-ctn mb-2 flex justify-center"
+            class="thumbnail-ctn"
         >
             @if ($mediaItem->isFolder())
                 <div class="relative" 

@@ -2,8 +2,14 @@
 
 namespace SolutionForest\InspireCms\Support\MediaLibrary\Concerns;
 
+use Filament\Actions\Action;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\ToggleButtons;
+use Filament\Schemas\Components\Actions;
+use Filament\Schemas\Components\FusedGroup;
 use Filament\Schemas\Schema;
+use Filament\Support\Icons\Heroicon;
 use Illuminate\Database\Eloquent\Builder;
 
 /**
@@ -36,8 +42,8 @@ trait HasSorts
     public function sortForm(Schema $schema): Schema
     {
         return $schema
-            ->columns(['default' => 2])
-            ->extraAttributes(['class' => 'gap-y-2 lg:gap-x-2'])
+            ->columns(['default' => 1])
+            ->dense()
             ->components([
                 Select::make('type')
                     ->hiddenLabel()
@@ -46,16 +52,46 @@ trait HasSorts
                     ->selectablePlaceholder(false)
                     ->live()
                     ->disabled(fn ($component) => $this->isSortColumnDisabled($component->getName()))
-                    ->dehydratedWhenHidden(),
+                    ->dehydratedWhenHidden()
+                    ->suffixActions([
+                        Action::make('asc_sort')
+                            ->label(__('inspirecms-support::media-library.sort.direction.options.asc'))
+                            ->icon(Heroicon::ArrowUp)
+                            // ->action(fn () => $this->sort['direction'] = 'asc')
+                            // ->color(fn () => ($this->sort['direction'] ?? null) === 'asc' ? 'primary' : 'gray')
+                            // ->color(fn ($get) => ($get('direction') ?? null) === 'asc' ? 'primary' : 'gray')
+                            // ->after(fn () => $this->clearCache())
+                            ->visible(function ($get) {
+                                if ($this->isSortColumnDisabled('direction')) {
+                                    return false;
+                                }
+                                return $get('direction') !== 'asc';
+                            })
+                            ->action(fn ($set) => $set('direction', 'asc'))
+                            ->iconButton(),
+                        Action::make('desc_sort')
+                            ->label(__('inspirecms-support::media-library.sort.direction.options.desc'))
+                            ->icon(Heroicon::ArrowDown)
+                            // ->action(fn () => $this->sort['direction'] = 'desc')
+                            // ->action(fn ($set) => $set('direction', 'desc'))
+                            // ->color(fn ($get) => ($get('direction') ?? null) === 'desc' ? 'primary' : 'gray')
+                            // ->color(fn () => ($this->sort['direction'] ?? null) === 'desc' ? 'primary' : 'gray')
+                            // ->after(fn () => $this->clearCache())
+                            ->visible(function ($get) {
+                                if ($this->isSortColumnDisabled('direction')) {
+                                    return false;
+                                }
+                                return $get('direction') === 'asc';
+                            })
+                            ->action(fn ($set) => $set('direction', 'desc'))
+                            ->iconButton(),
+                    ]),
 
-                Select::make('direction')
-                    ->hiddenLabel()
-                    ->placeholder(__('inspirecms-support::media-library.sort.direction.placeholder'))
-                    ->options(__('inspirecms-support::media-library.sort.direction.options'))
-                    ->selectablePlaceholder(false)
+                Hidden::make('direction')
                     ->live()
                     ->disabled(fn ($component) => $this->isSortColumnDisabled($component->getName()))
                     ->dehydratedWhenHidden(),
+
             ])
             ->statePath($this->getSortFormStatePath());
     }

@@ -2,6 +2,10 @@
 
 namespace SolutionForest\InspireCms\Support\MediaLibrary\Livewire;
 
+use Filament\Infolists\Components\TextEntry;
+use Filament\Schemas\Concerns\InteractsWithSchemas;
+use Filament\Schemas\Contracts\HasSchemas;
+use Filament\Schemas\Schema;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
@@ -16,10 +20,11 @@ use SolutionForest\InspireCms\Support\MediaLibrary\Contracts\HasItemActions;
 use SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset;
 
 #[Lazy]
-class MediaDetailComponent extends Component implements HasItemActions, HasItemBulkActions
+class MediaDetailComponent extends Component implements HasItemActions, HasItemBulkActions, HasSchemas
 {
     use HasItemActionsTrait;
     use WithMediaAssets;
+    use InteractsWithSchemas;
 
     #[Reactive]
     public array $selectedMediaId = [];
@@ -29,6 +34,8 @@ class MediaDetailComponent extends Component implements HasItemActions, HasItemB
 
     #[Reactive]
     public bool $isModalPicker = false;
+
+    public ?Model $mediaDetailRecord = null;
 
     public function placeholder()
     {
@@ -40,9 +47,12 @@ class MediaDetailComponent extends Component implements HasItemActions, HasItemB
 
     public function render()
     {
-        return view('inspirecms-support::livewire.components.media-library.media-detail', [
-            'toggleMedia' => $this->resolveToggleMedia(),
-        ]);
+        return view('inspirecms-support::livewire.components.media-library.media-detail');
+    }
+
+    public function hydrateToggleMediaId($value)
+    {
+        $this->mediaDetailRecord = $this->resolveToggleMedia();
     }
 
     /**
@@ -57,6 +67,51 @@ class MediaDetailComponent extends Component implements HasItemActions, HasItemB
         }
 
         return count($this->getSelectedMediaAssetIds()) == 1 && $asset != null;
+    }
+
+    public function mediaDetailInfolist(Schema $schema): Schema
+    {
+        return $schema
+            ->columns(['default' => 1])
+            ->inlineLabel()
+            ->dense()
+            ->schema(function ($state) {
+                $components = [];
+                if (($asset = $this->mediaDetailRecord) && ($state = $this->getInformationFor($asset))) {
+                    foreach ($state as $key => $value) {
+
+                        $entryLabel = trans("inspirecms-support::media-library.detail_info.{$key}.label");
+
+                        switch ($key) {
+                            case 'created_at':
+                            case 'updated_at':
+                                $components[] = TextEntry::make($key)
+                                    ->label($entryLabel)
+                                    ->state($value)
+                                    ->dateTime('Y-m-d H:i:s')
+                                    ->fontFamily('mono')
+                                    ->placeholder(__('inspirecms-support::media-library.detail_info.' . $key . '.empty'));
+                                break;
+                            default:
+                                $components[] = TextEntry::make($key)
+                                    ->label($entryLabel)
+                                    ->state($value)
+                                    ->fontFamily('mono')
+                                    ->copyable(match ($key) {
+                                        'model_id', 'size', 'uploaded_by', 'created_by' => true,
+                                        default => false,
+                                    })
+                                    ->placeholder(match ($key) {
+                                        'uploaded_by', 'created_by' => 'System',
+                                        default => null,
+                                    });
+                                break;
+                        }
+                    }
+                }
+
+                return $components;
+            });
     }
 
     protected function resolveToggleMedia()
@@ -87,45 +142,6 @@ class MediaDetailComponent extends Component implements HasItemActions, HasItemB
         return $this->selectedMediaId;
     }
 
-    /**
-     * @param  Model & MediaAsset  $asset
-     * @return array
-     */
-    public function getInformationFor($asset)
-    {
-        $media = $asset?->getFirstMedia();
-
-        return collect($asset->getDisplayedColumns())
-            ->map(function ($key) use ($media, $asset) {
-                $fallback = match ($key) {
-                    'created_at', 'updated_at' => trans(
-                        "inspirecms-support::media-library.detail_info.{$key}.empty",
-                    ),
-                    default => '',
-                };
-                $customPropertyKey = str_replace('custom-property.', '', $key);
-                $value = match ($key) {
-                    'size' => ($asset->isFolder() ? '' : $media?->human_readable_size) ?? $fallback,
-                    'created_at', 'updated_at' => ($asset->isFolder()
-                        ? $asset?->{$key}->format('Y-m-d H:i:s')
-                        : $media?->{$key}->format('Y-m-d H:i:s')) ?? $fallback,
-                    'uploaded_by', 'created_by' => $asset->uploaded_by ?? $fallback,
-                    // Default for not custom properties
-                    $customPropertyKey => ($asset->isFolder()
-                        ? $asset?->{$key}
-                        : $media?->{$key}) ?? $fallback,
-                    // Default for custom properties
-                    default => $media->getCustomProperty($customPropertyKey) ?? $fallback,
-                };
-
-                return [
-                    'label' => trans("inspirecms-support::media-library.detail_info.{$key}.label"),
-                    'value' => $value,
-                ];
-            })
-            ->all();
-    }
-
     // region Actions
     protected function getMediaItemActions(): array
     {
@@ -137,71 +153,28 @@ class MediaDetailComponent extends Component implements HasItemActions, HasItemB
     // endregion Actions
 
     /**
-     * @param  Collection<Model & MediaAsset>  $assets
+     * @param  Model & MediaAsset  $asset
      * @return array
      */
-    protected function mututaThumbnail($assets)
+    protected function getInformationFor($asset)
     {
-        if ($assets->count() != 1) {
-            return [];
-        }
-
-        /**
-         * @var null | Model | MediaAsset $asset
-         */
-        $asset = $assets->first();
-
-        $data['is_image'] = $asset->isImage() ?? false;
-        $data['thumbnail'] = $asset->isImage()
-            ? $asset->getThumbnailUrl()
-            : $asset->getThumbnail();
-
-        return $data;
-    }
-
-    /**
-     * @param  Collection<Model & MediaAsset>  $assets
-     * @return array
-     */
-    protected function mutateInformation($assets)
-    {
-        if ($assets->count() != 1) {
-            return [];
-        }
-
-        /**
-         * @var null | Model | MediaAsset $asset
-         */
-        $asset = $assets->first();
         $media = $asset?->getFirstMedia();
 
         return collect($asset->getDisplayedColumns())
-            ->map(function ($key) use ($media, $asset) {
-                $fallback = match ($key) {
-                    'created_at', 'updated_at' => trans(
-                        "inspirecms-support::media-library.detail_info.{$key}.empty",
-                    ),
-                    default => '',
-                };
+            ->mapWithKeys(function ($key) use ($media, $asset) {
                 $customPropertyKey = str_replace('custom-property.', '', $key);
                 $value = match ($key) {
-                    'size' => ($asset->isFolder() ? '' : $media?->human_readable_size) ?? $fallback,
-                    'created_at', 'updated_at' => ($asset->isFolder()
-                        ? $asset?->{$key}->format('Y-m-d H:i:s')
-                        : $media?->{$key}->format('Y-m-d H:i:s')) ?? $fallback,
-                    'uploaded_by', 'created_by' => $mediaItem->author?->name ?? $fallback,
+                    'size' => (!$asset->isFolder() ? $media?->human_readable_size : null),
+                    'uploaded_by', 'created_by' => $asset->uploaded_by ?? null,
                     // Default for not custom properties
-                    $customPropertyKey => ($asset->isFolder()
+                    'created_at', 'updated_at', $customPropertyKey => ($asset->isFolder()
                         ? $asset?->{$key}
-                        : $media?->{$key}) ?? $fallback,
+                        : $media?->{$key}) ?? null,
                     // Default for custom properties
-                    default => $media->getCustomProperty($customPropertyKey) ?? $fallback,
+                    default => $media->getCustomProperty($customPropertyKey) ?? null,
                 };
 
-                return [
-                    'label' => trans("inspirecms-support::media-library.detail_info.{$key}.label"),
-                    'value' => $value,
-                ];
+                return [$key => $value];
             })
             ->all();
     }

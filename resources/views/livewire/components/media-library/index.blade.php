@@ -39,6 +39,7 @@
         selectedMediaId: $wire.entangle('selectedMediaId').defer,
     }"
 >
+
     <div class="media-library__header">
         <x-inspirecms-support::media-library.breadcrumbs :breadcrumbs="$breadcrumbs" />
         <div class="media-library__header__actions">
@@ -72,8 +73,11 @@
                 </div>
             </div>
         @endif
-
+        
         <div class="ctn browser-ctn">
+
+            <x-filament::loading-indicator wire:loading class="fi-size-2xl" style="position: absolute; top: 50%; left: 50%;" />
+
             <div class="browser__header">
                 @if ($this->canUpload())
                     <div class="upload-ctn ctn" x-show="showUploadForm" x-cloak>
@@ -103,10 +107,13 @@
                 <div class="browser-items-groups">
                     <div class="browser-items-group">
                         <h4>{{ __('inspirecms-support::media-library.folder.plural') }}</h4>
-                        <div class="w-full" wire:loading wire:target="{{ $loadingIndicatorTargets }}">
-                            <x-inspirecms-support::media-library.loading-section :count="$loadingIndicator['count']" :columns="$loadingIndicator['columns']" />
-                        </div>
-                        <div class="browser-items" wire:loading.remove wire:target="{{ $loadingIndicatorTargets }}">
+                        <div class="browser-items">
+                            @foreach (range(1, $loadingIndicator['count']) as $i)
+                                <x-inspirecms-support::media-library.loading-browser-item 
+                                    wire:loading 
+                                    wire:target="{{ $loadingIndicatorTargets }}"
+                                />
+                            @endforeach
                             @foreach (collect($paginator->items())->where(fn (Model | MediaAsset $item) => $item->isFolder()) ?? [] as $item)
                                 <x-inspirecms-support::media-library.browser-item 
                                     :livewire-key="$livewireKey"
@@ -114,28 +121,36 @@
                                     :actions="$this->getCachedMediaItemActions()" 
                                     :selectable="!$this->isMediaPickerModal()"
                                     :is-draggable="$this->canDragAndDrop()"
+                                    wire:loading.remove 
+                                    wire:target="{{ $loadingIndicatorTargets }}"
                                 />
                             @endforeach
                         </div>
                     </div>
                     <div class="browser-items-group">
                         <h4>{{ __('inspirecms-support::media-library.media.plural') }}</h4>
-                        <div class="w-full" wire:loading wire:target="{{ $loadingIndicatorTargets }}">
-                            <x-inspirecms-support::media-library.loading-section :count="$loadingIndicator['count']" :columns="$loadingIndicator['columns']" />
-                        </div>
-                        <div class="browser-items" wire:loading.remove wire:target="{{ $loadingIndicatorTargets }}">
+                        <div class="browser-items">
+                            @foreach (range(1, $loadingIndicator['count']) as $i)
+                                <x-inspirecms-support::media-library.loading-browser-item 
+                                    wire:loading 
+                                    wire:target="{{ $loadingIndicatorTargets }}"
+                                />
+                            @endforeach
                             @foreach (collect($paginator->items())->where(fn (Model | MediaAsset $item) => !$item->isFolder()) ?? [] as $item)
                                 <x-inspirecms-support::media-library.browser-item 
                                     :livewire-key="$livewireKey"
                                     :media-item="$item" 
                                     :actions="$this->getCachedMediaItemActions()" 
                                     :is-draggable="$this->canDragAndDrop()"
+                                    wire:loading.remove 
+                                    wire:target="{{ $loadingIndicatorTargets }}"
                                 />
                             @endforeach
                         </div>
                     </div>
                 </div>
             </div>
+
         </div>
 
         <div class="ctn detail-info-ctn">

@@ -5,7 +5,7 @@
 
 <div class="media-library__details">
     @if ($mediaItemForActions->isNotEmpty())
-        <div class="header">
+        <div class="header pb-4">
             <div class="heading">
                 <span class="title">
                     {{ __('inspirecms-support::media-library.messages.xxx_items_selected', ['count' => $mediaItemForActions->count()]) }}
@@ -26,26 +26,26 @@
         </div>
     @endif
 
-    @if ($this->canViewInformation($toggleMedia))
+    @if ($this->canViewInformation($mediaDetailRecord))
         <div class="main">
             <div class="title-ctn">
-                <span class="title">{{ $toggleMedia->title }}</span>
+                <span class="title">{{ $mediaDetailRecord->title }}</span>
             </div>
             <div class="thumbnail-ctn">
-                @if($toggleMedia->isImage() || $toggleMedia->isSvg())
+                @if($mediaDetailRecord->isImage() || $mediaDetailRecord->isSvg())
                     <img loading="lazy" 
                         x-data="dynamicImage({
-                            baseUrl: @js($toggleMedia->getThumbnailUrl()),
-                            mediaId: @js($toggleMedia->getKey()),
+                            baseUrl: @js($mediaDetailRecord->getThumbnailUrl()),
+                            mediaId: @js($mediaDetailRecord->getKey()),
                             refreshWindowEvents: ['media-thumb-updated'],
                         })"
                         :src="src"
                     />
                 @else
                     <x-inspirecms-support::media-library.thumbnail-icon 
-                        :icon="$toggleMedia->getThumbnail()"
-                        @class(['folder-icon' => $toggleMedia->isFolder()])
-                        @style([\Filament\Support\get_color_css_variables('warning', [400, 500, 600])])
+                        :icon="$mediaDetailRecord->getThumbnail()"
+                        @class(['folder-icon' => $mediaDetailRecord->isFolder()])
+                        @style([\Filament\Support\get_color_css_variables('warning', [400, 500, 600]) => $mediaDetailRecord->isFolder()])
                     />
                 @endif
             </div>
@@ -55,12 +55,7 @@
                     <span class="font-bold">{{ __('inspirecms-support::media-library.detail_info.heading') }}</span>
                 </div>
                 <div class="information-content-ctn">
-                    @foreach ($this->getInformationFor($toggleMedia) ?? [] as $item)
-                        <div class="information-content__row">
-                            <span class="information-content__row__label">{{ $item['label'] ?? null }}</span>
-                            <span class="information-content__row__value">{{ $item['value'] ?? null }}</span>
-                        </div>
-                    @endforeach
+                    {{ $this->mediaDetailInfolist }}
                 </div>
             </div>
         </div>
