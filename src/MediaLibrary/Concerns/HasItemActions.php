@@ -22,11 +22,6 @@ trait HasItemActions
     /**
      * @var array<string, Actions\Action>
      */
-    protected array $cachedFlatMediaItemActions = [];
-
-    /**
-     * @var array<Actions\Action | Actions\ActionGroup>
-     */
     protected array $cachedMediaItemActions = [];
 
     public function cacheHasItemActions()
@@ -36,8 +31,6 @@ trait HasItemActions
             Closure::fromCallable([$this, 'configureMediaItemAction']),
             fn (): array => $this->getMediaItemActions(),
         );
-
-        $this->cachedMediaItemActions = $actions;
 
         foreach ($actions as $action) {
 
@@ -59,6 +52,14 @@ trait HasItemActions
     protected function getMediaItemActions(): array
     {
         return [];
+    }
+
+    public function getVisibleMediaItemActions(): array
+    {
+        return array_filter(
+            $this->getMediaItemActions(),
+            fn (Action | ActionGroup $action): bool => $action->isVisible(),
+        );
     }
 
     /**
@@ -86,12 +87,7 @@ trait HasItemActions
     {
         $action->livewire($this);
 
-        return $this->cachedFlatMediaItemActions[$action->getName()] = $action;
-    }
-
-    public function getCachedMediaItemActions(): array
-    {
-        return $this->cachedMediaItemActions;
+        return $this->cachedMediaItemActions[$action->getName()] = $action;
     }
 
     /**
@@ -123,7 +119,7 @@ trait HasItemActions
             $parentAction = Arr::last($parentActions);
             $resolvedAction = $parentAction->getModalAction($action['name']) ?? throw new ActionNotResolvableException("Action [{$action['name']}] was not found for action [{$parentAction->getName()}].");
         } else {
-            $resolvedAction = $this->cachedFlatMediaItemActions[$action['name']] ?? throw new ActionNotResolvableException("Action [{$action['name']}] not found on media library.");
+            $resolvedAction = $this->cachedMediaItemActions[$action['name']] ?? throw new ActionNotResolvableException("Action [{$action['name']}] not found on media library.");
         }
 
         if (filled($action['context']['recordKey'] ?? null)) {

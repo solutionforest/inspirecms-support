@@ -10,7 +10,7 @@
                 $isSeleted = $mediaItem->getKey() == $parentKey;
                 $childrenCount = $mediaItem->children_count ?? 0;
 
-                $actions = $this->getCachedMediaItemActions();
+                $actions = $this->getVisibleMediaItemActions();
             @endphp
             <div @class([
                 'folder-item',

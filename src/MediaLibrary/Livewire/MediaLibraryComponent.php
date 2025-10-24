@@ -391,6 +391,7 @@ class MediaLibraryComponent extends Component implements HasItemActions, HasItem
                 ->label(__('inspirecms-support::media-library.buttons.create_folder.label'))
                 ->successNotificationTitle(__('inspirecms-support::media-library.buttons.create_folder.messages.success.title'))
                 ->authorize('create')
+                ->model($this->getMediaAssetModel())
                 ->icon(FilamentIcon::resolve('inspirecms::create_folder'))
                 ->modalIcon(FilamentIcon::resolve('inspirecms::create_folder'))
                 ->modalWidth('sm')
@@ -418,13 +419,6 @@ class MediaLibraryComponent extends Component implements HasItemActions, HasItem
                 ->label(__('inspirecms-support::media-library.buttons.upload.label'))
                 ->alpineClickHandler('() => showUploadForm = ! showUploadForm'),
         ];
-    }
-
-    public function getVisibleHeaderActions(): array
-    {
-        return collect($this->getHeaderActions())
-            ->filter(fn (Action | ActionGroup $action) => $action->isVisible())
-            ->all();
     }
 
     protected function getMediaItemActions(): array

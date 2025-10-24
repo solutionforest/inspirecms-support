@@ -5,21 +5,14 @@ namespace SolutionForest\InspireCms\Support\MediaLibrary\Concerns;
 use Closure;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
-use InvalidArgumentException;
 
+/**
+ * @method \Filament\Actions\Action cacheAction(\Filament\Actions\Action $action)
+ * @method void mergeCachedActions(array $actions)
+ */
 trait InteractsWithHeaderActions
 {
-    /**
-     * @var array<Action | ActionGroup>
-     */
-    protected array $cachedHeaderActions = [];
-
-    public function bootedInteractsWithHeaderActions(): void
-    {
-        $this->cacheHeaderActions();
-    }
-
-    protected function cacheHeaderActions(): void
+    protected function cacheInteractsWithHeaderActions(): void
     {
         /** @var array<string, Action | ActionGroup> */
         $actions = Action::configureUsing(
@@ -28,22 +21,12 @@ trait InteractsWithHeaderActions
         );
 
         foreach ($actions as $action) {
+
             if ($action instanceof ActionGroup) {
-                $action->livewire($this);
-
-                /** @var array<string, Action> $flatActions */
-                $flatActions = $action->getFlatActions();
-
-                $this->mergeCachedActions($flatActions);
-
-                continue;
+                $this->mergeCachedActions($action->getFlatActions());
+            } elseif ($action instanceof Action) {
+                $this->cacheAction($action);
             }
-
-            if (! $action instanceof Action) {
-                throw new InvalidArgumentException('Header actions must be an instance of ' . Action::class . ', or ' . ActionGroup::class . '.');
-            }
-
-            $this->cacheAction($action);
         }
     }
 
@@ -53,5 +36,12 @@ trait InteractsWithHeaderActions
     protected function getHeaderActions(): array
     {
         return $this->getActions();
+    }
+
+    public function getVisibleHeaderActions(): array
+    {
+        return collect($this->getHeaderActions())
+            ->filter(fn (Action | ActionGroup $action) => $action->isVisible())
+            ->all();
     }
 }

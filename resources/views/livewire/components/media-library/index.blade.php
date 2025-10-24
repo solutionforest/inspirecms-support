@@ -7,9 +7,6 @@
 
     $loadingIndicator = [
         'count' => 3,
-        'columns' => [
-            'lg' => 4,
-        ],
     ];
     $loadingIndicatorTargets = implode(',', [
         'assets', 
@@ -118,7 +115,7 @@
                                 <x-inspirecms-support::media-library.browser-item 
                                     :livewire-key="$livewireKey"
                                     :media-item="$item" 
-                                    :actions="$this->getCachedMediaItemActions()" 
+                                    :actions="$this->getVisibleMediaItemActions()" 
                                     :selectable="!$this->isMediaPickerModal()"
                                     :is-draggable="$this->canDragAndDrop()"
                                     wire:loading.remove 
@@ -140,7 +137,7 @@
                                 <x-inspirecms-support::media-library.browser-item 
                                     :livewire-key="$livewireKey"
                                     :media-item="$item" 
-                                    :actions="$this->getCachedMediaItemActions()" 
+                                    :actions="$this->getVisibleMediaItemActions()" 
                                     :is-draggable="$this->canDragAndDrop()"
                                     wire:loading.remove 
                                     wire:target="{{ $loadingIndicatorTargets }}"

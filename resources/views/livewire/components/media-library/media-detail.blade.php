@@ -1,5 +1,5 @@
 @php
-    $actions = $this->getCachedMediaItemActions();
+    $actions = $this->getVisibleMediaItemActions();
     $mediaItemForActions = collect($this->selectedMediaId);
 @endphp
 
