@@ -1,4 +1,31 @@
 document.addEventListener('alpine:init', () => {
+    window.Alpine.data('versionDiffController', function () {
+        console.log('Initializing versionDiffController')
+        return {
+            expandAll() {
+                this.$root
+                    .querySelectorAll('[data-collapsible-item]')
+                    .forEach((item) => {
+                        const itemData = Alpine.$data(item)
+                        if (itemData && 'expanded' in itemData) {
+                            itemData.expanded = true
+                        }
+                    })
+            },
+
+            collapseAll() {
+                this.$root
+                    .querySelectorAll('[data-collapsible-item]')
+                    .forEach((item) => {
+                        const itemData = Alpine.$data(item)
+                        if (itemData && 'expanded' in itemData) {
+                            itemData.expanded = false
+                        }
+                    })
+            },
+        }
+    })
+
     window.Alpine.data('diffChecker', function ({ newValue, oldValue }) {
         return {
             oldValue,
