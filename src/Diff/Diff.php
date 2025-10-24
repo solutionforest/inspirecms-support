@@ -16,12 +16,20 @@ class Diff
 
     public function __toString()
     {
-        $html = <<<Html
-            <div x-data="diffChecker({ oldValue: '{$this->old}', newValue: '{$this->new}' })" class="diff-viewer">
+        // Properly escape the values for JavaScript to prevent syntax errors
+        $oldValue = json_encode($this->old ?? '');
+        $newValue = json_encode($this->new ?? '');
+
+        // Escape for HTML attribute - use htmlspecialchars with ENT_QUOTES
+        $oldValueEscaped = htmlspecialchars($oldValue, ENT_QUOTES, 'UTF-8');
+        $newValueEscaped = htmlspecialchars($newValue, ENT_QUOTES, 'UTF-8');
+
+        $html = <<<HTML
+            <div x-data="diffChecker({ oldValue: {$oldValueEscaped}, newValue: {$newValueEscaped} })" class="diff-viewer">
                 <div class="diff-line" x-html="getInlineDiff()"></div>
             </div>
-        Html;
+        HTML;
 
-        return str($html)->toHtmlString();
+        return $html;
     }
 }
