@@ -18,6 +18,7 @@ use SolutionForest\InspireCms\Support\Models\Concerns\HasRecursiveRelationships;
 use SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset as MediaAssetContract;
 use Spatie\Image\Enums\Fit;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\ResponsiveImages\ResponsiveImage;
 
 class MediaAsset extends BaseModel implements MediaAssetContract
 {
@@ -86,6 +87,38 @@ class MediaAsset extends BaseModel implements MediaAssetContract
     public function getThumbnailUrl(bool $isAbsolute = true)
     {
         return $this->getUrl(conversionName: 'preview', isAbsolute: $isAbsolute);
+    }
+
+    public function getResponsiveImages(bool $isAbsolute = true)
+    {
+        if ($this->isFolder()) {
+            return null;
+        }
+
+        $media = $this->getFirstMedia(MediaAssetHelper::getDefaultCollectionName());
+        if (blank($media)) {
+            return null;
+        }
+
+        $conversions = collect($media?->generated_conversions)->filter()->keys()->all();
+
+        return collect($conversions)->mapWithKeys(function ($conversion) use ($media, $isAbsolute) {
+            return [
+                $conversion => collect($media->responsiveImages($conversion)->files)
+                    ->map(function (ResponsiveImage $responsiveImage) use ($isAbsolute) {
+                        $url = $responsiveImage->url();
+                        if (! $isAbsolute) {
+                            $url = str_replace(config('app.url'), '', $url);
+                        }
+
+                        return [
+                            'url' => $url,
+                            'width' => $responsiveImage->width(),
+                            'height' => $responsiveImage->height(),
+                        ];
+                    })->all(),
+            ];
+        })->reject(fn ($item) => empty($item))->all();
     }
 
     public function getActiveThumbnail()

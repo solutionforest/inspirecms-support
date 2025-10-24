@@ -57,6 +57,14 @@ interface MediaAsset extends BelongsToNestableTree, HasAuthor, HasDtoModel, HasM
     public function getThumbnail();
 
     /**
+     * Get the responsive images data for the media asset.
+     *
+     * @param  bool  $isAbsolute  Whether to return absolute URLs.
+     * @return array<string,array{url:string,width:int,height:int}>|null The array of responsive images.
+     */
+    public function getResponsiveImages(bool $isAbsolute = true);
+
+    /**
      * Determine if the media asset is a svg.
      *
      * @return bool True if the media asset is s svg, false otherwise.
