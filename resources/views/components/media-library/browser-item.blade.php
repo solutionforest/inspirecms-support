@@ -95,15 +95,12 @@
                         retryAttempts: 3,
                         retryDelay: 1000,
                         defaultLoadingState: true,
-                    })"
-                    data-base-url="{{ $mediaItem->getThumbnailUrl() }}"
-                >
+                    })">
                     <div class="img-placeholder" x-show="isLoading"></div>
                     <img loading="lazy"
                         alt="{{ $mediaItem->getKey() }}" 
                         class="object-cover rounded"
                         :src="src"
-                        data-base-url="{{ $mediaItem->getThumbnailUrl() }}"
                         x-show="!isLoading"
                         x-cloak
                     />

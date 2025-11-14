@@ -39,7 +39,6 @@
                             mediaId: @js($mediaDetailRecord->getKey()),
                             refreshWindowEvents: ['media-thumb-updated'],
                         })"
-                        data-base-url="{{ $mediaDetailRecord->getThumbnailUrl() }}"
                         :src="src"
                     />
                 @else
