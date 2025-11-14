@@ -56,6 +56,7 @@
                                 alt="{{ $asset->getKey() }}" 
                                 style="{{ $imgStyles }}"
                                 :src="src"
+                                data-base-url="{{ $asset->getThumbnailUrl() }}"
                                 x-data="dynamicImage({
                                     baseUrl: @js($asset->getThumbnailUrl()),
                                     mediaId: @js($asset->getKey()),
