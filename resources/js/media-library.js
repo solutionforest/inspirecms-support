@@ -119,9 +119,28 @@ function dynamicImage({
          * Generate a new source URL with optional cache buster
          */
         generateSrc() {
-            if (!this.baseUrl) return null;
-            
-            let url = this.baseUrl;
+            // Prefer a live value from the DOM if present. This handles cases where Livewire
+            // updates the element's `data-base-url` attribute but the Alpine component still
+            // has an old `baseUrl` value in memory.
+            let liveBase = null;
+            try {
+                // If this.$el is the img itself, read attribute directly; otherwise look for
+                // a child img with data-base-url.
+                if (this.$el && this.$el.getAttribute) {
+                    liveBase = this.$el.getAttribute('data-base-url');
+                }
+                if (!liveBase) {
+                    const img = this.$el && this.$el.querySelector ? this.$el.querySelector('img[data-base-url]') : null;
+                    if (img) liveBase = img.getAttribute('data-base-url');
+                }
+            } catch (e) {
+                // ignore
+            }
+
+            const base = liveBase || this.baseUrl;
+            if (!base) return null;
+
+            let url = base;
             if (this.cacheBuster) {
                 const separator = url.includes('?') ? '&' : '?';
                 url += `${separator}t=${Date.now()}`;
@@ -145,6 +164,22 @@ function dynamicImage({
                 }
                 
                 //console.log(`Image source updated for media ${this.mediaId}: ${newSrc}`);
+            }
+            // Also directly set the DOM image src to ensure any server-rendered
+            // `src` value is overwritten immediately. This handles cases where the
+            // Alpine binding doesn't replace the literal attribute in the DOM soon
+            // enough and the browser keeps showing the old image.
+            try {
+                if (this.$el) {
+                    if (this.$el.tagName && this.$el.tagName.toLowerCase() === 'img') {
+                        this.$el.src = newSrc;
+                    } else {
+                        const img = this.$el.querySelector ? this.$el.querySelector('img') : null;
+                        if (img) img.src = newSrc;
+                    }
+                }
+            } catch (e) {
+                // ignore DOM errors
             }
             this.isLoading = false;
         },
