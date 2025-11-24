@@ -415,6 +415,7 @@ class MediaLibraryComponent extends Component implements HasItemActions, HasItem
                     $action->success();
                 }),
             Actions\Action::make('upload')
+                ->authorize('create')
                 ->label(__('inspirecms-support::media-library.buttons.upload.label'))
                 ->alpineClickHandler('() => showUploadForm = ! showUploadForm'),
         ];
@@ -424,7 +425,7 @@ class MediaLibraryComponent extends Component implements HasItemActions, HasItem
     {
         return [
             OpenFolderAction::make()
-                ->dispatch('openFolder', fn (?Model $record) => ['mediaId' => $record?->getKey()]),
+                ->dispatch('openFolder', fn(?Model $record) => ['mediaId' => $record?->getKey()]),
 
             EditAction::make(),
             ViewAction::make(),
