@@ -425,7 +425,7 @@ class MediaLibraryComponent extends Component implements HasItemActions, HasItem
     {
         return [
             OpenFolderAction::make()
-                ->dispatch('openFolder', fn(?Model $record) => ['mediaId' => $record?->getKey()]),
+                ->dispatch('openFolder', fn (?Model $record) => ['mediaId' => $record?->getKey()]),
 
             EditAction::make(),
             ViewAction::make(),
