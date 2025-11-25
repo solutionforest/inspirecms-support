@@ -36,10 +36,10 @@ class TestCase extends Orchestra
         parent::setUp();
 
         Factory::guessFactoryNamesUsing(
-            fn (string $modelName) => '\\SolutionForest\\InspireCms\\Support\\Tests\\Database\\Factories\\' . class_basename($modelName) . 'Factory'
+            fn(string $modelName) => '\\SolutionForest\\InspireCms\\Support\\Tests\\Database\\Factories\\' . class_basename($modelName) . 'Factory'
         );
         Factory::guessModelNamesUsing(
-            fn ($factory) => 'SolutionForest\\InspireCms\\Support\\Tests\\Models\\' . str_replace('Factory', '', class_basename($factory))
+            fn($factory) => 'SolutionForest\\InspireCms\\Support\\Tests\\Models\\' . str_replace('Factory', '', class_basename($factory))
         );
 
         $this->actingAs(
@@ -50,34 +50,30 @@ class TestCase extends Orchestra
     protected function getPackageProviders($app)
     {
         return [
-            ActionsServiceProvider::class,
-            BladeCaptureDirectiveServiceProvider::class,
+            \Kalnoy\Nestedset\NestedSetServiceProvider::class,
+            \Spatie\MediaLibrary\MediaLibraryServiceProvider::class,
             BladeHeroiconsServiceProvider::class,
             BladeIconsServiceProvider::class,
-
+            ActionsServiceProvider::class,
             FilamentServiceProvider::class,
             FormsServiceProvider::class,
             InfolistsServiceProvider::class,
-            LivewireServiceProvider::class,
             NotificationsServiceProvider::class,
             SchemasServiceProvider::class,
             SupportServiceProvider::class,
             TablesServiceProvider::class,
             WidgetsServiceProvider::class,
-
-            \Kalnoy\Nestedset\NestedSetServiceProvider::class,
-
-            \Spatie\MediaLibrary\MediaLibraryServiceProvider::class,
-
-            InspireCmsSupportServiceProvider::class,
-
+            LivewireServiceProvider::class,
+            BladeCaptureDirectiveServiceProvider::class,
             AdminPanelProvider::class,
+            InspireCmsSupportServiceProvider::class,
         ];
     }
 
     public function getEnvironmentSetUp($app)
     {
-        config()->set('database.default', 'testing');
+        $app['config']->set('database.default', 'testing');
+        $app['config']->set('app.key', 'base64:I4ofV4eI4v12PUp+g9ZahXUu0ZhPCbk1Q8iawecCtdw=');
 
         $app['config']->set('auth.providers.users.model', User::class);
 
@@ -114,7 +110,6 @@ class TestCase extends Orchestra
                     $migration->up();
                 }
             }
-
         }
         // End with '/../database/migrations'
         elseif (is_string($paths) && str($paths)->endsWith('/../database/migrations')) {
