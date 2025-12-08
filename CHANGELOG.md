@@ -2,6 +2,18 @@
 
 All notable changes to `inspirecms-support` will be documented in this file.
 
+## 4.0.0.beta.1 - 2025-12-08
+
+<!-- Release notes generated using configuration in .github/release.yml at 4.0.0.beta.1 -->
+### What's Changed
+
+#### Other Changes
+
+* Bump actions/checkout from 4 to 5 by @dependabot[bot] in https://github.com/solutionforest/inspirecms-support/pull/9
+* Merge missing changes from v1 by @cklei-carly in https://github.com/solutionforest/inspirecms-support/pull/10
+
+**Full Changelog**: https://github.com/solutionforest/inspirecms-support/compare/1.2.3...4.0.0.beta.1
+
 ## 1.2.3 - 2025-08-20
 
 <!-- Release notes generated using configuration in .github/release.yml at 1.x -->
@@ -19,6 +31,7 @@ All notable changes to `inspirecms-support` will be documented in this file.
 
 ```bash
 composer require solution-forest/inspirecms-support:^1.2.2
+
 
 
 ```
@@ -45,6 +58,7 @@ composer require solution-forest/inspirecms-support:^1.2.2
 
 ```bash
 composer require solution-forest/inspirecms-support:^1.1.3
+
 
 
 
