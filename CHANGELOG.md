@@ -2,6 +2,18 @@
 
 All notable changes to `inspirecms-support` will be documented in this file.
 
+## 4.0.1 - 2025-12-09
+
+### What's Changed in 4.0.1
+
+#### 🔧 Other Changes
+
+- Bump actions/checkout from 5 to 6 (9223fde)
+
+### Installation
+
+**Full Changelog**: https://github.com/solutionforest/inspirecms-support/compare/4.0.0...4.0.1
+
 ## 1.2.3 - 2025-08-20
 
 <!-- Release notes generated using configuration in .github/release.yml at 1.x -->
@@ -19,6 +31,7 @@ All notable changes to `inspirecms-support` will be documented in this file.
 
 ```bash
 composer require solution-forest/inspirecms-support:^1.2.2
+
 
 
 ```
@@ -45,6 +58,7 @@ composer require solution-forest/inspirecms-support:^1.2.2
 
 ```bash
 composer require solution-forest/inspirecms-support:^1.1.3
+
 
 
 
