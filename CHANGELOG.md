@@ -2,6 +2,14 @@
 
 All notable changes to `inspirecms-support` will be documented in this file.
 
+## 4.0.2 - 2025-12-09
+
+### What's Changed in 4.0.2
+
+### Installation
+
+**Full Changelog**: https://github.com/solutionforest/inspirecms-support/compare/4.0.1...4.0.2
+
 ## 4.0.1 - 2025-12-09
 
 ### What's Changed in 4.0.1
@@ -34,6 +42,7 @@ composer require solution-forest/inspirecms-support:^1.2.2
 
 
 
+
 ```
 ## Sync version with core - 2025-08-19
 
@@ -58,6 +67,7 @@ composer require solution-forest/inspirecms-support:^1.2.2
 
 ```bash
 composer require solution-forest/inspirecms-support:^1.1.3
+
 
 
 
