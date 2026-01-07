@@ -2,6 +2,19 @@
 
 All notable changes to `inspirecms-support` will be documented in this file.
 
+## 4.0.4 - 2026-01-07
+
+### What's Changed in 4.0.4
+
+#### 🔧 Other Changes
+
+- Bump stefanzweifel/git-auto-commit-action from 6 to 7 (7b5c271)
+- Bump actions/checkout from 4 to 6 (7709df3)
+
+### Installation
+
+**Full Changelog**: https://github.com/solutionforest/inspirecms-support/compare/4.0.3...4.0.4
+
 ## 4.0.3 - 2025-12-09
 
 ### What's Changed in 4.0.3
@@ -52,6 +65,7 @@ composer require solution-forest/inspirecms-support:^1.2.2
 
 
 
+
 ```
 ## Sync version with core - 2025-08-19
 
@@ -76,6 +90,7 @@ composer require solution-forest/inspirecms-support:^1.2.2
 
 ```bash
 composer require solution-forest/inspirecms-support:^1.1.3
+
 
 
 
