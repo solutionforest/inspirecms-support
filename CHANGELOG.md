@@ -2,6 +2,18 @@
 
 All notable changes to `inspirecms-support` will be documented in this file.
 
+## 4.0.5 - 2026-01-15
+
+### What's Changed in 4.0.5
+
+#### 🔧 Other Changes
+
+- Bump dependabot/fetch-metadata from 2.4.0 to 2.5.0 (ea4c81f)
+
+### Installation
+
+**Full Changelog**: https://github.com/solutionforest/inspirecms-support/compare/4.0.4...4.0.5
+
 ## 4.0.4 - 2026-01-07
 
 ### What's Changed in 4.0.4
@@ -66,6 +78,7 @@ composer require solution-forest/inspirecms-support:^1.2.2
 
 
 
+
 ```
 ## Sync version with core - 2025-08-19
 
@@ -90,6 +103,7 @@ composer require solution-forest/inspirecms-support:^1.2.2
 
 ```bash
 composer require solution-forest/inspirecms-support:^1.1.3
+
 
 
 
