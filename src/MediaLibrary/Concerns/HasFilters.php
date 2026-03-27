@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Builder;
 use SolutionForest\InspireCms\Support\MediaLibrary\FilterType;
 
 /**
- * @property \Filament\Schemas\Schema $filterForm
+ * @property Schema $filterForm
  */
 trait HasFilters
 {

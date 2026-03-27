@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Gate;
 use Livewire\Livewire;
 use SolutionForest\InspireCms\Support\Helpers\KeyHelper;
 use SolutionForest\InspireCms\Support\MediaLibrary\FilterType;
+use SolutionForest\InspireCms\Support\Tests\Fixtures\Livewire\MediaLibrary;
 use SolutionForest\InspireCms\Support\Tests\Models\MediaAsset;
 use SolutionForest\InspireCms\Support\Tests\TestCase;
 
@@ -17,7 +18,7 @@ const FORM_NAMES_UPLOAD = 'uploadForm';
 const FORM_NAMES_FILTER = 'filterForm';
 
 // const LIVEWIRE_MEDIA_LIBRARY = 'inspirecms-support::media-library';
-const LIVEWIRE_MEDIA_LIBRARY = \SolutionForest\InspireCms\Support\Tests\Fixtures\Livewire\MediaLibrary::class;
+const LIVEWIRE_MEDIA_LIBRARY = MediaLibrary::class;
 
 test('renders media library component', function () {
     Livewire::test(LIVEWIRE_MEDIA_LIBRARY)

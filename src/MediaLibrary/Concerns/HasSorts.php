@@ -10,7 +10,7 @@ use Filament\Support\Icons\Heroicon;
 use Illuminate\Database\Eloquent\Builder;
 
 /**
- * @property \Filament\Schemas\Schema $sortForm
+ * @property Schema $sortForm
  */
 trait HasSorts
 {

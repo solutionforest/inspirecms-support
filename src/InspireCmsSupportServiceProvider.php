@@ -75,7 +75,7 @@ class InspireCmsSupportServiceProvider extends PackageServiceProvider
         });
         // Media library config END
 
-        \SolutionForest\InspireCms\Support\Facades\ResolverRegistry::register($this->app);
+        Facades\ResolverRegistry::register($this->app);
     }
 
     public function packageBooted(): void
