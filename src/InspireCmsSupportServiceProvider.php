@@ -80,10 +80,16 @@ class InspireCmsSupportServiceProvider extends PackageServiceProvider
 
     public function packageBooted(): void
     {
-        Livewire::component('inspirecms-support::media-library', MediaLibraryComponent::class);
-        Livewire::component('inspirecms-support::media-library.folders', FolderBrowserComponent::class);
-        Livewire::component('inspirecms-support::media-library.detail-info', MediaDetailComponent::class);
-        Livewire::component('inspirecms-support::media-library.select', MediaSelectLivewireComponent::class);
+        Livewire::resolveMissingComponent(function (string $name) {
+            $components = [
+                'inspirecms-support::media-library' => MediaLibraryComponent::class,
+                'inspirecms-support::media-library.folders' => FolderBrowserComponent::class,
+                'inspirecms-support::media-library.detail-info' => MediaDetailComponent::class,
+                'inspirecms-support::media-library.select' => MediaSelectLivewireComponent::class,
+            ];
+
+            return $components[$name] ?? null;
+        });
 
         // Asset Registration
         FilamentAsset::register([
