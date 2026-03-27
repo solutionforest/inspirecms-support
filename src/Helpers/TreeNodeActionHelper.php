@@ -6,6 +6,7 @@ use Closure;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Illuminate\Database\Eloquent\Model;
+use Livewire\Component;
 
 class TreeNodeActionHelper
 {
@@ -14,7 +15,7 @@ class TreeNodeActionHelper
      * @param  Closure(Model|string|int|null):Model|null  $resolveRecordUsing
      * @return array<Action|ActionGroup>
      */
-    public static function getNodeActions(array $node, array $livewireActions, ?Closure $resolveRecordUsing = null, string | Model | null $model = null, ?\Livewire\Component $livewire = null, string $idName = 'id', string $actionName = '__visibleActions'): array
+    public static function getNodeActions(array $node, array $livewireActions, ?Closure $resolveRecordUsing = null, string | Model | null $model = null, ?Component $livewire = null, string $idName = 'id', string $actionName = '__visibleActions'): array
     {
         $actionNames = $node[$actionName] ?? [];
 
@@ -36,7 +37,7 @@ class TreeNodeActionHelper
             if ($action instanceof Action) {
                 if (in_array($action->getName(), $actionNames)) {
 
-                    $action = $action->arguments(['node' => $node]);
+                    $action = $action(['node' => $node]);
 
                     if ($model && is_string($model && is_a(Model::class, $model, true))) {
                         $action = $action->model($model);

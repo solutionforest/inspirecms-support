@@ -234,4 +234,4 @@ test('throws exception when re-uploading media with different extension to non-i
         ),
     };
 
-})->with('upload_via')->throws(\Exception::class);
+})->with('upload_via')->throws(Exception::class);

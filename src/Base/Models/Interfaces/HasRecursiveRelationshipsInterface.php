@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
+use SolutionForest\InspireCms\Support\Models\Concerns\HasRecursiveRelationships;
 use Staudenmeir\LaravelAdjacencyList\Eloquent\Relations\Ancestors;
 use Staudenmeir\LaravelAdjacencyList\Eloquent\Relations\Bloodline;
 use Staudenmeir\LaravelAdjacencyList\Eloquent\Relations\Descendants;
@@ -22,7 +23,7 @@ use Staudenmeir\LaravelAdjacencyList\Eloquent\Relations\Descendants;
  * @property null | TModel $parent
  * @property Collection<TModel> $parentAndSelf
  *
- * @see \SolutionForest\InspireCms\Support\Models\Concerns\HasRecursiveRelationships
+ * @see HasRecursiveRelationships
  */
 interface HasRecursiveRelationshipsInterface
 {

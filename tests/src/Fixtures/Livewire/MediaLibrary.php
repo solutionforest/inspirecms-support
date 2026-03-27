@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Support\Tests\Fixtures\Livewire;
 
+use Illuminate\Support\MessageBag;
 use SolutionForest\InspireCms\Support\MediaLibrary\MediaLibraryComponent;
 
 class MediaLibrary extends MediaLibraryComponent
@@ -10,7 +11,7 @@ class MediaLibrary extends MediaLibraryComponent
     {
         parent::mount();
 
-        $this->setErrorBag(new \Illuminate\Support\MessageBag);
+        $this->setErrorBag(new MessageBag);
     }
 
     public function getErrorBag()
@@ -18,7 +19,7 @@ class MediaLibrary extends MediaLibraryComponent
         $bag = parent::getErrorBag();
 
         if (is_null($bag)) {
-            $bag = new \Illuminate\Support\MessageBag;
+            $bag = new MessageBag;
             $this->setErrorBag($bag);
         }
 

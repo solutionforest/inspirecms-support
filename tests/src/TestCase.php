@@ -14,6 +14,7 @@ use Filament\Support\SupportServiceProvider;
 use Filament\Tables\TablesServiceProvider;
 use Filament\Widgets\WidgetsServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Kalnoy\Nestedset\NestedSetServiceProvider;
 use Livewire\LivewireServiceProvider;
 use Orchestra\Testbench\Concerns\WithWorkbench;
 use Orchestra\Testbench\TestCase as Orchestra;
@@ -25,6 +26,7 @@ use SolutionForest\InspireCms\Support\InspireCmsSupportServiceProvider;
 use SolutionForest\InspireCms\Support\Resolvers\UserResolver;
 use SolutionForest\InspireCms\Support\Tests\Concerns\WithMediaAsset;
 use SolutionForest\InspireCms\Support\Tests\Models\User;
+use Spatie\MediaLibrary\MediaLibraryServiceProvider;
 
 class TestCase extends Orchestra
 {
@@ -50,8 +52,8 @@ class TestCase extends Orchestra
     protected function getPackageProviders($app)
     {
         return [
-            \Kalnoy\Nestedset\NestedSetServiceProvider::class,
-            \Spatie\MediaLibrary\MediaLibraryServiceProvider::class,
+            NestedSetServiceProvider::class,
+            MediaLibraryServiceProvider::class,
             BladeHeroiconsServiceProvider::class,
             BladeIconsServiceProvider::class,
             ActionsServiceProvider::class,

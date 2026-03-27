@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Support\MediaLibrary\Livewire;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Livewire\Attributes\Lazy;
 use Livewire\Attributes\Reactive;
@@ -25,7 +26,7 @@ class FolderBrowserComponent extends Component implements HasItemActions
 
     public function boot()
     {
-        if ($this->folders && $this->folders instanceof \Illuminate\Database\Eloquent\Collection) {
+        if ($this->folders && $this->folders instanceof Collection) {
             $this->folders->loadCount('children');
         }
     }

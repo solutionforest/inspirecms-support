@@ -9,6 +9,7 @@ use Filament\Schemas\Schema;
 use Filament\Support\Colors\Color;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
@@ -38,7 +39,7 @@ use Throwable;
 use function Filament\authorize;
 
 /**
- * @property \Filament\Schemas\Schema $uploadForm
+ * @property Schema $uploadForm
  */
 class MediaLibraryComponent extends Component implements HasItemActions, HasItemBulkActions
 {
@@ -527,7 +528,7 @@ class MediaLibraryComponent extends Component implements HasItemActions, HasItem
     /**
      * Get the media assets from the parent.
      *
-     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator<int, Model&MediaAsset>
+     * @return LengthAwarePaginator<int, Model&MediaAsset>
      */
     #[Computed(persist: true, seconds: 120)]
     public function assets()
@@ -664,7 +665,7 @@ class MediaLibraryComponent extends Component implements HasItemActions, HasItem
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Model & MediaAsset |null
+     * @return Model & MediaAsset |null
      */
     protected function getParentRecord()
     {

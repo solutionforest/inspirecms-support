@@ -56,10 +56,9 @@ trait HasItemActions
 
     public function getVisibleMediaItemActions(): array
     {
-        return array_filter(
-            $this->getMediaItemActions(),
-            fn (Action | ActionGroup $action): bool => $action->isVisible(),
-        );
+        // Return cached (configured) actions so that record-based visibility
+        // closures are evaluated per-item in the view (actions.blade.php).
+        return array_values($this->cachedMediaItemActions);
     }
 
     /**
