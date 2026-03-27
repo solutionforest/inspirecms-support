@@ -37,7 +37,7 @@ class TreeNodeActionHelper
             if ($action instanceof Action) {
                 if (in_array($action->getName(), $actionNames)) {
 
-                    $action = $action->arguments(['node' => $node]);
+                    $action = $action(['node' => $node]);
 
                     if ($model && is_string($model && is_a(Model::class, $model, true))) {
                         $action = $action->model($model);
