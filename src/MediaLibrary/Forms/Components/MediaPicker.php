@@ -151,7 +151,7 @@ class MediaPicker extends Field
                 'selection' => $this->getState() ?? [],
             ])
             ->extraModalWindowAttributes([
-                'class' => 'media-library-browser-modal-content',
+                'class' => 'media-library-browser-modal',
             ])
             ->modalHeading(__('inspirecms-support::media-library.buttons.select.heading'))
             ->modalSubmitActionLabel(__('inspirecms-support::media-library.buttons.select.label'))

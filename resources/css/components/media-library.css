@@ -295,10 +295,10 @@
 }
 
 /* Media Library Browser Modal */
-.media-library-browser-modal-content .media-library__content {
+.media-library-browser-modal .media-library__content {
     @apply h-[calc(100vh-16rem)];
 }
-.media-library-browser-modal-content .fi-modal-content:has(.media-library) {
+.media-library-browser-modal .fi-modal-content:has(.media-library) {
     @apply !p-0;
 }
 
