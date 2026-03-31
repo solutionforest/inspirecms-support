@@ -2,6 +2,18 @@
 
 All notable changes to `inspirecms-support` will be documented in this file.
 
+## 4.0.10 - 2026-03-31
+
+### What's Changed in 4.0.10
+
+#### 🔧 Other Changes
+
+- Rename media library modal class (eedfbed)
+
+### Installation
+
+**Full Changelog**: https://github.com/solutionforest/inspirecms-support/compare/4.0.9...4.0.10
+
 ## 4.0.9 - 2026-03-30
 
 ### What's Changed in 4.0.9
@@ -116,6 +128,7 @@ composer require solution-forest/inspirecms-support:^1.2.2
 
 
 
+
 ```
 ## Sync version with core - 2025-08-19
 
@@ -140,6 +153,7 @@ composer require solution-forest/inspirecms-support:^1.2.2
 
 ```bash
 composer require solution-forest/inspirecms-support:^1.1.3
+
 
 
 
