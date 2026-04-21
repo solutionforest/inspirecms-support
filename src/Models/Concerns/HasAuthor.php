@@ -13,10 +13,10 @@ trait HasAuthor
         static::creating(function ($model) {
             if (empty($model->author_id) && empty($model->author_type)) {
                 $author = $model->resolveAuthor();
-                
+
                 $model->author_id = $author?->getKey();
                 $model->author_type = $author?->getMorphClass();
-                
+
             }
         });
     }
