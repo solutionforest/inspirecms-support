@@ -20,6 +20,8 @@ use SolutionForest\InspireCms\Support\MediaLibrary\Livewire\FolderBrowserCompone
 use SolutionForest\InspireCms\Support\MediaLibrary\Livewire\MediaDetailComponent;
 use SolutionForest\InspireCms\Support\MediaLibrary\Livewire\MediaLibraryComponent;
 use SolutionForest\InspireCms\Support\MediaLibrary\Livewire\MediaSelectLivewireComponent;
+use SolutionForest\InspireCms\Support\Observers\BelongsToNestableTreeObserver;
+use SolutionForest\InspireCms\Support\Observers\HasRecursiveRelationshipsObserver;
 use SolutionForest\InspireCms\Support\Testing\TestsForms;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
@@ -80,6 +82,8 @@ class InspireCmsSupportServiceProvider extends PackageServiceProvider
 
     public function packageBooted(): void
     {
+        $this->registerModelObservers();
+
         Livewire::component('inspirecms-support::media-library', MediaLibraryComponent::class);
         Livewire::component('inspirecms-support::media-library.folders', FolderBrowserComponent::class);
         Livewire::component('inspirecms-support::media-library.detail-info', MediaDetailComponent::class);
@@ -97,6 +101,14 @@ class InspireCmsSupportServiceProvider extends PackageServiceProvider
         FilamentIcon::register($this->getIcons());
 
         Testable::mixin(new TestsForms);
+    }
+
+    protected function registerModelObservers(): void
+    {
+        $mediaAssetModel = Facades\ModelRegistry::get(Models\Contracts\MediaAsset::class);
+
+        $mediaAssetModel::observe(BelongsToNestableTreeObserver::class);
+        $mediaAssetModel::observe(HasRecursiveRelationshipsObserver::class);
     }
 
     /**
