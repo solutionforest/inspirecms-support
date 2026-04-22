@@ -3,8 +3,8 @@
 # InspireCMS Support
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/solution-forest/inspirecms-support.svg?style=flat-square)](https://packagist.org/packages/solution-forest/inspirecms-support)
-[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/solution-forest/inspirecms-support/test-matrix.yml?branch=4.x&label=tests&style=flat-square)](https://github.com/solutionforest/inspirecms-support/actions?query=workflow%3Atest-matrix+branch%3A4.x)
-[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/solution-forest/inspirecms-support/fix-php-code-styling.yml?branch=4.x&label=code%20style&style=flat-square)](https://github.com/solutionforest/inspirecms-support/actions?query=workflow%3A"Fix+PHP+code+styling"+branch%3A4.x)
+[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/solutionforest/inspirecms-support/test-matrix.yml?branch=4.x&label=tests&style=flat-square)](https://github.com/solutionforest/inspirecms-support/actions/workflows/test-matrix.yml?query=branch%3A4.x)
+[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/solutionforest/inspirecms-support/fix-php-code-style-issues.yml?branch=4.x&label=code%20style&style=flat-square)](https://github.com/solutionforest/inspirecms-support/actions/workflows/fix-php-code-style-issues.yml?query=branch%3A4.x)
 [![Total Downloads](https://img.shields.io/packagist/dt/solution-forest/inspirecms-support.svg?style=flat-square)](https://packagist.org/packages/solution-forest/inspirecms-support)
 https://github.com/solutionforest/inspirecms-support/actions/workflows/test-matrix.yml
 
