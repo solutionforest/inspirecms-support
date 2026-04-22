@@ -14,6 +14,23 @@ beforeEach(function () {
     $this->dummyRandImageUrl = 'https://picsum.photos/200/300';
 });
 
+it('boots media asset lifecycle without recursive boot errors', function () {
+    $mediaAsset = MediaAsset::factory()->isFolder()->create()->refresh();
+
+    $mediaAsset->title = 'Boot Lifecycle Updated';
+    $mediaAsset->save();
+
+    $mediaAsset->delete();
+    if (method_exists($mediaAsset, 'restore')) {
+        $mediaAsset->restore();
+    }
+    if (method_exists($mediaAsset, 'forceDelete')) {
+        $mediaAsset->forceDelete();
+    }
+
+    expect(true)->toBeTrue();
+});
+
 dataset('image_extensions', [
     'jpg' => ['jpg'],
     'png' => ['png'],

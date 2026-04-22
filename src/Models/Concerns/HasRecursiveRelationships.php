@@ -15,7 +15,14 @@ trait HasRecursiveRelationships
 
     public static function bootHasRecursiveRelationships()
     {
-        static::observe(new HasRecursiveRelationshipsObserver);
+        // Instead of observe(), register the each event listener separately for support Laravel 13
+        static::creating(fn ($model) => (new HasRecursiveRelationshipsObserver)->creating($model));
+        static::deleting(fn ($model) => (new HasRecursiveRelationshipsObserver)->deleting($model));
+        if (in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses_recursive(static::class))) {
+            static::restoring(fn ($model) => (new HasRecursiveRelationshipsObserver)->restoring($model));
+            static::forceDeleting(fn ($model) => (new HasRecursiveRelationshipsObserver)->forceDeleting($model));
+        }
+        // static::observe(new HasRecursiveRelationshipsObserver);
     }
 
     /**
