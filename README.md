@@ -1,12 +1,14 @@
 <p align="center"><img src="https://github.com/user-attachments/assets/ca52c7ca-41ed-48d2-9f85-2fd706857cf4" width="500" alt="InspireCMS Logo" /></p>
 
+# InspireCMS Support
 
-# InspireCMS Support 
-
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/solution-forest/inspirecms-core.svg?style=flat-square)](https://packagist.org/packages/solution-forest/inspirecms-core)
-[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/solution-forest/inspirecms-core/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/solutionforest/inspirecms-core/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/solution-forest/inspirecms-core/fix-php-code-styling.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/solutionforest/inspirecms-core/actions?query=workflow%3A"Fix+PHP+code+styling"+branch%3Amain)
-[![Total Downloads](https://img.shields.io/packagist/dt/solution-forest/inspirecms-core.svg?style=flat-square)](https://packagist.org/packages/solution-forest/inspirecms-core)
+![Laravel Supported Versions](https://img.shields.io/badge/laravel-11.x/12.x/13.x-green.svg)
+![Filament Supported Versions](https://img.shields.io/badge/filament->=3.3-green.svg)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/solution-forest/inspirecms-support.svg?style=flat-square)](https://packagist.org/packages/solution-forest/inspirecms-support)
+[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/solutionforest/inspirecms-support/test-matrix.yml?branch=5.x&label=tests&style=flat-square)](https://github.com/solutionforest/inspirecms-support/actions/workflows/test-matrix.yml?query=branch%3A5.x)
+[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/solutionforest/inspirecms-support/fix-php-code-style-issues.yml?branch=5.x&label=code%20style&style=flat-square)](https://github.com/solutionforest/inspirecms-support/actions/workflows/fix-php-code-style-issues.yml?query=branch%3A5.x)
+[![Total Downloads](https://img.shields.io/packagist/dt/solution-forest/inspirecms-support.svg?style=flat-square)](https://packagist.org/packages/solution-forest/inspirecms-support)
+https://github.com/solutionforest/inspirecms-support/actions/workflows/test-matrix.yml
 
 ## About InspireCMS
 
@@ -15,7 +17,6 @@ InspireCMS is the foundation library that powers the InspireCMS platform. This p
 ## Support
 
 We provide official developer support on [InspireCMS Pro](https://inspirecms.net/#pricing) projects.
-
 
 ## Contributing
 
@@ -31,4 +32,4 @@ Please review [our security policy](../../security/policy) on how to report secu
 
 ## Resources
 
-* [Documentation](https://inspirecms.net/)
+- [Documentation](https://inspirecms.net/)
