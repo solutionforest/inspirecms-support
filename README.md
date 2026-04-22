@@ -2,6 +2,8 @@
 
 # InspireCMS Support
 
+![Laravel Supported Versions](https://img.shields.io/badge/laravel-11.x/12.x/13.x-green.svg)
+![Filament Supported Versions](https://img.shields.io/badge/filament->=3.3-green.svg)
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/solution-forest/inspirecms-support.svg?style=flat-square)](https://packagist.org/packages/solution-forest/inspirecms-support)
 [![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/solutionforest/inspirecms-support/test-matrix.yml?branch=4.x&label=tests&style=flat-square)](https://github.com/solutionforest/inspirecms-support/actions/workflows/test-matrix.yml?query=branch%3A4.x)
 [![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/solutionforest/inspirecms-support/fix-php-code-style-issues.yml?branch=4.x&label=code%20style&style=flat-square)](https://github.com/solutionforest/inspirecms-support/actions/workflows/fix-php-code-style-issues.yml?query=branch%3A4.x)
