@@ -2,6 +2,50 @@
 
 All notable changes to `inspirecms-support` will be documented in this file.
 
+## 5.0.0 - 2026-04-22
+
+### InspireCMS v5.0.0
+
+InspireCMS v5.0.0 is a major release focused on framework compatibility updates and dependency alignment for the next generation of the platform.
+
+#### Highlights
+
+- Laravel 12 and Laravel 13 support across v5 packages
+- PHP 8.2+ baseline
+- Filament 5 support in the support package
+
+#### Package Compatibility
+
+##### Runtime
+
+- PHP: >= 8.2
+- Laravel: ^11.0 | ^12.0 | ^13.0
+
+##### Ecosystem
+
+- Filament (support package): ^5.0
+
+#### Important Notes for Upgrades
+
+- This is a major version. Review your dependency constraints before upgrading.
+- If your app is using older Filament versions, upgrade to Filament 5 before adopting InspireCMS v5.
+- If you customized model observer behavior, ensure your implementation is compatible with Laravel 13 model booting behavior.
+- Clear caches after upgrade:
+
+```bash
+php artisan optimize:clear
+
+```
+#### Installation / Upgrade
+
+```bash
+composer require solution-forest/inspirecms-support:^5.0
+
+```
+**Full Changelog**: https://github.com/solutionforest/inspirecms-support/compare/4.0.10...5.0.0
+
+If you tag from a different base point, replace compare ranges with your actual previous release tag (for example, 4.0.10...5.0.0).
+
 ## 4.0.11 - 2026-04-22
 
 ### What's Changed
@@ -140,6 +184,7 @@ composer require solution-forest/inspirecms-support:^1.2.2
 
 
 
+
 ```
 ## Sync version with core - 2025-08-19
 
@@ -164,6 +209,7 @@ composer require solution-forest/inspirecms-support:^1.2.2
 
 ```bash
 composer require solution-forest/inspirecms-support:^1.1.3
+
 
 
 
