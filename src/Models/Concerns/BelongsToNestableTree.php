@@ -8,9 +8,15 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
 use SolutionForest\InspireCms\Support\Facades\ModelRegistry;
 use SolutionForest\InspireCms\Support\Models\Contracts\NestableTree;
 use SolutionForest\InspireCms\Support\Models\Scopes\NestableTreeDetailScope;
+use SolutionForest\InspireCms\Support\Observers\BelongsToNestableTreeObserver;
 
 trait BelongsToNestableTree
 {
+    public static function bootBelongsToNestableTree()
+    {
+        static::observe(new BelongsToNestableTreeObserver);
+    }
+
     /**
      * @return MorphOne
      */

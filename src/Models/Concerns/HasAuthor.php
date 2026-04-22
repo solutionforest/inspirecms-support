@@ -8,7 +8,7 @@ use SolutionForest\InspireCms\Support\Resolvers\UserResolverInterface;
 
 trait HasAuthor
 {
-    public static function bootHasAuthor(): void
+    public static function bootHasAuthor()
     {
         static::creating(function ($model) {
             if (empty($model->author_id) && empty($model->author_type)) {

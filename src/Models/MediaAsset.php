@@ -361,8 +361,10 @@ class MediaAsset extends BaseModel implements MediaAssetContract
         return str_starts_with($mime, $mimeType);
     }
 
-    protected static function booted()
+    protected static function booting()
     {
+        parent::booting();
+
         static::updating(function (self $model) {
             if ($model->isDirty('title')) {
                 $model->loadMissing('media');

@@ -4,12 +4,18 @@ namespace SolutionForest\InspireCms\Support\Models\Concerns;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use SolutionForest\InspireCms\Support\Observers\HasRecursiveRelationshipsObserver;
 use Staudenmeir\LaravelAdjacencyList\Eloquent\HasRecursiveRelationships as BaseHasRecursiveRelationships;
 
 trait HasRecursiveRelationships
 {
     use BaseHasRecursiveRelationships {
         scopeIsRoot as private traitScopeIsRoot;
+    }
+
+    public static function bootHasRecursiveRelationships()
+    {
+        static::observe(new HasRecursiveRelationshipsObserver);
     }
 
     /**
