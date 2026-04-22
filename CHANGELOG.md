@@ -2,6 +2,21 @@
 
 All notable changes to `inspirecms-support` will be documented in this file.
 
+## 1.2.4 - 2026-04-22
+
+### What's Changed in 1.2.4
+
+#### 🔧 Other Changes
+
+- Bump actions/checkout from 4 to 5 (32192a3)
+- ready for import data used (6d57768)
+- Merge remote-tracking branch 'origin/dependabot/github_actions/actions/checkout-5' into 1.x (eee1848)
+- Bump stefanzweifel/git-auto-commit-action from 6 to 7 (6aea397)
+
+### Installation
+
+**Full Changelog**: https://github.com/solutionforest/inspirecms-support/compare/1.2.3...1.2.4
+
 ## 4.0.0.beta.1 - 2025-12-08
 
 <!-- Release notes generated using configuration in .github/release.yml at 4.0.0.beta.1 -->
@@ -34,6 +49,7 @@ composer require solution-forest/inspirecms-support:^1.2.2
 
 
 
+
 ```
 ## Sync version with core - 2025-08-19
 
@@ -58,6 +74,7 @@ composer require solution-forest/inspirecms-support:^1.2.2
 
 ```bash
 composer require solution-forest/inspirecms-support:^1.1.3
+
 
 
 
