@@ -14,7 +14,14 @@ trait BelongsToNestableTree
 {
     public static function bootBelongsToNestableTree()
     {
-        static::observe(new BelongsToNestableTreeObserver);
+        // Instead of observe(), register the each event listener separately for support Laravel 13
+        static::created(fn ($model) => (new BelongsToNestableTreeObserver)->created($model));
+        static::updated(fn ($model) => (new BelongsToNestableTreeObserver)->updated($model));
+        static::deleting(fn ($model) => (new BelongsToNestableTreeObserver)->deleting($model));
+        if (in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses_recursive(static::class))) {
+            static::forceDeleting(fn ($model) => (new BelongsToNestableTreeObserver)->forceDeleting($model));
+        }
+        // static::observe(new BelongsToNestableTreeObserver);
     }
 
     /**
